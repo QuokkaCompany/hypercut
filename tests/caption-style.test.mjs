@@ -9,7 +9,7 @@ const transcript={trackIndex:1,channel:0,language:'ko',model:'manual',cues:[{id:
 
 test('C04: v4 stores style and v1/v2/v3 migrate without enabling caption burn-in',()=>{
  const project=makeProject({name:'fixture.mp4',fingerprint:'a'.repeat(64),duration:6},DEFAULT_SETTINGS,1,[],undefined,transcript,{...DEFAULT_CAPTION_STYLE,enabled:true,preset:'box'});
- assert.equal(project.version,4);assert.equal(validateProject(JSON.parse(JSON.stringify(project))).captionStyle.preset,'box');
+ assert.equal(project.version,5);assert.equal(validateProject(JSON.parse(JSON.stringify(project))).captionStyle.preset,'box');
  for(const version of [1,2,3]){const migrated=validateProject({...project,version});assert.equal(migrated.captionStyle.enabled,false);assert.deepEqual(migrated.transcript,version===3?transcript:null);}
  assert.throws(()=>validateProject({...project,captionStyle:undefined}),/스타일/);
  for(const bad of [null,{...DEFAULT_CAPTION_STYLE,sizePercent:0},{...DEFAULT_CAPTION_STYLE,marginPercent:80},{...DEFAULT_CAPTION_STYLE,enabled:'true'},{...DEFAULT_CAPTION_STYLE,preset:'url(file)'}])assert.throws(()=>validateCaptionStyle(bad));

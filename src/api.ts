@@ -1,4 +1,4 @@
-import type { Job, Media } from './types';
+import type { Job, Media, EffectAsset } from './types';
 let token = '';
 export async function bootstrap() {
   const response = await fetch('/api/config');
@@ -13,6 +13,11 @@ export async function request<T>(route: string, body?: unknown, method?: string,
 }
 export function fileURL(mediaId: string, trackIndex: number) { return `/api/media/${mediaId}/file?token=${token}&trackIndex=${trackIndex}`; }
 export function outputURL(id: string, download = false) { return `/api/exports/${id}?token=${token}${download ? '&download=1' : ''}`; }
+export async function uploadEffect(file: File, signal: AbortSignal): Promise<EffectAsset> {
+  const body = new FormData(); body.append('audio', file);
+  const response = await fetch('/api/effects', { method: 'POST', headers: { 'X-Hypercut-Token': token }, body, signal });
+  const value = await response.json(); if (!response.ok) throw new Error(value.error || '효과음을 불러오지 못했습니다.'); return value;
+}
 export function upload(file: File, onProgress: (percentage: number) => void, signal: AbortSignal): Promise<Media> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();

@@ -16,6 +16,7 @@ function assertSender(event) {
 async function protectSource(target) {
   const realTarget = await realpath(target).catch(() => target);
   for (const media of server.media.values()) if (await realpath(media.path) === realTarget) throw new Error('원본 영상과 다른 이름으로 저장해 주세요.');
+  for (const asset of server.effectAssets.values()) if (await realpath(asset.path).catch(() => asset.path) === realTarget) throw new Error('효과음 원본과 다른 이름으로 저장해 주세요.');
 }
 ipcMain.handle('hypercut:save-project', async (event, data) => {
   assertSender(event);
@@ -32,6 +33,12 @@ ipcMain.handle('hypercut:pick-video', async event => {
   const chosen = await dialog.showOpenDialog(mainWindow, { title: '편집할 영상 선택', properties: ['openFile'], filters: [{ name: 'H.264 영상', extensions: ['mp4', 'mov'] }] });
   if (chosen.canceled || !chosen.filePaths[0]) return null;
   return server.registerFile(chosen.filePaths[0]);
+});
+ipcMain.handle('hypercut:pick-effect', async event => {
+  assertSender(event);
+  const chosen = await dialog.showOpenDialog(mainWindow, { title: '효과음 선택', properties: ['openFile'], filters: [{ name: '오디오', extensions: ['wav', 'mp3', 'm4a', 'aac', 'flac', 'ogg'] }] });
+  if (chosen.canceled || !chosen.filePaths[0]) return null;
+  return server.registerEffect(chosen.filePaths[0]);
 });
 ipcMain.handle('hypercut:save-export', async (event, id) => {
   assertSender(event);

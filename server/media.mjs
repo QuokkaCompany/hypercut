@@ -13,6 +13,8 @@ import { createSpeechDetector, VAD_MODEL } from './vad.mjs';
 import { validateTranscript, toSRT } from '../shared/captions.mjs';
 import { validateCaptionStyle } from '../shared/caption-style.mjs';
 import { captionCues, renderCaptionImages } from './caption-rendering.mjs';
+import { validateEffects, mapEffects } from '../shared/effects.mjs';
+import { mixEffects, inspectMixedOutput } from './effects.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
 
@@ -192,12 +194,16 @@ export async function exportCaptions(media, cuts, trackIndex, input, directory, 
   return { id, path: destination, name: media.name.replace(/\.[^.]+$/, '') + '-edited.srt', size: Buffer.byteLength(text), mime: 'application/x-subrip', duration: intervalDuration(kept), kept, verified: true };
 }
 
-export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range, transcript, captionStyle: styleInput } = {}) {
+export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range, transcript, captionStyle: styleInput, effects: effectsInput, effectAssets } = {}) {
   if (range !== undefined && !preview) throw new Error('범위 지정은 미리보기에서만 사용할 수 있습니다.');
   const track = getTrack(media, trackIndex);
   const frames = await getFrames(media, signal, progress);
   const { removals, kept, sourceRange } = renderPlan(cuts, media.duration, frames, range);
   const captionStyle = validateCaptionStyle(styleInput);
+  const effects = validateEffects(effectsInput, media.duration);
+  const fullKept = renderPlan(cuts, media.duration, frames).kept;
+  const windowStart = sourceRange ? fullKept.reduce((sum, span) => sum + Math.max(0, Math.min(span.end, sourceRange.start) - span.start), 0) : 0;
+  const mappedEffects = mapEffects(effects, fullKept, sourceRange ? { start: windowStart, end: windowStart + intervalDuration(kept) } : undefined);
   const subtitles = captionStyle.enabled ? captionCues(transcript, media, trackIndex, renderPlan(cuts, media.duration, frames).kept, kept) : [];
   const expectedDuration = intervalDuration(kept);
   if (!kept.length || expectedDuration <= 0) throw new Error(sourceRange ? '이 범위에는 남아 있는 구간이 없습니다. 범위를 넓히거나 필요한 컷을 복원해 주세요.' : '모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
@@ -211,6 +217,7 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
   const temporaryOutput = path.join(work, 'output.mp4');
   try {
     const audioSamples = await writeEditedAudio(media, track, kept, pcmPath, signal, progress, decodeStart, decodeEnd);
+    const audioMix = await mixEffects(pcmPath, mappedEffects, effects.assets, effectAssets, track, work, { signal, progress });
     let captionRender;
     if (captionStyle.enabled) {
       progress?.({ stage: '자막 디자인 준비', progress: 0.3 });
@@ -242,9 +249,10 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     if (Math.abs(outputDuration - expectedDuration) > tolerance) throw new Error(`출력 길이 검증 실패 (${outputDuration.toFixed(3)}초 / 예상 ${expectedDuration.toFixed(3)}초)`);
     if (outputInfo.streams.filter(x => x.codec_type === 'video').length !== 1 || outputInfo.streams.filter(x => x.codec_type === 'audio').length !== 1) throw new Error('출력 트랙 검증에 실패했습니다.');
     await capture('ffmpeg', ['-v', 'error', '-xerror', '-i', temporaryOutput, '-f', 'null', '-'], { signal });
+    if (audioMix.mixedClips) Object.assign(audioMix, await inspectMixedOutput(temporaryOutput, track, signal));
     if (signal?.aborted) throw new DOMException('작업이 취소되었습니다.', 'AbortError');
     const destination = path.join(directory, `${id}.mp4`);
     await rename(temporaryOutput, destination);
-    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, kept, captionStyle, burnedCaptions: captionRender?.cueCount || 0, ...(sourceRange ? { sourceRange } : {}), verified: true };
+    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, audioMix, kept, captionStyle, burnedCaptions: captionRender?.cueCount || 0, ...(sourceRange ? { sourceRange } : {}), verified: true };
   } finally { await rm(work, { recursive: true, force: true }); }
 }

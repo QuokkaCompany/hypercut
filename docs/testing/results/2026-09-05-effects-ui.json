@@ -1,0 +1,50 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "missingAssetBlocked": true,
+    "wrongReconnectRejected": true,
+    "sameHashReconnected": true,
+    "manualEditUndoRedo": true,
+    "muteDeleteUndo": true,
+    "dirtyDraftGuard": true,
+    "stalePreviewInvalidated": true,
+    "projectV5RoundTrip": true,
+    "captionAndEffectMP4Decoded": true,
+    "expectedBeepSeconds": [
+      3,
+      3.7
+    ],
+    "rms": 0.06314186692551059,
+    "peak": 0.09251511096954346,
+    "quietPeak": 0,
+    "sourcePreserved": true,
+    "nativeEffectOverwriteBlocked": "N/A",
+    "externalRequests": 0,
+    "pageErrors": []
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "missingAssetBlocked": true,
+    "wrongReconnectRejected": true,
+    "sameHashReconnected": true,
+    "manualEditUndoRedo": true,
+    "muteDeleteUndo": true,
+    "dirtyDraftGuard": true,
+    "stalePreviewInvalidated": true,
+    "projectV5RoundTrip": true,
+    "captionAndEffectMP4Decoded": true,
+    "expectedBeepSeconds": [
+      3,
+      3.7
+    ],
+    "rms": 0.06314186692551059,
+    "peak": 0.09251511096954346,
+    "quietPeak": 0,
+    "sourcePreserved": true,
+    "nativeEffectOverwriteBlocked": true,
+    "externalRequests": 0,
+    "pageErrors": []
+  }
+]

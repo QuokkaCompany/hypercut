@@ -1,6 +1,6 @@
 # HyperCut 전사·자막·효과음 검증 및 테스트 계획
 
-작성일: 2026-09-05. 상태: 일부 구현·검증 진행. 로컬 전사·문구/시각 수정·SRT·v3 저장은 [전사 결과 기록](../testing/2026-09-05-transcription-results.md), 후속 디자인·v4 저장·MP4 합성은 [합성 결과 기록](../testing/2026-09-05-caption-rendering-results.md), AI 제안 비교·선택 적용은 [교정 결과 기록](../testing/2026-09-05-caption-correction-results.md)에 구분했다. 실제 녹음·AI 교정 품질, 긴 영상의 자막 성능, 효과음은 미실행이다.
+작성일: 2026-09-05. 상태: 일부 구현·검증 진행. 로컬 전사·문구/시각 수정·SRT·v3 저장은 [전사 결과 기록](../testing/2026-09-05-transcription-results.md), 후속 디자인·v4 저장·MP4 합성은 [합성 결과 기록](../testing/2026-09-05-caption-rendering-results.md), AI 제안 비교·선택 적용은 [교정 결과 기록](../testing/2026-09-05-caption-correction-results.md)에 구분했다. 로컬 효과음 편집·v5 저장·음원 재연결·MP4 합성의 근거는 [효과음 기록](../testing/2026-09-05-effects-results.md)에 추가했다. 실제 녹음·AI 교정 품질, 긴 영상의 자막 성능, AI 효과음 제안·사람 청취는 미실행이다.
 
 이 문서는 [무음 편집 검증 계획](2026-09-05-validation-plan.md)과 [MVP 테스트 계획](2026-09-05-test-plan.md)의 후속 범위다. 기존 MVP 39개, AI 8개, VAD 7개 사례와 별도로 전사 7개·자막 10개·효과음 5개를 정의한다. 기존 자동 테스트 통과 수를 아래 기능의 통과 증거로 사용하지 않는다.
 

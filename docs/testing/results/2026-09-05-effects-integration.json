@@ -1,0 +1,122 @@
+{
+  "hashes": {
+    "source": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "effect": "49e02a11e7796b4e499e1d8232b9510bdd39ab03611730f5686fae4df73fd4ad"
+  },
+  "reports": [
+    {
+      "case": "FX01-FX02",
+      "outputSeconds": 6,
+      "timing": [
+        {
+          "expected": [
+            2,
+            2.5
+          ],
+          "observed": [
+            2.000020833333333,
+            2.5
+          ],
+          "amplitudeGate": 0.005,
+          "toleranceSeconds": 0.03333333333333333
+        },
+        {
+          "expected": [
+            3,
+            3.5
+          ],
+          "observed": [
+            3.000020833333333,
+            3.5
+          ],
+          "amplitudeGate": 0.005,
+          "toleranceSeconds": 0.03333333333333333
+        },
+        {
+          "expected": [
+            5.8,
+            6
+          ],
+          "observed": [
+            5.800020833333333,
+            6
+          ],
+          "amplitudeGate": 0.005,
+          "toleranceSeconds": 0.03333333333333333
+        }
+      ],
+      "loudRMS": 0.1413170506267532,
+      "quietRMS": 0.07074816030175383,
+      "gainRatio": 0.5006342828977798,
+      "audioMix": {
+        "mixedClips": 3,
+        "peak": 0.199981689453125,
+        "peakDb": -13.980195340071585,
+        "overloadedSamples": 0,
+        "encodedPeak": 0.20235444605350494,
+        "encodedPeakDb": -13.877744980349123,
+        "encodedOverloadedSamples": 0
+      },
+      "flashAndBeepSeconds": 2,
+      "restoredDeletedAnchor": 3,
+      "status": "PASS"
+    },
+    {
+      "case": "FX01-preview-tail",
+      "originalAnchor": 1.5,
+      "previewSourceStart": 4.5,
+      "audiblePreviewSeconds": [
+        0,
+        1
+      ],
+      "status": "PASS"
+    },
+    {
+      "case": "FX01-VFR-PTS-resample",
+      "sourcePTS": 5,
+      "sourceEffectRate": 44100,
+      "outputRate": 48000,
+      "timing": {
+        "expected": [
+          2.1,
+          2.5
+        ],
+        "observed": [
+          2.1000208333333332,
+          2.5
+        ],
+        "amplitudeGate": 0.005,
+        "toleranceSeconds": 0.03333333333333333
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "FX02-exact-PCM",
+      "frames": 48000,
+      "channels": 2,
+      "maximumError": "<1e-7",
+      "status": "PASS"
+    },
+    {
+      "case": "FX05-cancel-retry-caption",
+      "cancelledDuringMix": true,
+      "cancelMilliseconds": 3.2014999999998963,
+      "priorOutputPreserved": true,
+      "status": "PASS"
+    },
+    {
+      "case": "FX03-local-formats",
+      "formats": [
+        "wav",
+        "mp3",
+        "m4a",
+        "flac",
+        "ogg",
+        "aac"
+      ],
+      "disguisedPlaylistRejected": true,
+      "nestedNetworkRequests": 0,
+      "status": "PASS"
+    }
+  ]
+}
