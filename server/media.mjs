@@ -10,6 +10,7 @@ import { createCuts, intervalDuration, renderPlan, videoExpressions, validateSet
 import { validateSpeechProtection } from '../shared/speech-settings.mjs';
 import { protectSpeech } from '../shared/speech.mjs';
 import { createSpeechDetector, VAD_MODEL } from './vad.mjs';
+import { validateTranscript, toSRT } from '../shared/captions.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
 
@@ -89,6 +90,18 @@ function getTrack(media, trackIndex) {
   return track;
 }
 
+export async function transcriptionAudio(media, trackIndex, channel, destination, { signal } = {}) {
+  const track = getTrack(media, trackIndex);
+  if (!Number.isInteger(channel) || channel < 0 || channel >= track.channels) throw new Error('전사할 채널을 선택해 주세요.');
+  const args = audioArgs(media, { ...track, sampleRate: 16000 });
+  args[args.indexOf('-af') + 1] += `,pan=mono|c0=c${channel}`;
+  args[args.indexOf('-ac') + 1] = '1';
+  args[args.indexOf('-c:a') + 1] = 'pcm_s16le';
+  args[args.indexOf('-f') + 1] = 'wav';
+  args[args.length - 1] = destination;
+  await capture('ffmpeg', args, { signal });
+}
+
 export async function analyzeMedia(media, settingsInput, trackIndex, { signal, progress, speechProtection: speechInput } = {}) {
   const settings = validateSettings(settingsInput);
   const speechProtection = validateSpeechProtection(speechInput);
@@ -157,6 +170,20 @@ async function writeEditedAudio(media, track, kept, destination, signal, progres
     if (outputError) throw outputError;
     return written;
   } catch (error) { child.kill(); output.destroy(); throw error; }
+}
+
+export async function exportCaptions(media, cuts, trackIndex, input, directory, { signal, progress } = {}) {
+  getTrack(media, trackIndex);
+  const transcript = validateTranscript(input, media.duration);
+  if (!transcript || transcript.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙과 자막의 전사 트랙이 다릅니다.');
+  const frames = await getFrames(media, signal, progress);
+  const { kept } = renderPlan(cuts, media.duration, frames);
+  const text = toSRT(transcript, kept);
+  signal?.throwIfAborted();
+  const id = randomUUID(), destination = path.join(directory, `${id}.srt`);
+  try { await writeFile(destination, text, { flag: 'wx', signal }); }
+  catch (error) { await rm(destination, { force: true }); throw error; }
+  return { id, path: destination, name: media.name.replace(/\.[^.]+$/, '') + '-edited.srt', size: Buffer.byteLength(text), mime: 'application/x-subrip', duration: intervalDuration(kept), kept, verified: true };
 }
 
 export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range } = {}) {

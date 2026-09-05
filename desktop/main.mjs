@@ -37,7 +37,8 @@ ipcMain.handle('hypercut:save-export', async (event, id) => {
   assertSender(event);
   const output = typeof id === 'string' && server.exports.get(id);
   if (!output) throw new Error('저장할 결과물을 찾을 수 없습니다.');
-  const chosen = await dialog.showSaveDialog(mainWindow, { title: '편집한 영상 저장', defaultPath: output.name, filters: [{ name: 'MP4 영상', extensions: ['mp4'] }] });
+  const subtitle = output.mime === 'application/x-subrip';
+  const chosen = await dialog.showSaveDialog(mainWindow, { title: subtitle ? '편집한 자막 저장' : '편집한 영상 저장', defaultPath: output.name, filters: [{ name: subtitle ? 'SRT 자막' : 'MP4 영상', extensions: [subtitle ? 'srt' : 'mp4'] }] });
   if (chosen.canceled || !chosen.filePath) return false;
   const target = path.resolve(chosen.filePath);
   await protectSource(target);

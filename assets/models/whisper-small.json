@@ -1,0 +1,16 @@
+{
+  "name": "Whisper small (multilingual)",
+  "file": "ggml-small.bin",
+  "size": 487601967,
+  "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+  "engine": "whisper.cpp 1.9.3",
+  "revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+  "platform": "darwin",
+  "arch": "arm64",
+  "binarySHA256": "8ae4da90dbbee8568f77e793ab93483f902c9c6043e07fffa2833ed3530258fc",
+  "sourceSHA256": "89051d8fca516a3ad1f5c2f8f9d2fccb089afbaec338fca3f8731999babc6f81",
+  "sourceURL": "https://github.com/ggml-org/whisper.cpp/tree/371b5a7561823ab2bb32142d2751e35e7534727b",
+  "modelURL": "https://huggingface.co/ggerganov/whisper.cpp/blob/main/ggml-small.bin",
+  "license": "MIT",
+  "weightsLocation": ".hypercut/transcription; package Resources/transcription; excluded from Git"
+}

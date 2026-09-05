@@ -26,7 +26,11 @@
     "test:e2e": "node scripts/e2e.mjs",
     "fixtures": "node scripts/fixtures.mjs",
     "package:desktop": "npm run build && node scripts/package-desktop.mjs",
-    "test:compatibility": "node --test tests/compatibility.integration.mjs"
+    "test:compatibility": "node --test tests/compatibility.integration.mjs",
+    "setup:transcription": "node scripts/setup-transcription.mjs",
+    "test:transcription": "node --test tests/transcription.integration.mjs",
+    "test:captions:e2e": "node scripts/captions-e2e.mjs",
+    "test:captions:offline": "node scripts/captions-offline.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",

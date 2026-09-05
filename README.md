@@ -21,13 +21,16 @@ npm start
 npm run desktop
 ```
 
-Mac 앱 패키지 생성:
+전사 엔진·한국어 지원 모델 준비 및 Mac 앱 패키지 생성:
 
 ```sh
+npm run setup:transcription
 npm run package:desktop
 ```
 
-패키지는 `release/` 아래에 생성됩니다. 현재 패키지는 이 컴퓨터에 설치한 FFmpeg/ffprobe를 사용합니다. 다른 컴퓨터로 배포할 때도 해당 도구가 필요합니다. `FFMPEG_PATH`, `FFPROBE_PATH`로 실행 경로를 지정할 수 있습니다.
+전사 준비는 Apple Silicon macOS의 Python 3와 Xcode Command Line Tools를 사용합니다. 고정 버전 whisper.cpp를 프로젝트 내부에서 빌드하고 공개 Whisper small 모델 약 488MB를 다운로드합니다. 모델을 준비한 후에는 전사에 네트워크·계정·API 호출이 필요하지 않습니다. 모델·도구는 `.hypercut/` 아래에 두고 Git에 포함하지 않습니다.
+
+패키지는 `release/` 아래에 생성됩니다. 현재 약 902MiB이며 전사 실행 파일·모델·라이선스를 포함합니다. 현재 패키지는 이 컴퓨터에 설치한 FFmpeg/ffprobe를 사용합니다. 다른 컴퓨터로 배포할 때도 해당 도구가 필요합니다. `FFMPEG_PATH`, `FFPROBE_PATH`로 실행 경로를 지정할 수 있습니다.
 
 개발 중에는 `npm run dev`로 서버와 Vite를 함께 시작하고 `http://127.0.0.1:5173`을 사용합니다.
 
@@ -50,9 +53,22 @@ npm run package:desktop
 - 영상 프레임 안쪽으로 경계를 정렬하고, 같은 유지 구간에서 오디오 샘플을 추출합니다. 오디오는 마지막에 한 번만 AAC로 인코딩합니다.
 - 선택한 오디오 트랙 하나를 출력합니다. HDR·HEVC는 아직 지원하지 않습니다.
 - 브라우저가 사용하는 로컬 작업 파일은 `.hypercut/sessions/`에 있습니다. 데스크톱 앱은 앱 사용자 데이터 폴더를 사용합니다. 자동 삭제하지 않으므로 필요한 출력물을 저장한 뒤 종료 상태에서 정리할 수 있습니다.
-- 자막·효과음 기능과 실제 한국어 영상의 품질·시간 절감 평가는 후속 작업입니다. 아래 계획의 전체 통과를 아직 주장하지 않습니다.
+- 로컬 전사·자막 문구/시각 수정·SRT 저장을 사용할 수 있습니다. 자막 디자인의 MP4 합성, AI 교정, 효과음과 실제 한국어 영상의 품질·시간 절감 평가는 후속 작업입니다. 아래 계획의 전체 통과를 아직 주장하지 않습니다.
 
-VAD 모델(약 2.3MB)과 라이선스는 `assets/models/`에 포함됩니다. 추론 중 모델 다운로드나 AI 계정은 필요하지 않습니다. ONNX Runtime의 원격 진단은 로드 전에 끕니다. 프로젝트는 보호 설정을 저장하는 v2로 생성하며 기존 v1은 보호 꺼짐으로 읽습니다. 이전 HyperCut 버전은 v2 프로젝트를 열지 못할 수 있습니다.
+VAD 모델(약 2.3MB)과 라이선스는 `assets/models/`에 포함됩니다. 추론 중 모델 다운로드나 AI 계정은 필요하지 않습니다. ONNX Runtime의 원격 진단은 로드 전에 끕니다. 프로젝트는 자막까지 저장하는 v3로 생성합니다. 기존 v1은 보호 꺼짐·자막 없음, v2는 기존 보호 설정·자막 없음으로 읽습니다. 이전 HyperCut 버전은 v3 프로젝트를 열지 못할 수 있습니다.
+
+## 로컬 전사와 자막
+
+영상 선택 후 **자막**을 열어 언어·전사 채널을 고르고 **음성 전사 시작**을 누릅니다. 현재 한국어·영어·언어 자동 감지를 선택할 수 있습니다. 실제 검증 자료는 한국어 TTS이며 일반 녹음 정확도나 다른 언어 품질까지 검증한 것은 아닙니다.
+
+- 원본 재생으로 문구와 시각을 확인하고 **자막 수정 적용**을 누릅니다. 적용하지 않은 입력을 닫거나 다른 자막으로 이동할 때는 확인을 받습니다.
+- 자막 자체의 삭제·실행 취소·다시 실행을 지원합니다. 수정 결과는 프로젝트에 포함됩니다.
+- 컷이 문장 일부를 가로지르면 삭제된 말이 남아 있지 않은지 검토합니다. 검토는 해당 문구·원본 시각·유지 구간에만 유효하며 새 컷이나 수정 후에는 다시 확인합니다.
+- **편집한 SRT 저장**은 실제 영상 출력과 같은 프레임 경계로 편집 시간축을 계산합니다. 삭제된 구간의 자막은 제외하며 컷 복원 시 다시 나타납니다.
+- SRT에는 문구·시각만 담습니다. 현재 MP4 내보내기에는 자막 디자인이 합성되지 않습니다.
+- Whisper small의 첫 실제 샘플에는 ‘무음 → 부분’ 오인식과 부정확한 문장 시각이 있었습니다. 자동 전사 결과를 검토 없이 확정하지 않으며, 이 결과를 음성 인식 품질 통과로 표시하지 않습니다.
+
+엔진·모델이 없으면 무음 편집은 계속 사용할 수 있습니다. 전사 실패 시 다른 모델이나 클라우드로 자동 전환하지 않습니다. 개발 환경의 전사 위치는 `.hypercut/transcription/`, 패키지는 앱의 `Resources/transcription/`이며 테스트 환경에서는 `HYPERCUT_TRANSCRIPTION_DIR`로 지정할 수 있습니다. [모델 명세](assets/models/whisper-small.json)와 [실행 기록](docs/testing/2026-09-05-transcription-results.md)을 참고하세요.
 
 ## 선택형 AI 도움
 
@@ -87,6 +103,9 @@ npm run test:e2e -- --desktop --packaged
 npm run test:claude:e2e -- --desktop
 npm run test:speech:e2e -- --desktop
 npm run test:speech:offline
+npm run test:transcription
+npm run test:captions:e2e -- --desktop
+npm run test:captions:offline
 ```
 
 E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니다. `npm run benchmark`는 긴 합성 영상을 만들고 10분·60분 조건을 각 3회 처리합니다. 단위 검증과 실제 FFmpeg 입출력 검증을 구분합니다. 자세한 요구와 실행 계획은 [검증 계획](docs/plans/2026-09-05-validation-plan.md), [테스트 계획](docs/plans/2026-09-05-test-plan.md), [구현 계획](docs/plans/2026-09-05-implementation-plan.md)에 있습니다.

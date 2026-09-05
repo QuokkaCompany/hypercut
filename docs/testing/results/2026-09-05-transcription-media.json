@@ -1,0 +1,109 @@
+[
+  {
+    "input": {
+      "channels": "mono"
+    },
+    "engine": {
+      "name": "Whisper small (multilingual)",
+      "file": "ggml-small.bin",
+      "size": 487601967,
+      "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "engine": "whisper.cpp 1.9.3",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+    },
+    "seconds": 1.723066167,
+    "transcript": {
+      "trackIndex": 1,
+      "channel": 0,
+      "language": "ko",
+      "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "cues": [
+        {
+          "id": "83ddaf7b-0fb7-4c55-9ca3-35b2f6043565",
+          "start": 0,
+          "end": 8,
+          "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+        },
+        {
+          "id": "f52a8cc5-ecea-4e63-a2b6-886f15bfa3dd",
+          "start": 10,
+          "end": 16,
+          "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+        }
+      ]
+    },
+    "scope": "Actual inference and channel/clock integration; TTS does not establish human recording quality"
+  },
+  {
+    "input": {
+      "channels": "right"
+    },
+    "engine": {
+      "name": "Whisper small (multilingual)",
+      "file": "ggml-small.bin",
+      "size": 487601967,
+      "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "engine": "whisper.cpp 1.9.3",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+    },
+    "seconds": 1.2726835830000005,
+    "transcript": {
+      "trackIndex": 1,
+      "channel": 1,
+      "language": "ko",
+      "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "cues": [
+        {
+          "id": "5c589226-ee6d-4ee6-af06-04a81ef99f0b",
+          "start": 0,
+          "end": 8,
+          "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+        },
+        {
+          "id": "78fd5914-52e5-458b-aa71-6b490624b941",
+          "start": 10,
+          "end": 17,
+          "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+        }
+      ]
+    },
+    "scope": "Actual inference and channel/clock integration; TTS does not establish human recording quality"
+  },
+  {
+    "input": {
+      "channels": "opposite",
+      "sampleRate": 44100,
+      "offset": 3
+    },
+    "engine": {
+      "name": "Whisper small (multilingual)",
+      "file": "ggml-small.bin",
+      "size": 487601967,
+      "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "engine": "whisper.cpp 1.9.3",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+    },
+    "seconds": 1.2585265839999993,
+    "transcript": {
+      "trackIndex": 1,
+      "channel": 1,
+      "language": "ko",
+      "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "cues": [
+        {
+          "id": "1afa7886-5cf0-48f1-9fca-82e6bb03022a",
+          "start": 0,
+          "end": 8,
+          "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+        },
+        {
+          "id": "25266321-0ef7-474c-8dc1-5a0a8cb0766a",
+          "start": 10,
+          "end": 16,
+          "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+        }
+      ]
+    },
+    "scope": "Actual inference and channel/clock integration; TTS does not establish human recording quality"
+  }
+]

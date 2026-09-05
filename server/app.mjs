@@ -4,11 +4,13 @@ import { randomUUID, randomBytes } from 'node:crypto';
 import { mkdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { inspectMedia, publicMedia, analyzeMedia, exportMedia, playbackFile, restoreMediaRange } from './media.mjs';
+import { inspectMedia, publicMedia, analyzeMedia, exportMedia, exportCaptions, playbackFile, restoreMediaRange } from './media.mjs';
 import { validateSettings } from '../shared/timeline.mjs';
 import { validateSpeechProtection } from '../shared/speech-settings.mjs';
 import { capture } from './process.mjs';
 import { installAIRoutes } from './ai.mjs';
+import { transcribeMedia, transcriptionStatus, validateTranscriptionSettings } from './transcription.mjs';
+import { validateTranscript } from '../shared/captions.mjs';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 
@@ -65,13 +67,14 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     await generateDemo(demo);
     res.json(await registerFile(demo, 'HyperCut 검증 샘플.mp4'));
   }));
+  app.get('/api/transcription/status', asyncRoute(async (_req, res) => res.json(await transcriptionStatus(undefined, { signal: playbackController.signal }))));
   app.get('/api/media/:id/file', asyncRoute(async (req, res) => {
     const item = findMedia(req.params.id);
     const trackIndex = req.query.trackIndex === undefined ? item.audioTracks[0]?.index : Number(req.query.trackIndex);
     const source = await playbackFile(item, trackIndex, directory, { signal: playbackController.signal });
     res.type('video/mp4'); res.sendFile(source, { dotfiles: 'allow' });
   }));
-  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection) {
+  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection, transcription, transcript) {
     const id = requestedId || randomUUID();
     if (jobs.size > 100) for (const [key, job] of jobs) { if (job.status !== 'running') jobs.delete(key); if (jobs.size <= 50) break; }
     if (jobs.has(id)) throw new Error('이미 처리한 작업 ID입니다. 새 작업으로 다시 요청해 주세요.');
@@ -85,29 +88,34 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     jobs.set(id, job);
     const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined, speechProtection };
     job.task = Promise.resolve().then(async () => {
-      const result = type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
+      const result = type === 'transcribe' ? await transcribeMedia(item, trackIndex, transcription, directory, options) : type === 'captions' ? await exportCaptions(item, cuts, trackIndex, transcript, directory, options) : type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
       if (controller.signal.aborted) { if (result.path) await rm(result.path, { force: true }); job.status = 'cancelled'; return; }
-      if (['export', 'preview'].includes(type)) { exports.set(result.id, result); const { path: omitted, ...safe } = result; job.result = safe; }
+      if (['export', 'preview', 'captions'].includes(type)) { exports.set(result.id, result); const { path: omitted, ...safe } = result; job.result = safe; }
       else job.result = result;
       job.status = 'completed'; job.progress = 1; job.stage = '완료';
     }).catch(error => { job.status = controller.signal.aborted ? 'cancelled' : 'failed'; job.error = error.message; }).finally(() => { job.finishedAt = Date.now(); });
     return { id, type, status: job.status };
   }
   app.post('/api/jobs', asyncRoute(async (req, res) => {
-    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection } = req.body;
+    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript } = req.body;
     if (requestId !== undefined && !isRequestId(requestId)) throw new Error('작업 ID가 올바르지 않습니다.');
-    if (!['analyze', 'export', 'preview', 'restore'].includes(type)) throw new Error('지원하지 않는 작업입니다.');
+    if (!['analyze', 'export', 'preview', 'restore', 'transcribe', 'captions'].includes(type)) throw new Error('지원하지 않는 작업입니다.');
     const item = findMedia(mediaId);
     if (!Number.isInteger(trackIndex) || !item.audioTracks.some(x => x.index === trackIndex)) throw new Error('오디오 트랙을 선택해 주세요.');
     if (type === 'analyze') { validateSettings(settings); validateSpeechProtection(speechProtection); }
+    else if (type === 'transcribe') validateTranscriptionSettings(transcription, item, trackIndex);
     else {
       if (!Array.isArray(cuts) || cuts.length > 50000) throw new Error('편집 구간이 올바르지 않습니다.');
       for (const x of cuts) if (typeof x.enabled !== 'boolean' || !Number.isFinite(x.start) || !Number.isFinite(x.end) || x.start < 0 || x.end > item.duration || x.end <= x.start) throw new Error('편집 구간이 영상 범위를 벗어났습니다.');
     }
+    if (type === 'captions') {
+      const data = validateTranscript(transcript, item.duration);
+      if (!data || data.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙과 자막의 전사 트랙이 다릅니다.');
+    }
     if (type === 'restore' && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('복원 범위가 올바르지 않습니다.');
     if (range !== undefined && !['restore', 'preview'].includes(type)) throw new Error('이 작업은 범위 지정을 지원하지 않습니다.');
     if (type === 'preview' && range !== undefined && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('미리보기 범위가 올바르지 않습니다.');
-    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection));
+    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript));
   }));
   app.get('/api/jobs/:id', (req, res) => {
     const job = jobs.get(req.params.id);
@@ -127,7 +135,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const output = exports.get(req.params.id);
     if (!output) return res.status(404).json({ error: '내보낸 파일을 찾을 수 없습니다.' });
     if (req.query.download) res.download(output.path, output.name, { dotfiles: 'allow' });
-    else { res.type('video/mp4'); res.sendFile(output.path, { dotfiles: 'allow' }); }
+    else { res.type(output.mime || 'video/mp4'); res.sendFile(output.path, { dotfiles: 'allow' }); }
   });
   app.use('/api', (_req, res) => res.status(404).json({ error: '지원하지 않는 요청입니다.' }));
   app.use(express.static(distDir));
