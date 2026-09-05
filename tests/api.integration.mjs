@@ -8,6 +8,7 @@ import { generateDemo } from '../scripts/fixtures.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { request as httpRequest } from 'node:http';
 import { randomUUID } from 'node:crypto';
+import { DEFAULT_CAPTION_STYLE } from '../shared/caption-style.mjs';
 
 let server, directory, media, token, sample;
 const call = (route, body, method = 'POST', extraHeaders = {}) => fetch(`${server.url}/api${route}`, { method, headers: { 'Content-Type': 'application/json', 'X-Hypercut-Token': token, ...extraHeaders }, body: body ? JSON.stringify(body) : undefined });
@@ -53,6 +54,16 @@ test('API: rejects invalid settings, unknown audio and malformed export cuts', a
   assert.equal((await call('/jobs', { ...base, trackIndex: 999, type: 'analyze', settings: DEFAULT_SETTINGS })).status, 400);
   assert.equal((await call('/jobs', { ...base, type: 'export', cuts: [{ start: 0, end: 100, enabled: true }] })).status, 400);
   assert.equal((await call('/jobs', { ...base, type: 'exec', command: 'anything' })).status, 400);
+});
+test('C05/C09 API: style images require registered media and valid plain text, and recover after a glyph error', async () => {
+  const body = { mediaId: media.id, text: '한글 <b>{\\N}', captionStyle: { ...DEFAULT_CAPTION_STYLE, enabled: true } };
+  const unauthorized = await fetch(`${server.url}/api/captions/style-preview`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  assert.equal(unauthorized.status, 401);
+  for (const invalid of [{ ...body, mediaId: sample }, { ...body, text: '' }, { ...body, text: '가'.repeat(2001) }, { ...body, captionStyle: { ...body.captionStyle, sizePercent: 200 } }, { ...body, text: '😀' }]) assert.equal((await call('/captions/style-preview', invalid)).status, 400);
+  const response = await call('/captions/style-preview', body); assert.equal(response.status, 200);
+  const result = await response.json(); assert.match(result.image, /^data:image\/png;base64,/); assert.equal(result.path, undefined); assert.ok(result.layout.lines >= 1);
+  const job = { type: 'export', mediaId: media.id, trackIndex: 1, cuts: [], captionStyle: body.captionStyle };
+  assert.equal((await call('/jobs', job)).status, 400);
 });
 test('E01/E06: cancel active analysis, settle, and run another without stale completion', async () => {
   const body = { type: 'analyze', mediaId: media.id, trackIndex: media.audioTracks[0].index, settings: DEFAULT_SETTINGS };

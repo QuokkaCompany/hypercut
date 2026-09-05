@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Captions as CaptionsIcon, Download, LoaderCircle, Redo2, Undo2, X } from 'lucide-react';
 import { mapCaptions, toSRT, validateTranscript } from '../shared/captions.mjs';
 import { fileURL, request } from './api';
-import type { CaptionCue, Job, Media, Transcript, TranscriptionSettings } from './types';
+import type { CaptionCue, Job, Media, Transcript, TranscriptionSettings, CaptionStyle as Style } from './types';
 import { formatTime } from './format';
 import './captions.css';
+import { CaptionStyle } from './CaptionStyle';
 
 type MappedCue = CaptionCue & { outputStart?: number; outputEnd?: number; removed: boolean; needsReview: boolean; reviewKey: string };
-type Props = { media: Media; trackIndex: number; transcript: Transcript | null; kept: { start: number; end: number }[]; busy: boolean; job: Job | null; canUndo: boolean; canRedo: boolean; onUndo: () => void; onRedo: () => void; onChange: (value: Transcript) => void; onTranscribe: (settings: TranscriptionSettings) => void; onExport: () => void; onCancel: () => void; onClose: () => void };
-export function CaptionEditor({ media, trackIndex, transcript, kept, busy, job, canUndo, canRedo, onUndo, onRedo, onChange, onTranscribe, onExport, onCancel, onClose }: Props) {
+type Props = { media: Media; trackIndex: number; transcript: Transcript | null; captionStyle: Style; onStyleChange: (style: Style) => void; onRenderPreview: () => void; kept: { start: number; end: number }[]; busy: boolean; job: Job | null; canUndo: boolean; canRedo: boolean; onUndo: () => void; onRedo: () => void; onChange: (value: Transcript) => void; onTranscribe: (settings: TranscriptionSettings) => void; onExport: () => void; onCancel: () => void; onClose: () => void };
+export function CaptionEditor({ media, trackIndex, transcript, captionStyle, onStyleChange, onRenderPreview, kept, busy, job, canUndo, canRedo, onUndo, onRedo, onChange, onTranscribe, onExport, onCancel, onClose }: Props) {
   const track = media.audioTracks.find(x => x.index === trackIndex);
   const [status, setStatus] = useState<{ ready: boolean; error?: string; model: string } | null>(null);
   const [error, setError] = useState(''), [language, setLanguage] = useState<TranscriptionSettings['language']>('ko'), [channel, setChannel] = useState(0);
@@ -47,14 +48,14 @@ export function CaptionEditor({ media, trackIndex, transcript, kept, busy, job, 
     {error && <div className="ai-error" role="alert">{error}</div>}
     <div className="caption-workspace"><div className="caption-source">
       <video ref={player} controls preload="metadata" src={fileURL(media.id, trackIndex)} aria-label="자막 원본 청취">{trackURL && <track key={trackURL} kind="subtitles" label="원본 자막" srcLang="ko" src={trackURL} default />}</video>
-      <p className="field-hint">원본 시간 기준 · 자동 전사의 문구와 시각은 직접 확인해 주세요.</p>
+      <p className="field-hint">원본 청취 · 기본 자막 표시입니다. 디자인은 오른쪽에서 확인하세요.</p>
       {cue && <CaptionFields key={JSON.stringify(cue)} cue={cue} duration={media.duration} disabled={busy || mismatch} onDraftChange={setDraftDirty} onApply={next => change({ ...transcript!, cues: transcript!.cues.map(x => x.id === next.id ? next : x) })} />}
       {mappedCue?.needsReview && <div className="caption-review"><strong>컷이 이 자막을 가로지릅니다</strong><p>삭제된 말이 문구에 남지 않았는지 확인하고 수정해 주세요. 확인한 문구는 남은 시각에 한 번 표시합니다.</p><button className="button secondary" disabled={busy || mismatch || draftDirty} onClick={() => change({ ...transcript!, cues: transcript!.cues.map(x => x.id === cue?.id ? { ...x, reviewedFor: mappedCue.reviewKey } : x) })}>문구와 컷 경계 확인 완료</button></div>}
       {cue && <button className="text-button caption-delete" disabled={busy || mismatch || draftDirty} onClick={() => change({ ...transcript!, cues: transcript!.cues.filter(x => x.id !== cue.id) })}>이 자막 삭제</button>}
-    </div><div className="caption-list-panel"><div className="caption-list-heading"><strong>자막 {transcript?.cues.length || 0}개</strong><div><button className="icon-button" aria-label="자막 실행 취소" disabled={!canUndo || busy} onClick={() => leaveDraft(onUndo)}><Undo2 size={16} /></button><button className="icon-button" aria-label="자막 다시 실행" disabled={!canRedo || busy} onClick={() => leaveDraft(onRedo)}><Redo2 size={16} /></button></div></div>
+    </div><div className="caption-right"><div className="caption-list-panel"><div className="caption-list-heading"><strong>자막 {transcript?.cues.length || 0}개</strong><div><button className="icon-button" aria-label="자막 실행 취소" disabled={!canUndo || busy} onClick={() => leaveDraft(onUndo)}><Undo2 size={16} /></button><button className="icon-button" aria-label="자막 다시 실행" disabled={!canRedo || busy} onClick={() => leaveDraft(onRedo)}><Redo2 size={16} /></button></div></div>
       <div className="caption-list">{mapped.map((item, i) => <button key={item.id} className={`caption-row ${cue?.id === item.id ? 'selected' : ''}`} aria-label={`자막 ${i + 1} 선택`} onClick={() => select(item)}><span>{formatTime(item.start, true)} — {formatTime(item.end, true)}</span><p>{item.text}</p><small>{item.removed ? '컷에서 제외됨 · 복원하면 다시 표시' : item.needsReview ? '컷 경계 검토 필요' : `편집본 ${formatTime(item.outputStart!, true)} — ${formatTime(item.outputEnd!, true)}`}</small></button>)}{!transcript?.cues.length && <p className="caption-empty">{transcript ? '인식된 자막이 없습니다. 전사 채널을 확인하거나 다시 전사해 주세요.' : '전사를 시작하면 문장별 자막이 표시됩니다. 모델 준비 후 인터넷 없이 사용할 수 있습니다.'}</p>}</div>
-    </div></div>
-    <div className="caption-footer"><p>{draftDirty ? '입력한 문구·시각을 적용한 뒤 저장해 주세요.' : reviews ? `${reviews}개 자막의 컷 경계를 확인해 주세요.` : '자막은 SRT로 저장합니다. 현재 MP4에는 자막이 합성되지 않습니다.'}<br /><small>수정한 자막은 프로젝트 저장에 포함됩니다. SRT는 글꼴·디자인을 포함하지 않습니다.</small></p><button className="button primary" disabled={busy || mismatch || draftDirty || !!reviews || !mapped.some(x => !x.removed)} onClick={onExport}><Download size={16} />편집한 SRT 저장</button></div>
+    </div><CaptionStyle value={captionStyle} media={media} text={cue?.text || '한글 자막을 더 또렷하게'} disabled={busy || draftDirty} onChange={onStyleChange} onPreview={() => leaveDraft(onRenderPreview)} /></div></div>
+    <div className="caption-footer"><p>{draftDirty ? '입력한 문구·시각을 적용한 뒤 저장해 주세요.' : reviews ? `${reviews}개 자막의 컷 경계를 확인해 주세요.` : captionStyle.enabled ? 'MP4 내보내기와 정확한 미리보기에 자막 디자인을 포함합니다.' : 'MP4에 자막을 넣으려면 디자인의 포함 스위치를 켜 주세요.'}<br /><small>수정한 자막은 프로젝트 저장에 포함됩니다. SRT는 글꼴·디자인을 포함하지 않습니다.</small></p><button className="button primary" disabled={busy || mismatch || draftDirty || !!reviews || !mapped.some(x => !x.removed)} onClick={onExport}><Download size={16} />편집한 SRT 저장</button></div>
   </section></div>;
 }
 function CaptionFields({ cue, duration, disabled, onApply, onDraftChange }: { cue: CaptionCue; duration: number; disabled: boolean; onApply: (cue: CaptionCue) => boolean; onDraftChange: (value: boolean) => void }) {

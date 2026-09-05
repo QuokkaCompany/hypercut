@@ -11,6 +11,8 @@ import { validateSpeechProtection } from '../shared/speech-settings.mjs';
 import { protectSpeech } from '../shared/speech.mjs';
 import { createSpeechDetector, VAD_MODEL } from './vad.mjs';
 import { validateTranscript, toSRT } from '../shared/captions.mjs';
+import { validateCaptionStyle } from '../shared/caption-style.mjs';
+import { captionCues, renderCaptionImages } from './caption-rendering.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
 
@@ -24,11 +26,15 @@ export async function inspectMedia(filePath, name, signal) {
   if (!(duration > 0) || !Number.isFinite(duration)) throw new Error('영상 길이를 읽을 수 없습니다.');
   const timeBase = rational(video.time_base);
   const origin = video.start_pts !== undefined ? Number(video.start_pts) * timeBase : Number(video.start_time || 0);
+  const rotation = Number(video.side_data_list?.find(item => item.rotation !== undefined)?.rotation || video.tags?.rotate || 0);
+  const quarterTurn = Math.abs(Math.abs(rotation) % 180 - 90) < .001;
+  const sar = rational(String(video.sample_aspect_ratio || '1/1').replace(':', '/')) || 1;
+  const displayWidth = Math.round(quarterTurn ? video.height : video.width * sar), displayHeight = Math.round(quarterTurn ? video.width * sar : video.height);
   const fingerprint = createHash('sha256');
   for await (const bytes of createReadStream(filePath)) { if (signal?.aborted) throw new DOMException('작업이 취소되었습니다.', 'AbortError'); fingerprint.update(bytes); }
   return {
     id: randomUUID(), path: filePath, name: path.basename(name || filePath), duration, fingerprint: fingerprint.digest('hex'),
-    width: video.width, height: video.height, fps: rational(video.avg_frame_rate) || 30, size: (await stat(filePath)).size,
+    width: displayWidth, height: displayHeight, fps: rational(video.avg_frame_rate) || 30, size: (await stat(filePath)).size,
     videoIndex: video.index, timeBase, origin,
     audioTracks: info.streams.filter(x => x.codec_type === 'audio').map(x => ({ index: x.index, codec: x.codec_name, channels: x.channels, sampleRate: Number(x.sample_rate), label: x.tags?.title || x.tags?.handler_name || `오디오 ${x.index}`, language: x.tags?.language || '' }))
   };
@@ -186,11 +192,13 @@ export async function exportCaptions(media, cuts, trackIndex, input, directory, 
   return { id, path: destination, name: media.name.replace(/\.[^.]+$/, '') + '-edited.srt', size: Buffer.byteLength(text), mime: 'application/x-subrip', duration: intervalDuration(kept), kept, verified: true };
 }
 
-export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range } = {}) {
+export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range, transcript, captionStyle: styleInput } = {}) {
   if (range !== undefined && !preview) throw new Error('범위 지정은 미리보기에서만 사용할 수 있습니다.');
   const track = getTrack(media, trackIndex);
   const frames = await getFrames(media, signal, progress);
   const { removals, kept, sourceRange } = renderPlan(cuts, media.duration, frames, range);
+  const captionStyle = validateCaptionStyle(styleInput);
+  const subtitles = captionStyle.enabled ? captionCues(transcript, media, trackIndex, renderPlan(cuts, media.duration, frames).kept, kept) : [];
   const expectedDuration = intervalDuration(kept);
   if (!kept.length || expectedDuration <= 0) throw new Error(sourceRange ? '이 범위에는 남아 있는 구간이 없습니다. 범위를 넓히거나 필요한 컷을 복원해 주세요.' : '모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
   // Decode a short lead-in to settle audio timestamps, retaining original PTS.
@@ -203,19 +211,28 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
   const temporaryOutput = path.join(work, 'output.mp4');
   try {
     const audioSamples = await writeEditedAudio(media, track, kept, pcmPath, signal, progress, decodeStart, decodeEnd);
+    let captionRender;
+    if (captionStyle.enabled) {
+      progress?.({ stage: '자막 디자인 준비', progress: 0.3 });
+      captionRender = await renderCaptionImages({ mode: 'sequence', directory: work, width: Math.ceil(media.width / 2) * 2, height: Math.ceil(media.height / 2) * 2, style: captionStyle, cues: subtitles, duration: expectedDuration }, { signal, progress: value => progress?.({ stage: '자막 디자인 합성 준비', progress: .3 + value * .15 }) });
+    }
     const { select, offset } = videoExpressions(removals);
     const scale = preview ? ',scale=w=960:h=540:force_original_aspect_ratio=decrease:force_divisible_by=2' : ',pad=ceil(iw/2)*2:ceil(ih/2)*2';
     const trim = sourceRange ? `,trim=start=${sourceRange.start}:end=${sourceRange.end}` : '';
-    const graph = `[0:${media.videoIndex}]setpts=PTS-(${media.origin})/TB${trim},select='${select}',setpts='PTS-(${offset})/TB'${scale}[v]`;
+    const base = `[0:${media.videoIndex}]setpts=PTS-(${media.origin})/TB${trim},select='${select}',setpts='PTS-(${offset})/TB'`;
+    // Draw on the original pixel canvas, then scale the composed image for
+    // preview. Layout and line breaks are identical in preview and export.
+    const graph = captionStyle.enabled ? `${base},scale=${media.width}:${media.height},setsar=1,pad=ceil(iw/2)*2:ceil(ih/2)*2[base];[base][2:v]overlay=eof_action=repeat:repeatlast=1:alpha=straight${scale}[v]` : `${base}${scale}[v]`;
     const filterPath = path.join(work, 'filter.txt');
     await writeFile(filterPath, graph);
     const args = ['-v', 'error', '-nostdin', '-copyts', ...seekArgs(media, decodeStart), '-i', media.path, '-f', 'f32le', '-ar', String(track.sampleRate), '-ac', String(track.channels), '-i', pcmPath,
+      ...(captionStyle.enabled ? ['-f', 'concat', '-safe', '0', '-protocol_whitelist', 'file,pipe', '-i', path.join(work, 'captions.ffconcat')] : []),
       '-filter_complex_script', filterPath, '-map', '[v]', '-map', '1:a:0', '-c:v', 'libx264', '-preset', preview ? 'ultrafast' : 'veryfast', '-crf', preview ? '25' : '18',
       '-pix_fmt', 'yuv420p', '-fps_mode', 'vfr', '-enc_time_base:v', '1:90000', '-video_track_timescale', '90000', '-c:a', 'aac', '-b:a', '192k',
       '-t', expectedDuration.toFixed(9), '-movflags', '+faststart', '-progress', 'pipe:1', '-y', temporaryOutput];
     const { child, done } = startProcess('ffmpeg', args, { signal });
     for await (const line of readline.createInterface({ input: child.stdout, crlfDelay: Infinity })) {
-      if (line.startsWith('out_time_us=')) progress?.({ stage: preview ? '정확한 미리보기 생성' : '영상 렌더링', progress: 0.3 + 0.6 * Math.min(1, Number(line.split('=')[1]) / 1e6 / expectedDuration) });
+      if (line.startsWith('out_time_us=')) progress?.({ stage: preview ? '정확한 미리보기 생성' : '영상 렌더링', progress: (captionStyle.enabled ? .45 : .3) + (captionStyle.enabled ? .45 : .6) * Math.min(1, Number(line.split('=')[1]) / 1e6 / expectedDuration) });
     }
     await done;
     progress?.({ stage: '결과 파일 검증', progress: 0.93 });
@@ -228,6 +245,6 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     if (signal?.aborted) throw new DOMException('작업이 취소되었습니다.', 'AbortError');
     const destination = path.join(directory, `${id}.mp4`);
     await rename(temporaryOutput, destination);
-    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, kept, ...(sourceRange ? { sourceRange } : {}), verified: true };
+    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, kept, captionStyle, burnedCaptions: captionRender?.cueCount || 0, ...(sourceRange ? { sourceRange } : {}), verified: true };
   } finally { await rm(work, { recursive: true, force: true }); }
 }

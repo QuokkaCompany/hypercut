@@ -1,6 +1,6 @@
 # HyperCut 전사·자막·효과음 검증 및 테스트 계획
 
-작성일: 2026-09-05. 상태: 일부 구현·검증 진행. 로컬 전사·문구/시각 수정·SRT·v3 저장의 실행 근거는 [결과 기록](../testing/2026-09-05-transcription-results.md)에 구분했다. 실제 녹음 품질, 자막 디자인의 영상 합성, AI 교정·효과음은 미실행이다.
+작성일: 2026-09-05. 상태: 일부 구현·검증 진행. 로컬 전사·문구/시각 수정·SRT·v3 저장은 [전사 결과 기록](../testing/2026-09-05-transcription-results.md), 후속 디자인·v4 저장·MP4 합성은 [합성 결과 기록](../testing/2026-09-05-caption-rendering-results.md)에 구분했다. 실제 녹음 품질·긴 영상의 자막 성능, AI 교정·효과음은 미실행이다.
 
 이 문서는 [무음 편집 검증 계획](2026-09-05-validation-plan.md)과 [MVP 테스트 계획](2026-09-05-test-plan.md)의 후속 범위다. 기존 MVP 39개, AI 8개, VAD 7개 사례와 별도로 전사 7개·자막 10개·효과음 5개를 정의한다. 기존 자동 테스트 통과 수를 아래 기능의 통과 증거로 사용하지 않는다.
 
@@ -139,4 +139,4 @@ P0/P1 모두 해당 기능의 지원 완료 전 필수다. P0는 상태·원본�
 
 로컬 전사 후보는 [whisper.cpp 공식 프로젝트](https://github.com/ggml-org/whisper.cpp)다. JSON 시각 출력의 실제 계약은 도입할 고정 버전의 [CLI 소스](https://github.com/ggml-org/whisper.cpp/blob/b4938/examples/cli/cli.cpp)와 실행 결과로 확인한다. 이후 고정 소스로 빌드한 엔진과 해시를 확인한 small 모델을 Mac 패키지에 포함했다. 실제 사람 녹음의 한국어 품질은 아직 검증하지 않았다.
 
-FFmpeg 경로를 선택한다면 [공식 subtitles 필터 문서](https://ffmpeg.org/ffmpeg-filters.html#subtitles-1)의 libass 지원 조건을 만족하는 실행 파일과 한글 폰트가 필요하다. 다른 렌더러를 선택해도 같은 실제 프레임·시간축 테스트를 적용한다. 모델 준비는 이후 구현 단계에서 진행했으며 자막 렌더러 교체는 아직 진행하지 않았다.
+FFmpeg `subtitles` 경로를 선택한다면 [공식 필터 문서](https://ffmpeg.org/ffmpeg-filters.html#subtitles-1)의 libass 지원 조건을 만족하는 실행 파일과 한글 폰트가 필요하다. 실제 구현에서는 `@napi-rs/canvas`와 번들 Noto Sans KR로 PNG를 만들고 기존 FFmpeg의 `overlay`로 합성하는 경로를 선택했다. 전역 FFmpeg를 교체하지 않았으며 같은 실제 프레임·시간축 테스트를 적용했다. 렌더러·폰트 버전·누락/취소·두 앱의 증거는 후속 결과 기록에 있다.

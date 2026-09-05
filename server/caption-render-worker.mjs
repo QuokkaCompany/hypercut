@@ -1,0 +1,77 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { validateCaptionStyle, captionImageEvents } from '../shared/caption-style.mjs';
+import { fontHasCodePoint } from './font-coverage.mjs';
+process.env.DISABLE_SYSTEM_FONTS_LOAD = '1';
+process.once('message', async input => {
+  try {
+    const { createCanvas, GlobalFonts } = await import('@napi-rs/canvas');
+    const fontDirectory = input.fontDirectory || fileURLToPath(new URL('../assets/fonts/', import.meta.url));
+    const manifest = JSON.parse(await readFile(new URL('../assets/fonts/manifest.json', import.meta.url), 'utf8'));
+    let supported;
+    for (const font of manifest.files) {
+      let bytes;
+      try { bytes = await readFile(path.join(fontDirectory, font.file)); } catch { throw new Error('자막 글꼴 파일이 없습니다. 글꼴을 포함한 앱을 다시 설치해 주세요.'); }
+      if (createHash('sha256').update(bytes).digest('hex') !== font.sha256) throw new Error('자막 글꼴이 손상됐습니다. 글꼴을 포함한 앱을 다시 설치해 주세요.');
+      if (!GlobalFonts.register(bytes, font.alias)) throw new Error('자막 글꼴을 사용할 수 없습니다.');
+      supported ||= fontHasCodePoint(bytes);
+    }
+    const style = validateCaptionStyle(input.style), { width, height } = input;
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width < 2 || height < 2 || width * height > 36 * 1024 ** 2) throw new Error('자막을 합성할 영상 크기가 지원 범위를 벗어났습니다.');
+    const canvas = createCanvas(width, height), context = canvas.getContext('2d');
+    const graphemes = new Intl.Segmenter('ko', { granularity: 'grapheme' });
+    const words = new Intl.Segmenter('ko', { granularity: 'word' });
+    const font = style.preset === 'clean' ? 'HyperCut Regular' : 'HyperCut Bold';
+    function linesFor(text, size) {
+      context.font = `${size}px "${font}"`;
+      const maxWidth = width * .9 - size, lines = [];
+      for (const paragraph of text.split('\n')) {
+        let line = '';
+        // Prefer intact words. Split only a token that cannot fit a whole line.
+        const segments = [...words.segment(paragraph)].flatMap(({ segment }) => context.measureText(segment).width > maxWidth ? [...graphemes.segment(segment)].map(item => item.segment) : [segment]);
+        for (const segment of segments) {
+          if (context.measureText(line + segment).width > maxWidth && line) { lines.push(line.trimEnd()); line = segment.trimStart(); if (lines.length >= 3) return null; }
+          else line += segment;
+        }
+        lines.push(line); if (lines.length > 3) return null;
+      }
+      return lines;
+    }
+    async function paint(raw) {
+      const text = raw.normalize('NFC').replace(/\t/g, '    ');
+      const unsupported = [...new Set([...text].filter(character => character !== '\n' && !supported(character.codePointAt(0))))];
+      if (unsupported.length) throw new Error(`지원하지 않는 자막 문자가 있습니다: ${unsupported.slice(0, 5).join(' ')}. 문구를 수정해 주세요.`);
+      let size = Math.min(width, height) * style.sizePercent / 100, lines;
+      const minimum = Math.min(width, height) * .02;
+      for (;;) { lines = linesFor(text, size); if (lines) break; if (size <= minimum) throw new Error('자막이 너무 깁니다. 문장을 나누거나 짧게 수정해 주세요.'); size = Math.max(minimum, size * .85); }
+      context.clearRect(0, 0, width, height);
+      const lineHeight = size * 1.5, padding = size * .4, boxWidth = Math.max(...lines.map(line => context.measureText(line).width)) + padding * 2;
+      const boxHeight = lines.length * lineHeight + padding * 2;
+      const top = style.position === 'top' ? height * style.marginPercent / 100 : height * (1 - style.marginPercent / 100) - boxHeight;
+      if (top < 0 || top + boxHeight > height || boxWidth > width * .91) throw new Error('자막이 안전 영역을 벗어납니다. 크기나 문구를 줄여 주세요.');
+      if (style.preset === 'box') { context.fillStyle = '#111111dd'; context.beginPath(); context.roundRect((width - boxWidth) / 2, top, boxWidth, boxHeight, size * .2); context.fill(); }
+      context.textAlign = 'center'; context.textBaseline = 'alphabetic'; context.lineJoin = 'round'; context.lineWidth = Math.max(.5, size * .075); context.strokeStyle = '#000000ee'; context.fillStyle = style.preset === 'emphasis' ? '#ffe16b' : '#ffffff';
+      for (let i = 0; i < lines.length; i++) { const y = top + padding + lineHeight * (i + .75); if (style.preset !== 'box') context.strokeText(lines[i], width / 2, y); context.fillText(lines[i], width / 2, y); }
+      return { png: await canvas.encode('png'), layout: { lines: lines.length, sizePercent: size / Math.min(width, height) * 100, bounds: { x: (width - boxWidth) / 2, y: top, width: boxWidth, height: boxHeight } } };
+    }
+    let result;
+    if (input.mode === 'sample') {
+      const image = await paint(input.text);
+      if (image.png.length > 4 * 1024 ** 2) throw new Error('자막 미리보기 이미지가 너무 큽니다.');
+      result = { image: `data:image/png;base64,${image.png.toString('base64')}`, layout: image.layout };
+    } else {
+      context.clearRect(0, 0, width, height); await writeFile(path.join(input.directory, 'caption-blank.png'), await canvas.encode('png'), { flag: 'wx' });
+      const layouts = [];
+      for (let i = 0; i < input.cues.length; i++) {
+        const image = await paint(input.cues[i].text); await writeFile(path.join(input.directory, `caption-${i}.png`), image.png, { flag: 'wx' }); layouts.push(image.layout);
+        process.send?.({ type: 'progress', value: (i + 1) / Math.max(1, input.cues.length) });
+      }
+      const events = captionImageEvents(input.cues, input.duration);
+      const concat = 'ffconcat version 1.0\n' + events.map((event, i) => `file 'caption-${event.index < 0 ? 'blank' : event.index}.png'\noption framerate 1000000\n${i < events.length - 1 ? `duration ${event.duration.toFixed(6)}\n` : ''}`).join('');
+      await writeFile(path.join(input.directory, 'captions.ffconcat'), concat, { flag: 'wx' }); result = { cueCount: input.cues.length, layouts };
+    }
+    process.send?.({ type: 'result', result }, () => process.exit(0));
+  } catch (error) { process.send?.({ type: 'error', error: error.message }, () => process.exit(1)); }
+});

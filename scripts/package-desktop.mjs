@@ -6,7 +6,7 @@ const paths = await packager({
   dir: '.', out: 'release', name: 'HyperCut', appBundleId: 'dev.hypercut.editor', appVersion: '0.1.0',
   platform: process.platform, arch: process.arch, overwrite: true, prune: true,
   extraResource: [transcriptionRuntime()],
-  asar: { unpackDir: 'node_modules/onnxruntime-node/bin' },
+  asar: { unpack: '**/*.node', unpackDir: 'node_modules/onnxruntime-node/bin' },
   ignore: candidate => {
     if (excluded.some(pattern => pattern.test(candidate))) return true;
     const binary = candidate.match(/^\/node_modules\/onnxruntime-node\/bin\/[^/]+\/([^/]+)(?:\/([^/]+))?/);

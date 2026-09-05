@@ -1,0 +1,205 @@
+[
+  {
+    "kind": "fixture",
+    "sourceSHA256": "cec0251a86869879676335ec969285fa6023d49e73c4bf050f4aaf22365cb115",
+    "width": 640,
+    "height": 360,
+    "duration": 6,
+    "fps": 30,
+    "originalCuts": [
+      {
+        "id": "cut",
+        "start": 2.5,
+        "end": 3.5,
+        "enabled": true
+      }
+    ],
+    "originalCues": [
+      {
+        "id": "a",
+        "start": 1,
+        "end": 2.3,
+        "text": "한글 자막 <b>{\\N}"
+      },
+      {
+        "id": "b",
+        "start": 4.001,
+        "end": 5,
+        "text": "두 번째 자막"
+      }
+    ],
+    "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+    "fonts": {
+      "family": "Noto Sans KR",
+      "license": "SIL Open Font License 1.1",
+      "revision": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "source": "https://github.com/notofonts/noto-cjk/tree/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/SubsetOTF/KR",
+      "files": [
+        {
+          "file": "NotoSansKR-Regular.otf",
+          "alias": "HyperCut Regular",
+          "sha256": "69975a0ac8472717870aefeab0a4d52739308d90856b9955313b2ad5e0148d68",
+          "bytes": 4644748
+        },
+        {
+          "file": "NotoSansKR-Bold.otf",
+          "alias": "HyperCut Bold",
+          "sha256": "5a6ceb287ed2fc6cfc6213144ebea68cbd94b20fc9eb873d8486493bf02d9bda",
+          "bytes": 4816044
+        }
+      ]
+    }
+  },
+  {
+    "preset": "clean",
+    "width": 640,
+    "height": 360,
+    "frames": 150,
+    "firstCaptionFrame": 30,
+    "lastCaptionFrame": 119,
+    "firstBounds": {
+      "left": 259,
+      "right": 380,
+      "top": 305,
+      "bottom": 321
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "preset": "box",
+    "width": 640,
+    "height": 360,
+    "frames": 150,
+    "firstCaptionFrame": 30,
+    "lastCaptionFrame": 119,
+    "firstBounds": {
+      "left": 257,
+      "right": 382,
+      "top": 305,
+      "bottom": 321
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "preset": "emphasis",
+    "width": 640,
+    "height": 360,
+    "frames": 150,
+    "firstCaptionFrame": 30,
+    "lastCaptionFrame": 119,
+    "firstBounds": {
+      "left": 258,
+      "right": 381,
+      "top": 306,
+      "bottom": 321
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "variant": "portrait",
+    "width": 360,
+    "height": 640,
+    "frames": 150,
+    "firstCaptionFrame": 30,
+    "lastCaptionFrame": 119,
+    "firstBounds": {
+      "left": 118,
+      "right": 241,
+      "top": 62,
+      "bottom": 77
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "variant": "rotation",
+    "width": 360,
+    "height": 640,
+    "frames": 150,
+    "firstCaptionFrame": 30,
+    "lastCaptionFrame": 119,
+    "firstBounds": {
+      "left": 118,
+      "right": 241,
+      "top": 62,
+      "bottom": 77
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "variant": "sar",
+    "width": 1280,
+    "height": 360,
+    "frames": 150,
+    "firstCaptionFrame": 30,
+    "lastCaptionFrame": 119,
+    "firstBounds": {
+      "left": 578,
+      "right": 702,
+      "top": 40,
+      "bottom": 55
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "vfrAndOffset": true,
+    "width": 640,
+    "height": 360,
+    "frames": 120,
+    "firstCaptionFrame": 15,
+    "lastCaptionFrame": 80,
+    "firstBounds": {
+      "left": 266,
+      "right": 373,
+      "top": 306,
+      "bottom": 319
+    },
+    "duration": 5,
+    "status": "PASS"
+  },
+  {
+    "rangePreview": true,
+    "width": 960,
+    "height": 540,
+    "frames": 60,
+    "firstCaptionFrame": 0,
+    "lastCaptionFrame": 56,
+    "firstBounds": {
+      "left": 387,
+      "right": 573,
+      "top": 458,
+      "bottom": 481
+    },
+    "duration": 2,
+    "status": "PASS"
+  },
+  {
+    "sample": "two-lines",
+    "lines": 2,
+    "sizePercent": 8,
+    "bounds": {
+      "x": 324.1800012207031,
+      "y": 443.52,
+      "width": 631.6399975585938,
+      "height": 218.88000000000002
+    },
+    "status": "PASS"
+  },
+  {
+    "sample": "portrait-long",
+    "lines": 3,
+    "sizePercent": 4.912999999999999,
+    "bounds": {
+      "x": 34.61528244140624,
+      "y": 495.05996000000005,
+      "width": 290.7694351171875,
+      "height": 93.74004
+    },
+    "status": "PASS"
+  }
+]

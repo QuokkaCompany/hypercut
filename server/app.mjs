@@ -11,6 +11,8 @@ import { capture } from './process.mjs';
 import { installAIRoutes } from './ai.mjs';
 import { transcribeMedia, transcriptionStatus, validateTranscriptionSettings } from './transcription.mjs';
 import { validateTranscript } from '../shared/captions.mjs';
+import { validateCaptionStyle } from '../shared/caption-style.mjs';
+import { renderCaptionImages } from './caption-rendering.mjs';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 
@@ -20,6 +22,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
   const token = randomBytes(32).toString('hex');
   const media = new Map(), jobs = new Map(), exports = new Map();
   const cancelledRequests = new Set();
+  const captionPreviews = new Set();
   const isRequestId = id => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
   const playbackController = new AbortController();
   const app = express();
@@ -68,13 +71,23 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     res.json(await registerFile(demo, 'HyperCut 검증 샘플.mp4'));
   }));
   app.get('/api/transcription/status', asyncRoute(async (_req, res) => res.json(await transcriptionStatus(undefined, { signal: playbackController.signal }))));
+  app.post('/api/captions/style-preview', asyncRoute(async (req, res) => {
+    const { mediaId, text, captionStyle } = req.body, item = findMedia(mediaId);
+    if (typeof text !== 'string' || !text.trim() || text.length > 2000) throw new Error('미리 볼 자막 문구를 확인해 주세요.');
+    const controller = new AbortController(), onClose = () => { if (!res.writableEnded) controller.abort(); };
+    const task = renderCaptionImages({ mode: 'sample', text, style: validateCaptionStyle(captionStyle), width: Math.ceil(item.width / 2) * 2, height: Math.ceil(item.height / 2) * 2 }, { signal: AbortSignal.any([controller.signal, playbackController.signal]) });
+    captionPreviews.add(task);
+    res.on('close', onClose);
+    try { res.json(await task); }
+    finally { captionPreviews.delete(task); res.off('close', onClose); }
+  }));
   app.get('/api/media/:id/file', asyncRoute(async (req, res) => {
     const item = findMedia(req.params.id);
     const trackIndex = req.query.trackIndex === undefined ? item.audioTracks[0]?.index : Number(req.query.trackIndex);
     const source = await playbackFile(item, trackIndex, directory, { signal: playbackController.signal });
     res.type('video/mp4'); res.sendFile(source, { dotfiles: 'allow' });
   }));
-  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection, transcription, transcript) {
+  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection, transcription, transcript, captionStyle) {
     const id = requestedId || randomUUID();
     if (jobs.size > 100) for (const [key, job] of jobs) { if (job.status !== 'running') jobs.delete(key); if (jobs.size <= 50) break; }
     if (jobs.has(id)) throw new Error('이미 처리한 작업 ID입니다. 새 작업으로 다시 요청해 주세요.');
@@ -86,7 +99,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const controller = new AbortController();
     const job = { id, type, mediaId: item.id, status: 'running', progress: 0, stage: '작업 준비', controller, createdAt: Date.now() };
     jobs.set(id, job);
-    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined, speechProtection };
+    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined, speechProtection, transcript, captionStyle };
     job.task = Promise.resolve().then(async () => {
       const result = type === 'transcribe' ? await transcribeMedia(item, trackIndex, transcription, directory, options) : type === 'captions' ? await exportCaptions(item, cuts, trackIndex, transcript, directory, options) : type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
       if (controller.signal.aborted) { if (result.path) await rm(result.path, { force: true }); job.status = 'cancelled'; return; }
@@ -97,7 +110,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     return { id, type, status: job.status };
   }
   app.post('/api/jobs', asyncRoute(async (req, res) => {
-    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript } = req.body;
+    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript, captionStyle } = req.body;
     if (requestId !== undefined && !isRequestId(requestId)) throw new Error('작업 ID가 올바르지 않습니다.');
     if (!['analyze', 'export', 'preview', 'restore', 'transcribe', 'captions'].includes(type)) throw new Error('지원하지 않는 작업입니다.');
     const item = findMedia(mediaId);
@@ -112,10 +125,14 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
       const data = validateTranscript(transcript, item.duration);
       if (!data || data.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙과 자막의 전사 트랙이 다릅니다.');
     }
+    if (['preview', 'export'].includes(type)) {
+      const style = validateCaptionStyle(captionStyle);
+      if (style.enabled) { const data = validateTranscript(transcript, item.duration); if (!data || data.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙의 자막을 확인해 주세요.'); }
+    }
     if (type === 'restore' && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('복원 범위가 올바르지 않습니다.');
     if (range !== undefined && !['restore', 'preview'].includes(type)) throw new Error('이 작업은 범위 지정을 지원하지 않습니다.');
     if (type === 'preview' && range !== undefined && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('미리보기 범위가 올바르지 않습니다.');
-    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript));
+    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript, captionStyle));
   }));
   app.get('/api/jobs/:id', (req, res) => {
     const job = jobs.get(req.params.id);
@@ -143,7 +160,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
   app.use((error, _req, res, _next) => res.status(400).json({ error: error.code === 'LIMIT_FILE_SIZE' ? '20 GB 이하의 영상을 선택해 주세요.' : error.message || '작업 중 오류가 발생했습니다.' }));
   return {
     app, registerFile, directory, exports, media,
-    async close() { const aiClosing = ai.close(); playbackController.abort(); for (const job of jobs.values()) job.controller?.abort(); await Promise.allSettled([aiClosing, ...[...jobs.values()].map(job => job.task), ...[...media.values()].flatMap(item => [...(item.playbacks?.values() || [])])]); /* Keep session files until the next explicit cleanup. */ },
+    async close() { const aiClosing = ai.close(); playbackController.abort(); for (const job of jobs.values()) job.controller?.abort(); await Promise.allSettled([aiClosing, ...captionPreviews, ...[...jobs.values()].map(job => job.task), ...[...media.values()].flatMap(item => [...(item.playbacks?.values() || [])])]); /* Keep session files until the next explicit cleanup. */ },
   };
 }
 

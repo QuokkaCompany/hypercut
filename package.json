@@ -30,9 +30,11 @@
     "setup:transcription": "node scripts/setup-transcription.mjs",
     "test:transcription": "node --test tests/transcription.integration.mjs",
     "test:captions:e2e": "node scripts/captions-e2e.mjs",
-    "test:captions:offline": "node scripts/captions-offline.mjs"
+    "test:captions:offline": "node scripts/captions-offline.mjs",
+    "test:captions": "node --test tests/caption-style.test.mjs tests/captions.test.mjs tests/caption-rendering.integration.mjs"
   },
   "dependencies": {
+    "@napi-rs/canvas": "1.0.8",
     "express": "^5.2.1",
     "lucide-react": "^1.41.0",
     "multer": "^2.3.0",
