@@ -7,6 +7,9 @@ import readline from 'node:readline';
 import { capture, startProcess } from './process.mjs';
 import { consumePCM, SilenceDetector } from './pcm.mjs';
 import { createCuts, intervalDuration, renderPlan, videoExpressions, validateSettings, restoreRange } from '../shared/timeline.mjs';
+import { validateSpeechProtection } from '../shared/speech-settings.mjs';
+import { protectSpeech } from '../shared/speech.mjs';
+import { createSpeechDetector, VAD_MODEL } from './vad.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
 
@@ -86,8 +89,9 @@ function getTrack(media, trackIndex) {
   return track;
 }
 
-export async function analyzeMedia(media, settingsInput, trackIndex, { signal, progress } = {}) {
+export async function analyzeMedia(media, settingsInput, trackIndex, { signal, progress, speechProtection: speechInput } = {}) {
   const settings = validateSettings(settingsInput);
+  const speechProtection = validateSpeechProtection(speechInput);
   const track = getTrack(media, trackIndex);
   const frames = await getFrames(media, signal, progress);
   const detector = new SilenceDetector({ ...settings, sampleRate: track.sampleRate, channels: track.channels, duration: media.duration });
@@ -96,12 +100,33 @@ export async function analyzeMedia(media, settingsInput, trackIndex, { signal, p
   try {
     await consumePCM(child.stdout, track.channels, samples => {
       detector.push(samples);
-      if (Date.now() - lastUpdate > 200) { progress?.({ stage: '음량과 무음 구간 분석', progress: 0.15 + 0.8 * Math.min(1, detector.samples / track.sampleRate / media.duration) }); lastUpdate = Date.now(); }
+      if (Date.now() - lastUpdate > 200) { progress?.({ stage: '음량과 무음 구간 분석', progress: 0.15 + (speechProtection.enabled ? 0.35 : 0.8) * Math.min(1, detector.samples / track.sampleRate / media.duration) }); lastUpdate = Date.now(); }
     });
     await done;
   } catch (error) { child.kill(); throw error; }
   const { candidates, peaks, samples } = detector.finish();
-  return { settings, trackIndex, candidates, peaks, cuts: createCuts(candidates, settings, media.duration, frames), decodedSamples: samples };
+  const initialCuts = createCuts(candidates, settings, media.duration, frames);
+  let cuts = initialCuts, protection;
+  if (speechProtection.enabled) {
+    progress?.({ stage: '로컬 말소리 보호 준비', progress: 0.5 });
+    const peak = Math.max(...peaks), gain = peak > 0 ? Math.min(100, Math.max(1, 0.5 / peak)) : 1;
+    const vad = await createSpeechDetector({ channels: track.channels, threshold: speechProtection.threshold, duration: media.duration, gain, signal });
+    const args = audioArgs(media, { ...track, sampleRate: 16000 });
+    let task;
+    try {
+      task = startProcess('ffmpeg', args, { signal });
+      await consumePCM(task.child.stdout, track.channels, async samples => {
+        await vad.push(samples);
+        if (Date.now() - lastUpdate > 200) { progress?.({ stage: '로컬 말소리 구간 확인', progress: 0.5 + 0.45 * Math.min(1, vad.seconds / media.duration) }); lastUpdate = Date.now(); }
+      });
+      await task.done;
+      const speech = await vad.finish();
+      cuts = createCuts(protectSpeech(candidates, speech, media.duration), settings, media.duration, frames);
+      protection = { model: VAD_MODEL, intervals: speech, retainedSeconds: Math.max(0, intervalDuration(initialCuts) - intervalDuration(cuts)), analysisGain: gain };
+    } catch (error) { task?.child.kill(); if (task) await task.done.catch(() => {}); throw error; }
+    finally { await vad.close(); }
+  }
+  return { settings, speechProtection, protection, trackIndex, candidates, peaks, cuts, decodedSamples: samples };
 }
 
 async function writeEditedAudio(media, track, kept, destination, signal, progress, decodeStart = 0, decodeEnd = media.duration) {

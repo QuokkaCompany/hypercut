@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspectMedia, publicMedia, analyzeMedia, exportMedia, playbackFile, restoreMediaRange } from './media.mjs';
 import { validateSettings } from '../shared/timeline.mjs';
+import { validateSpeechProtection } from '../shared/speech-settings.mjs';
 import { capture } from './process.mjs';
 import { installAIRoutes } from './ai.mjs';
 
@@ -70,7 +71,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const source = await playbackFile(item, trackIndex, directory, { signal: playbackController.signal });
     res.type('video/mp4'); res.sendFile(source, { dotfiles: 'allow' });
   }));
-  function startJob(type, item, settings, trackIndex, cuts, requestedId, range) {
+  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection) {
     const id = requestedId || randomUUID();
     if (jobs.size > 100) for (const [key, job] of jobs) { if (job.status !== 'running') jobs.delete(key); if (jobs.size <= 50) break; }
     if (jobs.has(id)) throw new Error('이미 처리한 작업 ID입니다. 새 작업으로 다시 요청해 주세요.');
@@ -82,7 +83,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const controller = new AbortController();
     const job = { id, type, mediaId: item.id, status: 'running', progress: 0, stage: '작업 준비', controller, createdAt: Date.now() };
     jobs.set(id, job);
-    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined };
+    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined, speechProtection };
     job.task = Promise.resolve().then(async () => {
       const result = type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
       if (controller.signal.aborted) { if (result.path) await rm(result.path, { force: true }); job.status = 'cancelled'; return; }
@@ -93,12 +94,12 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     return { id, type, status: job.status };
   }
   app.post('/api/jobs', asyncRoute(async (req, res) => {
-    const { type, mediaId, settings, trackIndex, cuts, requestId, range } = req.body;
+    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection } = req.body;
     if (requestId !== undefined && !isRequestId(requestId)) throw new Error('작업 ID가 올바르지 않습니다.');
     if (!['analyze', 'export', 'preview', 'restore'].includes(type)) throw new Error('지원하지 않는 작업입니다.');
     const item = findMedia(mediaId);
     if (!Number.isInteger(trackIndex) || !item.audioTracks.some(x => x.index === trackIndex)) throw new Error('오디오 트랙을 선택해 주세요.');
-    if (type === 'analyze') validateSettings(settings);
+    if (type === 'analyze') { validateSettings(settings); validateSpeechProtection(speechProtection); }
     else {
       if (!Array.isArray(cuts) || cuts.length > 50000) throw new Error('편집 구간이 올바르지 않습니다.');
       for (const x of cuts) if (typeof x.enabled !== 'boolean' || !Number.isFinite(x.start) || !Number.isFinite(x.end) || x.start < 0 || x.end > item.duration || x.end <= x.start) throw new Error('편집 구간이 영상 범위를 벗어났습니다.');
@@ -106,7 +107,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     if (type === 'restore' && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('복원 범위가 올바르지 않습니다.');
     if (range !== undefined && !['restore', 'preview'].includes(type)) throw new Error('이 작업은 범위 지정을 지원하지 않습니다.');
     if (type === 'preview' && range !== undefined && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('미리보기 범위가 올바르지 않습니다.');
-    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range));
+    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection));
   }));
   app.get('/api/jobs/:id', (req, res) => {
     const job = jobs.get(req.params.id);

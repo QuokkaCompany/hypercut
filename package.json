@@ -13,6 +13,9 @@
     "desktop": "npm run build && electron .",
     "test": "node --test tests/*.test.mjs",
     "test:media": "node --test tests/media.integration.mjs",
+    "test:speech": "node --test tests/speech.integration.mjs",
+    "test:speech:e2e": "node scripts/speech-e2e.mjs",
+    "test:speech:offline": "node scripts/speech-offline.mjs",
     "test:api": "node --test tests/api.integration.mjs tests/ai-api.integration.mjs",
     "test:claude": "node --test tests/claude-cli.integration.mjs",
     "test:claude:e2e": "node scripts/claude-cli-e2e.mjs",
@@ -29,6 +32,7 @@
     "express": "^5.2.1",
     "lucide-react": "^1.41.0",
     "multer": "^2.3.0",
+    "onnxruntime-node": "1.29.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.5.4"

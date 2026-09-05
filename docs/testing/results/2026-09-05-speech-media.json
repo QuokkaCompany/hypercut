@@ -1,0 +1,102 @@
+[
+  {
+    "variant": {
+      "channels": "mono",
+      "sampleRate": 48000
+    },
+    "sourceSHA256": "9784c84c2077b7931074ca8c847102e9d167dc1d5642b646554a47905702ec53",
+    "pcmSHA256": "a1c011b7d29435595ab4104c0b8d8a46406a972d3a27c2d5099ac7969feac0e6",
+    "sourceSeconds": 17.7,
+    "outputSeconds": 11.466667,
+    "speechIntervals": [
+      {
+        "start": 1.056,
+        "end": 3.712
+      },
+      {
+        "start": 4.288,
+        "end": 6.784
+      },
+      {
+        "start": 10.4,
+        "end": 13.056
+      },
+      {
+        "start": 13.632,
+        "end": 16.128
+      }
+    ],
+    "energyRetention": 1,
+    "outputPeak": 0.0039985645562410355,
+    "analysisGain": 100,
+    "sourceUnchanged": true,
+    "model": "silero-vad-6.2.1"
+  },
+  {
+    "variant": {
+      "channels": "right",
+      "sampleRate": 48000
+    },
+    "sourceSHA256": "f1f810414e5cf1baa412691a07ccdbc6198cb40f526b4ac12713caf4a1e73aad",
+    "pcmSHA256": "3102ab082389636dbe9d82c436c5d387481cf492260b45f122f26d4e65c7df67",
+    "sourceSeconds": 17.7,
+    "outputSeconds": 11.466667,
+    "speechIntervals": [
+      {
+        "start": 1.056,
+        "end": 3.712
+      },
+      {
+        "start": 4.288,
+        "end": 6.784
+      },
+      {
+        "start": 10.4,
+        "end": 13.056
+      },
+      {
+        "start": 13.632,
+        "end": 16.128
+      }
+    ],
+    "energyRetention": 1,
+    "outputPeak": 0.0039985645562410355,
+    "analysisGain": 100,
+    "sourceUnchanged": true,
+    "model": "silero-vad-6.2.1"
+  },
+  {
+    "variant": {
+      "channels": "opposite",
+      "sampleRate": 44100,
+      "offset": 3
+    },
+    "sourceSHA256": "4ec0298bafd8084995e9d682e4021800dc87cce92c379ec8b255ea249cd650f5",
+    "pcmSHA256": "b28c1f5010bc2cada6f75b5e80ad9193db911c8f1a0fc63d9fb757c2418bee34",
+    "sourceSeconds": 17.7,
+    "outputSeconds": 11.433267,
+    "speechIntervals": [
+      {
+        "start": 1.024,
+        "end": 3.712
+      },
+      {
+        "start": 4.32,
+        "end": 6.784
+      },
+      {
+        "start": 10.4,
+        "end": 13.056
+      },
+      {
+        "start": 13.664,
+        "end": 16.128
+      }
+    ],
+    "energyRetention": 1,
+    "outputPeak": 0.004006162751466036,
+    "analysisGain": 100,
+    "sourceUnchanged": true,
+    "model": "silero-vad-6.2.1"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "externalConnectionProbe": "EPERM",
+  "profile": "(version 1)(allow default)(deny network-outbound)(allow network-outbound (remote ip \"localhost:*\"))",
+  "scope": "OS non-loopback network denial applied to actual browser, local server, bundled VAD inference and FFmpeg export. Generated Korean TTS only.",
+  "desktopOSIsolation": "NOT_RUN: nested Electron sandbox limitation recorded in recovery report; native app security remains enabled."
+}

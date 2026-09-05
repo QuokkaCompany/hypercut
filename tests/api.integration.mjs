@@ -48,6 +48,8 @@ test('U04: browser upload preserves Unicode name and source fingerprint', async 
 test('API: rejects invalid settings, unknown audio and malformed export cuts', async () => {
   const base = { mediaId: media.id, trackIndex: media.audioTracks[0].index };
   assert.equal((await call('/jobs', { ...base, type: 'analyze', settings: { ...DEFAULT_SETTINGS, thresholdDb: 1 } })).status, 400);
+  assert.equal((await call('/jobs', { ...base, type: 'analyze', settings: DEFAULT_SETTINGS, speechProtection: { enabled: true, threshold: 2 } })).status, 400);
+  assert.equal((await call('/jobs', { ...base, type: 'analyze', settings: DEFAULT_SETTINGS, speechProtection: { enabled: 'true', threshold: 0.5 } })).status, 400);
   assert.equal((await call('/jobs', { ...base, trackIndex: 999, type: 'analyze', settings: DEFAULT_SETTINGS })).status, 400);
   assert.equal((await call('/jobs', { ...base, type: 'export', cuts: [{ start: 0, end: 100, enabled: true }] })).status, 400);
   assert.equal((await call('/jobs', { ...base, type: 'exec', command: 'anything' })).status, 400);

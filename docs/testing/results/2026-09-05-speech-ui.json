@@ -1,0 +1,30 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "model": "Actual bundled Silero VAD 6.2.1",
+    "input": "Generated quiet Korean TTS; not user footage",
+    "baselineKeptSeconds": 0,
+    "speechProtectionKeptSeconds": 11.466667,
+    "cuts": 5,
+    "projectV2RoundTrip": true,
+    "projectV1Migration": true,
+    "previewAndSavedExport": true,
+    "externalBrowserRequests": 0,
+    "pageErrors": []
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "model": "Actual bundled Silero VAD 6.2.1",
+    "input": "Generated quiet Korean TTS; not user footage",
+    "baselineKeptSeconds": 0,
+    "speechProtectionKeptSeconds": 11.466667,
+    "cuts": 5,
+    "projectV2RoundTrip": true,
+    "projectV1Migration": true,
+    "previewAndSavedExport": true,
+    "externalBrowserRequests": 0,
+    "pageErrors": []
+  }
+]

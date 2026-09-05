@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpFromLine, AudioLines, Check, ChevronDown, CircleHelp, Clapperboard, Clock3, Download, FileVideo2, FolderOpen, HardDrive, LoaderCircle, Maximize2, Monitor, Pause, Play, Plus, Redo2, RotateCcw, Save, Scissors, Settings2, ShieldCheck, SkipBack, Sparkles, Undo2, X } from 'lucide-react';
 import { DEFAULT_SETTINGS, editedToSource, intervalDuration, keptIntervals, makeProject, sourceToEdited, validateProject } from '../shared/timeline.mjs';
+import { DEFAULT_SPEECH_PROTECTION } from '../shared/speech-settings.mjs';
 import { bootstrap, fileURL, outputURL, request, upload, waitJob } from './api';
-import type { Analysis, Cut, Job, Media, Output, Settings } from './types';
+import type { Analysis, Cut, Job, Media, Output, Settings, SpeechProtectionSettings } from './types';
 import { formatSize, formatTime } from './format';
 import { Timeline } from './Timeline';
 import { AIAssistant } from './AIAssistant';
 import { PreviewRangeDialog, RangePreviewPlayer } from './RangePreview';
+import { SpeechProtection } from './SpeechProtection';
 
 type History = { past: Cut[][]; present: Cut[]; future: Cut[][] };
 type Action = { type: 'load' | 'edit'; cuts: Cut[] } | { type: 'undo' | 'redo' };
@@ -21,6 +23,7 @@ function historyReducer(state: History, action: Action): History {
 export default function App() {
   const [ready, setReady] = useState(false), [engineError, setEngineError] = useState('');
   const [media, setMedia] = useState<Media | null>(null), [settings, setSettings] = useState<Settings>({ ...DEFAULT_SETTINGS });
+  const [speechProtection, setSpeechProtection] = useState<SpeechProtectionSettings>({ ...DEFAULT_SPEECH_PROTECTION });
   const [trackIndex, setTrackIndex] = useState(0), [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [history, dispatch] = useReducer(historyReducer, { past: [], present: [], future: [] });
   const cuts = history.present;
@@ -40,7 +43,7 @@ export default function App() {
   const kept = useMemo(() => media ? keptIntervals(cuts, media.duration) : [], [cuts, media]);
   const editedDuration = intervalDuration(kept), removedDuration = media ? media.duration - editedDuration : 0;
   const activeCuts = cuts.filter(x => x.enabled).length;
-  const stale = !!analysis && (JSON.stringify(settings) !== JSON.stringify(analysis.settings) || trackIndex !== analysis.trackIndex);
+  const stale = !!analysis && (JSON.stringify(settings) !== JSON.stringify(analysis.settings) || JSON.stringify(speechProtection) !== JSON.stringify(analysis.speechProtection) || trackIndex !== analysis.trackIndex);
   const currentCut = cuts.find(x => x.id === selected);
   const videoSrc = media ? (mode === 'rendered' && rendered ? outputURL(rendered.id) : fileURL(media.id, trackIndex)) : undefined;
 
@@ -101,6 +104,7 @@ export default function App() {
     setMedia(next); setTime(0); setRendered(null); setOutput(null); setSelected(null); setTimelineZoom(1); setMode('edited'); setPlaying(false);
     if (project) {
       setSettings(project.settings as Settings); setTrackIndex(project.trackIndex); dispatch({ type: 'load', cuts: project.cuts });
+      setSpeechProtection(project.speechProtection);
       pendingProject.current = null; setPendingName(''); setNotice('프로젝트의 편집 구간을 복원했습니다. 파형이 필요하면 다시 분석할 수 있습니다.');
     } else { setTrackIndex(next.audioTracks[0]?.index ?? 0); dispatch({ type: 'load', cuts: [] }); }
     setUnsaved(false);
@@ -133,7 +137,7 @@ export default function App() {
     const active = { id: crypto.randomUUID(), controller: new AbortController(), cancelled: false }; activeJob.current = active;
     setJob({ id: active.id, type, status: 'running', progress: 0, stage: '작업 준비' });
     try {
-      const started = await request<Job>('/jobs', { type, mediaId: media.id, settings, trackIndex, cuts, requestId: active.id, range }, undefined, active.controller.signal);
+      const started = await request<Job>('/jobs', { type, mediaId: media.id, settings, speechProtection, trackIndex, cuts, requestId: active.id, range }, undefined, active.controller.signal);
       const completed = await waitJob(started.id, next => { if (operation.current === id) setJob(active.cancelled ? { ...next, stage: '취소 중' } : next); }, active.controller.signal);
       if (operation.current !== id) return;
       if (active.cancelled) { setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); return; }
@@ -163,7 +167,7 @@ export default function App() {
   function toggleCut(id: string) { edit(cuts.map(x => x.id === id ? { ...x, enabled: !x.enabled } : x)); }
   async function saveProject() {
     if (!media) return;
-    const data = makeProject(media, settings, trackIndex, cuts);
+    const data = makeProject(media, settings, trackIndex, cuts, speechProtection);
     if (window.hypercut) {
       try { if (await window.hypercut.saveProject(data)) { setUnsaved(false); setNotice('프로젝트를 저장했습니다. 영상 원본도 함께 보관해 주세요.'); } }
       catch (e) { setError((e as Error).message); }
@@ -229,7 +233,8 @@ export default function App() {
         <div className="threshold-scale"><span>조심스럽게</span><span>더 많이 제거</span></div>
         <Setting label="최소 무음 길이" unit="초" value={settings.minSilenceMs / 1000} min={0.05} max={5} step={0.05} disabled={!!busy} onChange={v => changeSettings(s => ({ ...s, minSilenceMs: Math.round(v * 1000) }))} hint="설정한 시간 이상 조용할 때만 잘라요." />
         <div className="settings-divider" /><div className="field-title"><span>자연스러운 연결</span><span className="subtle">말 앞뒤 여유</span></div><div className="margin-fields"><NumberField label="말 시작 전" value={settings.preRollMs} disabled={!!busy} onChange={v => changeSettings(s => ({ ...s, preRollMs: v }))} /><NumberField label="말 끝난 뒤" value={settings.postRollMs} disabled={!!busy} onChange={v => changeSettings(s => ({ ...s, postRollMs: v }))} /></div><p className="field-hint">첫 음절과 말끝이 잘리지 않도록 남겨둡니다.</p>
-        <button className="reset-settings text-button" disabled={!!busy} onClick={() => changeSettings({ ...DEFAULT_SETTINGS })}><RotateCcw size={12} />기본 설정으로</button>
+        <button className="reset-settings text-button" disabled={!!busy} onClick={() => { changeSettings({ ...DEFAULT_SETTINGS }); setSpeechProtection({ ...DEFAULT_SPEECH_PROTECTION }); }}><RotateCcw size={12} />기본 설정으로</button>
+        <SpeechProtection value={speechProtection} disabled={!!busy} result={!stale ? analysis?.protection : undefined} onChange={value => { setSpeechProtection(value); setUnsaved(!!media); }} onSeek={seekSource} />
         <div className="settings-tip"><CircleHelp size={14} /><span>작은 목소리도 제거될 수 있어요. 분석 후 컷 경계를 미리 들어보세요.</span></div>
         {stale && <div className="stale-notice">설정이 바뀌었습니다. 다시 분석하면 새 기준을 적용합니다.</div>}
         <button className="button primary analyze-button" onClick={() => run('analyze')} disabled={!media || !!busy || !media.audioTracks.length || !!engineError}><Sparkles size={17} />{analysis ? '다시 무음 분석' : '무음 분석하기'}<span>→</span></button>
