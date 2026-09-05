@@ -30,8 +30,11 @@ export default function App() {
   const [dialog, setDialog] = useState<'help' | 'engine' | null>(null), [dragging, setDragging] = useState(false), [unsaved, setUnsaved] = useState(false);
   const [pendingName, setPendingName] = useState('');
   const [aiOpen, setAIOpen] = useState(false);
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [timelineZoom, setTimelineZoom] = useState(1);
   const video = useRef<HTMLVideoElement>(null), fileInput = useRef<HTMLInputElement>(null), projectInput = useRef<HTMLInputElement>(null);
   const operation = useRef(0), importController = useRef<AbortController | null>(null), pendingProject = useRef<ReturnType<typeof validateProject> | null>(null);
+  const activeJob = useRef<{ id: string; controller: AbortController; cancelled: boolean } | null>(null);
   const kept = useMemo(() => media ? keptIntervals(cuts, media.duration) : [], [cuts, media]);
   const editedDuration = intervalDuration(kept), removedDuration = media ? media.duration - editedDuration : 0;
   const activeCuts = cuts.filter(x => x.enabled).length;
@@ -73,12 +76,15 @@ export default function App() {
   }
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (dialog || aiOpen || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes((event.target as HTMLElement).tagName)) return;
+      const target = event.target as HTMLElement;
+      if (dialog || aiOpen || restoreOpen || target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+      if (event.code === 'Space' && target.tagName === 'BUTTON') return;
       if ((event.metaKey || event.ctrlKey) && event.code === 'KeyO' && !busy) { event.preventDefault(); void chooseVideo(); }
       if ((event.metaKey || event.ctrlKey) && event.code === 'KeyS' && !busy) { event.preventDefault(); saveProject(); }
       if (event.code === 'Space') { event.preventDefault(); togglePlay(); }
       if (event.code === 'ArrowRight') { event.preventDefault(); seekSource(time + 5); }
       if (event.code === 'ArrowLeft') { event.preventDefault(); seekSource(time - 5); }
+      if (event.code === 'KeyR' && !event.metaKey && !event.ctrlKey && !event.altKey && selected && !busy) { event.preventDefault(); toggleCut(selected); }
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z' && !busy) { event.preventDefault(); dispatch({ type: event.shiftKey ? 'redo' : 'undo' }); setUnsaved(true); }
     };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
@@ -90,7 +96,7 @@ export default function App() {
     if (project && (Math.abs(project.media.duration - next.duration) > 0.001 || project.cuts.some((cut: Cut) => cut.end > next.duration))) throw new Error('프로젝트의 영상 길이 정보가 원본과 일치하지 않습니다.');
     if (project && !next.audioTracks.some(x => x.index === project.trackIndex)) throw new Error('프로젝트의 오디오 트랙을 찾을 수 없습니다.');
     setAnalysis(previous => media?.fingerprint === next.fingerprint ? previous : null);
-    setMedia(next); setTime(0); setRendered(null); setOutput(null); setSelected(null); setMode('edited'); setPlaying(false);
+    setMedia(next); setTime(0); setRendered(null); setOutput(null); setSelected(null); setTimelineZoom(1); setMode('edited'); setPlaying(false);
     if (project) {
       setSettings(project.settings as Settings); setTrackIndex(project.trackIndex); dispatch({ type: 'load', cuts: project.cuts });
       pendingProject.current = null; setPendingName(''); setNotice('프로젝트의 편집 구간을 복원했습니다. 파형이 필요하면 다시 분석할 수 있습니다.');
@@ -118,25 +124,35 @@ export default function App() {
     if (busy || (unsaved && !window.confirm('저장하지 않은 편집을 닫고 샘플을 열까요?'))) return; setBusy('import'); setError(''); setImportProgress(0);
     try { installMedia(await request<Media>('/demo', {})); setNotice('실제 음성이 아닌 합성 신호로 만든 16초 검증 샘플입니다.'); } catch (e) { setError((e as Error).message); } finally { setBusy(null); }
   }
-  async function run(type: 'analyze' | 'preview' | 'export') {
+  async function run(type: 'analyze' | 'preview' | 'export' | 'restore', range?: { start: number; end: number }) {
     if (!media || busy) return;
     video.current?.pause(); setBusy(type); setError(''); setJob(null);
     const id = ++operation.current;
+    const active = { id: crypto.randomUUID(), controller: new AbortController(), cancelled: false }; activeJob.current = active;
+    setJob({ id: active.id, type, status: 'running', progress: 0, stage: '작업 준비' });
     try {
-      const started = await request<Job>('/jobs', { type, mediaId: media.id, settings, trackIndex, cuts });
-      const completed = await waitJob(started.id, next => { if (operation.current === id) setJob(next); });
+      const started = await request<Job>('/jobs', { type, mediaId: media.id, settings, trackIndex, cuts, requestId: active.id, range }, undefined, active.controller.signal);
+      const completed = await waitJob(started.id, next => { if (operation.current === id) setJob(active.cancelled ? { ...next, stage: '취소 중' } : next); }, active.controller.signal);
       if (operation.current !== id) return;
+      if (active.cancelled) { setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); return; }
       if (completed.status === 'failed') throw new Error(completed.error);
       if (completed.status === 'cancelled') { setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); return; }
       if (type === 'analyze') {
         const result = completed.result as Analysis; setAnalysis(result); dispatch({ type: 'edit', cuts: result.cuts }); setUnsaved(true); setSelected(result.cuts[0]?.id ?? null);
         setNotice(result.cuts.length ? `${result.cuts.length}개의 무음 구간을 찾았습니다.` : '현재 설정에 해당하는 무음 구간이 없습니다.');
-      } else if (type === 'preview') { setRendered(completed.result as Output); setMode('rendered'); setTime(kept[0]?.start ?? 0); }
+      } else if (type === 'restore') { edit((completed.result as { cuts: Cut[] }).cuts); setSelected(null); setNotice('선택 범위를 복원했습니다. 실행 취소로 되돌릴 수 있습니다.'); }
+      else if (type === 'preview') { setRendered(completed.result as Output); setMode('rendered'); setTime(kept[0]?.start ?? 0); }
       else { setOutput(completed.result as Output); setNotice('내보내기와 결과 파일 검증이 완료됐습니다. 파일을 저장해 주세요.'); }
-    } catch (e) { setError((e as Error).message); }
-    finally { if (operation.current === id) { setBusy(null); setJob(null); } }
+    } catch (e) { if (operation.current !== id) return; if (active.cancelled) setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); else setError((e as Error).message); }
+    finally { if (activeJob.current === active) activeJob.current = null; if (operation.current === id) { setBusy(null); setJob(null); } }
   }
-  async function cancel() { if (busy === 'import') importController.current?.abort(); else if (job) await request(`/jobs/${job.id}`, undefined, 'DELETE').catch(e => setError(e.message)); }
+  async function cancel() {
+    if (busy === 'import') { importController.current?.abort(); return; }
+    const active = activeJob.current; if (!active || active.cancelled) return;
+    active.cancelled = true; setJob(previous => previous ? { ...previous, stage: '취소 중' } : previous);
+    try { await request(`/jobs/${active.id}`, undefined, 'DELETE'); active.controller.abort(); }
+    catch (e) { active.cancelled = false; setError((e as Error).message); }
+  }
   function changeSettings(next: Settings | ((previous: Settings) => Settings)) { setSettings(next); if (media) setUnsaved(true); }
   function edit(next: Cut[]) { dispatch({ type: 'edit', cuts: next }); setUnsaved(true); }
   function toggleCut(id: string) { edit(cuts.map(x => x.id === id ? { ...x, enabled: !x.enabled } : x)); }
@@ -196,8 +212,8 @@ export default function App() {
           {busy && <div className="job-overlay"><div className="job-card"><LoaderCircle size={26} className="spin" /><strong>{busy === 'import' ? (importProgress >= 1 ? '영상 정보를 확인하고 있어요' : '영상을 준비하고 있어요') : job?.stage || '작업을 준비하고 있어요'}</strong><div className="progress-track"><i style={{ width: `${busy === 'import' ? Math.max(5, importProgress * 100) : Math.max(3, (job?.progress || 0) * 100)}%` }} /></div><div className="job-foot"><span>{busy === 'import' ? '로컬 파일 처리 중' : `${Math.round((job?.progress || 0) * 100)}%`}</span>{(busy !== 'import' || importController.current) && <button className="text-button" onClick={cancel}>작업 취소</button>}</div></div></div>}
         </div>
         <div className="player-controls"><div className="playback-time">{formatTime(displayedTime, true)}<span>/ {formatTime(mode === 'original' ? media?.duration || 0 : editedDuration, true)}</span></div><div className="transport"><button className="icon-button" aria-label="처음으로" disabled={!media} onClick={() => seekSource(mode === 'original' ? 0 : kept[0]?.start ?? 0)}><SkipBack size={16} /></button><button className="play-button" onClick={togglePlay} aria-label={playing ? '일시 정지' : '재생'} disabled={!media}>{playing ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}</button><button className="icon-button" aria-label="5초 앞으로" disabled={!media} onClick={() => seekSource(time + 5)}><ArrowRight size={16} /></button></div><button className="text-button render-preview" onClick={() => run('preview')} disabled={!media || !!busy || !kept.length || !media.audioTracks.length}><Monitor size={13} />정확한 미리보기</button></div>
-        <div className="timeline-panel"><div className="timeline-toolbar"><div className="timeline-title"><AudioLines size={16} />타임라인 <span>원본 시간 기준</span></div><div className="timeline-actions"><button className="icon-button" disabled={!history.past.length || !!busy} onClick={() => { dispatch({ type: 'undo' }); setUnsaved(true); }} aria-label="실행 취소"><Undo2 size={16} /></button><button className="icon-button" disabled={!history.future.length || !!busy} onClick={() => { dispatch({ type: 'redo' }); setUnsaved(true); }} aria-label="다시 실행"><Redo2 size={16} /></button><span className="divider" /><span className="timeline-legend"><i />제거할 구간</span></div></div>
-          <Timeline duration={media?.duration || 0} peaks={analysis?.peaks || []} cuts={cuts} time={time} onSeek={seekSource} selected={selected} onSelect={setSelected} />
+        <div className="timeline-panel"><div className="timeline-toolbar"><div className="timeline-title"><AudioLines size={16} />타임라인 <span>원본 시간 기준</span></div><div className="timeline-actions"><button className="icon-button" aria-label="타임라인 축소" title="타임라인 축소" disabled={timelineZoom === 1} onClick={() => setTimelineZoom(z => z / 2)}>−</button><span className="zoom-label">{timelineZoom}×</span><button className="icon-button" aria-label="타임라인 확대" title="타임라인 확대" disabled={!media || timelineZoom === 128} onClick={() => setTimelineZoom(z => z * 2)}>+</button><span className="divider" /><button className="text-button" disabled={!activeCuts || !!busy} onClick={() => setRestoreOpen(true)}><RotateCcw size={13} />일부 구간 복원</button><span className="divider" /><button className="icon-button" disabled={!history.past.length || !!busy} onClick={() => { dispatch({ type: 'undo' }); setUnsaved(true); }} aria-label="실행 취소"><Undo2 size={16} /></button><button className="icon-button" disabled={!history.future.length || !!busy} onClick={() => { dispatch({ type: 'redo' }); setUnsaved(true); }} aria-label="다시 실행"><Redo2 size={16} /></button><span className="divider" /><span className="timeline-legend"><i />제거할 구간</span></div></div>
+          <Timeline zoom={timelineZoom} duration={media?.duration || 0} peaks={analysis?.peaks || []} cuts={cuts} time={time} onSeek={seekSource} selected={selected} onSelect={setSelected} />
           <div className="timeline-footer">{currentCut ? <><span>선택 구간 <strong>{formatTime(currentCut.start, true)} — {formatTime(currentCut.end, true)}</strong></span><button className="text-button" disabled={!!busy} onClick={() => toggleCut(currentCut.id)}><RotateCcw size={12} />{currentCut.enabled ? '이 구간 복원' : '이 구간 제거'}</button></> : <span>파형을 클릭해 이동하고, 표시된 구간을 선택해 복원할 수 있습니다.</span>}</div>
         </div>
       </main>
@@ -213,6 +229,7 @@ export default function App() {
         {stale && <div className="stale-notice">설정이 바뀌었습니다. 다시 분석하면 새 기준을 적용합니다.</div>}
         <button className="button primary analyze-button" onClick={() => run('analyze')} disabled={!media || !!busy || !media.audioTracks.length || !!engineError}><Sparkles size={17} />{analysis ? '다시 무음 분석' : '무음 분석하기'}<span>→</span></button>
         <p className="analysis-note">AI 계정 없이, 내 컴퓨터에서 분석합니다.</p>
+        {media && !kept.length && <div className="stale-notice" role="status">모든 구간이 제거되어 내보낼 수 없습니다. 필요한 구간을 복원해 주세요.</div>}
         <div className="result-summary"><div className="section-label">편집 요약 <Clock3 size={13} /></div><div><span>원본 길이</span><strong>{formatTime(media?.duration || 0, true)}</strong></div><div><span>제거할 시간</span><strong className="lime">− {formatTime(removedDuration, true)} {percent > 0 && <small>{percent}%</small>}</strong></div><div className="result-total"><span>편집 후 길이</span><strong>{formatTime(editedDuration, true)}</strong></div>{cuts.length > 0 && <p>{activeCuts}개 구간 제거 · {cuts.length - activeCuts}개 복원</p>}</div>
         {output && <div className="export-ready"><div><Check size={17} /><strong>내보내기 완료</strong></div><p>{formatTime(output.duration)} · {formatSize(output.size)} · 파일 검증 완료</p><button className="button primary" onClick={downloadOutput}><Download size={15} />편집한 MP4 저장</button></div>}
       </div></aside>
@@ -220,6 +237,7 @@ export default function App() {
     <footer className="status-bar"><span><HardDrive size={12} />{window.hypercut ? '데스크톱 앱' : '브라우저 앱'}<i />로컬 편집</span><span>{media ? `${media.width} × ${media.height} · ${media.fps.toFixed(2)} fps` : 'H.264 · MP4 / MOV'}<span className="footer-shortcut">Space 재생 · ← → 이동 · ⌘ Z 실행 취소</span></span></footer>
     {(error || engineError) && <div className="error-toast" role="alert"><CircleHelp size={18} /><div><strong>확인이 필요합니다</strong><p>{error || engineError}</p></div><button className="icon-button" aria-label="오류 닫기" onClick={() => { setError(''); if (engineError) setDialog('engine'); }}><X size={17} /></button></div>}
     {notice && <div className="notice-toast" role="status"><Check size={16} />{notice}<button className="icon-button" aria-label="알림 닫기" onClick={() => setNotice('')}><X size={14} /></button></div>}
+    {restoreOpen && media && <RestoreDialog duration={media.duration} start={currentCut?.start ?? 0} end={currentCut?.end ?? media.duration} onClose={() => setRestoreOpen(false)} onRestore={(start, end) => { setRestoreOpen(false); void run("restore", { start, end }); }} />}
     {aiOpen && <AIAssistant settings={settings} contextId={media?.id || "empty"} disabled={!!busy} onClose={() => setAIOpen(false)} onApply={next => { setSettings(next); setUnsaved(!!media); setNotice("AI 제안을 설정에 반영했습니다. 무음을 다시 분석해 주세요."); }} />}
     {dialog && <div className="modal-backdrop" onClick={() => setDialog(null)}><section className="modal" role="dialog" aria-modal="true" aria-label={dialog === 'help' ? '사용 방법' : '로컬 엔진'} onClick={e => e.stopPropagation()}><div className="panel-heading"><h2>{dialog === 'help' ? '몇 번의 클릭으로, 더 가벼운 편집' : '내 컴퓨터의 편집 엔진'}</h2><button className="icon-button" aria-label="창 닫기" onClick={() => setDialog(null)}><X size={18} /></button></div>{dialog === 'help' ? <><p><b>01.</b> H.264 MP4·MOV 영상을 불러옵니다.</p><p><b>02.</b> 음량과 최소 무음 길이를 설정하고 분석합니다.</p><p><b>03.</b> 컷을 들어보고 필요한 구간을 복원합니다.</p><p><b>04.</b> 정확한 미리보기로 확인한 뒤 MP4를 내보냅니다.</p><div className="modal-note">프로젝트 파일에는 편집 정보만 저장됩니다. 다음에 열 때 같은 원본 영상이 필요합니다. 음량 분석은 음악과 사람의 목소리를 구별하지 않으므로 마이크 트랙을 선택해 주세요.</div></> : <><p>{engineError || '영상 분석과 렌더링이 이 컴퓨터에서 실행됩니다.'}</p><div className="modal-note">현재 H.264 SDR 영상과 선택한 오디오 트랙 한 개를 지원합니다. 내보내기는 원본 파일을 변경하지 않습니다.</div>{engineError && <p>macOS에서는 FFmpeg 설치 후 앱을 다시 실행해 주세요.<code>brew install ffmpeg</code></p>}{window.hypercut && <button className="button secondary" onClick={() => window.hypercut?.openBrowser()}><Monitor size={16} />브라우저에서도 열기</button>}</>}</section></div>}
   </div>;
@@ -230,4 +248,10 @@ function Setting({ label, unit, value, min, max, step, disabled, onChange, hint 
 }
 function NumberField({ label, value, disabled, onChange }: { label: string; value: number; disabled: boolean; onChange: (value: number) => void }) {
   return <label className="number-field"><span>{label}</span><div><input type="number" min="0" max="1000" step="10" value={value} disabled={disabled} onChange={e => { if (Number.isFinite(e.target.valueAsNumber)) onChange(Math.max(0, Math.min(1000, e.target.valueAsNumber))); }} /><span>ms</span></div></label>;
+}
+
+function RestoreDialog({ duration, start, end, onClose, onRestore }: { duration: number; start: number; end: number; onClose: () => void; onRestore: (start: number, end: number) => void }) {
+  const [from, setFrom] = useState(start.toFixed(3)), [to, setTo] = useState(String(Math.min(duration, Number(end.toFixed(3)))));
+  const valid = from.trim() !== '' && to.trim() !== '' && Number.isFinite(Number(from)) && Number.isFinite(Number(to)) && Number(from) >= 0 && Number(to) <= duration && Number(from) < Number(to);
+  return <div className="modal-backdrop"><section className="modal" role="dialog" aria-modal="true" aria-label="일부 구간 복원"><div className="panel-heading"><h2>필요한 부분만 복원하기</h2><button className="icon-button" aria-label="복원 창 닫기" onClick={onClose}><X size={18} /></button></div><p>원본 시간 기준으로 남길 범위를 입력하세요.</p><label className="ai-field">복원 시작 (초)<input type="number" min={0} max={duration} step="0.001" value={from} onChange={e => setFrom(e.target.value)} autoFocus /></label><label className="ai-field">복원 끝 (초)<input type="number" min={0} max={duration} step="0.001" value={to} onChange={e => setTo(e.target.value)} /></label><div className="modal-note">선택 범위를 포함하는 영상 프레임까지 복원합니다. 0.1초보다 짧게 남는 제거 구간도 함께 복원합니다.</div><button className="button primary" disabled={!valid} onClick={() => onRestore(Number(from), Number(to))}><RotateCcw size={15} />이 범위 복원</button></section></div>;
 }

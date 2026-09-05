@@ -7,6 +7,7 @@ import { startServer } from '../server/app.mjs';
 import { generateDemo } from '../scripts/fixtures.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { request as httpRequest } from 'node:http';
+import { randomUUID } from 'node:crypto';
 
 let server, directory, media, token, sample;
 const call = (route, body, method = 'POST', extraHeaders = {}) => fetch(`${server.url}/api${route}`, { method, headers: { 'Content-Type': 'application/json', 'X-Hypercut-Token': token, ...extraHeaders }, body: body ? JSON.stringify(body) : undefined });
@@ -75,4 +76,22 @@ test('E01: cancelled render produces no successful export and can retry', async 
   const download = await fetch(`${server.url}/api/exports/${output.result.id}?token=${token}&download=1`);
   assert.equal(download.status, 200); assert.match(download.headers.get('content-disposition'), /attachment/);
   assert.ok((await download.arrayBuffer()).byteLength > 1000);
+});
+test('E01/E06: cancellation arriving before job creation prevents a late start', async () => {
+  const requestId = randomUUID();
+  assert.equal((await call(`/jobs/${requestId}`, undefined, 'DELETE')).status, 200);
+  const created = await (await call('/jobs', { requestId, type: 'analyze', mediaId: media.id, trackIndex: 1, settings: DEFAULT_SETTINGS })).json();
+  assert.equal(created.id, requestId); assert.equal(created.status, 'cancelled');
+  assert.equal((await terminal(requestId)).result, undefined);
+  assert.equal((await call('/jobs', { requestId, type: 'analyze', mediaId: media.id, trackIndex: 1, settings: DEFAULT_SETTINGS })).status, 400);
+});
+test('E01: accurate preview cancellation settles before acknowledging and permits retry', async () => {
+  const requestId = randomUUID(), body = { requestId, type: 'preview', mediaId: media.id, trackIndex: 1, cuts: [] };
+  assert.equal((await call('/jobs', body)).status, 202);
+  const start = performance.now();
+  const acknowledgement = await (await call(`/jobs/${requestId}`, undefined, 'DELETE')).json();
+  assert.equal(acknowledgement.cancelled, true); assert.ok(performance.now() - start < 5000);
+  const cancelled = await terminal(requestId); assert.equal(cancelled.status, 'cancelled'); assert.equal(cancelled.result, undefined);
+  const next = await (await call('/jobs', { ...body, requestId: randomUUID() })).json();
+  const completed = await terminal(next.id); assert.equal(completed.status, 'completed'); assert.equal(completed.result.duration, 16);
 });

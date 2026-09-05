@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "cancelBeforeAckMs": 53.186125000000175,
+  "oldCutEditsPreserved": true,
+  "staleAnalysisRejected": true,
+  "staleAIProposalRejected": true,
+  "localExportAfterAIFailure": true,
+  "pageErrors": [],
+  "scope": "Real browser/media with delayed job request and injected AI responses; no external AI calls"
+}

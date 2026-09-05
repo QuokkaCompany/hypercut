@@ -40,6 +40,17 @@ try {
   await page.getByRole('button', { name: '다시 실행', exact: true }).click();
   assert.match(await page.locator('.result-summary').innerText(), /4개 구간 제거 · 1개 복원/);
   await page.getByRole('button', { name: '실행 취소', exact: true }).click();
+  for (let i = 0; i < 5; i++) await page.getByRole('button', { name: '타임라인 확대', exact: true }).click();
+  await page.locator('.timeline-cut').nth(3).click();
+  assert.equal(await page.locator('.timeline-cut.selected').count(), 1);
+  const zoomedRuler = await page.locator('.ruler').evaluate(ruler => {
+    const viewport = ruler.closest('.timeline-scroll').getBoundingClientRect();
+    const labels = [...ruler.children].filter(label => { const box = label.getBoundingClientRect(); return box.left >= viewport.left && box.right <= viewport.right; });
+    return { visible: labels.length, times: labels.map(label => label.textContent), scrollLeft: ruler.closest('.timeline-scroll').scrollLeft };
+  });
+  assert.ok(zoomedRuler.visible >= 2); assert.ok(zoomedRuler.scrollLeft > 0);
+  assert.equal(new Set(zoomedRuler.times).size, zoomedRuler.times.length);
+  for (let i = 0; i < 5; i++) await page.getByRole('button', { name: '타임라인 축소', exact: true }).click();
   const projectDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: '프로젝트 저장', exact: true }).click();
   const downloadedProject = await projectDownload;
@@ -104,7 +115,7 @@ try {
   await reconnect.locator('input[type=file]').first().setInputFiles(movedSource);
   await reconnect.waitForFunction(() => document.querySelectorAll('.cut-row').length === 5);
   await reconnect.close();
-  console.log(JSON.stringify({ browser: 'PASS', upload: true, videoPlayback: true, analyzeCuts: 5, undoRestore: true, projectRoundTrip: true, wrongSourceRejected: true, renderedPreviewSeconds: previewDuration, exportedFile: outputFile, aiManualProposal: true, aiInvalidPayloadRejected: true, unsavedReplacementCancelled: true, mobileOverflow: false, externalRequests: 0, pageErrors: 0 }));
+  console.log(JSON.stringify({ browser: 'PASS', upload: true, videoPlayback: true, analyzeCuts: 5, undoRestore: true, timelineZoomSelection: true, zoomedRuler, projectRoundTrip: true, wrongSourceRejected: true, renderedPreviewSeconds: previewDuration, exportedFile: outputFile, aiManualProposal: true, aiInvalidPayloadRejected: true, unsavedReplacementCancelled: true, mobileOverflow: false, externalRequests: 0, pageErrors: 0 }));
   await browser.close(); browser = null;
 
   if (process.argv.includes('--desktop')) {

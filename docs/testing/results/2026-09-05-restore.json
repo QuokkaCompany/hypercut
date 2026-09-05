@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "fullySilentEmptyOutputBlocked": true,
+  "partialRestoration": [
+    1,
+    2
+  ],
+  "verifiedOutputSeconds": 1,
+  "invalidRangeBlocked": true,
+  "keyboardUndoRedoRestore": true,
+  "restoreAll": true,
+  "mobileOverflow": false
+}

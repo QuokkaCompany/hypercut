@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_SETTINGS, validateSettings, normalizeIntervals, createCuts, keptIntervals, sourceToEdited, editedToSource, snapRemovals, makeProject, validateProject, videoExpressions } from '../shared/timeline.mjs';
+import { DEFAULT_SETTINGS, validateSettings, normalizeIntervals, createCuts, keptIntervals, sourceToEdited, editedToSource, snapRemovals, makeProject, validateProject, videoExpressions, restoreRange } from '../shared/timeline.mjs';
 const frames = Array.from({ length: 601 }, (_, i) => i / 30);
 const justRanges = cuts => cuts.map(({ start, end }) => [start, end]);
 
@@ -55,4 +55,22 @@ test('large video expressions have bounded nesting depth', () => {
   let depth = 0, max = 0;
   for (const character of select) { if (character === '(') { depth++; max = Math.max(max, depth); } if (character === ')') depth--; }
   assert.ok(max < 30); assert.equal(depth, 0);
+});
+test('U03: restoring part of a fully removed clip expands to whole frames',()=>{
+  const result=restoreRange([{id:'all',start:0,end:4,enabled:true,reason:'silence'}],1.01,1.99,4,frames);
+  assert.deepEqual(result.map(({start,end,enabled})=>({start,end,enabled})),[{start:0,end:1,enabled:true},{start:1,end:2,enabled:false},{start:2,end:4,enabled:true}]);
+  assert.equal(new Set(result.map(x=>x.id)).size,3);
+  assert.deepEqual(keptIntervals(result,4),[{start:1,end:2}]);
+});
+test('U03: partial restoration also preserves sub-100ms leftovers and existing restored edits',()=>{
+  const input=[{id:'old',start:0,end:4,enabled:true},{id:'restore-0',start:5,end:6,enabled:false}];
+  const result=restoreRange(input,0.08,3.98,6,frames);
+  assert.deepEqual(result.map(x=>[x.start,x.end,x.enabled]),[[0,4,false],[5,6,false]]);
+  assert.equal(new Set(result.map(x=>x.id)).size,2);
+  assert.equal(input[0].enabled,true);
+});
+test('U03: restoration refuses invalid ranges and preserves unrelated cuts',()=>{
+  const input=[{id:'a',start:0,end:1,enabled:true}];
+  assert.deepEqual(restoreRange(input,2,3,4,frames),input);
+  for(const [start,end]of[[2,1],[-1,2],[0,5],[NaN,1]])assert.throws(()=>restoreRange(input,start,end,4,frames));
 });

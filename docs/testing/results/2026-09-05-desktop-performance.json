@@ -1,0 +1,76 @@
+{
+  "date": "2026-09-05T20:02:40.102Z",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "memoryBytes": 38654705664,
+  "scope": "Packaged Electron, native file selection response controlled by test. Full app process tree RSS at 250ms intervals; excludes test driver. Other desktop apps not stopped. OS caches not purged.",
+  "power": "Now drawing from 'AC Power'",
+  "runs": [
+    {
+      "inputSeconds": 600,
+      "iteration": 1,
+      "cache": "first app run for this input; OS cache unknown",
+      "analyzeSeconds": 6.173052417,
+      "exportSeconds": 16.221342916,
+      "analyzePeakBytes": 658817024,
+      "exportPeakBytes": 1456439296,
+      "cuts": 166,
+      "outputReady": true
+    },
+    {
+      "inputSeconds": 600,
+      "iteration": 2,
+      "cache": "warm app and OS caches",
+      "analyzeSeconds": 5.931137290999999,
+      "exportSeconds": 16.176551916,
+      "analyzePeakBytes": 763527168,
+      "exportPeakBytes": 1448165376,
+      "cuts": 166,
+      "outputReady": true
+    },
+    {
+      "inputSeconds": 600,
+      "iteration": 3,
+      "cache": "warm app and OS caches",
+      "analyzeSeconds": 5.919859666000004,
+      "exportSeconds": 16.180223333999994,
+      "analyzePeakBytes": 768720896,
+      "exportPeakBytes": 1462943744,
+      "cuts": 166,
+      "outputReady": true
+    },
+    {
+      "inputSeconds": 3600,
+      "iteration": 1,
+      "cache": "first app run for this input; OS cache unknown",
+      "analyzeSeconds": 35.110670291999995,
+      "exportSeconds": 95.23709445799999,
+      "analyzePeakBytes": 847740928,
+      "exportPeakBytes": 1643724800,
+      "cuts": 1000,
+      "outputReady": true
+    },
+    {
+      "inputSeconds": 3600,
+      "iteration": 2,
+      "cache": "warm app and OS caches",
+      "analyzeSeconds": 35.242304459,
+      "exportSeconds": 96.40211195900002,
+      "analyzePeakBytes": 923549696,
+      "exportPeakBytes": 1772830720,
+      "cuts": 1000,
+      "outputReady": true
+    },
+    {
+      "inputSeconds": 3600,
+      "iteration": 3,
+      "cache": "warm app and OS caches",
+      "analyzeSeconds": 35.341005417000034,
+      "exportSeconds": 95.310677333,
+      "analyzePeakBytes": 854327296,
+      "exportPeakBytes": 1534722048,
+      "cuts": 1000,
+      "outputReady": true
+    }
+  ]
+}

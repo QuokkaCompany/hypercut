@@ -1,12 +1,12 @@
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, writeFile, readdir } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile, readdir, readFile, chmod } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { generateDemo } from '../scripts/fixtures.mjs';
 import { inspectMedia, analyzeMedia, exportMedia } from '../server/media.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { capture } from '../server/process.mjs';
+import { capture, executable } from '../server/process.mjs';
 
 let directory, source, media;
 before(async () => { directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-errors-')); source = await generateDemo(path.join(directory, 'source.mp4')); media = await inspectMedia(source); });
@@ -40,4 +40,25 @@ test('E05: corrupt, unsupported codec and missing-audio inputs return clear outc
   const unsupported = path.join(directory, 'mpeg4.mp4');
   await capture('ffmpeg', ['-v','error','-i',source,'-t','0.2','-c:v','mpeg4','-an','-y',unsupported]);
   await assert.rejects(inspectMedia(unsupported), /H.264/);
+});
+test('E05: an unreadable original produces an OS error and can be reopened after permission recovery', async () => {
+  try { await chmod(source, 0o000); await assert.rejects(inspectMedia(source), /Permission denied|Operation not permitted/); }
+  finally { await chmod(source, 0o600); }
+  assert.equal((await inspectMedia(source)).fingerprint, media.fingerprint);
+});
+test('E02: killing an actual FFmpeg during audio export cleans partial output and permits retry', {timeout:15000}, async () => {
+  const original=process.env.FFMPEG_PATH, binary=executable('ffmpeg');
+  const wrapper=path.join(directory,'slow-ffmpeg.mjs'), pidFile=path.join(directory,'ffmpeg.pid');
+  await writeFile(wrapper, `#!/usr/bin/env node\nimport {spawn} from 'node:child_process';\nimport {writeFileSync} from 'node:fs';\nconst child=spawn(${JSON.stringify(binary)},['-re',...process.argv.slice(2)],{stdio:'inherit'});\nwriteFileSync(${JSON.stringify(pidFile)},String(child.pid));\nchild.on('exit',code=>{process.exitCode=code??1});\nprocess.on('SIGTERM',()=>child.kill('SIGTERM'));\n`, {mode:0o700});
+  let pid;
+  try {
+    process.env.FFMPEG_PATH=wrapper;
+    const outcome=exportMedia(media,[],1,directory).then(value=>({value}),error=>({error}));
+    for(let i=0;i<100;i++){const text=await readFile(pidFile,'utf8').catch(()=>null);if(text){pid=Number(text);break;}await new Promise(resolve=>setTimeout(resolve,10));}
+    assert.ok(pid); process.kill(pid,'SIGKILL');
+    const result=await outcome; assert.ok(result.error); assert.match(result.error.message,/작업 실패|중단/);
+  } finally { if(original===undefined)delete process.env.FFMPEG_PATH;else process.env.FFMPEG_PATH=original; if(pid)try{process.kill(pid,'SIGTERM');}catch{} }
+  assert.equal((await readdir(directory)).filter(name=>name.endsWith('.work')).length,0);
+  assert.equal((await inspectMedia(source)).fingerprint,media.fingerprint);
+  assert.equal((await exportMedia(media,[],1,directory)).verified,true);
 });

@@ -18,9 +18,10 @@ export function startProcess(name, args, { signal, onStderr } = {}) {
   signal?.addEventListener('abort', abort, { once: true });
   const done = new Promise((resolve, reject) => {
     child.once('error', error => reject(new Error(error.code === 'ENOENT' ? `${name}를 찾을 수 없습니다. FFmpeg를 설치하거나 실행 경로를 설정해 주세요.` : error.message)));
-    child.once('close', code => {
+    child.once('close', (code, signalName) => {
       clearTimeout(timer); signal?.removeEventListener('abort', abort);
       if (signal?.aborted) reject(new DOMException('작업이 취소되었습니다.', 'AbortError'));
+      else if (signalName) reject(new Error(`${name} 작업이 ${signalName}로 중단되었습니다. 다시 시도해 주세요.`));
       else if (code !== 0) reject(new Error(`${name} 작업 실패: ${stderr.slice(-3000)}`));
       else resolve(stderr);
     });

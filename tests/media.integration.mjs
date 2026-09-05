@@ -103,3 +103,13 @@ test('D09/M05: selected audio track controls analysis, source playback and expor
     assert.deepEqual(await beepOnsets(output.path, path.join(directory, 'export.f32')), []);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
+test('D12: a one-frame input remains exportable when nothing is removed',async()=>{
+  const directory=await mkdtemp(path.join(os.tmpdir(),'hypercut-short-'));
+  try{
+    const source=path.join(directory,'one-frame.mp4');
+    await capture('ffmpeg',['-v','error','-f','lavfi','-i','color=c=blue:s=160x90:r=30:d=0.02','-f','lavfi','-i','anullsrc=r=48000:cl=mono','-t','0.02','-c:v','libx264','-preset','ultrafast','-c:a','aac','-y',source]);
+    const media=await inspectMedia(source),analysis=await analyzeMedia(media,DEFAULT_SETTINGS,1);
+    assert.ok(media.duration<0.05);assert.equal(analysis.cuts.length,0);
+    const output=await exportMedia(media,[],1,directory);assert.equal(output.verified,true);assert.ok(output.duration>0);
+  }finally{await rm(directory,{recursive:true,force:true});}
+});

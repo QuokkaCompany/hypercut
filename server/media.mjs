@@ -6,7 +6,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { capture, startProcess } from './process.mjs';
 import { consumePCM, SilenceDetector } from './pcm.mjs';
-import { createCuts, keptIntervals, intervalDuration, normalizeIntervals, snapRemovals, videoExpressions, validateSettings } from '../shared/timeline.mjs';
+import { createCuts, keptIntervals, intervalDuration, normalizeIntervals, snapRemovals, videoExpressions, validateSettings, restoreRange } from '../shared/timeline.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
 
@@ -61,6 +61,12 @@ async function getFrames(media, signal, progress) {
   frames.push(media.duration);
   media.frames = [...new Set(frames)].sort((a, b) => a - b);
   return media.frames;
+}
+
+export async function restoreMediaRange(media, cuts, range, { signal, progress } = {}) {
+  const frames = await getFrames(media, signal, progress);
+  signal?.throwIfAborted();
+  return { cuts: restoreRange(cuts, range.start, range.end, media.duration, frames) };
 }
 
 function audioArgs(media, track) {
@@ -130,7 +136,7 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
   const removals = snapRemovals(normalizeIntervals(cuts.filter(x => x.enabled), media.duration), media.duration, frames);
   const kept = keptIntervals(removals.map(x => ({ ...x, enabled: true })), media.duration);
   const expectedDuration = intervalDuration(kept);
-  if (!kept.length || expectedDuration < 0.05) throw new Error('모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
+  if (!kept.length || expectedDuration <= 0) throw new Error('모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
   const id = randomUUID();
   const work = path.join(directory, `${id}.work`);
   await mkdir(work, { recursive: true });

@@ -1,11 +1,11 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
-import { copyFile, rename, realpath, rm, writeFile } from 'node:fs/promises';
+import { copyFile, realpath, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
-import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { startServer } from '../server/app.mjs';
 import { validateProject } from '../shared/timeline.mjs';
+import { atomicReplace } from '../server/atomic-file.mjs';
 
 let server, mainWindow;
 app.whenReady().then(async () => {
@@ -24,9 +24,7 @@ ipcMain.handle('hypercut:save-project', async (event, data) => {
   const chosen = await dialog.showSaveDialog(mainWindow, { title: 'HyperCut 프로젝트 저장', defaultPath: path.parse(project.media.name).name + '.hypercut.json', filters: [{ name: 'HyperCut 프로젝트', extensions: ['json'] }] });
   if (chosen.canceled || !chosen.filePath) return false;
   const target = path.resolve(chosen.filePath); await protectSource(target);
-  const temporary = `${target}.${randomUUID()}.tmp`;
-  try { await writeFile(temporary, JSON.stringify(project, null, 2), { flag: 'wx' }); await rename(temporary, target); }
-  finally { await rm(temporary, { force: true }); }
+  await atomicReplace(target, temporary => writeFile(temporary, JSON.stringify(project, null, 2), { flag: 'wx' }));
   return true;
 });
 ipcMain.handle('hypercut:pick-video', async event => {
@@ -43,9 +41,7 @@ ipcMain.handle('hypercut:save-export', async (event, id) => {
   if (chosen.canceled || !chosen.filePath) return false;
   const target = path.resolve(chosen.filePath);
   await protectSource(target);
-  const temporary = `${target}.${randomUUID()}.tmp`;
-  try { await copyFile(output.path, temporary, constants.COPYFILE_EXCL); await rename(temporary, target); }
-  finally { await rm(temporary, { force: true }); }
+  await atomicReplace(target, temporary => copyFile(output.path, temporary, constants.COPYFILE_EXCL));
   return true;
 });
 ipcMain.handle('hypercut:open-browser', async event => { assertSender(event); await shell.openExternal(server.url); });

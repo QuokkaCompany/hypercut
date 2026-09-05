@@ -62,6 +62,31 @@ export function keptIntervals(cuts, duration) {
   return kept;
 }
 
+export function restoreRange(cuts, start, end, duration, frames) {
+  if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end > duration || start >= end) throw new Error('복원 범위는 영상 안에서 시작보다 끝이 늦어야 합니다.');
+  if (!frames?.length) throw new Error('영상 프레임 정보가 필요합니다.');
+  const index = lowerBound(frames, start);
+  const begin = frames[index] > start + EPS ? frames[Math.max(0, index - 1)] : frames[index];
+  const finish = frames[lowerBound(frames, end)] ?? duration;
+  let sequence = 0;
+  const ids = new Set(cuts.map(cut => cut.id));
+  const nextId = () => { let id; do { id = `restore-${sequence++}`; } while (ids.has(id)); ids.add(id); return id; };
+  const result = cuts.flatMap(cut => {
+    if (!cut.enabled || cut.end <= begin || cut.start >= finish) return [{ ...cut }];
+    let left = Math.max(cut.start, begin), right = Math.min(cut.end, finish);
+    // Tiny leftovers are also restored; export must not silently drop them later.
+    if (left - cut.start < 0.1 - EPS) left = cut.start;
+    if (cut.end - right < 0.1 - EPS) right = cut.end;
+    const parts = [];
+    if (left > cut.start) parts.push({ ...cut, id: nextId(), end: left });
+    parts.push({ ...cut, id: nextId(), start: left, end: right, enabled: false, reason: 'manual' });
+    if (right < cut.end) parts.push({ ...cut, id: nextId(), start: right });
+    return parts;
+  });
+  if (result.length > 50000) throw new Error('편집 구간 수가 제한을 넘습니다.');
+  return result;
+}
+
 export function intervalDuration(intervals) { return intervals.reduce((sum, x) => sum + x.end - x.start, 0); }
 
 export function sourceToEdited(time, kept) {

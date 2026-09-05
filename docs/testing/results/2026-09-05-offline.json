@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "externalConnectionProbe": "EPERM",
+  "profile": "(version 1)(allow default)(deny network-outbound)(allow network-outbound (remote ip \"localhost:*\"))",
+  "scope": "OS sandbox denies non-loopback network for browser and local server full editing flow. Probe uses reserved TEST-NET IP; E2E uses only synthetic files and manual AI JSON import.",
+  "desktopOSIsolation": "NOT_RUN: Electron renderer cannot initialize its own sandbox inside sandbox-exec (Operation not permitted). Default app security has not been weakened to make this test pass."
+}
