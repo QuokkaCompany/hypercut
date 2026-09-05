@@ -1,0 +1,36 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+    "numericChangeRejected": true,
+    "negationReview": true,
+    "onlySelectedApplied": true,
+    "timingPreserved": true,
+    "undoRedo": true,
+    "oldRequestRejected": true,
+    "cancelAndRetry": true,
+    "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+    "projectSaved": true,
+    "styledMP4SavedAndDecoded": true,
+    "pageErrors": [],
+    "externalRequests": 0
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+    "numericChangeRejected": true,
+    "negationReview": true,
+    "onlySelectedApplied": true,
+    "timingPreserved": true,
+    "undoRedo": true,
+    "oldRequestRejected": true,
+    "cancelAndRetry": true,
+    "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+    "projectSaved": true,
+    "styledMP4SavedAndDecoded": true,
+    "pageErrors": [],
+    "externalRequests": 0
+  }
+]

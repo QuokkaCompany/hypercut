@@ -13,3 +13,5 @@ export interface Job { id: string; type: string; status: 'running' | 'completed'
 declare global {
   interface Window { hypercut?: { pickVideo: () => Promise<Media | null>; saveExport: (id: string) => Promise<boolean>; saveProject: (project: unknown) => Promise<boolean>; openBrowser: () => Promise<void>; platform: string } }
 }
+export interface CorrectionRequest { requestId: string; instruction: string; glossary: string; cues: { id: string; text: string }[] }
+export interface CorrectionProposal { requestId: string; changes: { id: string; before: string; after: string; reason: string }[] }

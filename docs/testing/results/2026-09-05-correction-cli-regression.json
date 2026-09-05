@@ -1,0 +1,32 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "scope": "Real application and fake Claude executable; no authenticated model request",
+    "missingAuthBlocksRequest": true,
+    "structuredProposalApplied": true,
+    "usageReceipt": {
+      "input": 123,
+      "output": 45
+    },
+    "cancellationMs": 62.05787499999997,
+    "localExportAfterFailure": true,
+    "noPrivateMetadata": true,
+    "pageErrors": []
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "scope": "Real application and fake Claude executable; no authenticated model request",
+    "missingAuthBlocksRequest": true,
+    "structuredProposalApplied": true,
+    "usageReceipt": {
+      "input": 123,
+      "output": 45
+    },
+    "cancellationMs": 51.40049999999974,
+    "localExportAfterFailure": true,
+    "noPrivateMetadata": true,
+    "pageErrors": []
+  }
+]

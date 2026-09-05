@@ -60,7 +60,7 @@ try {
     let started = false;
     for (let i = 0; i < 200; i++) { if (await readFile(fake.record).catch(() => null)) { started = true; break; } await new Promise(resolve => setTimeout(resolve, 10)); }
     assert.ok(started); const begin = performance.now(); await page.getByRole('button', { name: '요청 취소', exact: true }).click();
-    await page.locator('.ai-error').filter({ hasText: '취소' }).waitFor(); const cancellationMs = performance.now() - begin; assert.ok(cancellationMs < 2000);
+    await page.getByText('AI 요청을 취소했습니다.', { exact: true }).waitFor(); const cancellationMs = performance.now() - begin; assert.ok(cancellationMs < 2000);
     await page.getByRole('button', { name: 'AI 창 닫기', exact: true }).click();
     await page.locator('.analyze-button').click(); await page.getByRole('button', { name: '무음 1 복원', exact: true }).waitFor();
     await page.getByRole('button', { name: '내보내기', exact: true }).click(); await page.getByRole('button', { name: '편집한 MP4 저장', exact: true }).waitFor();

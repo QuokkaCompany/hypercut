@@ -76,17 +76,16 @@ export function createClaudeCLI({ executable: override, runner = runCLI } = {}) 
     } finally { await rm(directory, { recursive: true, force: true }); }
   }
 
-  async function ask(model, instruction, settings, { signal, timeoutMs = 90000 } = {}) {
+  async function askTask(model, { prompt, schema, validate, systemPrompt }, { signal, timeoutMs = 90000 } = {}) {
     if (!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,199}$/.test(model)) throw new Error('Claude Code 모델 이름이 올바르지 않습니다.');
-    const prompt = proposalPrompt(instruction, settings);
     const status = await check({ signal });
     if (!status.ready) throw new Error(status.error);
     const executable = await findExecutable(override);
     const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-claude-request-'));
     try {
-      const args = ['--safe-mode', '--print', '--output-format', 'json', '--json-schema', JSON.stringify(PROPOSAL_SCHEMA), '--model', model,
+      const args = ['--safe-mode', '--print', '--output-format', 'json', '--json-schema', JSON.stringify(schema), '--model', model,
         '--tools', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--no-session-persistence', '--setting-sources', '',
-        '--permission-mode', 'dontAsk', '--permission-prompts', 'none', '--system-prompt', 'Return only the requested HyperCut settings proposal. No tools or file access. You have no audio or video.'];
+        '--permission-mode', 'dontAsk', '--permission-prompts', 'none', '--system-prompt', systemPrompt];
       const result = await runner(executable, args, { cwd: directory, input: prompt, signal, timeoutMs });
       signal?.throwIfAborted();
       const data = jsonOutput(result);
@@ -95,11 +94,12 @@ export function createClaudeCLI({ executable: override, runner = runCLI } = {}) 
         throw failure('CLI_FAILED');
       }
       let proposal;
-      try { proposal = validateProposal(data.structured_output); } catch { throw failure('CLI_OUTPUT'); }
+      try { proposal = validate(data.structured_output); } catch { throw failure('CLI_OUTPUT'); }
       const number = value => Number.isSafeInteger(value) && value >= 0 ? value : null;
       const models = Object.keys(data.modelUsage || {}).filter(name => /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,199}$/.test(name)).slice(0, 4);
       return { proposal, execution: { provider: 'claude_cli', requestedModel: model, models, at: new Date().toISOString(), inputTokens: number(data.usage?.input_tokens), outputTokens: number(data.usage?.output_tokens), cacheReadTokens: number(data.usage?.cache_read_input_tokens), cacheWriteTokens: number(data.usage?.cache_creation_input_tokens) } };
     } finally { await rm(directory, { recursive: true, force: true }); }
   }
-  return { check, ask };
+  const ask = async (model, instruction, settings, options) => askTask(model, { prompt: proposalPrompt(instruction, settings), schema: PROPOSAL_SCHEMA, validate: validateProposal, systemPrompt: 'Return only the requested HyperCut settings proposal. No tools or file access. You have no audio or video.' }, options);
+  return { check, ask, askTask };
 }
