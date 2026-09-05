@@ -1,8 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_SETTINGS, validateSettings, normalizeIntervals, createCuts, keptIntervals, sourceToEdited, editedToSource, snapRemovals, makeProject, validateProject, videoExpressions, restoreRange } from '../shared/timeline.mjs';
+import { DEFAULT_SETTINGS, validateSettings, normalizeIntervals, createCuts, keptIntervals, sourceToEdited, editedToSource, snapRemovals, makeProject, validateProject, videoExpressions, restoreRange, renderPlan } from '../shared/timeline.mjs';
 const frames = Array.from({ length: 601 }, (_, i) => i / 30);
 const justRanges = cuts => cuts.map(({ start, end }) => [start, end]);
+
+test('M06: preview windows keep export cuts, restored decisions and source-to-preview mapping', () => {
+  const cuts = [{ start: 4, end: 6, enabled: true }, { start: 6, end: 7, enabled: false }];
+  const previous = structuredClone(cuts);
+  const plan = renderPlan(cuts, 20, frames, { start: 2, end: 8 });
+  assert.deepEqual(justRanges(plan.kept), [[2, 4], [6, 8]]);
+  assert.deepEqual(plan.sourceRange, { start: 2, end: 8 });
+  assert.equal(sourceToEdited(5, plan.kept), 2); assert.equal(editedToSource(2, plan.kept), 6);
+  assert.deepEqual(cuts, previous);
+  assert.deepEqual(justRanges(renderPlan(cuts, 20, frames).kept), [[0, 4], [6, 20]]);
+});
+
+test('M06: preview edges expand to frames without leaking short excluded tails', () => {
+  const plan = renderPlan([], 20, frames, { start: 0.04, end: 19.94 });
+  assert.deepEqual(justRanges(plan.kept), [[1 / 30, 599 / 30]]);
+  assert.deepEqual(justRanges(plan.removals), [[0, 1 / 30], [599 / 30, 20]]);
+  for (const range of [null, {}, { start: -1, end: 3 }, { start: 3, end: 3 }, { start: 0, end: 21 }]) assert.throws(() => renderPlan([], 20, frames, range), /범위/);
+});
 
 test('D04: padding uses the trailing margin at silence start and leading margin at its end', () => {
   const result = createCuts([{ start: 10, end: 12 }], DEFAULT_SETTINGS, 20, Array.from({ length: 2001 }, (_, i) => i / 100));

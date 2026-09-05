@@ -82,7 +82,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const controller = new AbortController();
     const job = { id, type, mediaId: item.id, status: 'running', progress: 0, stage: '작업 준비', controller, createdAt: Date.now() };
     jobs.set(id, job);
-    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview' };
+    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined };
     job.task = Promise.resolve().then(async () => {
       const result = type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
       if (controller.signal.aborted) { if (result.path) await rm(result.path, { force: true }); job.status = 'cancelled'; return; }
@@ -104,6 +104,8 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
       for (const x of cuts) if (typeof x.enabled !== 'boolean' || !Number.isFinite(x.start) || !Number.isFinite(x.end) || x.start < 0 || x.end > item.duration || x.end <= x.start) throw new Error('편집 구간이 영상 범위를 벗어났습니다.');
     }
     if (type === 'restore' && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('복원 범위가 올바르지 않습니다.');
+    if (range !== undefined && !['restore', 'preview'].includes(type)) throw new Error('이 작업은 범위 지정을 지원하지 않습니다.');
+    if (type === 'preview' && range !== undefined && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('미리보기 범위가 올바르지 않습니다.');
     res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range));
   }));
   app.get('/api/jobs/:id', (req, res) => {

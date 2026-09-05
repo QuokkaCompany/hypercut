@@ -6,6 +6,7 @@ import type { Analysis, Cut, Job, Media, Output, Settings } from './types';
 import { formatSize, formatTime } from './format';
 import { Timeline } from './Timeline';
 import { AIAssistant } from './AIAssistant';
+import { PreviewRangeDialog, RangePreviewPlayer } from './RangePreview';
 
 type History = { past: Cut[][]; present: Cut[]; future: Cut[][] };
 type Action = { type: 'load' | 'edit'; cuts: Cut[] } | { type: 'undo' | 'redo' };
@@ -32,6 +33,7 @@ export default function App() {
   const [aiOpen, setAIOpen] = useState(false);
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [timelineZoom, setTimelineZoom] = useState(1);
+  const [previewRangeOpen, setPreviewRangeOpen] = useState(false), [rangePreview, setRangePreview] = useState<Output | null>(null);
   const video = useRef<HTMLVideoElement>(null), fileInput = useRef<HTMLInputElement>(null), projectInput = useRef<HTMLInputElement>(null);
   const operation = useRef(0), importController = useRef<AbortController | null>(null), pendingProject = useRef<ReturnType<typeof validateProject> | null>(null);
   const activeJob = useRef<{ id: string; controller: AbortController; cancelled: boolean } | null>(null);
@@ -59,7 +61,7 @@ export default function App() {
     };
     frame = requestAnimationFrame(tick); return () => cancelAnimationFrame(frame);
   }, [playing, mode, kept]);
-  useEffect(() => { setRendered(null); setOutput(null); setMode(old => old === 'rendered' ? 'edited' : old); }, [cuts, trackIndex]);
+  useEffect(() => { setRendered(null); setOutput(null); setRangePreview(null); setMode(old => old === 'rendered' ? 'edited' : old); }, [cuts, trackIndex]);
 
   function seekSource(value: number) {
     if (!video.current || !media) return;
@@ -77,7 +79,7 @@ export default function App() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
-      if (dialog || aiOpen || restoreOpen || target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+      if (dialog || aiOpen || restoreOpen || previewRangeOpen || rangePreview || target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
       if (event.code === 'Space' && target.tagName === 'BUTTON') return;
       if ((event.metaKey || event.ctrlKey) && event.code === 'KeyO' && !busy) { event.preventDefault(); void chooseVideo(); }
       if ((event.metaKey || event.ctrlKey) && event.code === 'KeyS' && !busy) { event.preventDefault(); saveProject(); }
@@ -141,7 +143,10 @@ export default function App() {
         const result = completed.result as Analysis; setAnalysis(result); dispatch({ type: 'edit', cuts: result.cuts }); setUnsaved(true); setSelected(result.cuts[0]?.id ?? null);
         setNotice(result.cuts.length ? `${result.cuts.length}개의 무음 구간을 찾았습니다.` : '현재 설정에 해당하는 무음 구간이 없습니다.');
       } else if (type === 'restore') { edit((completed.result as { cuts: Cut[] }).cuts); setSelected(null); setNotice('선택 범위를 복원했습니다. 실행 취소로 되돌릴 수 있습니다.'); }
-      else if (type === 'preview') { setRendered(completed.result as Output); setMode('rendered'); setTime(kept[0]?.start ?? 0); }
+      else if (type === 'preview') {
+        if (range) setRangePreview(completed.result as Output);
+        else { setRendered(completed.result as Output); setMode('rendered'); setTime(kept[0]?.start ?? 0); }
+      }
       else { setOutput(completed.result as Output); setNotice('내보내기와 결과 파일 검증이 완료됐습니다. 파일을 저장해 주세요.'); }
     } catch (e) { if (operation.current !== id) return; if (active.cancelled) setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); else setError((e as Error).message); }
     finally { if (activeJob.current === active) activeJob.current = null; if (operation.current === id) { setBusy(null); setJob(null); } }
@@ -214,7 +219,7 @@ export default function App() {
         <div className="player-controls"><div className="playback-time">{formatTime(displayedTime, true)}<span>/ {formatTime(mode === 'original' ? media?.duration || 0 : editedDuration, true)}</span></div><div className="transport"><button className="icon-button" aria-label="처음으로" disabled={!media} onClick={() => seekSource(mode === 'original' ? 0 : kept[0]?.start ?? 0)}><SkipBack size={16} /></button><button className="play-button" onClick={togglePlay} aria-label={playing ? '일시 정지' : '재생'} disabled={!media}>{playing ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}</button><button className="icon-button" aria-label="5초 앞으로" disabled={!media} onClick={() => seekSource(time + 5)}><ArrowRight size={16} /></button></div><button className="text-button render-preview" onClick={() => run('preview')} disabled={!media || !!busy || !kept.length || !media.audioTracks.length}><Monitor size={13} />정확한 미리보기</button></div>
         <div className="timeline-panel"><div className="timeline-toolbar"><div className="timeline-title"><AudioLines size={16} />타임라인 <span>원본 시간 기준</span></div><div className="timeline-actions"><button className="icon-button" aria-label="타임라인 축소" title="타임라인 축소" disabled={timelineZoom === 1} onClick={() => setTimelineZoom(z => z / 2)}>−</button><span className="zoom-label">{timelineZoom}×</span><button className="icon-button" aria-label="타임라인 확대" title="타임라인 확대" disabled={!media || timelineZoom === 128} onClick={() => setTimelineZoom(z => z * 2)}>+</button><span className="divider" /><button className="text-button" disabled={!activeCuts || !!busy} onClick={() => setRestoreOpen(true)}><RotateCcw size={13} />일부 구간 복원</button><span className="divider" /><button className="icon-button" disabled={!history.past.length || !!busy} onClick={() => { dispatch({ type: 'undo' }); setUnsaved(true); }} aria-label="실행 취소"><Undo2 size={16} /></button><button className="icon-button" disabled={!history.future.length || !!busy} onClick={() => { dispatch({ type: 'redo' }); setUnsaved(true); }} aria-label="다시 실행"><Redo2 size={16} /></button><span className="divider" /><span className="timeline-legend"><i />제거할 구간</span></div></div>
           <Timeline zoom={timelineZoom} duration={media?.duration || 0} peaks={analysis?.peaks || []} cuts={cuts} time={time} onSeek={seekSource} selected={selected} onSelect={setSelected} />
-          <div className="timeline-footer">{currentCut ? <><span>선택 구간 <strong>{formatTime(currentCut.start, true)} — {formatTime(currentCut.end, true)}</strong></span><button className="text-button" disabled={!!busy} onClick={() => toggleCut(currentCut.id)}><RotateCcw size={12} />{currentCut.enabled ? '이 구간 복원' : '이 구간 제거'}</button></> : <span>파형을 클릭해 이동하고, 표시된 구간을 선택해 복원할 수 있습니다.</span>}</div>
+          <div className="timeline-footer">{currentCut ? <><span>선택 구간 <strong>{formatTime(currentCut.start, true)} — {formatTime(currentCut.end, true)}</strong></span><div className="timeline-footer-actions"><button className="text-button" disabled={!!busy || !kept.length} onClick={() => setPreviewRangeOpen(true)}><Monitor size={12} />선택 컷 미리보기</button><button className="text-button" disabled={!!busy} onClick={() => toggleCut(currentCut.id)}><RotateCcw size={12} />{currentCut.enabled ? '이 구간 복원' : '이 구간 제거'}</button></div></> : <span>파형을 클릭해 이동하고, 표시된 구간을 선택해 복원할 수 있습니다.</span>}</div>
         </div>
       </main>
       <aside className="settings-panel"><div className="panel-heading"><h2><Scissors size={16} />무음 자동 편집</h2><span className="small-tag">LOCAL</span></div><div className="settings-content"><p className="panel-description">듣고 싶은 말만 남기세요.<br />편집 기준은 직접 조절할 수 있어요.</p>
@@ -238,6 +243,8 @@ export default function App() {
     {(error || engineError) && <div className="error-toast" role="alert"><CircleHelp size={18} /><div><strong>확인이 필요합니다</strong><p>{error || engineError}</p></div><button className="icon-button" aria-label="오류 닫기" onClick={() => { setError(''); if (engineError) setDialog('engine'); }}><X size={17} /></button></div>}
     {notice && <div className="notice-toast" role="status"><Check size={16} />{notice}<button className="icon-button" aria-label="알림 닫기" onClick={() => setNotice('')}><X size={14} /></button></div>}
     {restoreOpen && media && <RestoreDialog duration={media.duration} start={currentCut?.start ?? 0} end={currentCut?.end ?? media.duration} onClose={() => setRestoreOpen(false)} onRestore={(start, end) => { setRestoreOpen(false); void run("restore", { start, end }); }} />}
+    {previewRangeOpen && media && currentCut && <PreviewRangeDialog duration={media.duration} start={Math.max(0, currentCut.start - 2)} end={Math.min(media.duration, currentCut.end + 2)} onClose={() => setPreviewRangeOpen(false)} onPreview={range => { setPreviewRangeOpen(false); void run('preview', range); }} />}
+    {rangePreview && <RangePreviewPlayer output={rangePreview} onClose={() => setRangePreview(null)} />}
     {aiOpen && <AIAssistant settings={settings} contextId={media?.id || "empty"} disabled={!!busy} onClose={() => setAIOpen(false)} onApply={next => { setSettings(next); setUnsaved(!!media); setNotice("AI 제안을 설정에 반영했습니다. 무음을 다시 분석해 주세요."); }} />}
     {dialog && <div className="modal-backdrop" onClick={() => setDialog(null)}><section className="modal" role="dialog" aria-modal="true" aria-label={dialog === 'help' ? '사용 방법' : '로컬 엔진'} onClick={e => e.stopPropagation()}><div className="panel-heading"><h2>{dialog === 'help' ? '몇 번의 클릭으로, 더 가벼운 편집' : '내 컴퓨터의 편집 엔진'}</h2><button className="icon-button" aria-label="창 닫기" onClick={() => setDialog(null)}><X size={18} /></button></div>{dialog === 'help' ? <><p><b>01.</b> H.264 MP4·MOV 영상을 불러옵니다.</p><p><b>02.</b> 음량과 최소 무음 길이를 설정하고 분석합니다.</p><p><b>03.</b> 컷을 들어보고 필요한 구간을 복원합니다.</p><p><b>04.</b> 정확한 미리보기로 확인한 뒤 MP4를 내보냅니다.</p><div className="modal-note">프로젝트 파일에는 편집 정보만 저장됩니다. 다음에 열 때 같은 원본 영상이 필요합니다. 음량 분석은 음악과 사람의 목소리를 구별하지 않으므로 마이크 트랙을 선택해 주세요.</div></> : <><p>{engineError || '영상 분석과 렌더링이 이 컴퓨터에서 실행됩니다.'}</p><div className="modal-note">현재 H.264 SDR 영상과 선택한 오디오 트랙 한 개를 지원합니다. 내보내기는 원본 파일을 변경하지 않습니다.</div>{engineError && <p>macOS에서는 FFmpeg 설치 후 앱을 다시 실행해 주세요.<code>brew install ffmpeg</code></p>}{window.hypercut && <button className="button secondary" onClick={() => window.hypercut?.openBrowser()}><Monitor size={16} />브라우저에서도 열기</button>}</>}</section></div>}
   </div>;

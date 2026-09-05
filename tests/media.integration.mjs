@@ -77,12 +77,52 @@ for (const variant of ['cfr', 'vfr', 'offset']) test(`M02/M03: independent flash
       assert.ok(Math.abs((flashes[i] - beeps[i]) - (expectedVideo[i] - expectedAudio[i])) < 0.005);
     }
     assert.ok(Math.abs(result.duration - 8.4) < 1 / 30 + 0.001);
+    // Fixed source interval, deliberately after an earlier cut: preview time
+    // starts at zero without inheriting the full export's accumulated offset.
+    const preview = await exportMedia(media, cuts, media.audioTracks[0].index, directory, { preview: true, range: { start: 2.4, end: 7 } });
+    assert.deepEqual(preview.kept.map(x => [Number(x.start.toFixed(6)), Number(x.end.toFixed(6))]), [[2.4, 4.2], [5.2, 7]]);
+    assert.ok(Math.abs(preview.duration - 3.6) < 0.034); assert.equal(preview.audioSamples, 172800);
+    const previewFlashes = await flashOnsets(preview.path), previewBeeps = await beepOnsets(preview.path, path.join(directory, 'preview.f32'));
+    assert.equal(previewFlashes.length, 2, `preview flashes: ${JSON.stringify(previewFlashes)}`); assert.equal(previewBeeps.length, 2, `preview beeps: ${JSON.stringify(previewBeeps)}`);
+    for (let i = 0; i < 2; i++) {
+      const expected = [0.6, 2.6][i];
+      assert.ok(Math.abs(previewFlashes[i] - expected) < 0.001, `${variant} preview flash ${previewFlashes[i]}`);
+      assert.ok(Math.abs(previewBeeps[i] - expected) < 0.005, `${variant} preview beep ${previewBeeps[i]}`);
+    }
+    console.log(JSON.stringify({ variant, previewFlashes, previewBeeps, previewSeconds: preview.duration, sourceRange: preview.sourceRange }));
     if (variant === 'offset') {
       const playback = await playbackFile(media, media.audioTracks[0].index, directory);
       const info = await inspectMedia(playback);
       assert.ok(Math.abs(info.origin) < 0.001); assert.ok(Math.abs(info.duration - 12) < 0.001);
     }
     console.log(JSON.stringify({ variant, flashes, beeps, outputDuration: result.duration, syncToleranceSeconds: 0.005 }));
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('M06: a sub-frame preview is one whole frame, removed-only ranges fail, full export stays full', async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-window-'));
+  try {
+    const source = await generateDemo(path.join(directory, 'source.mp4')), media = await inspectMedia(source);
+    const preview = await exportMedia(media, [], 1, directory, { preview: true, range: { start: 2.01, end: 2.02 } });
+    assert.ok(Math.abs(preview.duration - 1 / 30) < 0.001); assert.equal(preview.audioSamples, 1600);
+    const count = JSON.parse(await capture('ffprobe', ['-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames', '-of', 'json', preview.path]));
+    assert.equal(Number(count.streams[0].nb_read_frames), 1);
+    await assert.rejects(exportMedia(media, [{ start: 2, end: 5, enabled: true }], 1, directory, { preview: true, range: { start: 3, end: 4 } }), /남아 있는 구간/);
+    await assert.rejects(exportMedia(media, [], 1, directory, { range: { start: 3, end: 4 } }), /미리보기에서만/);
+    assert.equal((await exportMedia(media, [], 1, directory)).duration, 16);
+    assert.equal((await inspectMedia(source)).fingerprint, media.fingerprint);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('M06: a preview after the audio track ends retains silent video and a complete audio track', async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-short-audio-'));
+  try {
+    const source = path.join(directory, 'short-audio.mp4');
+    await capture('ffmpeg', ['-v', 'error', '-f', 'lavfi', '-i', 'color=c=blue:s=160x90:r=30:d=6', '-f', 'lavfi', '-i', 'sine=frequency=440:sample_rate=44100:duration=1', '-c:v', 'libx264', '-g', '30', '-c:a', 'aac', '-y', source]);
+    const media = await inspectMedia(source);
+    const preview = await exportMedia(media, [], 1, directory, { preview: true, range: { start: 4, end: 5 } });
+    assert.equal(preview.duration, 1); assert.equal(preview.audioSamples, 44100);
+    assert.deepEqual(await beepOnsets(preview.path, path.join(directory, 'silence.f32')), []);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 

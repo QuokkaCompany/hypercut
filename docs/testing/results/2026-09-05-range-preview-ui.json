@@ -1,0 +1,34 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "range": [
+      2,
+      6
+    ],
+    "previewSeconds": 2.266667,
+    "restoredPreviewSeconds": 4,
+    "fullExportRemainsFull": true,
+    "mainPlayerUnchanged": true,
+    "noPreviewKeyboardLeak": true,
+    "removedOnlyRangeRejected": true,
+    "invalidRangeDisabled": true,
+    "pageErrors": []
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "range": [
+      2,
+      6
+    ],
+    "previewSeconds": 2.266667,
+    "restoredPreviewSeconds": 4,
+    "fullExportRemainsFull": true,
+    "mainPlayerUnchanged": true,
+    "noPreviewKeyboardLeak": true,
+    "removedOnlyRangeRejected": true,
+    "invalidRangeDisabled": true,
+    "pageErrors": []
+  }
+]

@@ -62,6 +62,22 @@ export function keptIntervals(cuts, duration) {
   return kept;
 }
 
+// Preview windows preserve the same cut boundaries as a full export. Only the
+// outside window is excluded, even when that exclusion is shorter than 100ms.
+export function renderPlan(cuts, duration, frames, range) {
+  let removals = snapRemovals(normalizeIntervals(cuts.filter(x => x.enabled), duration), duration, frames);
+  let sourceRange;
+  if (range !== undefined) {
+    if (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > duration || range.start >= range.end) throw new Error('미리보기 범위가 올바르지 않습니다.');
+    const index = lowerBound(frames, range.start);
+    const start = frames[index] > range.start + EPS ? frames[Math.max(0, index - 1)] : frames[index];
+    const end = frames[lowerBound(frames, range.end)] ?? duration;
+    sourceRange = { start, end };
+    removals = normalizeIntervals([...removals, ...(start > 0 ? [{ start: 0, end: start }] : []), ...(end < duration ? [{ start: end, end: duration }] : [])], duration);
+  }
+  return { removals, kept: keptIntervals(removals.map(x => ({ ...x, enabled: true })), duration), sourceRange };
+}
+
 export function restoreRange(cuts, start, end, duration, frames) {
   if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end > duration || start >= end) throw new Error('복원 범위는 영상 안에서 시작보다 끝이 늦어야 합니다.');
   if (!frames?.length) throw new Error('영상 프레임 정보가 필요합니다.');

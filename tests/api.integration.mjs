@@ -95,3 +95,17 @@ test('E01: accurate preview cancellation settles before acknowledging and permit
   const next = await (await call('/jobs', { ...body, requestId: randomUUID() })).json();
   const completed = await terminal(next.id); assert.equal(completed.status, 'completed'); assert.equal(completed.result.duration, 16);
 });
+
+test('M06: preview range is validated, returned in source time, and cannot shorten an export', async () => {
+  const body = { type: 'preview', mediaId: media.id, trackIndex: 1, cuts: [{ start: 3, end: 5, enabled: true }] };
+  for (const range of [null, { start: -1, end: 4 }, { start: 4, end: 3 }, { start: 3, end: 17 }]) assert.equal((await call('/jobs', { ...body, range })).status, 400);
+  assert.equal((await call('/jobs', { ...body, type: 'export', range: { start: 2, end: 6 } })).status, 400);
+  const started = await (await call('/jobs', { ...body, range: { start: 2, end: 6 } })).json();
+  const completed = await terminal(started.id);
+  assert.equal(completed.status, 'completed'); assert.equal(completed.result.duration, 2);
+  assert.deepEqual(completed.result.sourceRange, { start: 2, end: 6 });
+  assert.deepEqual(completed.result.kept, [{ start: 2, end: 3 }, { start: 5, end: 6 }]);
+  assert.equal(completed.result.path, undefined);
+  const removed = await (await call('/jobs', { ...body, range: { start: 3.5, end: 4.5 } })).json();
+  const failed = await terminal(removed.id); assert.equal(failed.status, 'failed'); assert.match(failed.error, /남아 있는 구간/);
+});

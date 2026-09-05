@@ -6,7 +6,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { capture, startProcess } from './process.mjs';
 import { consumePCM, SilenceDetector } from './pcm.mjs';
-import { createCuts, keptIntervals, intervalDuration, normalizeIntervals, snapRemovals, videoExpressions, validateSettings, restoreRange } from '../shared/timeline.mjs';
+import { createCuts, intervalDuration, renderPlan, videoExpressions, validateSettings, restoreRange } from '../shared/timeline.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
 
@@ -69,9 +69,13 @@ export async function restoreMediaRange(media, cuts, range, { signal, progress }
   return { cuts: restoreRange(cuts, range.start, range.end, media.duration, frames) };
 }
 
-function audioArgs(media, track) {
-  return ['-v', 'error', '-nostdin', '-copyts', '-i', media.path, '-map', `0:${track.index}`, '-vn',
-    '-af', `asetpts=PTS-(${media.origin})/TB,aresample=async=1:first_pts=0,apad,atrim=end=${media.duration}`,
+// Timestamp seeking is only a demux hint. Our trim/aresample filters retain the
+// source clock, avoiding input accurate-seek rebasing on nonzero-start files.
+function seekArgs(media, start) { return start > 0 ? ['-noaccurate_seek', '-seek_timestamp', '1', '-ss', (media.origin + start).toFixed(9)] : []; }
+
+function audioArgs(media, track, start = 0, end = media.duration) {
+  return ['-v', 'error', '-nostdin', '-copyts', ...seekArgs(media, start), '-i', media.path, '-map', `0:${track.index}`, '-vn',
+    '-af', `asetpts=PTS-(${media.origin})/TB,aresample=async=1:first_pts=${Math.round(start * track.sampleRate)},apad,atrim=end=${end}`,
     '-ar', String(track.sampleRate), '-ac', String(track.channels), '-c:a', 'pcm_f32le', '-f', 'f32le', 'pipe:1'];
 }
 
@@ -100,13 +104,13 @@ export async function analyzeMedia(media, settingsInput, trackIndex, { signal, p
   return { settings, trackIndex, candidates, peaks, cuts: createCuts(candidates, settings, media.duration, frames), decodedSamples: samples };
 }
 
-async function writeEditedAudio(media, track, kept, destination, signal, progress) {
+async function writeEditedAudio(media, track, kept, destination, signal, progress, decodeStart = 0, decodeEnd = media.duration) {
   const output = createWriteStream(destination, { flags: 'wx' });
   let outputError;
   output.on('error', error => { outputError = error; });
-  const { child, done } = startProcess('ffmpeg', audioArgs(media, track), { signal });
+  const { child, done } = startProcess('ffmpeg', audioArgs(media, track, decodeStart, decodeEnd), { signal });
   const ranges = kept.map(x => ({ start: Math.round(x.start * track.sampleRate), end: Math.round(x.end * track.sampleRate) }));
-  let position = 0, index = 0, lastUpdate = 0, written = 0;
+  let position = Math.round(decodeStart * track.sampleRate), index = 0, lastUpdate = 0, written = 0;
   try {
     await consumePCM(child.stdout, track.channels, async (samples, bytes) => {
       const end = position + samples.length / track.channels;
@@ -121,7 +125,7 @@ async function writeEditedAudio(media, track, kept, destination, signal, progres
         }
       }
       position = end;
-      if (Date.now() - lastUpdate > 200) { progress?.({ stage: '오디오 컷 편집', progress: 0.05 + 0.25 * Math.min(1, position / track.sampleRate / media.duration) }); lastUpdate = Date.now(); }
+      if (Date.now() - lastUpdate > 200) { progress?.({ stage: '오디오 컷 편집', progress: 0.05 + 0.25 * Math.min(1, (position / track.sampleRate - decodeStart) / (decodeEnd - decodeStart)) }); lastUpdate = Date.now(); }
     });
     await done;
     output.end(); await once(output, 'close');
@@ -130,26 +134,30 @@ async function writeEditedAudio(media, track, kept, destination, signal, progres
   } catch (error) { child.kill(); output.destroy(); throw error; }
 }
 
-export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false } = {}) {
+export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range } = {}) {
+  if (range !== undefined && !preview) throw new Error('범위 지정은 미리보기에서만 사용할 수 있습니다.');
   const track = getTrack(media, trackIndex);
   const frames = await getFrames(media, signal, progress);
-  const removals = snapRemovals(normalizeIntervals(cuts.filter(x => x.enabled), media.duration), media.duration, frames);
-  const kept = keptIntervals(removals.map(x => ({ ...x, enabled: true })), media.duration);
+  const { removals, kept, sourceRange } = renderPlan(cuts, media.duration, frames, range);
   const expectedDuration = intervalDuration(kept);
-  if (!kept.length || expectedDuration <= 0) throw new Error('모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
+  if (!kept.length || expectedDuration <= 0) throw new Error(sourceRange ? '이 범위에는 남아 있는 구간이 없습니다. 범위를 넓히거나 필요한 컷을 복원해 주세요.' : '모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
+  // Decode a short lead-in to settle audio timestamps, retaining original PTS.
+  const decodeStart = sourceRange ? Math.max(0, Math.floor(sourceRange.start) - 1) : 0;
+  const decodeEnd = sourceRange?.end ?? media.duration;
   const id = randomUUID();
   const work = path.join(directory, `${id}.work`);
   await mkdir(work, { recursive: true });
   const pcmPath = path.join(work, 'edited.f32');
   const temporaryOutput = path.join(work, 'output.mp4');
   try {
-    const audioSamples = await writeEditedAudio(media, track, kept, pcmPath, signal, progress);
+    const audioSamples = await writeEditedAudio(media, track, kept, pcmPath, signal, progress, decodeStart, decodeEnd);
     const { select, offset } = videoExpressions(removals);
     const scale = preview ? ',scale=w=960:h=540:force_original_aspect_ratio=decrease:force_divisible_by=2' : ',pad=ceil(iw/2)*2:ceil(ih/2)*2';
-    const graph = `[0:${media.videoIndex}]setpts=PTS-(${media.origin})/TB,select='${select}',setpts='PTS-(${offset})/TB'${scale}[v]`;
+    const trim = sourceRange ? `,trim=start=${sourceRange.start}:end=${sourceRange.end}` : '';
+    const graph = `[0:${media.videoIndex}]setpts=PTS-(${media.origin})/TB${trim},select='${select}',setpts='PTS-(${offset})/TB'${scale}[v]`;
     const filterPath = path.join(work, 'filter.txt');
     await writeFile(filterPath, graph);
-    const args = ['-v', 'error', '-nostdin', '-copyts', '-i', media.path, '-f', 'f32le', '-ar', String(track.sampleRate), '-ac', String(track.channels), '-i', pcmPath,
+    const args = ['-v', 'error', '-nostdin', '-copyts', ...seekArgs(media, decodeStart), '-i', media.path, '-f', 'f32le', '-ar', String(track.sampleRate), '-ac', String(track.channels), '-i', pcmPath,
       '-filter_complex_script', filterPath, '-map', '[v]', '-map', '1:a:0', '-c:v', 'libx264', '-preset', preview ? 'ultrafast' : 'veryfast', '-crf', preview ? '25' : '18',
       '-pix_fmt', 'yuv420p', '-fps_mode', 'vfr', '-enc_time_base:v', '1:90000', '-video_track_timescale', '90000', '-c:a', 'aac', '-b:a', '192k',
       '-t', expectedDuration.toFixed(9), '-movflags', '+faststart', '-progress', 'pipe:1', '-y', temporaryOutput];
@@ -168,6 +176,6 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     if (signal?.aborted) throw new DOMException('작업이 취소되었습니다.', 'AbortError');
     const destination = path.join(directory, `${id}.mp4`);
     await rename(temporaryOutput, destination);
-    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, verified: true };
+    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, kept, ...(sourceRange ? { sourceRange } : {}), verified: true };
   } finally { await rm(work, { recursive: true, force: true }); }
 }

@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "scope": "Synthetic 1080p30 60-minute input, 1000 cuts, selected original 3590–3599 seconds. Input/hash/frame-index/analysis preparation measured separately. Preview runs reuse the frame index and warm OS cache; not a full-app benchmark.",
+  "fingerprint": "5c16a6a3bac8633926ded013322578e268da323303d570dfc68bf5c17f16b786",
+  "preparationSeconds": 32.981164208,
+  "runs": [
+    {
+      "iteration": 1,
+      "seconds": 0.28095691699999586,
+      "previewSeconds": 7.533267,
+      "audioSamples": 361600,
+      "flashes": [
+        2.466667,
+        5.333267
+      ],
+      "tones": [
+        0.0001875,
+        2.066854166666667,
+        4.933520833333334
+      ],
+      "extraSyncError": [
+        -0.0001871666666667382,
+        -0.0002538333333333975
+      ],
+      "verified": true
+    },
+    {
+      "iteration": 2,
+      "seconds": 0.2731832500000019,
+      "previewSeconds": 7.533267,
+      "audioSamples": 361600,
+      "flashes": [
+        2.466667,
+        5.333267
+      ],
+      "tones": [
+        0.0001875,
+        2.066854166666667,
+        4.933520833333334
+      ],
+      "extraSyncError": [
+        -0.0001871666666667382,
+        -0.0002538333333333975
+      ],
+      "verified": true
+    },
+    {
+      "iteration": 3,
+      "seconds": 0.2751175000000003,
+      "previewSeconds": 7.533267,
+      "audioSamples": 361600,
+      "flashes": [
+        2.466667,
+        5.333267
+      ],
+      "tones": [
+        0.0001875,
+        2.066854166666667,
+        4.933520833333334
+      ],
+      "extraSyncError": [
+        -0.0001871666666667382,
+        -0.0002538333333333975
+      ],
+      "verified": true
+    }
+  ]
+}
