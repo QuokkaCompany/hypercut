@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "scope": "Independent final two flash/tone pairs after 1,000 cuts; synthetic source has a 400ms flash delay by design.",
+  "source": {
+    "seek": 3592,
+    "flashes": [
+      1.2,
+      4.8
+    ],
+    "tones": [
+      0.8001875,
+      4.4001875
+    ],
+    "gaps": [
+      0.3998124999999999,
+      0.39981249999999946
+    ]
+  },
+  "output": {
+    "seek": 2858,
+    "flashes": [
+      0.466667,
+      3.333267,
+      6.2
+    ],
+    "tones": [
+      0.06685416666666667,
+      2.933520833333333,
+      5.8001875
+    ],
+    "gaps": [
+      0.39974616666666707,
+      0.39981250000000035
+    ]
+  },
+  "extraErrorSeconds": [
+    -6.633333333283531e-05,
+    8.881784197001252e-16
+  ],
+  "toleranceSeconds": 0.005
+}
