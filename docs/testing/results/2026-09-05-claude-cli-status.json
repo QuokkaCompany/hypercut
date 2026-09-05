@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-05",
+  "surface": "Local browser application served by normal local process",
+  "scope": "Actual CLI installation and subscription authentication status only; no model call",
+  "status": {
+    "installed": true,
+    "compatible": true,
+    "version": "2.1.260",
+    "loggedIn": true,
+    "ready": true
+  },
+  "authenticatedModelRequests": 0,
+  "connectionConfigured": false
+}

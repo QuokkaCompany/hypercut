@@ -11,7 +11,7 @@ import { installAIRoutes } from './ai.mjs';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 
-export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'), distDir = path.join(projectRoot, 'dist'), development = false, aiFetch } = {}) {
+export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'), distDir = path.join(projectRoot, 'dist'), development = false, aiFetch, claudeCLI } = {}) {
   const directory = path.join(dataDir, 'sessions', randomUUID());
   await mkdir(directory, { recursive: true });
   const token = randomBytes(32).toString('hex');
@@ -39,7 +39,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
   app.use(express.json({ limit: '10mb' }));
   const upload = multer({ dest: directory, limits: { fileSize: 20 * 1024 ** 3, files: 1, fields: 2 } });
   const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next);
-  const ai = installAIRoutes(app, asyncRoute, { fetchImpl: aiFetch });
+  const ai = installAIRoutes(app, asyncRoute, { fetchImpl: aiFetch, claudeCLI });
   const findMedia = id => { const item = media.get(id); if (!item) throw new Error('원본 영상을 다시 불러와 주세요.'); return item; };
   const registerFile = async (filePath, name, signal = playbackController.signal) => { const item = await inspectMedia(filePath, name, signal); signal?.throwIfAborted(); media.set(item.id, item); return publicMedia(item); };
   let toolsStatus;
@@ -134,7 +134,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
   app.use((error, _req, res, _next) => res.status(400).json({ error: error.code === 'LIMIT_FILE_SIZE' ? '20 GB 이하의 영상을 선택해 주세요.' : error.message || '작업 중 오류가 발생했습니다.' }));
   return {
     app, registerFile, directory, exports, media,
-    async close() { ai.close(); playbackController.abort(); for (const job of jobs.values()) job.controller?.abort(); await Promise.allSettled([...jobs.values()].map(job => job.task).concat([...media.values()].flatMap(item => [...(item.playbacks?.values() || [])]))); /* Keep session files until the next explicit cleanup. */ },
+    async close() { const aiClosing = ai.close(); playbackController.abort(); for (const job of jobs.values()) job.controller?.abort(); await Promise.allSettled([aiClosing, ...[...jobs.values()].map(job => job.task), ...[...media.values()].flatMap(item => [...(item.playbacks?.values() || [])])]); /* Keep session files until the next explicit cleanup. */ },
   };
 }
 

@@ -55,24 +55,31 @@ npm run package:desktop
 AI 메뉴에서 자연어로 무음 설정을 제안받고, 현재 값과 비교해 직접 적용합니다. AI는 영상이나 음성을 듣지 않고 요청 문장과 네 가지 설정만 받습니다. 적용 후 다시 분석해야 컷이 바뀝니다.
 
 - **Ollama**: 이 컴퓨터의 HTTP 서버와 설치한 모델 이름을 지정합니다. 원격 주소는 허용하지 않습니다.
+- **Claude Code — 기존 구독 로그인**: 설치된 Claude Code의 구독 로그인을 확인하고 선택한 모델에 설정 제안을 요청합니다. 설치·로그인 확인에는 모델 요청을 보내지 않습니다. 로그인은 터미널의 `claude auth login`을 사용하며, HyperCut은 로그인 정보를 프로젝트에 저장하지 않습니다. 제안 요청 시 해당 계정의 사용량이 적용됩니다. 실제 인증된 모델 응답은 아직 미검증인 실험 연결입니다.
 - **OpenAI API / Claude API**: 사용 가능한 모델 ID와 별도 API 키를 직접 지정합니다. 키는 서버 메모리에만 보관하고 앱 종료·연결 해제 시 버립니다. 연결 설정 저장은 네트워크 호출이 아니며, 제안 요청 버튼을 눌렀을 때만 해당 공급자를 호출합니다. 다른 공급자로 자동 전환하지 않습니다.
-- **기존 ChatGPT·Claude 채팅**: 요청 복사→사용하는 채팅에 붙여넣기→JSON 응답 가져오기 방식입니다. 구독 계정의 자동 로그인·MCP 연결은 아직 구현하지 않았습니다.
+- **기존 ChatGPT·Claude 채팅에서 수동 사용**: 요청 복사→사용하는 채팅에 붙여넣기→JSON 응답 가져오기 방식입니다. 채팅에서 HyperCut을 호출하는 MCP 연결은 아직 구현하지 않았습니다.
 
-세 API의 요청·오류 계약은 모의 공급자로 검증했습니다. 실제 인증된 연결과 모델 응답 품질은 아직 검증하지 않았으며 실험 기능입니다. 채팅 구독이 API 사용료까지 포함한다고 가정하지 않습니다. 응답은 허용된 설정·수치 범위로 재검증하고 명령어를 실행하지 않습니다.
+세 API는 모의 공급자로, Claude Code는 모의 실행 파일을 통한 실제 프로세스·API·브라우저·Mac 앱 흐름으로 검증했습니다. 설치된 실제 CLI의 로그인 상태도 확인했으나 인증된 모델 요청과 응답 품질은 아직 검증하지 않았습니다. 채팅 구독이 API 사용료까지 포함한다고 가정하지 않습니다. 응답은 허용된 설정·수치 범위로 재검증합니다. CLI는 모델의 파일·셸·MCP 도구를 끄고 요청문을 표준 입력으로 전달합니다. CLI의 관리자 정책은 계속 적용됩니다.
+
+설정 저장, 로그인 확인, 실제 AI 응답 성공을 별도로 표시합니다. Claude Code 연결에서 API 키 인증이나 다른 모델 공급자로 자동 전환하지 않습니다. 설치 경로를 자동으로 찾지 못할 때는 앱을 시작하는 환경의 `CLAUDE_CLI_PATH`로 지정할 수 있습니다.
+
+구독 CLI 동작과 사용량 근거: [Claude Code CLI 옵션](https://code.claude.com/docs/en/cli-reference), [Claude 구독의 SDK/CLI 사용 안내](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan). 공급자 정책과 설치 버전에 따라 가용성이 달라질 수 있습니다.
 
 공식 연결 계약: [Ollama Chat](https://docs.ollama.com/api/chat), [OpenAI 구조화 출력](https://developers.openai.com/api/docs/guides/structured-outputs), [Claude 구조화 출력](https://platform.claude.com/docs/en/build-with-claude/structured-outputs).
 
 ## 검증
 
-실제 통과 결과와 미실행 범위는 [첫 프리뷰](docs/testing/2026-09-05-preview-results.md), [복구·부분 복원·앱 성능](docs/testing/2026-09-05-recovery-results.md), [선택 범위 미리보기](docs/testing/2026-09-05-range-preview-results.md)에 기록했습니다. 현재 정식 MVP 전체 검증이 완료된 상태는 아닙니다.
+계획·통과 기준·실제 결과·미실행 범위는 [검증 안내](docs/testing/README.md)에 모았습니다. 최신 AI 연결 근거는 [Claude Code 연결 검증](docs/testing/2026-09-05-claude-cli-results.md)에 있습니다. 현재 정식 MVP 전체 검증이 완료된 상태는 아닙니다.
 
 ```sh
 npm test
 npm run test:media
 npm run test:api
+npm run test:claude
 npm run test:failures
 npm run build
 npm run test:e2e -- --desktop --packaged
+npm run test:claude:e2e -- --desktop
 ```
 
 E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니다. `npm run benchmark`는 긴 합성 영상을 만들고 10분·60분 조건을 각 3회 처리합니다. 단위 검증과 실제 FFmpeg 입출력 검증을 구분합니다. 자세한 요구와 실행 계획은 [검증 계획](docs/plans/2026-09-05-validation-plan.md), [테스트 계획](docs/plans/2026-09-05-test-plan.md), [구현 계획](docs/plans/2026-09-05-implementation-plan.md)에 있습니다.

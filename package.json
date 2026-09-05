@@ -14,6 +14,8 @@
     "test": "node --test tests/*.test.mjs",
     "test:media": "node --test tests/media.integration.mjs",
     "test:api": "node --test tests/api.integration.mjs tests/ai-api.integration.mjs",
+    "test:claude": "node --test tests/claude-cli.integration.mjs",
+    "test:claude:e2e": "node scripts/claude-cli-e2e.mjs",
     "test:failures": "node --test tests/failures.integration.mjs tests/atomic-file.integration.mjs",
     "test:disk-full": "node --test tests/disk-full.integration.mjs",
     "test:recovery": "node scripts/recovery-e2e.mjs",

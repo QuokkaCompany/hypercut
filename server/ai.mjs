@@ -1,11 +1,16 @@
 import { PROPOSAL_SCHEMA, proposalPrompt, validateProposal } from '../shared/ai.mjs';
+import { createClaudeCLI } from './claude-cli.mjs';
 
 const HTTP_ERRORS = { 401: '인증에 실패했습니다. API 키를 확인해 주세요.', 403: '이 모델을 사용할 권한이 없습니다.', 429: '사용량 또는 요청 한도에 도달했습니다.' };
 
 export function validateConnection(input) {
-  if (!['ollama', 'openai', 'anthropic'].includes(input?.provider)) throw new Error('지원하지 않는 AI 연결입니다.');
+  if (!['ollama', 'openai', 'anthropic', 'claude_cli'].includes(input?.provider)) throw new Error('지원하지 않는 AI 연결입니다.');
   const model = input.model?.trim();
   if (!model || model.length > 200 || /[\r\n]/.test(model)) throw new Error('사용할 모델 이름을 입력해 주세요.');
+  if (input.provider === 'claude_cli') {
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,199}$/.test(model)) throw new Error('Claude Code 모델 이름이 올바르지 않습니다.');
+    return { provider: 'claude_cli', model };
+  }
   if (input.provider === 'ollama') {
     let url;
     try { url = new URL(input.baseURL || 'http://127.0.0.1:11434'); } catch { throw new Error('Ollama 주소가 올바르지 않습니다.'); }
@@ -25,9 +30,13 @@ async function readJSON(response) {
   } finally { await reader.cancel().catch(() => {}); }
 }
 
-export async function askAI(connection, instruction, settings, { signal, fetchImpl = fetch, timeoutMs = 90000 } = {}) {
+export async function askAI(connection, instruction, settings, { signal, fetchImpl = fetch, timeoutMs = 90000, claudeCLI = createClaudeCLI(), onExecution } = {}) {
   const prompt = proposalPrompt(instruction, settings);
   const config = validateConnection(connection);
+  if (config.provider === 'claude_cli') {
+    const result = await claudeCLI.ask(config.model, instruction, settings, { signal, timeoutMs });
+    onExecution?.(result.execution); return result.proposal;
+  }
   const messages = [{ role: 'user', content: prompt }];
   let url, headers = { 'Content-Type': 'application/json' }, body;
   if (config.provider === 'ollama') {
@@ -63,10 +72,14 @@ export async function askAI(connection, instruction, settings, { signal, fetchIm
   }
 }
 
-export function installAIRoutes(app, asyncRoute, { fetchImpl } = {}) {
-  let connection = null, active = null, generation = 0;
-  const disconnect = () => { generation++; active?.abort(); connection = null; };
-  app.get('/api/ai/connection', (_req, res) => res.json(connection ? { connected: true, provider: connection.provider, model: connection.model, baseURL: connection.baseURL } : { connected: false }));
+export function installAIRoutes(app, asyncRoute, { fetchImpl, claudeCLI = createClaudeCLI() } = {}) {
+  let connection = null, active = null, generation = 0, verified = false, lastExecution = null;
+  const lifecycle = new AbortController();
+  const pending = new Set();
+  const track = promise => { pending.add(promise); promise.finally(() => pending.delete(promise)).catch(() => {}); return promise; };
+  const disconnect = () => { generation++; active?.abort(); connection = null; verified = false; lastExecution = null; };
+  app.get('/api/ai/claude/status', asyncRoute(async (_req, res) => res.json(await track(claudeCLI.check({ signal: lifecycle.signal })))));
+  app.get('/api/ai/connection', (_req, res) => res.json(connection ? { connected: true, provider: connection.provider, model: connection.model, baseURL: connection.baseURL, verified, lastExecution } : { connected: false }));
   app.post('/api/ai/connection', (req, res) => { const next = validateConnection(req.body); disconnect(); connection = next; res.json({ connected: true, provider: next.provider, model: next.model }); });
   app.delete('/api/ai/connection', (_req, res) => { disconnect(); res.json({ connected: false }); });
   app.delete('/api/ai/proposal', (_req, res) => { generation++; active?.abort(); res.json({ cancelled: true }); });
@@ -74,12 +87,15 @@ export function installAIRoutes(app, asyncRoute, { fetchImpl } = {}) {
     if (!connection) throw new Error('AI를 먼저 연결해 주세요.');
     if (active) throw new Error('진행 중인 AI 요청을 취소하거나 완료한 뒤 다시 요청해 주세요.');
     const controller = new AbortController(), revision = generation; active = controller;
+    verified = false; lastExecution = null;
     const onClose = () => { if (!res.writableEnded) controller.abort(); }; res.on('close', onClose);
     try {
-      const proposal = await askAI(connection, req.body.instruction, req.body.settings, { signal: controller.signal, fetchImpl });
+      let execution = null;
+      const proposal = await track(askAI(connection, req.body.instruction, req.body.settings, { signal: AbortSignal.any([controller.signal, lifecycle.signal]), fetchImpl, claudeCLI, onExecution: value => { execution = value; } }));
       if (revision !== generation) throw new Error('연결이 변경되어 이전 AI 제안을 폐기했습니다.');
+      verified = true; lastExecution = execution;
       res.json(proposal);
     } finally { res.off('close', onClose); if (active === controller) active = null; }
   }));
-  return { close: disconnect };
+  return { async close() { lifecycle.abort(); disconnect(); await Promise.allSettled([...pending]); } };
 }
