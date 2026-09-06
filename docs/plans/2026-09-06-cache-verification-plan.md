@@ -75,4 +75,4 @@ python3 scripts/file-cache-controls.py test-output/FRESH_CACHE_CONTROL_DIRECTORY
 
 ## 미완료 범위
 
-실제 앱의 60초 입력 파일 캐시 대조를 완료했다. 10분/60분 조건별 반복과 OS 전체 cold-cache는 아직 수행하지 않았다. 실제 한국어 발화·CER·작업 시간 절감, Mac OS 네트워크 차단, 인증된 AI 연결도 별도 검증으로 남아 있다. 사전 대조 성공은 이 항목들의 통과 증거가 아니다.
+실제 앱의 60초 입력 파일 캐시 대조와 [브라우저 60분 cold 3회](../testing/2026-09-06-input-cache-results.md)를 완료했다. 10분/60분 조건별 24회 중 나머지 21회와 OS 전체 cold-cache는 아직 수행하지 않았다. 실제 한국어 발화·CER·작업 시간 절감, Mac OS 네트워크 차단, 인증된 AI 연결도 별도 검증으로 남아 있다. 합성 자료의 성공은 이 항목들의 통과 증거가 아니다.

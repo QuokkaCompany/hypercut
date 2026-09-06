@@ -30,6 +30,8 @@ npm run package:desktop
 
 전사 준비는 Apple Silicon macOS의 Python 3와 Xcode Command Line Tools를 사용합니다. 고정 버전 whisper.cpp를 프로젝트 내부에서 빌드하고 공개 Whisper small 모델 약 488MB를 다운로드합니다. 모델을 준비한 후에는 전사에 네트워크·계정·API 호출이 필요하지 않습니다. 모델·도구는 `.hypercut/` 아래에 두고 Git에 포함하지 않습니다.
 
+모델 다운로드 중 Ctrl+C로 취소하면 이번 임시 파일을 정리합니다. 다음 실행은 완성 파일의 해시를 확인해 재사용하고, 불완전한 다운로드는 새로 시작합니다. [다운로드 취소·복구 검증](docs/testing/2026-09-06-model-download-recovery-results.md)은 `npm run test:download`로 실행하며 실제 모델을 받지 않습니다.
+
 패키지는 `release/` 아래에 생성됩니다. 현재 약 937MiB이며 전사 실행 파일·모델·한글 글꼴·자막 렌더러·라이선스를 포함합니다. 현재 패키지는 이 컴퓨터에 설치한 FFmpeg/ffprobe를 사용합니다. 다른 컴퓨터로 배포할 때도 해당 도구가 필요합니다. `FFMPEG_PATH`, `FFPROBE_PATH`로 실행 경로를 지정할 수 있습니다.
 
 개발 중에는 `npm run dev`로 서버와 Vite를 함께 시작하고 `http://127.0.0.1:5173`을 사용합니다.

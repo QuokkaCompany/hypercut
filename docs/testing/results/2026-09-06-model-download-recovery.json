@@ -1,0 +1,221 @@
+{
+  "date": "2026-09-06T12:15:44.608Z",
+  "status": "RECORDED_PASS",
+  "scope": "Synthetic bytes over a real loopback HTTP server, isolated files and owned child processes. No model weights, engine builds, installed runtime, or external providers were used. Signal tests cover the download lifecycle only.",
+  "sourceHashes": {
+    "scripts/helpers/verified-download.mjs": "7fcce5b741994d808eed8e630ad295003e6d87a161114d9d06e2ab623e909469",
+    "scripts/setup-transcription.mjs": "ce350e7a1fad372d5d7b830ec2945ad331d9e69b86a2b4611217a7d366e0f5bd",
+    "tests/verified-download.integration.mjs": "c3dcd6ee242435ade0f045cb13f3bf4c6426849d8e6fac570776f4d112a0d6d5",
+    "tests/helpers/download-process.mjs": "d0b2a647284e734cf04e8c20117922f92eae9046a27c759b757ed0e704b11c23"
+  },
+  "legacyComparison": "EXECUTED",
+  "requests": [
+    "/valid",
+    "/valid",
+    "/wrong",
+    "/valid",
+    "/error",
+    "/truncated",
+    "/hold",
+    "/hold",
+    "/hold",
+    "/valid",
+    "/hold",
+    "/valid",
+    "/hold",
+    "/valid",
+    "/valid"
+  ],
+  "responseClosures": [
+    {
+      "path": "/valid",
+      "closed": true
+    },
+    {
+      "path": "/valid",
+      "closed": true
+    },
+    {
+      "path": "/wrong",
+      "closed": true
+    },
+    {
+      "path": "/valid",
+      "closed": true
+    },
+    {
+      "path": "/error",
+      "closed": true
+    },
+    {
+      "path": "/truncated",
+      "closed": true
+    },
+    {
+      "path": "/hold",
+      "closed": true
+    },
+    {
+      "path": "/hold",
+      "closed": true
+    },
+    {
+      "path": "/hold",
+      "closed": true
+    },
+    {
+      "path": "/valid",
+      "closed": true
+    },
+    {
+      "path": "/hold",
+      "closed": true
+    },
+    {
+      "path": "/valid",
+      "closed": true
+    },
+    {
+      "path": "/hold",
+      "closed": true
+    },
+    {
+      "path": "/valid",
+      "closed": true
+    },
+    {
+      "path": "/valid",
+      "closed": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "successful download then verified reuse makes no new request",
+      "status": "PASS",
+      "sha256": "2dc63d13fbc9d626777efc01e354bd4303f99d5029aa0109de57c280ca6fd84a",
+      "bytes": 131089,
+      "reuseRequests": 0
+    },
+    {
+      "name": "first installation publishes verified bytes when the destination is absent",
+      "status": "PASS",
+      "sha256": "2dc63d13fbc9d626777efc01e354bd4303f99d5029aa0109de57c280ca6fd84a",
+      "bytes": 131089
+    },
+    {
+      "name": "wrong-hash preserves the prior file and removes only its temporary file",
+      "status": "PASS",
+      "previousPreserved": true,
+      "temporaryFiles": 0
+    },
+    {
+      "name": "oversize preserves the prior file and removes only its temporary file",
+      "status": "PASS",
+      "previousPreserved": true,
+      "temporaryFiles": 0
+    },
+    {
+      "name": "http-error preserves the prior file and removes only its temporary file",
+      "status": "PASS",
+      "previousPreserved": true,
+      "temporaryFiles": 0
+    },
+    {
+      "name": "a truncated response is not installed",
+      "status": "PASS",
+      "previousPreserved": true,
+      "temporaryFiles": 0
+    },
+    {
+      "name": "timeout cleans an unfinished response",
+      "status": "PASS",
+      "previousPreserved": true,
+      "temporaryFiles": 0,
+      "connectionClosed": true
+    },
+    {
+      "name": "a pre-cancelled request sends no HTTP request",
+      "status": "PASS",
+      "newRequests": 0,
+      "previousPreserved": true
+    },
+    {
+      "name": "the frozen previous implementation leaves partial data after SIGINT",
+      "status": "PASS",
+      "code": null,
+      "signal": "SIGINT",
+      "partialFiles": [
+        "model.bin.052527ff-0ccc-42dd-8f0d-13901dbd6e45.download"
+      ],
+      "stdout": "model.bin: 0.0 MiB\n",
+      "stderr": "",
+      "ended": true
+    },
+    {
+      "name": "SIGINT cleans partial data, preserves the old file and allows retry",
+      "status": "PASS",
+      "code": 130,
+      "signal": null,
+      "cleanedBeforeRetry": true,
+      "connectionClosed": true,
+      "retrySHA256": "2dc63d13fbc9d626777efc01e354bd4303f99d5029aa0109de57c280ca6fd84a",
+      "stdout": "{\"event\":\"progress\",\"bytes\":4096,\"maxBytes\":131089}\n{\"event\":\"failed\",\"name\":\"AbortError\",\"message\":\"모델 다운로드 준비를 취소했습니다.\",\"signalName\":\"SIGINT\"}\n",
+      "stderr": "",
+      "ended": true
+    },
+    {
+      "name": "SIGTERM cleans partial data, preserves the old file and allows retry",
+      "status": "PASS",
+      "code": 143,
+      "signal": null,
+      "cleanedBeforeRetry": true,
+      "connectionClosed": true,
+      "retrySHA256": "2dc63d13fbc9d626777efc01e354bd4303f99d5029aa0109de57c280ca6fd84a",
+      "stdout": "{\"event\":\"progress\",\"bytes\":4096,\"maxBytes\":131089}\n{\"event\":\"failed\",\"name\":\"AbortError\",\"message\":\"모델 다운로드 준비를 취소했습니다.\",\"signalName\":\"SIGTERM\"}\n",
+      "stderr": "",
+      "ended": true
+    },
+    {
+      "name": "SIGKILL partial data is not reused or removed by a later attempt",
+      "status": "PASS",
+      "code": null,
+      "signal": "SIGKILL",
+      "priorPartialLeftIntact": true,
+      "retrySHA256": "2dc63d13fbc9d626777efc01e354bd4303f99d5029aa0109de57c280ca6fd84a",
+      "stdout": "{\"event\":\"progress\",\"bytes\":4096,\"maxBytes\":131089}\n",
+      "stderr": "",
+      "ended": true
+    },
+    {
+      "name": "a late cancel stops preparation without rolling back verified published bytes",
+      "status": "PASS",
+      "code": 130,
+      "signal": null,
+      "completedFilePreserved": true,
+      "retryRequests": 0,
+      "stdout": "{\"event\":\"progress\",\"bytes\":131089,\"maxBytes\":131089}\n{\"event\":\"published\",\"status\":\"downloaded\",\"sha256\":\"2dc63d13fbc9d626777efc01e354bd4303f99d5029aa0109de57c280ca6fd84a\",\"bytes\":131089}\n{\"event\":\"failed\",\"name\":\"AbortError\",\"message\":\"모델 다운로드 준비를 취소했습니다.\",\"signalName\":\"SIGINT\"}\n",
+      "stderr": "",
+      "ended": true
+    }
+  ],
+  "legacyDriver": {
+    "sha256": "2469e7b024b0cf9220f61e1d1788aab7f953b6caa8d021f0bd66a21efb0e58ef",
+    "source": "import { createHash, randomUUID } from 'node:crypto';\nimport { createReadStream } from 'node:fs';\nimport { rename, rm, readFile } from 'node:fs/promises';\nimport path from 'node:path';\nasync function sha(file) { const hash = createHash('sha256'); for await (const bytes of createReadStream(file)) hash.update(bytes); return hash.digest('hex'); }\nasync function download(url, file, hash, maxBytes) {\n  if (await sha(file).catch(() => '') === hash) { console.log(`확인됨: ${path.basename(file)}`); return; }\n  const temporary = `${file}.${randomUUID()}.download`;\n  try {\n    const response = await fetch(url, { signal: AbortSignal.timeout(600000) });\n    if (!response.ok || !response.body) throw new Error(`다운로드 실패: ${response.status}`);\n    let length = 0, lastReport = 0;\n    const { open } = await import('node:fs/promises');\n    const handle = await open(temporary, 'wx');\n    try {\n      for await (const chunk of response.body) {\n        length += chunk.length;\n        if (length > maxBytes) throw new Error('다운로드 크기가 허용 범위를 넘습니다.');\n        await handle.writeFile(chunk);\n        if (Date.now() - lastReport > 2000) { console.log(`${path.basename(file)}: ${(length / 1024 ** 2).toFixed(1)} MiB`); lastReport = Date.now(); }\n      }\n      await handle.sync();\n    } finally { await handle.close(); }\n    if (await sha(temporary) !== hash) throw new Error('다운로드 해시가 고정 버전과 일치하지 않습니다.');\n    await rename(temporary, file);\n  } finally { await rm(temporary, { force: true }); }\n}\n\nconst config = JSON.parse(await readFile(process.argv[2], 'utf8'));\nawait download(config.url, config.file, config.sha256, config.maxBytes);\n"
+  },
+  "testLog": "\n> hypercut@0.1.0 test:download\n> node --test tests/verified-download.integration.mjs\n\n{\"reportPath\":\"/Users/dante/Desktop/github/hyper_cut/test-output/model-download-recovery-1788696944163-9d107606-0921-422d-8562-772ff6c9a15d/results.json\"}\n▶ verified downloads preserve previous files, reject partial data, and recover from real process signals\n  ✔ successful download then verified reuse makes no new request (22.764292ms)\n  ✔ first installation publishes verified bytes when the destination is absent (7.722167ms)\n  ✔ wrong-hash preserves the prior file and removes only its temporary file (6.523917ms)\n  ✔ oversize preserves the prior file and removes only its temporary file (3.683667ms)\n  ✔ http-error preserves the prior file and removes only its temporary file (1.285875ms)\n  ✔ a truncated response is not installed (1.795625ms)\n  ✔ timeout cleans an unfinished response (102.895042ms)\n  ✔ a pre-cancelled request sends no HTTP request (0.662292ms)\n  ✔ the frozen previous implementation leaves partial data after SIGINT (58.540625ms)\n  ✔ SIGINT cleans partial data, preserves the old file and allows retry (58.457042ms)\n  ✔ SIGTERM cleans partial data, preserves the old file and allows retry (58.918625ms)\n  ✔ SIGKILL partial data is not reused or removed by a later attempt (53.914958ms)\n  ✔ a late cancel stops preparation without rolling back verified published bytes (58.362542ms)\n✔ verified downloads preserve previous files, reject partial data, and recover from real process signals (445.577458ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 489.855084\n",
+  "baselineExtraction": {
+    "commit": "6f8e5ec",
+    "sourceSHA256": "2aa02e06825697ca9741e220c610ada06f609bc830e9b977bba4b957337cd699",
+    "functionsSHA256": "0eca0e0e9a1b7a55c9f62622837cad79bbf762d86b6fea962da0aa96e1c627de",
+    "driverSHA256": "2469e7b024b0cf9220f61e1d1788aab7f953b6caa8d021f0bd66a21efb0e58ef",
+    "scope": "Exact original sha and download functions with isolated imports and synthetic test configuration; no installer body executed."
+  },
+  "previousAttempt": {
+    "path": "test-output/model-download-recovery-1/results.json",
+    "status": "RECORDED_FAILURE",
+    "reason": "Late-cancel test driver awaited an unreferenced Promise and exited with Node code 13 before the signal; fixed by retaining a bounded timer during that artificial wait. Other 12 scenario checks passed.",
+    "log": "▶ verified downloads preserve previous files, reject partial data, and recover from real process signals\n  ✔ successful download then verified reuse makes no new request (23.96125ms)\n  ✔ first installation publishes verified bytes when the destination is absent (7.440291ms)\n  ✔ wrong-hash preserves the prior file and removes only its temporary file (6.861666ms)\n  ✔ oversize preserves the prior file and removes only its temporary file (5.315792ms)\n  ✔ http-error preserves the prior file and removes only its temporary file (1.418833ms)\n  ✔ a truncated response is not installed (2.093542ms)\n  ✔ timeout cleans an unfinished response (102.625875ms)\n  ✔ a pre-cancelled request sends no HTTP request (0.905958ms)\n  ✔ the frozen previous implementation leaves partial data after SIGINT (58.909166ms)\n  ✔ SIGINT cleans partial data, preserves the old file and allows retry (61.598917ms)\n  ✔ SIGTERM cleans partial data, preserves the old file and allows retry (60.847209ms)\n  ✔ SIGKILL partial data is not reused or removed by a later attempt (58.512833ms)\n  ✖ a late cancel stops preparation without rolling back verified published bytes (60.867708ms)\n✖ verified downloads preserve previous files, reject partial data, and recover from real process signals (463.846125ms)\nℹ tests 14\nℹ suites 0\nℹ pass 12\nℹ fail 2\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 505.6835\n\n✖ failing tests:\n\ntest at tests/verified-download.integration.mjs:73:40\n✖ a late cancel stops preparation without rolling back verified published bytes (60.867708ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n  +   code: 13,\n  -   code: 130,\n      signal: null\n    }\n  \n      at file:///Users/dante/Desktop/github/hyper_cut/tests/verified-download.integration.mjs:189:43\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/verified-download.integration.mjs:74:48)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/verified-download.integration.mjs:185:3)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: { code: 13, signal: null },\n    expected: { code: 130, signal: null },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }\n"
+  },
+  "command": "HYPERCUT_LEGACY_DOWNLOAD_DRIVER=test-output/model-download-before/driver.mjs npm run test:download",
+  "rawReport": "/Users/dante/Desktop/github/hyper_cut/test-output/model-download-recovery-1788696944163-9d107606-0921-422d-8562-772ff6c9a15d/results.json"
+}
