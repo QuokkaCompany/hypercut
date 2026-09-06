@@ -149,3 +149,5 @@ E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니
 `npm run benchmark:transcription`은 10분·60분의 반복 한국어 TTS 자료를 두 앱에서 각각 3회 실제 전사합니다. 앱/모델 프로세스 트리의 RSS와 자막 선택 반응·취소를 측정하며 CPU를 사용합니다. 60초 예비 확인은 `npm run benchmark:transcription -- --durations=60 --iterations=1 --output=test-output/transcription-performance-smoke`로 실행합니다. OS 캐시를 비우지 않으며 실제 녹음 품질 시험을 대체하지 않습니다. [측정 계획](docs/plans/2026-09-05-transcription-performance-plan.md)과 [실행 기록](docs/testing/2026-09-05-transcription-performance-results.md)에 범위와 결과를 구분합니다.
 
 전사 성능 측정은 기존 결과를 덮어쓰지 않습니다. 같은 조건을 다시 실행할 때는 `--output=test-output/새-측정-이름`으로 새 폴더를 지정하세요.
+
+`npm run test:jobs:races`는 두 앱에서 34개 경합 조건을 검사합니다. 실제 전사와 효과음 합성을 포함하므로 로컬 Whisper 모델, Mac 패키지, 한국어 Eddy TTS와 FFmpeg가 필요합니다. `--scenarios=CURRENT_CANCEL_ERROR_TRANSCRIBE,CURRENT_CANCEL_ERROR_CAPTIONS`로 자막 창 취소 재시도 조건만 선택할 수 있습니다. [편집창별 실행 기록](docs/testing/2026-09-05-editor-job-race-results.md)에 범위와 재현 방법을 정리했습니다.

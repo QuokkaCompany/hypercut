@@ -1,6 +1,6 @@
 import { chromium, _electron as electron } from 'playwright';
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile, rm, copyFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -11,10 +11,13 @@ import { capture } from '../server/process.mjs';
 import { inspectMedia } from '../server/media.mjs';
 import { generateDemo } from './fixtures.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
+import { speechFixture } from '../tests/helpers/speech-fixture.mjs';
+import { writeTone } from '../tests/helpers/effects-fixture.mjs';
+import { inspectEffect, publicEffect } from '../server/effects.mjs';
 
 const option = (name, fallback) => process.argv.find(arg => arg.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const output = path.resolve(option('output', 'test-output/job-cancellation-races'));
-const allScenarios = ['POST_LATE', 'POLL_LATE_ANALYZE', 'POLL_LATE_EXPORT', 'CANCEL_LATE_SUCCESS', 'CANCEL_LATE_ERROR', 'CANCEL_AFTER_EDIT', 'CURRENT_CANCEL_ERROR'];
+const allScenarios = ['POST_LATE', 'POLL_LATE_ANALYZE', 'POLL_LATE_EXPORT', 'CANCEL_LATE_SUCCESS', 'CANCEL_LATE_ERROR', 'CANCEL_AFTER_EDIT', 'CURRENT_CANCEL_ERROR', ...['TRANSCRIBE', 'CAPTIONS', 'RESTORE', 'EFFECTS'].flatMap(type => [`POLL_LATE_${type}`, `CANCEL_LATE_ERROR_${type}`]), 'CURRENT_CANCEL_ERROR_TRANSCRIBE', 'CURRENT_CANCEL_ERROR_CAPTIONS'];
 const scenarios = option('scenarios', allScenarios.join(',')).split(',');
 assert.ok(scenarios.length && scenarios.every(value => allScenarios.includes(value)));
 assert.ok(output.startsWith(path.resolve('test-output') + path.sep));
@@ -82,23 +85,38 @@ async function uiSnapshot(page) {
 }
 
 try {
-  const sourceA = await generateDemo(path.join(directory, 'source-a.mp4')), sourceB = path.join(directory, 'source-b.mp4');
+  const sourceA = path.join(directory, 'source-a.mp4'), sourceB = path.join(directory, 'source-b.mp4');
+  if (scenarios.some(value => value.endsWith('TRANSCRIBE'))) {
+    const fixture = await speechFixture(path.join(directory, 'speech'));
+    await copyFile(fixture.video, sourceA); report.fixture = { kind: 'Korean Eddy TTS', text: fixture.text, duration: fixture.duration, actualWhisper: true };
+  } else { await generateDemo(sourceA); report.fixture = { kind: 'synthetic tones' }; }
+  const tone = await writeTone(path.join(directory, 'beep.wav')), asset = publicEffect(await inspectEffect(tone.file));
+  report.effectSourceSHA256 = await hash(tone.file);
   await capture('ffmpeg', ['-v', 'error', '-i', sourceA, '-t', '8', '-c', 'copy', '-y', sourceB]);
   const mediaA = await inspectMedia(sourceA), mediaB = await inspectMedia(sourceB);
   report.sourceHashes = [await hash(sourceA), await hash(sourceB)];
   assert.notEqual(mediaA.fingerprint, mediaB.fingerprint);
   const project = (media, name, thresholdDb) => makeProject(media, { ...DEFAULT_SETTINGS, thresholdDb }, media.audioTracks[0].index, [{ id: `cut-${name}`, start: 3, end: 4, enabled: true, reason: 'manual' }], undefined, { trackIndex: media.audioTracks[0].index, channel: 0, language: 'ko', model: 'manual fixture', cues: [{ id: `cue-${name}`, start: 1, end: 2, text: `프로젝트 ${name} 자막` }] }, undefined, undefined, `용어 ${name}`);
-  const projectA = project(mediaA, 'A', -41), projectB = project(mediaB, 'B', -50);
+  const baseA = project(mediaA, 'A', -41), baseB = project(mediaB, 'B', -50);
   const fileA = path.join(directory, 'project-a.json'), fileB = path.join(directory, 'project-b.json');
-  await writeFile(fileA, JSON.stringify(projectA)); await writeFile(fileB, JSON.stringify(projectB));
   for (const surface of ['browser', 'desktop']) for (const scenario of scenarios) {
+    const currentCancelError = scenario.startsWith('CURRENT_CANCEL_ERROR');
+    const lateCancelError = scenario.startsWith('CANCEL_LATE_ERROR') || scenario === 'CANCEL_AFTER_EDIT';
+    const kind = ['TRANSCRIBE', 'CAPTIONS', 'RESTORE', 'EFFECTS'].find(value => scenario.endsWith(value))?.toLowerCase();
+    const withEffects = (base, start, gainDb) => ({ ...base, effects: { assets: [asset], clips: [{ id: `effect-${start}`, assetId: asset.id, start, offset: .1, duration: .5, gainDb, muted: false }] } });
+    const projectA = kind === 'effects' ? withEffects(baseA, 1, -12) : baseA, projectB = kind === 'effects' ? withEffects(baseB, 5, -20) : baseB;
+    await writeFile(fileA, JSON.stringify(projectA)); await writeFile(fileB, JSON.stringify(projectB));
     const result = { surface, scenario, status: 'running', delivery: [], routeErrors: [] }; report.runs.push(result); await flush();
     const oldGate = gate(), oldReady = gate(), oldDone = gate(), cancelGate = gate(), cancelReady = gate(), cancelDone = gate(), newGate = gate(), newReady = gate();
     let oldId, newId, oldTerminal, newTerminal, postCount = 0, deleteCount = 0;
     try {
       const page = await launch(surface); await importSource(page, sourceA); await openProject(page, fileA, -41);
+      let unexpectedDownloads = 0; const downloadObserved = () => { unexpectedDownloads++; }; page.on('download', downloadObserved);
+      if (active.desktop) await active.desktop.evaluate(({ dialog }) => { globalThis.unexpectedSaveCalls = 0; dialog.showSaveDialog = async () => { globalThis.unexpectedSaveCalls++; return { canceled: true }; }; });
+      const captionPanel = page.getByRole('dialog', { name: '전사와 자막 편집', exact: true });
+      const cancelButton = async () => await captionPanel.count() ? captionPanel.getByRole('button', { name: '작업 취소', exact: true }) : button(page, '작업 취소');
       const api = async id => { const config = await (await page.request.get(new URL('/api/config', page.url()).href)).json(); return page.request.get(new URL(`/api/jobs/${id}`, page.url()).href, { headers: { 'X-Hypercut-Token': config.token } }); };
-      const deliver = async (route, response, label) => { try { await route.fulfill({ response }); result.delivery.push({ label, outcome: 'fulfill-resolved' }); } catch (error) { result.delivery.push({ label, outcome: 'transport-already-aborted', error: error.message }); } };
+      const deliver = async (route, response, label) => { try { await route.fulfill({ response }); result.delivery.push({ label, outcome: 'fulfill-resolved' }); } catch (error) { const failure = route.request().failure()?.errorText; if (!/ABORT|CANCEL/i.test(failure || '')) throw error; result.delivery.push({ label, outcome: 'transport-already-aborted', failure }); } };
       await page.route('**/api/jobs{,/**}', async route => {
         try {
           const request = route.request(), method = request.method(), pathname = new URL(request.url()).pathname;
@@ -112,10 +130,10 @@ try {
           }
           if (method === 'DELETE' && pathname.endsWith(`/${oldId}`)) {
             deleteCount++;
-            if (scenario === 'CURRENT_CANCEL_ERROR' && deleteCount === 1) { await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'controlled current cancel failure' }) }); return; }
+            if (currentCancelError && deleteCount === 1) { await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'controlled current cancel failure' }) }); return; }
             const response = await route.fetch(); result.cancelServerReply = await response.json();
             if (scenario.startsWith('CANCEL_')) { cancelReady.resolve(); await cancelGate.promise; }
-            if (['CANCEL_LATE_ERROR', 'CANCEL_AFTER_EDIT'].includes(scenario)) await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'controlled obsolete cancel failure' }) });
+            if (lateCancelError) await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'controlled obsolete cancel failure' }) });
             else await deliver(route, response, 'old-cancel');
             cancelDone.resolve(); return;
           }
@@ -124,6 +142,9 @@ try {
             const deadline = Date.now() + 60000;
             while (value.status === 'running' && Date.now() < deadline) { await new Promise(resolve => setTimeout(resolve, 30)); response = await api(oldId); value = await response.json(); }
             assert.equal(value.status, 'completed'); oldTerminal = value; result.oldTerminal = { id: value.id, status: value.status, type: value.type, outputId: value.result?.id, mediaId: value.mediaId };
+            if (kind === 'transcribe') { assert.ok(value.result.cues.length > 0); result.actualTranscription = { model: value.result.model, cues: value.result.cues.length, texts: value.result.cues.map(cue => cue.text) }; }
+            if (kind === 'effects') { assert.equal(value.result.audioMix.mixedClips, 1); result.actualEffectMix = value.result.audioMix; }
+            if (kind === 'restore') { assert.ok(value.result.cuts.some(cut => !cut.enabled)); result.actualRestoration = value.result.cuts; }
             oldReady.resolve(); await oldGate.promise; await deliver(route, response, 'old-poll'); oldDone.resolve(); return;
           }
           await route.continue();
@@ -131,18 +152,36 @@ try {
       });
       page.on('response', async response => { if (newId && response.url().endsWith(`/api/jobs/${newId}`)) { const value = await response.json().catch(() => null); if (value?.status === 'completed') newTerminal = value; } });
       const exportOld = ['POLL_LATE_EXPORT', 'CANCEL_LATE_SUCCESS'].includes(scenario);
-      await (exportOld ? button(page, '내보내기') : page.locator('.analyze-button')).click(); await bounded(oldReady.promise, 'old job barrier');
+      if (kind === 'transcribe' || kind === 'captions') {
+        await button(page, '전사와 자막').click();
+        await button(page, kind === 'transcribe' ? '다시 전사' : '편집한 SRT 저장').click();
+        if (kind === 'transcribe' && !currentCancelError) { await button(page, '자막 창 닫기').click(); result.captionWindowClosedDuringJob = true; }
+      } else if (kind === 'restore') {
+        await button(page, '일부 구간 복원').click(); await page.getByLabel('복원 시작 (초)').fill('3.1'); await page.getByLabel('복원 끝 (초)').fill('3.8'); await button(page, '이 범위 복원').click();
+      } else if (kind === 'effects') {
+        await button(page, '효과음 편집').click();
+        const reconnect = button(page, 'beep.wav 재연결');
+        if (active.desktop) { await active.desktop.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [file] }); }, tone.file); await reconnect.click(); }
+        else { const chooser = page.waitForEvent('filechooser'); await reconnect.click(); await (await chooser).setFiles(tone.file); }
+        await page.getByText('연결됨', { exact: true }).waitFor(); await button(page, '효과음 포함 미리보기').click();
+      } else await (exportOld ? button(page, '내보내기') : page.locator('.analyze-button')).click();
+      await bounded(oldReady.promise, 'old job barrier');
       assert.deepEqual(result.routeErrors, []); assert.equal(await button(page, '영상 추가').isDisabled(), true);
-      await button(page, '작업 취소').click();
-      if (scenario === 'CURRENT_CANCEL_ERROR') {
+      await (await cancelButton()).click();
+      if (currentCancelError) {
         await page.locator('.error-toast').filter({ hasText: 'controlled current cancel failure' }).waitFor();
         assert.equal(await page.locator('.job-overlay').count(), 1); result.currentErrorVisible = true;
-        await button(page, '오류 닫기').click(); await button(page, '작업 취소').click();
+        result.cancelButtonDisabledAfterFailure = await (await cancelButton()).isDisabled();
+        assert.equal(result.cancelButtonDisabledAfterFailure, false, 'Current cancel failure must re-enable the visible cancellation control');
+        if (!await captionPanel.count()) await button(page, '오류 닫기').click();
+        await (await cancelButton()).click();
       }
       if (scenario.startsWith('CANCEL_')) { await bounded(cancelReady.promise, 'cancel response barrier'); oldGate.resolve(); await bounded(oldDone.promise, 'old terminal response'); }
       await page.locator('.job-overlay').waitFor({ state: 'hidden', timeout: 10000 });
+      if (await captionPanel.count()) await button(page, '자막 창 닫기').click();
+      if (currentCancelError && await button(page, '오류 닫기').count()) await button(page, '오류 닫기').click();
       assert.equal(await page.locator('.cut-row').count(), 1); result.oldProjectCutsPreserved = true;
-      const sameProject = ['CANCEL_AFTER_EDIT', 'CURRENT_CANCEL_ERROR'].includes(scenario);
+      const sameProject = scenario === 'CANCEL_AFTER_EDIT' || currentCancelError;
       if (!sameProject) { await importSource(page, sourceB); await openProject(page, fileB, -50); }
       await threshold(page).fill('-42');
       const before = await uiSnapshot(page); result.beforeRelease = before;
@@ -163,10 +202,15 @@ try {
         assert.notEqual(result.newRequest.mediaId, result.oldRequest.mediaId);
         assert.equal(new URL(await page.locator('video').getAttribute('src'), page.url()).pathname, `/api/exports/${newTerminal.result.id}`);
         assert.equal(await button(page, '편집한 MP4 저장').count(), 0); result.newPreviewVerified = { id: newTerminal.result.id, duration: newTerminal.result.duration, mediaId: newTerminal.mediaId };
+        if (kind === 'effects') assert.equal(newTerminal.result.audioMix.mixedClips, 1);
       }
+      assert.equal(unexpectedDownloads, 0); result.unexpectedDownloads = unexpectedDownloads; page.off('download', downloadObserved);
+      if (active.desktop) { result.unexpectedNativeSaveCalls = await active.desktop.evaluate(() => globalThis.unexpectedSaveCalls); assert.equal(result.unexpectedNativeSaveCalls, 0); }
+      if (currentCancelError) { assert.equal(deleteCount, 2); result.cancelAttempts = deleteCount; }
       const saved = await save(page, path.join(directory, `${surface}-${scenario}.json`));
       assert.deepEqual(content(saved), content({ ...(sameProject ? projectA : projectB), settings: { ...DEFAULT_SETTINGS, thresholdDb: -42 } })); result.allProjectFieldsPreserved = true;
       assert.deepEqual([await hash(sourceA), await hash(sourceB)], report.sourceHashes); result.sourcesUnchanged = true;
+      assert.equal(await hash(tone.file), report.effectSourceSHA256); result.effectSourceUnchanged = true;
       assert.deepEqual(result.routeErrors, []); assert.deepEqual(active.errors, []); assert.deepEqual(active.external, []);
       result.pageErrors = []; result.externalRequests = 0; result.status = 'PASS';
     } catch (error) { result.status = 'FAIL'; result.error = error.message; await active?.page.screenshot({ path: path.join(output, `${surface}-${scenario}-failure.png`), fullPage: true }).catch(() => {}); }

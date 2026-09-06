@@ -193,7 +193,9 @@ export default function App() {
     try { await request(`/jobs/${active.id}`, undefined, 'DELETE'); active.controller.abort(); }
     catch (e) {
       if (activeJob.current !== active || operation.current !== id) return;
-      active.cancelled = false; setError((e as Error).message);
+      active.cancelled = false;
+      setJob(previous => previous?.id === active.id ? { ...previous, stage: '취소 요청 실패 · 다시 시도해 주세요' } : previous);
+      setError((e as Error).message);
     }
   }
   function changeSettings(next: Settings | ((previous: Settings) => Settings)) { setSettings(next); if (media) setUnsaved(true); }

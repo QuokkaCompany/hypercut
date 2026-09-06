@@ -1,0 +1,145 @@
+{
+  "date": "2026-09-06T03:14:26.163Z",
+  "status": "failed",
+  "code": "1bb0057f7cfaa8991deb32af75ffa710e969cb9d",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "cfff31208844f2cff6eb1ff236e67c405e6658ca3c0e2976375b8fb764d8ea56",
+  "appSourceSHA256": "1b3426efa4b6ea13be26e18b5a950682dc6b5bab2bc32cd5e803c43892c5b4d1",
+  "packageSHA256": "4f7069982a271fed019c201fa5d98e4ebe8e8b5cfe3b0a73b0adc40ec04e680f",
+  "scope": "Real generated media, jobs, browser and Mac UI. HTTP delivery barriers; cancellation 503 errors injected. Native file paths controlled. No private footage or external model calls.",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "CURRENT_CANCEL_ERROR_TRANSCRIBE",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "faa3fc3a-4740-461a-9abf-e56dc30c8580",
+        "type": "transcribe",
+        "mediaId": "e04e9201-d27f-41f5-b46d-abb5fb995462"
+      },
+      "oldTerminal": {
+        "id": "faa3fc3a-4740-461a-9abf-e56dc30c8580",
+        "status": "completed",
+        "type": "transcribe",
+        "mediaId": "e04e9201-d27f-41f5-b46d-abb5fb995462"
+      },
+      "actualTranscription": {
+        "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+        "cues": 2,
+        "texts": [
+          "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다.",
+          "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+        ]
+      },
+      "currentErrorVisible": true,
+      "cancelButtonDisabledAfterFailure": true,
+      "error": "Current cancel failure must re-enable the visible cancellation control\n\ntrue !== false\n"
+    },
+    {
+      "surface": "browser",
+      "scenario": "CURRENT_CANCEL_ERROR_CAPTIONS",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "fb6b7d11-9a11-455f-a4bd-4e032654b148",
+        "type": "captions",
+        "mediaId": "0e09ad84-8fb4-4f04-bc97-ba9810b2e1ec"
+      },
+      "oldTerminal": {
+        "id": "fb6b7d11-9a11-455f-a4bd-4e032654b148",
+        "status": "completed",
+        "type": "captions",
+        "outputId": "c4d3782a-6629-41a7-9682-047405a66528",
+        "mediaId": "0e09ad84-8fb4-4f04-bc97-ba9810b2e1ec"
+      },
+      "currentErrorVisible": true,
+      "cancelButtonDisabledAfterFailure": true,
+      "error": "Current cancel failure must re-enable the visible cancellation control\n\ntrue !== false\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CURRENT_CANCEL_ERROR_TRANSCRIBE",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "86918ae6-fa5d-4113-aa5a-ecc160a66d20",
+        "type": "transcribe",
+        "mediaId": "96a054d0-bf05-43aa-9296-d36847e9e26e"
+      },
+      "oldTerminal": {
+        "id": "86918ae6-fa5d-4113-aa5a-ecc160a66d20",
+        "status": "completed",
+        "type": "transcribe",
+        "mediaId": "96a054d0-bf05-43aa-9296-d36847e9e26e"
+      },
+      "actualTranscription": {
+        "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+        "cues": 2,
+        "texts": [
+          "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다.",
+          "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+        ]
+      },
+      "currentErrorVisible": true,
+      "cancelButtonDisabledAfterFailure": true,
+      "error": "Current cancel failure must re-enable the visible cancellation control\n\ntrue !== false\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CURRENT_CANCEL_ERROR_CAPTIONS",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "1e330b94-8290-49c1-9f4a-d801825bd26d",
+        "type": "captions",
+        "mediaId": "d6f68cd9-d6b3-4faf-95b8-35fb5491069c"
+      },
+      "oldTerminal": {
+        "id": "1e330b94-8290-49c1-9f4a-d801825bd26d",
+        "status": "completed",
+        "type": "captions",
+        "outputId": "a9ad40de-e6eb-4b02-9087-1bed72ec4751",
+        "mediaId": "d6f68cd9-d6b3-4faf-95b8-35fb5491069c"
+      },
+      "currentErrorVisible": true,
+      "cancelButtonDisabledAfterFailure": true,
+      "error": "Current cancel failure must re-enable the visible cancellation control\n\ntrue !== false\n"
+    }
+  ],
+  "fixture": {
+    "kind": "Korean Eddy TTS",
+    "text": "작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.",
+    "duration": 17.69923,
+    "actualWhisper": true
+  },
+  "effectSourceSHA256": "49e02a11e7796b4e499e1d8232b9510bdd39ab03611730f5686fae4df73fd4ad",
+  "sourceHashes": [
+    "9784c84c2077b7931074ca8c847102e9d167dc1d5642b646554a47905702ec53",
+    "04e4ec3bda95827ba206f2746849707943039b43ee6ca86e19ac81d462608cc5"
+  ]
+}

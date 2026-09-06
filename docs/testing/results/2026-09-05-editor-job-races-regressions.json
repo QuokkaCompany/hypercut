@@ -1,0 +1,116 @@
+{
+  "date": "2026-09-06T03:18:44.449Z",
+  "status": "completed",
+  "appSourceSHA256": "47ba58faec73521527b1928cbf986c8e69a4e4b902556af8dc4798d143e8fef2",
+  "packageSHA256": "08c405e83e34766630d884c49710c0254088cf42bce99b1c4e8285a72a7e809a",
+  "runs": [
+    {
+      "name": "captions",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/captions-e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "actualModel": "Whisper small",
+          "fixture": "Korean TTS, not user footage",
+          "editingAndReview": true,
+          "draftProtection": true,
+          "originalVideoCaptions": true,
+          "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+          "styledPreviewPixels": 3326,
+          "styledMP4SavedAndDecoded": true,
+          "styleChangesInvalidateOldOutput": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndStyleUndoRedo": true,
+          "errors": [],
+          "browserExternalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "actualModel": "Whisper small",
+          "fixture": "Korean TTS, not user footage",
+          "editingAndReview": true,
+          "draftProtection": true,
+          "originalVideoCaptions": true,
+          "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+          "styledPreviewPixels": 3326,
+          "styledMP4SavedAndDecoded": true,
+          "styleChangesInvalidateOldOutput": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndStyleUndoRedo": true,
+          "errors": [],
+          "browserExternalRequests": 0
+        }
+      ]
+    },
+    {
+      "name": "effects",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/effects-e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "missingAssetBlocked": true,
+          "wrongReconnectRejected": true,
+          "sameHashReconnected": true,
+          "manualEditUndoRedo": true,
+          "muteDeleteUndo": true,
+          "dirtyDraftGuard": true,
+          "stalePreviewInvalidated": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndEffectMP4Decoded": true,
+          "expectedBeepSeconds": [
+            3,
+            3.7
+          ],
+          "rms": 0.06314186692551059,
+          "peak": 0.09251511096954346,
+          "quietPeak": 0,
+          "sourcePreserved": true,
+          "nativeEffectOverwriteBlocked": "N/A",
+          "externalRequests": 0,
+          "pageErrors": []
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "missingAssetBlocked": true,
+          "wrongReconnectRejected": true,
+          "sameHashReconnected": true,
+          "manualEditUndoRedo": true,
+          "muteDeleteUndo": true,
+          "dirtyDraftGuard": true,
+          "stalePreviewInvalidated": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndEffectMP4Decoded": true,
+          "expectedBeepSeconds": [
+            3,
+            3.7
+          ],
+          "rms": 0.06314186692551059,
+          "peak": 0.09251511096954346,
+          "quietPeak": 0,
+          "sourcePreserved": true,
+          "nativeEffectOverwriteBlocked": true,
+          "externalRequests": 0,
+          "pageErrors": []
+        }
+      ]
+    }
+  ]
+}
