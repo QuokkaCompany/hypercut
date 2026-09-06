@@ -1,0 +1,200 @@
+{
+  "date": "2026-09-06T09:13:14.964Z",
+  "status": "AUDITED_FOUR_SHORT_APP_PASSES",
+  "code": "50022126ecddd066503f2c43728b207c5e953802",
+  "scope": "Four 60-second runs. Actual package/source hashes, whole projects, outputs, independent correctness and all RSS sums audited. Not a long-run memory pass.",
+  "runs": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "analyzeSeconds": 1.0614817079999999,
+      "exportSeconds": 3.1135082499999998,
+      "peakGiB": 1.548675537109375,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.31893799999943,
+          "max": 99.33924999999908,
+          "p95": 67.3487499999992
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.43989600000168,
+          "max": 101.51274999999987,
+          "p95": 101.41254199999821
+        },
+        "cuts": {
+          "count": 32,
+          "median": 66.32552100000066,
+          "max": 67.44258399999671,
+          "p95": 67.38695899999948
+        }
+      },
+      "maxSampleGapMs": 278.4614580000002,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "analyzeSeconds": 0.847419582999999,
+      "exportSeconds": 3.114500749999999,
+      "peakGiB": 1.6453857421875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.00218750000022,
+          "max": 98.86675000000105,
+          "p95": 67.56120899999951
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.51387499999691,
+          "max": 101.02124999999796,
+          "p95": 100.73374999999942
+        },
+        "cuts": {
+          "count": 32,
+          "median": 66.83243750000474,
+          "max": 67.24145899999712,
+          "p95": 67.17349999999715
+        }
+      },
+      "maxSampleGapMs": 276.74775000000227,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "analyzeSeconds": 1.2966410419999956,
+      "exportSeconds": 3.0927462090000044,
+      "peakGiB": 0.9765167236328125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.52597949999836,
+          "max": 68.59062500000437,
+          "p95": 41.654374999998254
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.50041699999929,
+          "max": 61.17295799999556,
+          "p95": 60.96733400000085
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.36085449999882,
+          "max": 41.81233400000201,
+          "p95": 41.22475000000122
+        }
+      },
+      "maxSampleGapMs": 284.54737499999464,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "analyzeSeconds": 1.0210404590000035,
+      "exportSeconds": 3.0988569160000043,
+      "peakGiB": 1.067047119140625,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.6362500000032,
+          "max": 59.00933400000213,
+          "p95": 41.44075000000885
+        },
+        "effects": {
+          "count": 32,
+          "median": 58.8896670000031,
+          "max": 61.47462500000256,
+          "p95": 61.32133299999987
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.66627100000187,
+          "max": 41.24045800000022,
+          "p95": 41.21716699999524
+        }
+      },
+      "maxSampleGapMs": 276.8000420000026,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.44999999999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 304.5816250000007,
+      "displayMs": 0.8999999761581421,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.421875
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 301.30695900000137,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}
