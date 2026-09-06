@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest an editing workflow or improvement.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Editing problem
+      description: What are you trying to accomplish, and what gets in the way?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the desired workflow and alternatives you have considered.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: How would you verify it works?
+      description: Examples, expected outputs, or practical acceptance criteria.

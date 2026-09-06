@@ -1,11 +1,11 @@
-# 프로젝트 교정 용어 구현·검증 계획
+# Project glossary implementation and validation
 
-승인된 자막 교정의 남은 범위인 프로젝트 용어 저장·재사용을 구현한다. 용어는 프로젝트별 자유 입력 텍스트(최대 2,000자)이며 AI 교정의 참고 자료다. 자동 치환, 전사 엔진 설정, 전역 사전으로 사용하지 않는다.
+Persist and reuse caption-correction reference terms: project-specific free text up to 2,000 characters. This is not automatic replacement, a transcription-engine setting, or a global dictionary.
 
-- 자막 창에서 용어를 입력하고 명시적으로 적용한다. 미적용 입력은 닫기·실행 취소 등에서 확인하며 AI 교정과 출력 전에 적용하도록 한다.
-- 자막·스타일과 같은 실행 취소 이력에 한 단계로 넣는다. 용어만 바꾸어도 프로젝트가 미저장 상태가 되지만 영상·자막 내용은 바뀌지 않는다.
-- 프로젝트 v6에 `glossary`를 저장한다. v1~v5는 빈 용어로 이전한다. v6의 누락·비문자열·2,000자 초과·제어 문자는 거부하고 기존 편집을 보존한다.
-- AI 교정 창의 용어 입력은 프로젝트 값을 기본으로 채운다. 이번 요청에서만 수정·비우기·프로젝트 값으로 복귀할 수 있고 프로젝트에는 역으로 저장하지 않는다. 요청 준비만으로 모델을 호출하지 않는다.
-- 선택한 자막·용어를 명시적 요청 또는 복사용 프롬프트에만 포함한다. 영상 경로·다른 프로젝트 용어·숨겨진 필드는 보내지 않는다. 요청 용어 변경은 이전 제안을 무효화한다.
+- Apply explicitly in the caption editor. Protect unapplied input on close/undo and require application before correction/output.
+- Add one step to the caption/style undo history. A glossary-only edit marks the project dirty without changing media or captions.
+- Store `glossary` in project v6. Migrate v1–v5 to empty terms. Reject missing/non-string/overlong/control-character v6 values while preserving current edits.
+- Default the correction request to project terms. Allow temporary editing, clearing, or restoring the default without writing back. Preparing a request does not call a model.
+- Send selected captions/terms only in explicit requests or copied prompts. Exclude paths, other projects' terms, and hidden fields. Changing request terms invalidates old proposals.
 
-검증은 프로젝트 이전·잘못된 입력·기존 편집 보존과 요청 검증부터 검사한다. Chrome와 패키지 Mac 앱에서 적용·실행 취소·미적용 입력 보호·저장/재열기·새 영상 초기화·일시 변경/비우기·오래된 제안 거부를 실행한다. 기존 교정과 효과음 흐름도 회귀 검사한다. 실제 모델의 용어 반영률과 한국어 정확도는 인증된 모델·실제 평가 영상 시험으로 별도 판정한다.
+Test migration, malformed inputs, edit preservation, and request validation. In Chrome and packaged Mac, exercise apply, undo, unsaved-input protection, save/reopen, new-media reset, temporary overrides/clearing, and stale-proposal rejection. Regress correction/effects. Real glossary adherence and Korean accuracy require separately authenticated models and evaluation recordings.

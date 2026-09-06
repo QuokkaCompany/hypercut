@@ -1,146 +1,95 @@
-# HyperCut MVP 검증 계획
+# HyperCut MVP validation plan
 
-작성일: 2026-09-05
-계획 보완일: 2026-09-06 — 비용 검증, 단계별 통과 범위와 결과를 연결할 빌드·자료 식별 기준을 명확히 했다. 새 테스트 실행 결과는 아니다.
-상태: 계획 수립 완료. 작성 후 구현·합성 데이터 검증을 진행했으며, 현재 근거와 미실행 범위는 [검증 현황](../testing/README.md)에서 확인한다. 실제 한국어 영상의 사용자 평가는 아직 수행하지 않았다.
-대상 설계: [무음 자동 제거 MVP](../superpowers/specs/2026-09-05-hypercut-silence-first-design.md)
-실행 방법: [테스트 계획](2026-09-05-test-plan.md)
-요구사항·우선순위 요약: [검증·테스트 계획 안내](README.md)
+Created: 2026-09-05. Clarified: 2026-09-06 (cost checks, gates, and artifact identity). This is a specification, not a report of passing tests.
 
-## 1. 검증할 질문
+Related: [product design](../superpowers/specs/2026-09-05-hypercut-silence-first-design.md), [test cases](2026-09-05-test-plan.md), [plan index](README.md), and [execution status](../testing/README.md).
 
-첫 번째 출시 단위는 Mac 데스크톱 앱과 로컬 브라우저 앱에서 영상을 열어 음량 임계값으로 자동 컷하고, 필요 구간을 복원한 뒤 MP4로 내보내는 흐름이다. 브라우저 앱은 로컬 서버에 연결하는 형태이며 외부 영상 업로드 서비스가 아니다. 아래 질문에 각각 증거가 있어야 완료로 판단한다.
+## Validation objectives
 
-| ID | 질문 | 필요한 증거 |
-| --- | --- | --- |
-| V1 | 사용자가 설정한 임계값·시간·여유 시간대로 제거하는가? | 독립적인 정답 구간과 분석·편집 결과 비교 |
-| V2 | 결과를 실제로 사용할 만큼 말과 편집 호흡을 보존하는가? | 사람의 발화 라벨, 컷 전후 청취 평가, 수동 복원 기록 |
-| V3 | 영상과 오디오가 같은 구간만큼 잘리는가? | 출력 파일 디코딩, 시간축 표식 및 싱크 오차 측정 |
-| V4 | 저장·복원·취소·실패를 겪어도 작업을 잃지 않는가? | 프로젝트 왕복 비교, 장애 주입, 원본 해시 |
-| V5 | 실제 편집에 들이는 시간이 줄어드는가? | 수동 편집과 HyperCut의 작업 시간·품질 비교 |
-| V6 | 긴 영상에서도 기다릴 수 있고 앱을 조작할 수 있는가? | 기준 환경에서 작업별 소요 시간, 메모리, 응답·취소 지연 |
-| V7 | AI가 없어도 핵심 기능이 완결되는가? | 외부 네트워크 차단 환경의 전체 흐름 성공 |
-| V8 | AI를 연결했을 때 요청한 작업만 수행하고 실패에서 복구하는가? | 후속 AI 연결 단계의 계약 테스트와 공급자별 실제 연결 결과 |
+| ID | Question |
+| --- | --- |
+| V1 | Do detected intervals and edits implement the threshold, duration, padding, and frame rules? |
+| V2 | Does the output preserve speech, including quiet syllables and word endings? |
+| V3 | Do video and audio remain synchronized after many cuts? |
+| V4 | Do edits and completed files survive cancellation, errors, and stale responses? |
+| V5 | Does review plus correction take less active editing time than manual editing? |
+| V6 | Can both applications process long recordings within time, memory, and responsiveness limits? |
+| V7 | Can the core workflow finish offline without paid inference? |
+| V8 | Does each optional AI connection use only the selected provider and validated proposals? |
 
-V1과 V2는 별개의 판정이다. 임계값 이하의 작은 발화를 제거한 것은 기본 음량 모드의 규칙에는 맞을 수 있다. 그러나 권장 설정으로 실제 발화를 계속 잘라내면 제품 품질 검증은 실패다. 규칙 준수를 근거로 음성 품질까지 통과 처리하지 않는다.
+Rule correctness and speech preservation are separate outcomes. Passing a deterministic threshold test does not establish that a threshold is appropriate for human speech. Missing transcription is never evidence that an interval is silent.
 
-## 2. 범위와 선행 결정
+## Scope and fixed settings
 
-- 현재 검증 대상: 무음 제거, 설정 조절, 파형·구간 표시, 미리보기, 수동 복원, 실행 취소, 프로젝트 저장, 실제 MP4 출력.
-- 첫 호환성 기준: SDR H.264/AAC MP4·MOV, 선택 오디오 트랙 하나. 프레임레이트와 VFR도 테스트 매트릭스에 포함한다.
-- 후속 검증 대상: 로컬 LLM·API·구독 연동, VAD, 전사·자막 교정·디자인, 효과음. VAD는 이후 [추가 계획](2026-09-05-speech-protection-plan.md)으로 구현·검증을 진행했다. 각 기능의 미실행 테스트를 MVP 통과 증거에 포함하지 않는다.
-- 실제 말을 보존하는 품질 기준은 첫 MVP부터 필수다. VAD를 선택형으로 제공한다는 이유로 작은 발화·말끝 검사를 후속으로 미루지 않는다. 음량 단독과 음량+VAD의 비교는 조정용 자료에서 수행하고, 평가할 모드·설정을 고정한 뒤 별도 평가 자료로 판정한다. 전사된 텍스트가 없는 구간을 곧바로 삭제 가능한 무음으로 취급하지 않는다.
-- 전사·자막·효과음의 후속 품질 기준과 구체적 사례는 [별도 계획](2026-09-05-caption-effects-validation-plan.md)에 둔다. 무음 편집 품질과 자막 정확도를 같은 지표로 합치지 않는다.
-- 현재 제안한 -40 dBFS, 최소 500 ms, 말 앞 100 ms·뒤 150 ms는 검증 전 초기값이다.
-- 임계값의 ‘이하’ 비교, 샘플 단위 지속 시간, 트랙·채널 선택, 프레임 경계 정렬을 첫 기술 검증에서 확인한다. 라이브러리의 동작과 제품 계약이 다르면 차이를 문서화하고 어댑터로 맞추거나 설계를 명시적으로 수정한다.
-- 작성 시 미정이었던 구현 프레임워크와 러너는 이후 [구현 계획](2026-09-05-implementation-plan.md)에서 정했다. 행동·정답·증거 계약은 유지한다.
+Initial supported media: H.264 SDR video in MP4/MOV, AAC audio, one selected output audio track, including variable-frame-rate inputs. Unsupported formats must be rejected clearly. Threshold editing remains available without VAD, transcription, or AI.
 
-## 3. 데이터와 정답 만들기
+Initial settings are −40 dBFS, 500 ms minimum silence, 100 ms before speech, and 150 ms after speech. These are untuned starting values. VAD is an optional speech-protection layer with its own detection threshold; it does not change the meaning of dBFS.
 
-### A. 정확한 구간을 아는 합성 데이터
+## Independent reference data
 
-샘플레이트, 채널별 샘플 값, 무음 시작·끝, 프레임별 시간표를 가진 작은 원본을 만든다. 생성 규칙과 정답은 앱 코드와 별도로 보관한다. 경계 판정에는 무손실 PCM을 사용하고, 코덱 검증에는 MP4·MOV 파생본을 사용한다.
+Use deterministic PCM fixtures and an independent sample-based oracle. Do not call the product's interval functions or its FFmpeg log parser to generate expected results. For AAC-derived fixtures, decode the actual input first and calculate the reference from that PCM; the original uncompressed waveform is not an exact oracle after lossy encoding.
 
-압축 오디오는 인코딩에 따라 경계 주변 샘플이 바뀔 수 있다. 따라서 AAC 파생본의 분석 정답은 실제 디코딩한 PCM에 대한 별도 참조 계산으로 결정한다. 압축 전 정답을 그대로 복사하거나 앱의 FFmpeg 로그 파서로 정답을 만들지 않는다.
+Human evaluation uses three private tuning recordings (R01–R03) and at least six separate evaluation recordings (R04–R09), each 5–15 minutes, covering quiet rooms, soft speech, and background noise. Thirty- and sixty-minute performance inputs are separate from this quality set.
 
-### B. 사람이 표시한 실제 한국어 영상
+Label speech-safe, pause-safe, and ambiguous regions before viewing the app's proposed cuts. Record ambiguous duration and counts, but exclude them from ratio denominators. Keep private recordings outside Git. Freeze settings after tuning. Retuning on held-out evaluation results invalidates that evaluation as an independent test.
 
-데이터 준비 목표는 설정 조정용 3개, 평가용 6개 이상의 서로 다른 영상이다. 각 영상은 5~15분 정도로 구성하고, 조용한 녹음·작은 발화·키보드/생활 소음 조건을 포함한다. 긴 영상 성능용 30분·60분 자료는 별도 준비한다.
+## Correctness and quality targets
 
-사람이 앱 결과를 보기 전에 아래 구간을 원본 시간축에 표시한다.
+| Measure | Required result |
+| --- | --- |
+| Rule boundaries | Exact sample/frame result where specified; sample comparisons within one sample |
+| Clipped words or syllables | Zero |
+| Removal precision by duration | At least 99% |
+| Eligible pause removal by duration | At least 90% |
+| Cuts restored because of quality | At most 5% of automatic cuts |
+| Lost/reintroduced content | Zero unintended occurrences |
+| Source modification, lost edit state, or false success | Zero |
 
-- 반드시 보존할 발화: 실제 단어·음절을 포함한 구간.
-- 제거해도 되는 쉼: 말의 의미와 호흡을 해치지 않는 구간.
-- 판단이 애매한 구간: 숨, 웃음, 강조를 위한 쉼, 발음 경계.
+Eligible pause duration excludes intentional padding and pauses below the minimum duration. Record numerator and denominator for each metric and each recording. A zero denominator is N/A with an explanation, not 100%. Review every cut boundary and play the complete output at least once. Unresolved speech judgments remain unresolved; identical transcripts do not prove preserved pronunciation.
 
-애매한 구간은 정밀도 계산에서 제외하고 건수와 길이를 따로 보고한다. 실제 영상은 로컬 비공개 폴더에 두며 Git에는 넣지 않는다. 평가용 영상의 정답을 본 뒤 설정을 조정하면 해당 자료는 조정용으로 옮기고 새 평가 자료를 확보한다.
+## Audio/video synchronization
 
-이는 개인 사용을 위한 소규모 평가다. 한 사람과 소수 영상의 결과를 일반적인 정확도·생산성 수치로 광고하지 않는다. 아직 영상과 라벨은 준비되지 않았다.
+Use independently detected flash/beep markers near every relevant cut and at the beginning, middle, and end. Normalize input start PTS and documented encoder padding. Check both content alignment and expected output duration.
 
-## 4. 제품 품질의 판정 기준
+The per-marker tolerance is the larger of the local output video-frame duration and decoded codec audio-frame duration. For 30 fps and 48 kHz AAC with 1,024 samples per frame, the tolerance is about 33.34 ms. For VFR, use the actual local frame interval rather than average fps. The difference between the first and last marker errors must also remain within that tolerance; passing only a final duration check is insufficient.
 
-아래 수치는 이번 계획에서 정한 초기 합격 목표이며 측정 결과가 아니다. 바꿀 때에는 이유와 새 기준을 실행 전에 기록한다. 실패한 결과를 통과로 바꾸기 위해 같은 실행의 기준을 사후 변경하지 않는다.
+## Editing-time comparison
 
-| 항목 | 정의 | 초기 합격 기준 |
-| --- | --- | --- |
-| 규칙 정확성 | 합성 데이터의 정답과 실제 최종 제거 구간 비교 | 모든 필수 사례 일치. 분석 경계 오차는 1 PCM 샘플 이내, 영상 정렬은 정해진 프레임 경계와 일치 |
-| 발화 손상 | 사람의 보존 라벨과 실제 제거 구간의 교집합을 확인하고 청취 판정 | 평가용 영상에서 잘린 단어·음절 0건 |
-| 제거 정밀도 | 평가 가능한 제거 시간 중 ‘제거해도 되는 쉼’에 속하는 비율 | 평가용 전체에서 99% 이상. 영상별 수치와 실패 구간도 제시 |
-| 쉼 제거율 | 제거 가능한 쉼의 목표 구간 중 실제 제거한 시간 비율 | 90% 이상. 앞뒤 여유·최소 제거 길이로 의도적으로 남기는 구간은 분모에서 제외 |
-| 복원 부담 | 자동 컷 중 품질 문제로 사용자가 복원한 컷 수 / 전체 자동 컷 수 | 5% 이하. 복원 이유와 소요 시간도 기록 |
-| 시간축 보존 | 최종 길이 및 유지할 표식의 출력 위치와 독립 정답 비교 | 아래 싱크 기준 충족, 삭제 예정 콘텐츠의 재등장·유지 콘텐츠 누락 0건 |
-| 작업 보존 | 원본 해시, 저장/복원 상태, 실패 후 재시도 비교 | 원본 변경·저장된 편집 손실·거짓 성공 표시 0건 |
+Use a paired manual/HyperCut comparison with the same completion criteria and balanced order. Exclude practice runs and record recall effects. Track active editing/review time separately from processing wait and total elapsed time.
 
-분모가 0이면 비율은 `N/A`다. 100%로 채우지 않는다. 구간 수 기반 지표와 시간 기반 지표를 섞지 않는다. 발화 손상은 전체 길이에 비해 작더라도 0건 기준으로 따로 판정한다.
+For each recording, savings = 1 − automatic-workflow active time / manual-workflow active time. The target is at least 50% median savings among quality-passing results, while separately reporting excluded quality failures. Include low-pause recordings and negative savings instead of discarding inconvenient outcomes.
 
-### 싱크를 측정하는 방법
+## Cost validation
 
-유지되는 구간에 영상 플래시와 오디오 비프를 같은 시각에 심고 원본과 출력에서 위치를 독립적으로 찾는다. 처음·중간·마지막뿐 아니라 컷이 누적된 지점과 각 컷 주변을 확인한다. AAC encoder delay/padding과 입력 시작 PTS를 정규화한 뒤 비교한다.
+The core workflow must use zero paid model requests. Initial tool/model downloads are setup activity, not inference. Saving or switching provider settings must issue zero inference requests. An explicit request must use only its selected provider, with no automatic paid fallback.
 
-각 표식의 허용 오차는 출력에서 해당 위치의 1프레임 길이와 디코딩된 오디오 1코덱 프레임 길이 중 큰 값이다. 30 fps·48 kHz·1,024샘플 AAC 프레임 조건의 설명용 허용치는 약 33.34 ms다. 실제 코덱·프레임 정보로 계산하며 VFR에는 평균 FPS를 대입하지 않는다.
+Before an authenticated test, record a call/usage/cost ceiling, including retries and failed or canceled requests. The operator stops the test at the ceiling; this is a test procedure, not a claim that the app implements a cost-control UI. Preserve per-attempt model and usage evidence. Unavailable billing data is unknown, not zero. Do not claim subscription savings without verified baseline cost and frequency.
 
-각 표식의 추가 A/V 오차가 허용치 이내이고, 처음 대비 마지막의 추가 오차도 허용치 이내여야 한다. 전체 출력 길이도 유지 구간 합과 동일한 기준으로 비교한다. 전체 길이만 맞는 것은 싱크 통과 증거가 아니다.
+## Performance protocol
 
-## 5. 시간 절감 검증
+Freeze chip, OS, RAM, tool/model versions, SSD location, power conditions, app build, and runner. Use 1080p30 H.264/AAC at 48 kHz for 10- and 60-minute conditions, including a 60-minute, 1,000-cut stress case.
 
-평가용 영상마다 같은 완료 조건으로 기존 수동 방식과 HyperCut을 비교한다. 완료 조건은 ‘제거 가능한 쉼 정리, 발화 손상 수정, 결과 검토 및 MP4 출력 완료’다. 사용자가 실제 쓰는 편집기와 그 버전·설정을 기록한다.
+| Measure | Target |
+| --- | --- |
+| File selection to editable draft, including upload/decode/waveform/frame indexing | At most 20% of source duration |
+| Export, including verification | At most source duration |
+| Union of app and child-process RSS | At most 2 GiB, including 1,000-cut conditions |
+| UI response | p95 at most 200 ms over at least 30 actions |
+| Visible cancellation response | At most 300 ms |
+| Ready to retry after cancellation | At most 5 seconds |
 
-1. 별도 연습 영상으로 조작법을 익힌다. 연습 시간은 별도로 남긴다.
-2. 영상별 순서를 균형 있게 배정한다. 절반은 수동 편집부터, 나머지는 HyperCut부터 수행한다.
-3. 같은 영상을 다시 편집해 내용을 기억하는 효과가 있으므로 실행 순서와 세션 간격을 기록하고 개인 내 비교라는 한계를 보고한다.
-4. 설정, 재생·확인, 수동 복원, 오류 복구에 실제로 관여한 시간을 합쳐 작업 시간으로 센다. 자동 분석·렌더링 대기 시간과 전체 경과 시간도 따로 남긴다.
-5. 최종 품질이 합격한 결과끼리 비교한다. 품질 불합격 영상도 제외 사실과 원인을 보고한다. 하나라도 발화 손상 때문에 불합격이면 품질 게이트는 실패다.
+Measure cold and warm conditions separately with three runs per condition and per application. Preserve raw values, median, and maximum; three runs do not justify a p95 estimate. Do not run human timing sessions concurrently with performance jobs. Browser evidence is not native-package evidence.
 
-시간 절감률 = `1 - HyperCut 작업 시간 / 기존 방식 작업 시간`.
+## Gates and release decision
 
-초기 목표는 평가용 영상별 절감률의 중앙값 50% 이상이다. 전체 경과 시간이 늘어나는 사례는 별도로 표시한다. 무음이 거의 없는 영상도 포함해 이점이 없는 조건을 숨기지 않는다.
+| Gate | Required evidence |
+| --- | --- |
+| G0 | Frozen plan, fixtures, independent oracle, settings, and identified artifacts |
+| G1 | Domain rules and actual short-media output correctness |
+| G2 | Required D/M/U/E cases in browser and native app, including supported formats and P0/P1 recovery |
+| G3 | Human quality, editing-time savings, and final-candidate long-run performance |
+| G4 | Each enabled AI connection tested with its actual selected provider/account |
 
-### 비용 제약 검증
+G4 does not block a local-only release satisfying G1–G3. Mock responses do not satisfy real connection verification. Speech clipping, synchronization failure, source modification, lost work, or false success block the corresponding release claim. Do not raise the threshold to manufacture apparent efficiency.
 
-사용 목적에는 반복 결제 부담을 줄이는 것도 포함한다. V7·V8의 연결 검증에 다음 비용 증거를 함께 기록한다. 현재 가격이나 구독 권한을 가정해 절감액을 계산하지 않는다.
-
-- 핵심 컷 편집은 AI 미연결 상태에서 완료하고 유료 모델 요청이 0회여야 한다. 모델·도구의 최초 준비에 필요한 다운로드와 이후 편집 중 호출을 구분한다.
-- AI 연결 설정 저장·공급자 전환만으로 유료 추론을 시작하지 않는다. 사용자가 요청한 AI 작업에서 선택한 공급자만 호출하며, 오류나 취소 뒤 다른 유료 공급자로 전환하지 않는다.
-- 실제 AI 시험 전에 수행자가 호출 횟수와 사용량 또는 비용의 상한을 정하고 기록한다. 이는 시험 운영 규칙이며 앱에 비용 제한 기능이 구현됐다는 뜻은 아니다. 재시도도 횟수에 포함하고 상한에 도달하면 시험을 중단한다.
-- 요청별 모델, 시도 횟수, 성공·실패, 제공되는 사용량 및 실제 청구 근거를 기록한다. 청구를 확인할 수 없으면 `확인 불가`로 남기며 0원으로 간주하지 않는다.
-- 경제성 결과는 로컬 기본 편집과 선택형 AI 사용을 나누어 보고한다. 기존 구독의 실제 비용과 사용 빈도가 확인되기 전에는 월 절감액을 확정하지 않는다. 작업 시간·대기 시간·초기 준비 부담도 함께 제시한다.
-
-## 6. 성능과 안정성 목표
-
-기준 환경은 검증 시작 전에 모델명·칩·메모리·OS·저장 위치·전원 상태·미디어 도구 버전으로 고정한다. 다음 수치는 계획의 초기 목표이며, 이후 실행한 합성 자료의 측정값은 [검증 현황](../testing/README.md)에 연결했다.
-
-- 표준 자료: 로컬 SSD의 1080p/30 fps SDR H.264/AAC, 48 kHz, 길이 10분·60분.
-- 전체 분석 경로: 파일 선택 후 최종 컷 초안 준비까지 미디어 길이의 20% 이내. 디코딩·파형·프레임 시간표 준비를 빼고 보고하지 않는다.
-- 내보내기: 같은 해상도·품질 설정에서 미디어 길이 이내. 출력 파일 검증까지 포함한다.
-- 메모리: 앱과 자식 프로세스의 동시 합산 RSS 최대 2 GiB 이하를 초기 목표로 둔다. 60분·1,000컷 자료에서도 확인한다.
-- 조작 응답: 재생·정지·복원·설정 조작의 화면 반응 p95 200 ms 이하. 대표 조작을 30회 이상 관측한다.
-- 취소: 요청 표시 300 ms 이내, 작업 프로세스 종료와 재시도 가능한 상태까지 5초 이내.
-- 시작이 차가운 실행과 캐시가 있는 실행을 구분한다. 미디어 작업은 조건별 3회 수행해 각 원시값과 중앙값·최댓값을 보고하며, 3회 결과로 p95를 주장하지 않는다. 새 앱 세션·입력 파일 캐시·OS 전체 캐시는 [캐시 검증 계획](2026-09-06-cache-verification-plan.md)에 따라 구분한다.
-
-기능·발화·원본 보존 기준은 출시 차단 기준이다. 성능 목표가 실패하면 원인을 분석하고 최적화 또는 지원 범위 변경을 먼저 문서화한 뒤 다시 평가한다.
-
-## 7. 검증 단계와 통과 조건
-
-| 단계 | 수행할 검증 | 다음 단계로 가는 조건 |
-| --- | --- | --- |
-| G0 계획·정답 준비 | 요구사항 연결, 샘플 명세, 정답 출처, 기준 환경 확정 | 필수 요구마다 테스트·증거·합격 기준이 있고 실제 데이터 확보 상태를 기록 |
-| G1 기술 가능성 | 음량·시간 경계, 채널, 컷 시간축, 출력 디코딩 | 핵심 오라클 테스트와 짧은 실제 출력이 통과. 해소 안 된 임계값/싱크 차이 없음 |
-| G2 MVP 기능 | 실제 앱의 파일 열기부터 내보내기, 편집·저장·취소·실패 | D/M/U/E의 MVP P0/P1 통과, 두 앱과 지원 형식별 결과 확보. Q/P의 실사용 판정은 G3에서 수행 |
-| G3 실사용 | 한국어 평가 영상, 품질·복원 부담·시간 절감·긴 영상 성능 | Q/P 필수 사례와 위 품질·시간·성능 목표 충족. G2와 합쳐 전체 MVP P0/P1을 판정. 충족하지 못한 조건을 지원 범위에서 명시적으로 처리 |
-| G4 AI 연결 | 선택한 공급자의 계약·실패·실제 인증·작업 실행 | 해당 연결의 필수 사례 통과 후 그 공급자만 지원 완료로 표시 |
-
-G4는 후속 단계이며 G1~G3의 로컬 기능 테스트를 막지 않는다. 모의 응답만 성공한 공급자는 실제 연결 성공으로 표시하지 않는다. 테스트 미실행·차단·적용 불가는 통과와 구별한다.
-
-임계값 모드로 규칙 정확성을 달성해도 실제 발화 품질과 시간 절감 목표를 동시에 만족하지 못하면, 기본값 조정 또는 VAD 발화 보호의 우선순위 상향을 판단한다. 단순히 임계값을 높여 삭제량을 늘리는 것으로 목표를 맞추지 않는다.
-
-## 8. 결과와 변경 관리
-
-실행마다 [결과 기록 양식](../testing/test-run-template.md)을 복사한다. 코드 커밋·테스트 및 fixture 버전·실행 환경·설정·원시 증거·실패 재현 방법을 기록한다. 평가 영상은 익명 ID로 참조한다.
-
-코드 커밋만으로 실제 실행한 앱을 식별하지 않는다. 브라우저는 사용한 UI 번들과 로컬 서버, 데스크톱은 패키지와 내부 런타임의 버전·해시를 연결한다. 말소리 보호·전사를 사용하면 모델 버전·해시도 남긴다. 테스트 러너·독립 정답·평가 라벨과 설정을 실행 전에 고정하고, 검증 중 바뀌면 새 실행 ID로 결과를 분리한다. 이전 결과는 보존하며 변경으로 영향을 받는 묶음을 재실행한다.
-
-발화 손상, 싱크 오류, 원본 변경, 편집 손실, 잘못된 성공 표시가 하나라도 있으면 해당 출시 게이트는 실패다. 원인을 수정한 뒤 실패 사례와 영향을 받는 테스트 묶음을 다시 실행하고, 최종 후보에서 MVP 필수 묶음을 한 번 실행한다. 변경이나 새로운 우려가 없으면 통과한 전체 테스트를 반복하지 않는다.
-
-이 문서는 계획의 완료를 의미하며 제품 검증의 완료를 의미하지 않는다. 이후 구현과 실행 증거, 남은 미검증 항목은 [검증 현황](../testing/README.md)에서 각 실행 기록으로 연결한다.
-
-실행 담당자는 [첫 실행 묶음과 준비 조건](2026-09-05-test-plan.md#9-첫-실행-묶음과-준비-조건) 순서로 자료와 증거를 준비한다. 과거 후보의 통과 기록은 해당 빌드의 증거로 보존한다. UI·서버·패키지가 바뀐 최종 후보의 성능이나 실제 설치 환경을 과거 결과만으로 통과 처리하지 않는다.
+Record code commit, dirty state, browser/server bundles, native package, models, runner, input/oracle hashes, and settings before running. Existing evidence applies only when its identities and conditions match. After a change or failure, rerun affected checks; unrelated repetition is not a substitute for resolving the failure. Use the [first execution batches](2026-09-05-test-plan.md#9-first-execution-batches) and [result template](../testing/test-run-template.md).

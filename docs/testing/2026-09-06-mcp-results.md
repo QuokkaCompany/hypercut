@@ -1,47 +1,28 @@
-# 로컬 MCP 연결과 편집 제안 검증
+# Local MCP protocol and editing proposals
 
-2026-09-06. [MCP 계획](../plans/2026-09-06-chatgpt-mcp-plan.md)의 로컬 프로토콜·앱 제안 수신을 구현했다. 실제 ChatGPT 계정·터널·모델 호출과 개인 녹음의 편집 품질을 검증한 기록은 아니다.
+2026-09-06. Local protocol and app proposal reception were implemented and tested. Actual ChatGPT accounts, tunnels, models, and human editing quality were not validated.
 
-## 동작
+Experimental MCP shares selected settings, captions, or effects using a one-time scoped key separate from the editor API token. One stdio adapter binds to one share. Its only tools are `get_shared_edit_context` and `submit_edit_proposal`; it provides no arbitrary file, media, project-listing, or shell access. Existing domain validators enforce user comparison and selected application, rejecting wrong authority, stale snapshots, and invalid/duplicate changes. Only selected text and numbers are shared.
 
-AI 메뉴의 **외부 AI — MCP 연결 (실험)**에서 설정·선택 자막·선택 효과음 요청을 공유한다. 앱 전체 API 토큰과 다른 일회성 접근 키를 쓰며 stdio 어댑터는 정확히 하나의 공유에만 연결한다. 제공하는 도구는 `get_shared_edit_context`, `submit_edit_proposal` 두 개다. 파일·미디어·전체 프로젝트 목록·셸 실행 도구는 없다.
+The maximum lifetime is 15 minutes, with a 90-second lease renewable only by the app. After apply/reject, request and proposal bodies are discarded; only a receipt remains until lease expiry. New work, expired shares, or revoked shares require new settings. A receipt records actual app application, not a model's claim or current state after undo.
 
-설정·자막·효과음의 기존 검증기를 재사용한다. 제안 도착만으로 편집하지 않으며 사용자가 현재 값과 비교해 선택 적용한다. 원문·미디어 문맥 변경, 다른 공유 권한, 잘못된 제안과 중복 변경은 차단한다. 설정·자막·효과음의 공유 본문에는 의도적으로 선택한 텍스트·수치만 포함한다.
+## Executed checks
 
-한 공유의 최대 수명은 15분, 앱만 갱신할 수 있는 임대는 90초다. 완료 후에는 요청 원문과 제안을 버리고 결과 영수증만 남은 임대 기간에 조회할 수 있다. 새 편집 공유에는 새 연결 설정이 필요하다. 만료·해제 후에는 다시 공유해야 한다.
+Nineteen contract/transport checks passed without skips:
 
-## 실행한 검사
+- Eight share-store checks cover copying, privacy, authentication, scope, numbers, replay, staleness, results, virtual-clock expiry, size/count limits, and shutdown.
+- Seven actual HTTP/SDK checks cover separate authorities, Origin, size, JSON, three actual stdio tasks, schemas, restart, replay, and receipts.
+- Four transport checks cover 2025-06-18 initialization, EOF, SIGTERM, oversize input, a five-second local HTTP timeout, and socket closure.
 
-| 묶음 | 결과와 범위 |
-| --- | --- |
-| 공유 저장소 8개 | 문맥 복사·메타데이터 제외, 다른 접근 키 차단, 허용 범위·숫자 보존, 중복/오래된 제안, 선택 적용 결과, 가상 시계의 임대·절대 만료, 크기·개수·종료 |
-| 실제 HTTP·SDK 7개 | 앱 권한과 공유 권한 분리, Origin 차단, 크기·잘못된 JSON, 세 작업의 실제 stdio 프로세스, 결과 스키마, 재전송·재시작, 적용/거절 영수증 |
-| 전송·종료 4개 | `2025-06-18` 초기화, stdin EOF, SIGTERM, 과대 메시지 종료, 실제 로컬 HTTP 지연 5초 시간 초과와 소켓 종료. 사례 하나에서 초기화와 종료를 함께 검사 |
-| 두 앱 MCP 흐름 | Chrome와 패키징한 Mac 각각 설정·자막·효과음 3작업. 요청 변경 후 해제, 명시적 공유 해제 실패·재시도, 제안 도착 전후 편집 보존, 부분 적용, 결과 전달 실패 후 편집 중복 없이 재전송 |
-| 저장·실제 미디어 | 자막/효과음 실행 취소·다시 실행, 전체 프로젝트 필드 비교·재열기, MP4 전체 디코딩·독립 오디오 RMS 검사 |
-| 기존 회귀 | 단위 88개, API 12개, 교정 11개, 효과음 AI 12개 통과. 교정/효과음 명령은 단위 묶음과 일부 중복된다. 기존 수동·모의 공급자 교정/효과음 E2E도 두 앱 모두 통과 |
+Each app completed three task flows with actual official SDK child processes. Mac used the supplied executable and `ELECTRON_RUN_AS_NODE` to run the packaged adapter. Checks covered changes/revocation, explicit revoke failure/retry, selected application/undo, acknowledgment retry without duplicate edits, complete project round trips, and actual MP4 decoding with independent RMS measurements. No API keys or external models were used. Regression groups passed 88 unit, 12 API, 11 correction, and 12 AI-effects checks, with overlaps between groups; existing manual/mock correction and effects E2E flows passed in both apps.
 
-계약·전송 19개는 미실행/실패 없이 통과했다. [보존한 결과](results/2026-09-06-mcp-verification.json)에 명령·소스/산출물 해시·실행 기록을 연결한다. 두 앱은 공식 SDK가 시작한 실제 자식 프로세스로 통신했다. Mac에서는 앱이 제공하는 실행 경로와 `ELECTRON_RUN_AS_NODE` 설정으로 패키지 내부 어댑터를 시작했다. API 키나 외부 모델 호출은 사용하지 않았다.
+An eight-second fixture retained cut `[2, 4)` and changed one caption/effect. Source time 5 seconds mapped to output 3 seconds. RMS at 3.1–3.3 seconds was approximately 0.07080272 in both apps; the unselected addition at 4.1–4.3 seconds had RMS zero. Complete projects matched except timestamps. Comparison UI was viewed at 390 px and on Mac, without claiming full accessibility, screen-reader, or device coverage. Native paths were supplied by the runner.
 
-8초 합성 영상에서 [2,4) 컷을 유지한 채 자막 하나와 효과음 하나만 변경했다. 적용한 효과음의 원본 5초 배치는 출력 3초가 되며, 3.1~3.3초 RMS는 두 앱 모두 약 0.07080272였다. 선택하지 않은 추가 제안의 4.1~4.3초 출력은 RMS 0이었다. 실제 저장한 프로젝트는 저장 시각을 제외한 모든 필드를 기대값과 비교했다.
+Three initial UI failures involved label lookup, undo/input update timing, and missing fixture `reason: silence`. They were preserved and the harness corrected without product changes. Later review found premature revoke-success reporting. The app now waits for server acknowledgment; failure explains uncertainty, stops renewals, and offers retry. Both-app 503 tests proved the share remained readable before retry and was denied afterward. The initial completed record remains separate.
 
-390px 브라우저와 Mac의 비교 화면도 렌더링해 확인했다. 전체 접근성·스크린리더·모바일 기기 지원 판정은 아니다. Mac 파일 창의 선택 결과는 시험이 지정했으며 실제 OS 대화상자 조작의 별도 기존 근거를 대체하지 않는다.
+## Limits
 
-## 실패 기록과 한계
-
-최초 세 UI 실행은 시험 코드에서 중단했다. 요청 입력란의 정확한 레이블 탐색, 효과음 실행 취소 뒤 입력란 갱신 대기, fixture의 정규화된 `reason: silence` 누락을 순서대로 보완했다. 실패 결과를 보존했고 제품 코드를 바꿔 통과 처리하지 않았다. 최종 실행에서는 전체 프로젝트 비교와 실제 출력 검증을 유지했다.
-
-그 뒤 코드 점검에서 공유 해제를 요청하자마자 성공으로 알리는 문제를 보완했다. 앱은 이제 서버의 해제 응답을 확인하고, 실패하면 즉시 해제를 확인하지 못했다고 안내하며 재시도 버튼을 제공한다. 실패 중에는 임대 갱신을 멈춘다. 두 앱 시험에 실제 공유가 아직 읽히는 503 조건과 재시도 후 접근 거부를 추가했다. [보완 전 첫 완료 기록](results/2026-09-06-mcp-initial-verification.json)은 그대로 보존한다.
-
-실제 ChatGPT/Claude 클라이언트 계정의 도구 발견·모델 제안 품질·사용량, Secure MCP Tunnel 설정·인증·연결은 미검증이다. 프로토콜 성공을 계정 연결 성공으로 표시하지 않는다. 모델이 제출한 적용 상태가 아니라 앱의 실제 적용 뒤 기록한 영수증을 사용한다. 영수증은 이후 실행 취소까지 추적하는 현재 편집 상태가 아니다.
-
-설정 화면의 결과 전송 실패·재시도는 검사했다. 효과음은 적용 직후 대상 창을 닫으며, 그 이후 앱 연결이 끊기면 편집은 적용됐어도 AI가 완료 영수증을 받지 못할 수 있다. 이 경우 완료를 추정하지 않는다. 실제 시간 경과의 15분 만료, 공유 생성 응답과 프로젝트 전환의 경합, 모든 클라이언트 버전은 별도 추가 검사 대상이다.
-
-후속 [지연 응답 실행 기록](2026-09-06-mcp-lifecycle-results.md)에서 생성 응답과 프로젝트 전환을 포함한 두 앱 12조건을 검사했다. 이전 적용 확인의 오류가 새 요청으로 넘어가는 문제를 수정했고, 현재 요청의 오류·재시도와 기존 전체 흐름도 확인했다. 이 후속 기록으로 실제 시간 경과의 만료나 외부 클라이언트 계정까지 검증한 것은 아니다.
-
-새 MCP 기능은 UI 번들·서버·패키지를 변경했다. 앞서 완료한 60분 cold 성능 결과는 `b60b115`의 근거이며 새 최종 후보의 장시간 성능으로 재사용하지 않는다.
-
-## 재현
+Real-account discovery, model usage, tunnel authentication, wall-clock 15-minute expiry, and all client versions remain unverified. Settings-receipt retry is covered. The effects dialog closes after application, so a disconnect can leave applied edits without an external acknowledgment; success must not be inferred. Later lifecycle tests cover 12 named creation/project race conditions. MCP changes invalidate reuse of old `b60b115` performance as current evidence.
 
 ```sh
 npm run test:mcp
@@ -50,6 +31,13 @@ npm run package:desktop
 node scripts/mcp-e2e.mjs --desktop
 ```
 
-UI 검사는 매번 새로운 `test-output/mcp-ui-<timestamp>` 폴더를 만든다. 실제 영상·인증 자료 없이 합성 자료만 사용한다. 직접 지정하는 `--output` 폴더도 기존 폴더를 재사용하지 않는다.
+UI runners create fresh timestamped output folders and use synthetic data only. Explicit output directories must also be new.
 
-공식 참고: [MCP SDK stdio 서버](https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/serving/stdio.md), [OpenAI Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels).
+## Evidence and related records
+
+- [2026-09-06-chatgpt-mcp-plan.md](../plans/2026-09-06-chatgpt-mcp-plan.md)
+- [2026-09-06-mcp-verification.json](results/2026-09-06-mcp-verification.json)
+- [2026-09-06-mcp-initial-verification.json](results/2026-09-06-mcp-initial-verification.json)
+- [2026-09-06-mcp-lifecycle-results.md](2026-09-06-mcp-lifecycle-results.md)
+- [stdio.md](https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/serving/stdio.md)
+- [secure-mcp-tunnels](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels)

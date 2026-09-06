@@ -1,109 +1,96 @@
-# 두 앱의 컷·자막·효과음 동시 합성
+# Composition in the browser and native app
 
-2026-09-06. [정수 프레임 경계 수정](2026-09-06-composition-oracle-results.md)을 포함한 앱에서 60초 사전 검사를 완료했다. Chrome와 Mac 각각 2회, 총 4회다. 실제 프로젝트·SRT·MP4 저장과 취소·재시도까지 확인했다. 첫 브라우저 60분 조건은 정확성 검사를 통과했지만 메모리와 자막 조작 기준을 초과해 실패했다. 개선 후보를 검증 중이며 장시간 성능 완료로 발표하지 않는다.
+2026-09-06, after the integer frame-boundary fix. Both apps passed 60-second controls. Long browser candidates still failed memory and/or caption-response targets; full long-form acceptance was incomplete.
 
-## 실제로 수행한 흐름
+The actual UI imported and analyzed 16 cuts, opened 16 manual Korean captions and 16 effects plus muted/deleted controls, reconnected the asset, and saved the complete project, SRT, and MP4. Independent decoding checked every frame, caption presence/timing, effect gain/onset/end/leakage, and A/V markers. This fixture uses no AI or speech recognition. Each run performs 32 caption, 32 effect, and 32 cut actions, checking state, invalidation, and undo. Cancellation after the first export must preserve the existing output, file, and project before a second export succeeds.
 
-`scripts/composition-benchmark.mjs`는 실제 화면을 통해 원본을 가져오고 무음 분석을 실행한다. 분석의 16개 컷과 수동 한국어 자막 16개, 효과음 16개 및 음소거/삭제 대조 클립이 들어간 프로젝트 파일을 연다. 실제 음원을 재연결하고 프로젝트 전체를 저장해 입력과 비교한다. AI나 자동 전사 추론은 이 자료에 포함하지 않는다.
+## Initial short controls
 
-자막 창에서 실제 SRT를 저장하고 MP4를 내보낸다. 출력 파일을 디코딩해 전체 프레임의 자막 존재·시각, 효과음 시작·끝·진폭, 음소거/삭제 클립의 누출과 독립 A/V 표식을 검사한다. SRT의 전체 문구·시각과 MP4의 모든 보존 프레임 수·PTS도 확인한다.
-
-첫 성공 뒤 새 합성을 시작해 자막 준비 중 취소한다. 작업의 실제 상태와 취소 응답, 기존 화면의 출력·저장된 MP4 바이트·전체 프로젝트 보존을 확인하고 같은 앱의 두 번째 실행을 완료한다. 매 실행마다 자막 선택/수정/실행 취소, 효과음 음량/음소거/실행 취소, 컷 복원/실행 취소를 각각 32회 조작한다. 수정으로 이전 출력이 무효화되는지와 되돌린 전체 프로젝트의 일치 여부도 검사한다.
-
-## 개선 전 60초 사전 검사 결과
-
-[전체 원시 결과](results/2026-09-06-composition-app-smoke.json), [소스·파일·프로젝트·RSS 감사](results/2026-09-06-composition-app-smoke-audit.json). 네 실행 모두 1,448프레임·16개 자막·16개 효과음·독립 표식 6쌍을 통과했고, 원본 영상과 효과음 해시는 유지됐다. 네 MP4는 모두 같은 SHA-256이며 SRT도 모두 동일했다. 처음·중간·마지막 PNG는 앞서 직접 확인한 엔진 출력의 세 이미지와 같은 해시였다.
-
-| 조건 | 분석(가져오기 포함) | 앱 검증 포함 출력 | 앱 트리 RSS 최대 | 조작군별 최대 p95 |
+| App / run | Analysis (s) | Export (s) | RSS (GiB) | Highest action p95 (ms) |
 | --- | --- | --- | --- | --- |
-| Chrome 1 | 1.065초 | 3.797초 | 1.881GiB | 100.416ms |
-| Chrome 2 | 0.867초 | 3.815초 | 1.950GiB | 100.201ms |
-| Mac 1 | 1.272초 | 3.677초 | 1.287GiB | 60.867ms |
-| Mac 2 | 1.117초 | 3.768초 | 1.376GiB | 59.680ms |
+| Chrome / 1 | 1.065 | 3.797 | 1.881 | 100.416 |
+| Chrome / 2 | 0.867 | 3.815 | 1.950 | 100.201 |
+| Mac / 1 | 1.272 | 3.677 | 1.287 | 60.867 |
+| Mac / 2 | 1.117 | 3.768 | 1.376 | 59.680 |
 
-독립 디코딩 검증은 각 약 3.03–3.07초로 별도 기록했다. 위 p95는 각 조작군 32개 표본으로 계산하며 합성 반복 2회로 p95를 계산하지 않는다. 전체 UI 조작은 384개다. RSS는 앱과 자식 프로세스 전체를 포함하며 시험 드라이버와 독립 출력 검증기는 제외한다. 최대 실제 표본 간격은 278.104ms였다. 강제 GC·앱 재시작·OS 캐시 제거를 반복 사이에 수행하지 않았다.
+All outputs matched: 1,448 frames, 16 captions/effects, six markers, complete projects, MP4/SRT bytes, and source hashes. Sample PNGs matched previously viewed engine frames. There were 384 actions; each p95 uses 32 samples, not two run durations. The independent oracle took approximately 3.03–3.07 seconds separately. App validation remained inside export timing and RSS. All app children were included, with driver/oracle processes excluded; maximum sample interval was 278.104 ms. No forced GC, restart, or cache purge occurred between repetitions.
 
-| 취소 조건 | 실제 취소 전 상태 | 취소 표시 | 재시도 가능 상태 | 보존·재시도 |
-| --- | --- | --- | --- | --- |
-| Chrome | 자막 디자인 합성 준비, 진행률 0.3375 | 0.800ms | 207.844ms | 프로젝트·화면 출력·MP4 보존, 2회째 성공 |
-| Mac | 자막 디자인 합성 준비, 진행률 0.4125 | 0.900ms | 200.774ms | 프로젝트·화면 출력·MP4 보존, 2회째 성공 |
+Chrome cancellation at caption-preparation progress 0.3375 became visible in 0.800 ms and ready in 207.844 ms; Mac at 0.4125 took 0.900 / 200.774 ms. Weighted progress is not the percentage of captions completed or proof of video-encoding cancellation. Both subsequent exports completed. These four short runs are separate from long runs; Chrome's approximately 51.3 MiB headroom does not establish long-video behavior.
 
-이 진행률은 작업 전체의 가중 진행률이며 자막 완성 비율이 아니다. 영상 인코딩 단계에서 취소한 결과로 표현하지 않는다. 사전 검사 4회는 10분/60분 성능 반복 수에 합산하지 않는다. Chrome 두 번째의 메모리 여유도 약 51.3MiB여서 장시간 결과를 대신할 수 없다.
+Harness v1 failed in Playwright `stream.promises.pipeline` before a product verdict. Moving package inspection to a separate Node process allowed upload, without establishing the library's root cause. Version 2 tried to close a background notification behind a modal; correcting the sequence avoided a forced click. Both failures were retained, and completed v3 was audited with unchanged product code.
 
-## 검사 도구 수정 이력
+## Initial long failure and decoder/list candidate
 
-처음 두 실행은 앱의 합성 결과를 판정하기 전에 시험 도구에서 중단됐다.
+The first 60-minute run took 36.709 seconds for analysis, 191.498 for export, and 124.583 for the oracle. RSS **2.205 GiB** and caption p95 **239.359 ms** failed; effect/cut p95 was 193.366 / 66.899 ms. All 85,997 frames, 1,000 captions, 64 effects, complete SRT, and six markers passed. Cancellation at preparation progress 0.3009 took 1.0 / 216.199 ms and preserved work. The second long retry and other long conditions were `NOT_RUN` after the failure.
 
-1. [첫 실행](results/2026-09-06-composition-app-driver-failure.json)은 업로드 시 Playwright의 `stream.promises.pipeline` 오류였다. 패키지 내용 검사를 별도 Node 프로세스로 분리한 다음 업로드가 진행됐다. 라이브러리의 일반적인 결함이나 근본 원인까지 확정한 결과는 아니다.
-2. [두 번째 실행](results/2026-09-06-composition-app-modal-failure.json)은 자막 모달 뒤의 알림 닫기 버튼을 누르려다 시간 초과했다. 모달이 열려 있을 때 배경 알림을 닫지 않도록 시험 순서를 수정했다. 강제 클릭이나 화면 상태 우회는 사용하지 않았다.
+A one-filter-thread experiment was reverted. One decoder thread per source/PNG input preserved backend bytes while reducing observed backend RSS from 730.203 to 452.375 MiB; time changed from 3.579 to 3.537 seconds. This does not establish whole-app savings. A memoized CaptionList used primitive props and current handlers while retaining every row/button. Eighty unit tests and 36 media/caption/effect/compatibility/frame integrations passed. Both apps passed 1,000-row keyboard, unsaved-input, text/timing, undo, save/reopen, and actual Whisper TTS/caption flows. Build/package identities were checked. A sandbox-blocked RSS query was retained as a measurement failure before a permitted process-query rerun.
 
-각 실패의 실행 스크립트와 원시 결과는 `test-output/composition-app-smoke-v1/`, `v2/`에 보존했다. 완료된 `v3/`의 소스 해시·실행 스크립트·실제 파일을 감사했다. 이 단계에서는 제품 실행 코드를 수정하지 않았다.
+Four candidate short runs preserved output bytes, projects, oracles, and 384 actions. Chrome maximum RSS/action p95 was 1.681 GiB / 101.205 ms, compared with 1.950 GiB previously; Mac was 1.127 GiB / 59.948 ms, compared with 1.376 GiB. Cancellation feedback/readiness was 0.800 / 306.710 ms in Chrome and 0.900 / 199.605 ms on Mac; maximum sampling interval was 279.510 ms.
 
-## 다음 판정
+The first candidate 60-minute run took 37.012 / 193.932 / 124.542 seconds for analysis/export/oracle. RSS was 1.968 GiB with 32.375 MiB headroom, but caption p95 **224.978 ms** failed; effect/cut p95 was 196.958 / 67.308 ms. All output, project, byte, and sample-frame checks passed. Cancellation at progress 0.3006 took 1.100 / 224.539 ms and preserved work; the second long retry remained `NOT_RUN`. The recorded pre-run commit was `8aa2ef7`; actual files matched later commit `336d0e3`.
 
-[브라우저 60분 첫 실행](results/2026-09-06-composition-long-before.json)은 종료 코드 1로 끝났다. 분석 36.709초·앱 검증 포함 출력 191.498초·독립 검증 124.583초였다. [독립 출력 기록](results/2026-09-06-composition-long-before-verification.json)의 85,997개 프레임·1,000개 자막·64개 효과음·전체 SRT·표식 6쌍은 통과했다. 다만 RSS 최대 2.205GiB, 자막 조작 p95 239.359ms로 실패했다. 효과음 p95는 193.366ms, 컷은 66.899ms였다.
+## Caption diagnostics and CSS candidate
 
-자막 준비 진행률 0.3009에서 실제 취소했고 표시 1ms·재시도 가능 상태 216.199ms, 전체 프로젝트와 기존 출력 보존을 확인했다. 성능 실패에서 중단했으므로 장시간 두 번째 합성 재시도는 **미실행**이다. Mac 60분과 두 앱 10분도 실행하지 않았다.
+These separate 32-action diagnostics are not formal repetitions:
 
-[메모리·자막 목록 개선 계획](../plans/2026-09-06-composition-memory-plan.md)을 따르고 있다. 필터 스레드 1개 후보는 절감이 작고 느려 되돌렸다. 자막 포함 출력의 두 입력 디코더를 각각 1개로 제한한 후보는 [60초 백엔드 비교](results/2026-09-06-composition-render-decoder-comparison.json)에서 같은 MP4 바이트를 유지하며 730.203→452.375MiB, 3.579→3.537초였다. 앱 전체 성능 통과로 사용하지 않는다. 자막 행 재사용 후보와 함께 회귀·실제 앱 검증을 진행한다.
+| Condition | p95 / maximum (ms) |
+| --- | --- |
+| Project only | 145.416 / 282.421 |
+| Empty source VTT | 198.863 / 264.640 |
+| Actual analysis/waveform | 204.211 / 221.280 |
+| No background blur | 205.592 / 209.739 |
+| Offscreen content visibility | 185.047 / 190.624 |
 
-## 개선 후보의 회귀와 두 앱 재검사
+VTT and blur controls did not justify product changes. The final control reduced TaskDuration from 2.186 to 1.883 seconds and frame tasks from 2.695 to 2.305 seconds in one diagnostic. Native PID identity was audited; mostly unnamed Chrome offsets prevent identifying a function-level cause. Physical footprint is not substituted for RSS. Invalid direct React track removal, missed project confirmation, and an incorrect single-renderer assumption remain runner failures, not product or performance results.
 
-자막 포함 출력에서는 원본 영상과 PNG 디코더를 각각 1개 스레드로 제한했다. 출력 인코더·해상도·필터·음량 설정은 유지했다. 자막 목록은 `CaptionList`로 분리하고 행에 숫자·문자열·불리언을 전달해 변하지 않은 행의 렌더링을 재사용한다. 이벤트는 현재 목록에서 처리하며 모든 행과 기본 버튼을 유지한다.
+The CSS candidate adds content visibility and estimated height while retaining buttons, text, times, VTT, and design. Packaging initially failed on sandbox DNS, then succeeded with pinned Electron 44.2.0 over permitted networking; this was not an approval rejection. Both apps passed 1,000-row tests. Blank neighboring rows in an initial scroll capture led to visible-row/text/seek-readiness checks. Additional waits were 28.336 ms in Chrome and 20.392 ms on Mac, with stable rows 999/1000 viewed; these are not p95 measurements. The runner additionally records the CSS hash.
 
-- 단위 테스트 80건과 미디어/자막/효과음/호환성/프레임 경계 통합 36건이 통과했다. 실행 로그는 `test-output/composition-candidate-unit.log`, `composition-candidate-regression.log`에 보존했다.
-- [1,000개 자막 목록의 두 앱 검사](results/2026-09-06-caption-list-e2e.json)는 Enter/Space 선택, 미적용 입력의 버리기 거절/승인, 문구·시각 수정, 실행 취소/다시 실행, 최신 시각으로 이동, 전체 프로젝트 저장·재열기를 통과했다. 매우 짧은 합성 자막으로 목록 동작을 확인한 검사이며 읽기 품질 평가가 아니다.
-- [기존 실제 전사·자막 흐름](results/2026-09-06-composition-candidate-captions-e2e.json)도 두 앱에서 통과했다. 한국어 TTS에 로컬 Whisper small을 사용해 검토·디자인 미리보기·SRT·MP4·프로젝트 저장을 확인했다. 실제 사람의 발화 품질 결과로 표현하지 않는다.
-- TypeScript·프로덕션 빌드·Mac 패키징을 완료했다. 재검사 러너가 실제 번들 파일과 패키지 안의 번들/백엔드 소스 해시도 확인한다.
+Four CSS short runs retained identical outputs and successful cancellation/retry. Chrome maximum RSS/action p95 was 1.689 GiB / 100.193 ms; Mac was 1.113 GiB / 59.954 ms. Maximum sample interval was 277.892 ms.
 
-[개선 후보의 60초 두 앱 4회](results/2026-09-06-composition-app-candidate-smoke.json)와 [전체 감사](results/2026-09-06-composition-app-candidate-smoke-audit.json)가 완료됐다. 네 MP4와 SRT는 각각 개선 전 바이트와 같았고, 전체 프로젝트·1,448개 프레임·16개 자막·16개 효과음·384개 조작을 통과했다.
-
-| 조건 | 개선 전 RSS 최대(2회) | 개선 후 RSS 최대(2회) | 개선 후 조작군별 최대 p95 |
+| `0804f39` long run | Analysis / export / oracle (s) | RSS (GiB) | Caption / effect / cut p95 (ms) |
 | --- | --- | --- | --- |
-| Chrome 60초 | 1.950GiB | 1.681GiB | 101.205ms |
-| Mac 60초 | 1.376GiB | 1.127GiB | 59.948ms |
+| 1 | 36.713 / 193.520 / 124.703 | 1.962 | 183.357 / 198.350 / 66.265 |
+| 2 | 37.123 / 194.743 / 124.727 | **2.140 FAIL** | 184.149 / 197.656 / 66.442 |
 
-두 앱 모두 자막 준비 중 취소·기존 화면 출력/파일/프로젝트 보존·두 번째 성공 합성을 확인했다. Chrome은 표시 0.800ms·재시도 가능 상태 306.710ms, Mac은 표시 0.900ms·재시도 가능 상태 199.605ms였다. 최대 실제 RSS 표본 간격은 279.510ms였다. 백엔드 진단의 첫 시도는 샌드박스에서 RSS 조회가 차단돼 [측정 실패](results/2026-09-06-composition-render-sandbox-failure.json)로 보존했고, 허용된 프로세스 조회로 기준값을 다시 수집했다.
+Both outputs passed all 85,997 frames, 1,000 captions, 64 effects plus two excluded effects, six markers, and complete project/SRT/MP4 checks. MP4 SHA-256 was `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`. Maximum sample intervals were 279.691 / 280.448 ms. Cancellation at preparation progress 0.3006 took 1.100 / 223.712 ms, preserved work, and was followed by a completed second output.
 
-단일 기기의 이 짧은 자료에서의 관측이며 긴 영상의 메모리나 자막 응답 통과를 대신하지 않는다.
+The third browser run, Mac 60-minute runs, and both 10-minute conditions were stopped. At encoding peaks, renderer RSS rose from 403.688 to 516.563 MiB and server RSS from 212.750 to 253.094 MiB; this is not proof of a leak. Preserve the failure and unchanged criteria without subtracting estimated automation cost from RSS.
 
-개선 후보의 [브라우저 60분 첫 재측정](results/2026-09-06-composition-long-candidate.json)은 종료 코드 1로 끝났다. 분석 37.012초·앱 검증 포함 출력 193.932초·독립 검증 124.542초, RSS 최대 1.968GiB였다. 메모리 기준을 통과했으나 여유는 32.375MiB다. 자막 조작 p95 224.978ms가 200ms를 초과해 전체 실행은 실패했다. 효과음 196.958ms·컷 67.308ms였다. 조건별 3회나 다른 플랫폼으로 확대하지 않았다.
+## Evidence and related records
 
-[감사 결과](results/2026-09-06-composition-long-candidate-audit.json)에서 현재 소스·패키지 해시, 전체 프로젝트 왕복, 모든 RSS 표본 합계를 확인했다. [독립 검증](results/2026-09-06-composition-long-candidate-verification.json)의 정답·오디오·프레임·싱크·SRT는 개선 전과 같고, MP4·SRT 바이트와 앞서 직접 검토한 세 PNG 해시도 동일하다. 실제 자막 준비 진행률 0.3006에서 취소해 표시 1.100ms·재시도 가능 상태 224.539ms였으며 프로젝트·화면 출력·저장된 MP4를 보존했다. 성능 실패로 중단했으므로 두 번째 장시간 합성 재시도는 **미실행**이다. 기록의 `code`는 실행 직전 커밋 `8aa2ef7`이고, 실제 실행 소스·번들·패키지는 이후 커밋 `336d0e3`의 해시와 일치한다.
-
-같은 프로젝트의 자막 조작을 별도 진단해 입력 전달·브라우저 작업·스크롤과 렌더링 지연을 나눠 확인했다. 최초 진단은 분석·합성을 생략했고 후속 진단은 실제 분석을 포함했다. 모두 정식 장시간 성능 통과로 합산하지 않는다. 기존 200ms 기준과 실패 기록을 유지한다.
-
-## 자막 행 렌더링 후보
-
-[진단 러너](../../scripts/caption-ui-diagnostic.mjs)는 같은 60분 원본과 1,000개 자막 프로젝트에서 실제 선택/수정/실행 취소 32개를 수행하고 입력 전달·결과 확인·두 프레임까지의 시간을 나눠 기록한다. CDP 추적과 추가 계측이 있는 원인 조사이며 정식 합성 반복 수에 합산하지 않는다.
-
-| 대조 | 자막 조작 p95 / 최대 | 판정 |
-| --- | --- | --- |
-| [프로젝트만 열기](results/2026-09-06-caption-ui-normal.json) | 145.416 / 282.421ms | 분석·합성을 생략한 진단 |
-| [빈 원본 VTT](results/2026-09-06-caption-ui-empty-vtt.json) | 198.863 / 264.640ms | VTT 제거를 지지하지 않아 원본 청취 기능 유지 |
-| [실제 분석·파형 포함](results/2026-09-06-caption-ui-analyzed.json) | 204.211 / 221.280ms | 조작 지연 재현, 내보내기는 생략 |
-| [배경 blur 제거](results/2026-09-06-caption-ui-flat.json) | 205.592 / 209.739ms | 개선 근거 부족, 디자인 유지 |
-| [화면 밖 행 렌더링 지연](results/2026-09-06-caption-ui-contained.json) | 185.047 / 190.624ms | CSS 후보로 후속 기능·합성 검사 |
-
-마지막 대조의 TaskDuration 합계는 분석 포함 기준 2.186초에서 1.883초, 최상위 프레임 작업 합계는 2.695초에서 2.305초였다. 단일 기기·단일 진단의 차이며 일반적인 절감률을 보장하지 않는다. [네이티브 샘플링 감사](results/2026-09-06-caption-ui-native-audit.json)는 테스트 페이지 표식의 PID와 자체 Chrome의 렌더러를 대조했다. [샘플링을 포함한 실행](results/2026-09-06-caption-ui-native.json)은 계측 비용이 있으며, Chrome 내부 함수가 대부분 이름 없는 오프셋이어서 구체적인 네이티브 원인까지 확정하지 않았다. 물리 footprint를 전체 앱 RSS로 사용하지 않는다.
-
-진단 중 세 도구 실패도 보존한다. [DOM track 직접 제거](results/2026-09-06-caption-ui-invalid-dom-control.json)는 React의 자식 제거 오류를 유발한 무효 대조다. [분석 뒤 프로젝트 확인창 누락](results/2026-09-06-caption-ui-analyzed-driver-failure.json)은 시험 프로젝트를 열지 못한 오류이고, [렌더러 개수 가정](results/2026-09-06-caption-ui-renderer-identity-failure.json)은 자체 브라우저의 렌더러가 3개여서 샘플링 전에 중단된 기록이다. 제품 결함 또는 성능 수치로 합산하지 않는다. 각 원시 폴더의 `executed.mjs` 해시를 실행 기록과 대조했다.
-
-후보는 `content-visibility:auto`와 행 높이 추정값만 CSS에 추가한다. 모든 자막 버튼, 문구·시각, 원본 자막, 배경 디자인을 유지한다. TypeScript·브라우저 빌드와 Mac 패키징을 완료했다. 첫 패키징은 샌드박스의 DNS 제한으로 실패했으며 허용된 네트워크에서 고정된 Electron 44.2.0 패키징을 완료했다. 자동 승인 검토 거절은 아니었다.
-
-[1,000개 목록의 두 앱 검사](results/2026-09-06-caption-contained-list-e2e.json)는 마지막 행, Enter/Space, 미적용 입력 보호, 수정·실행 취소/다시 실행, 전체 프로젝트 저장·재열기를 통과했다. 브라우저의 스크롤 직후 캡처에서 이웃 행이 아직 비어 있어 [표시 상태 검사를 추가](results/2026-09-06-caption-contained-visible-e2e.json)했다. 화면에 들어온 모든 행의 문구가 표시되고 원본 영상의 탐색이 끝날 때까지 확인했으며 두 앱을 통과했다. 추가 표시 대기는 브라우저 28.336ms·Mac 20.392ms였고 안정된 두 화면에서 999/1000행을 직접 확인했다. 이 한 번의 추가 대기 시간을 p95나 전체 선택 응답으로 표현하지 않는다.
-
-정식 합성 러너의 변경은 소스 기록에 `src/captions.css` 해시를 추가한 것뿐이다. 조작·정답·메모리·200ms 기준은 그대로다. 새 후보의 [두 앱 60초 합성 4회](results/2026-09-06-composition-contained-smoke.json)와 [전체 감사](results/2026-09-06-composition-contained-smoke-audit.json)가 완료됐다. 앱 트리 RSS 최대는 브라우저 1.689GiB·Mac 1.113GiB, 조작군별 최대 p95는 브라우저 100.193ms·Mac 59.954ms였다. 모든 1,448프레임·16개 자막·16개 효과음·전체 프로젝트와 MP4/SRT 바이트가 이전 사전 검사와 일치했다. 두 앱의 실제 자막 준비 중 취소·기존 출력/프로젝트 보존·두 번째 성공 합성을 확인했다. 최대 RSS 표본 간격은 277.892ms였다.
-
-CSS 후보의 브라우저 60분 재측정은 커밋 `0804f39`의 제품으로 두 번 완료한 뒤 메모리 실패로 종료했다. [최종 원시 보고서](results/2026-09-06-composition-contained-long.json)와 [최종 감사](results/2026-09-06-composition-contained-long-audit.json)를 보존했다. [첫 실행 감사](results/2026-09-06-composition-contained-first-audit.json)는 당시 두 번째 실행 중이었던 시점 기록으로 유지한다.
-
-| 반복 | 분석 | 출력 및 앱 검증 | 독립 검증 | 앱 트리 RSS | 자막 / 효과음 / 컷 p95 | 판정 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 36.713초 | 193.520초 | 124.703초 | 1.962GiB | 183.357 / 198.350 / 66.265ms | 측정 목표 통과 |
-| 2 | 37.123초 | 194.743초 | 124.727초 | 2.140GiB | 184.149 / 197.656 / 66.442ms | 메모리 실패 |
-
-두 실행 모두 전체 85,997프레임·1,000자막·64효과음과 음소거/삭제 2클립·6개 A/V 표식의 독립 검증을 통과했다. 두 번째 [검증 상세](results/2026-09-06-composition-contained-long-second-verification.json)도 보존했다. 전체 SRT·프로젝트와 실제 MP4 바이트는 이전 정답과 같았다. MP4 SHA-256은 두 실행 모두 `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`다. 최대 실제 RSS 표본 간격은 첫 실행 279.691ms·두 번째 280.448ms였다.
-
-첫 성공 뒤 자막 준비 진행률 0.3006에서 취소했고 표시 1.100ms·재시도 가능 상태 223.712ms였다. 프로젝트·화면 출력·저장한 MP4를 보존했으며 같은 앱의 두 번째 출력이 완료되어 취소 후 재시도도 확인됐다. 3회 반복을 요청했지만 실패 기준에 따라 세 번째와 Mac 60분·두 앱 10분 조건은 실행하지 않았다. 이 후보의 전체 장시간 성능은 미통과다.
-
-각 출력의 합산 피크 순간에 같은 큰 렌더러는 403.688→516.563MiB, 서버는 212.750→253.094MiB였다. RSS 증가만으로 누수를 단정하지 않는다. 다음 단계는 [메모리 진단 계획](../plans/2026-09-06-composition-memory-plan.md)의 동일 화면·동일 버튼 탐색 비교다. 기준을 낮추거나 추정 자동화 비용을 빼지 않는다.
+- [2026-09-06-composition-oracle-results.md](2026-09-06-composition-oracle-results.md)
+- [2026-09-06-composition-app-smoke.json](results/2026-09-06-composition-app-smoke.json)
+- [2026-09-06-composition-app-smoke-audit.json](results/2026-09-06-composition-app-smoke-audit.json)
+- [2026-09-06-composition-app-driver-failure.json](results/2026-09-06-composition-app-driver-failure.json)
+- [2026-09-06-composition-app-modal-failure.json](results/2026-09-06-composition-app-modal-failure.json)
+- [2026-09-06-composition-long-before.json](results/2026-09-06-composition-long-before.json)
+- [2026-09-06-composition-long-before-verification.json](results/2026-09-06-composition-long-before-verification.json)
+- [2026-09-06-composition-memory-plan.md](../plans/2026-09-06-composition-memory-plan.md)
+- [2026-09-06-composition-render-decoder-comparison.json](results/2026-09-06-composition-render-decoder-comparison.json)
+- [2026-09-06-caption-list-e2e.json](results/2026-09-06-caption-list-e2e.json)
+- [2026-09-06-composition-candidate-captions-e2e.json](results/2026-09-06-composition-candidate-captions-e2e.json)
+- [2026-09-06-composition-app-candidate-smoke.json](results/2026-09-06-composition-app-candidate-smoke.json)
+- [2026-09-06-composition-app-candidate-smoke-audit.json](results/2026-09-06-composition-app-candidate-smoke-audit.json)
+- [2026-09-06-composition-render-sandbox-failure.json](results/2026-09-06-composition-render-sandbox-failure.json)
+- [2026-09-06-composition-long-candidate.json](results/2026-09-06-composition-long-candidate.json)
+- [2026-09-06-composition-long-candidate-audit.json](results/2026-09-06-composition-long-candidate-audit.json)
+- [2026-09-06-composition-long-candidate-verification.json](results/2026-09-06-composition-long-candidate-verification.json)
+- [caption-ui-diagnostic.mjs](../../scripts/caption-ui-diagnostic.mjs)
+- [2026-09-06-caption-ui-normal.json](results/2026-09-06-caption-ui-normal.json)
+- [2026-09-06-caption-ui-empty-vtt.json](results/2026-09-06-caption-ui-empty-vtt.json)
+- [2026-09-06-caption-ui-analyzed.json](results/2026-09-06-caption-ui-analyzed.json)
+- [2026-09-06-caption-ui-flat.json](results/2026-09-06-caption-ui-flat.json)
+- [2026-09-06-caption-ui-contained.json](results/2026-09-06-caption-ui-contained.json)
+- [2026-09-06-caption-ui-native-audit.json](results/2026-09-06-caption-ui-native-audit.json)
+- [2026-09-06-caption-ui-native.json](results/2026-09-06-caption-ui-native.json)
+- [2026-09-06-caption-ui-invalid-dom-control.json](results/2026-09-06-caption-ui-invalid-dom-control.json)
+- [2026-09-06-caption-ui-analyzed-driver-failure.json](results/2026-09-06-caption-ui-analyzed-driver-failure.json)
+- [2026-09-06-caption-ui-renderer-identity-failure.json](results/2026-09-06-caption-ui-renderer-identity-failure.json)
+- [2026-09-06-caption-contained-list-e2e.json](results/2026-09-06-caption-contained-list-e2e.json)
+- [2026-09-06-caption-contained-visible-e2e.json](results/2026-09-06-caption-contained-visible-e2e.json)
+- [2026-09-06-composition-contained-smoke.json](results/2026-09-06-composition-contained-smoke.json)
+- [2026-09-06-composition-contained-smoke-audit.json](results/2026-09-06-composition-contained-smoke-audit.json)
+- [2026-09-06-composition-contained-long.json](results/2026-09-06-composition-contained-long.json)
+- [2026-09-06-composition-contained-long-audit.json](results/2026-09-06-composition-contained-long-audit.json)
+- [2026-09-06-composition-contained-first-audit.json](results/2026-09-06-composition-contained-first-audit.json)
+- [2026-09-06-composition-contained-long-second-verification.json](results/2026-09-06-composition-contained-long-second-verification.json)

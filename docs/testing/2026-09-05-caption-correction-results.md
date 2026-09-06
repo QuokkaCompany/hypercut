@@ -1,55 +1,34 @@
-# AI 자막 교정 실행 기록
+# AI caption correction results
 
-후속 프로젝트 용어 저장·재사용과 v6 이전은 [용어 실행 기록](2026-09-05-project-glossary-results.md)을 참고한다. 아래 버전·검사 수는 이 기록의 실행 시점 기준이다.
+Executed 2026-09-05 on changes after `a8a5a6f`. This establishes selected-proposal handling, not authenticated Korean correction accuracy. Later project glossary/v6 persistence is separately recorded.
 
-실행일: 2026-09-05. 기준 커밋 `a8a5a6f` 이후 이 문서와 함께 추가한 작업 트리에서 검증했다. 선택한 자막의 교정 제안을 처리하는 기능이며 실제 인증된 모델의 한국어 정확도 통과를 뜻하지 않는다.
+Requests contain up to 20 cues/4,000 characters, explicit terms/instructions and request/cue IDs, excluding media, filenames, paths, and cue timing. Existing Ollama/OpenAI/Anthropic/Claude Code/manual JSON share validators. Accept only `requestId`/`changes` with `id`, `before`, `after`, `reason`; validate source/target/duplicates/types/length. Reject numeric changes and timing/command extras. Mark recognized Korean/English negation changes for explicit semantic review, without claiming a complete meaning detector.
 
-## 구현과 동작
+Unselected proposals require comparison and selected application as one edit. Revalidate snapshots immediately before apply; preserve timing/unselected text, invalidate changed cue cut-review, and reuse undo/redo/v4/SRT/styled MP4. One active settings/correction request, no retry/fallback. UUID cancellation targets only its request; server remembers the latest 1,000 started/canceled IDs in process memory to reject pre-canceled/duplicate requests. Disconnect/shutdown cancel work; client aborts and discards stale responses.
 
-자막 창에서 **이 자막 AI 교정** 또는 **현재부터 N개 AI 교정**을 선택한다. 한 요청은 최대 20개·4,000자이며 보내는 문구를 확인할 수 있다. 기존 AI 연결 화면에서 Ollama·OpenAI API·Claude API·Claude Code를 선택하거나 기존 채팅에 복사한 요청의 JSON 응답을 가져온다. 이번 교정에 참고할 용어를 입력할 수 있다.
+| Check | Outcome |
+| --- | --- |
+| Unit | 53 PASS, including seven new correction checks |
+| Correction | 11 PASS: seven overlapping units + four API/mock-process |
+| API | 12 PASS |
+| CLI subprocess | 3 PASS |
+| Build/package | PASS; Node 24.14.1/Electron 44.2.0/macOS arm64 |
+| Correction and existing CLI E2E | Browser and Mac PASS |
 
-문구·용어·교정 지시·요청/자막 ID만 모델에 전달한다. 영상·음성·파일명·경로·자막 시각은 보내지 않는다. 외부 공급자 응답과 CLI 출력은 같은 교정 검증기를 거친다. 실제 인증·추론을 실행하지 않은 상태는 설정 저장과 구분한다.
+72 unique unit/API/process checks; E2E/build separate. Selected a fixed Korean typo correction while preserving the number 10; an opposite-negation proposal stayed unselected and `10→100` was rejected. With source cut `[3,5)`, second cue `[7,8.5)` became SRT `[5,6.5)`. Both apps saved identical SRT, preserved source timing in projects, fully decoded styled MP4, and displayed reviewed correction frames. Zero UI errors and observed external requests.
 
-응답은 `requestId`와 `changes` 배열만 허용한다. 각 변경은 `id`, `before`, `after`, `reason`이다. 요청 ID·원문·대상·중복 여부·타입·길이를 검증하고 숫자가 달라지는 수정과 시각·명령 등 추가 필드는 거부한다. 한국어/영어의 일부 부정 표현 변화를 표시하며, 해당 제안은 의미 확인 후 선택할 수 있다. 이 규칙은 의미 보존을 완전히 판별하는 모델이 아니다.
+The 390 px UI remained operable by scrolling. Runner fixes opened collapsed sections and improved the AI selector's accessible name; cancellation assertions checked explicit canceled status rather than generic errors. Mock CLI cancellation UI values were about 62 ms browser/51 ms Mac, not real service latency.
 
-모든 제안은 미선택으로 시작한다. 원문과 교정을 나란히 비교한 뒤 선택한 변경만 하나의 편집으로 적용한다. 적용 직전에 자막 스냅샷과 요청을 다시 검증한다. 자막 시각·선택하지 않은 문구는 유지하며 바뀐 문장의 기존 컷 경계 검토는 무효화한다. 기존 실행 취소/다시 실행·프로젝트 v4·SRT·디자인 MP4 경로를 재사용한다.
+HTTP responses were mocked; temporary CLI executables were actual subprocesses, not authenticated models. UI used manual JSON/interception and fixed captions with synthetic media, not new transcription. Actual provider work/cost/Korean quality remained NOT_RUN. Request-only glossary was initially transient. Regex/negation guards do not guarantee names, units, facts, or complete semantics. Human evaluation, direct ChatGPT, effects, long performance and remaining product gates were outstanding then.
 
-공유 AI 계층을 작업별 프롬프트·스키마·검증기 형태로 정리했다. CLI의 파일/셸/MCP 차단, 임시 작업 폴더, 구독 인증 구분, 제한된 응답 크기·오류 메시지를 유지한다. 설정 제안과 교정은 동시에 하나만 실행하며 자동 재시도나 공급자 대체는 없다.
+Local logs: `test-output/correction-{unit,integration,api-regression,cli-regression,build,package,e2e,cli-e2e-regression}.log`; UI/mobile/export PNGs under the same prefix. Structured schema conformance and semantic correctness remain separate.
 
-새 클라이언트는 요청마다 UUID를 보낸다. 취소는 해당 ID만 대상으로 하며 늦은 취소가 새 요청을 끊지 않는다. 서버는 최근 1,000개 시작/취소 ID를 기억해 시작 전 취소와 중복 전달을 거부한다. 이 기록은 앱 실행 중 메모리 범위다. 연결 해제·서버 종료는 실행 중 요청을 취소한다. 프론트엔드도 HTTP 요청을 중단하고 이전 응답을 폐기한다.
+## Evidence and related records
 
-## 실행 결과
-
-| 검사 | 결과 | 근거 범위 |
-| --- | --- | --- |
-| `npm test` | 53 PASS | 기존 46개와 교정 계약/프롬프트/선택 적용/공급자 모의 응답 7개 |
-| `npm run test:correction` | 11 PASS | 위 7개와 별도 로컬 API·실제 모의 CLI 프로세스 4개 |
-| `npm run test:api` | 12 PASS | 기존 미디어/AI API 회귀 |
-| `npm run test:claude` | 3 PASS | 실제 프로세스·UTF-8·시간 초과·크기 제한·자식 프로세스 취소 |
-| 프로덕션 빌드·Mac 패키징 | PASS | Node 24.14.1, Electron 44.2.0, macOS arm64 |
-| 자막 교정 E2E | 브라우저·Mac PASS | 원문 비교·선택 적용·취소/재시도·undo/redo·SRT·프로젝트·실제 MP4 |
-| 기존 Claude Code E2E | 브라우저·Mac PASS | 모의 CLI 인증 차단·설정 제안·사용량 표시·취소·로컬 출력 |
-
-중복 실행된 도메인 7개를 한 번만 세면 이번 단위·API·프로세스 검사는 72개다. E2E와 빌드는 별도이며 과거 STT·VAD·긴 영상 성능을 이번 결과로 합산하지 않았다.
-
-고정 원문 ‘캡컶에서 10분을 편집햇어요.’의 교정 ‘캡컷에서 10분을 편집했어요.’만 선택했다. ‘소리를 없애지 않습니다.’를 ‘소리를 없앱니다.’로 바꾸는 모의 제안은 부정 의미 확인이 필요했고 적용하지 않았다. `10 → 100` 제안은 거부했다. 두 앱 모두 원문·제안 선택 상태·잘못된 과거 요청·실행 취소/재실행을 검사했다.
-
-원본 컷 `[3,5)` 뒤 두 번째 자막은 원본 `[7,8.5)` → SRT `[5,6.5)`였다. 첫 문장만 교정된 같은 SRT를 두 앱에서 저장했다. 프로젝트는 같은 문구와 원본 시각을 보존했다. 실제 스타일 MP4를 저장해 전체 디코딩했고 교정 문구가 보이는 프레임을 열어 확인했다. UI 오류와 브라우저에서 관찰한 외부 요청은 각각 0건이었다.
-
-390px 화면에서도 원문/제안·의미 확인·선택 적용을 스크롤해서 사용할 수 있었다. 초기 E2E의 닫힌 상세 영역 접근과 AI 선택 컨트롤의 접근성 이름을 보완했다. 기존 취소 검사는 오류 대신 명시적인 취소 안내를 확인하도록 바꿨다. 실제 모의 CLI의 취소 UI 측정값은 브라우저 약 62ms, Mac 약 51ms다. 실제 서비스 지연의 성능 수치가 아니다.
-
-## 검증 범위의 한계
-
-공급자 HTTP 응답은 모의 구현이다. CLI API 테스트는 임시 실행 파일을 실제로 시작하지만 인증된 Claude 모델을 호출하지 않는다. 교정 UI 시험은 수동 JSON과 로컬 요청 가로채기로 제안을 제어한다. 따라서 선택 공급자와 모델의 실제 작업·비용·한국어 품질은 **NOT_RUN**이다. 이 실행은 실제 음성 전사를 수행하지 않고 고정 자막과 합성 영상을 사용했다.
-
-이번 용어 입력은 창을 닫으면 없어지며 프로젝트 용어 사전 저장·재사용은 남은 작업이다. 숫자 정규식과 부정 표현 표식만으로 고유명사·단위·사실·전체 의미의 보존을 보장하지 않는다. 실제 녹음과 사람이 작성한 정답으로 C07의 의미 품질 및 작업 시간 절감을 확인해야 한다. ChatGPT MCP 통합·효과음·긴 영상 성능·기존 미완료 제품 게이트도 남아 있다.
-
-## 자료와 재현
-
-- [교정 구현·검증 계약](../plans/2026-09-05-caption-correction-plan.md)
-- [브라우저·Mac UI와 SRT 결과](results/2026-09-05-caption-correction-ui.json)
-- [기존 Claude Code 회귀 결과](results/2026-09-05-correction-cli-regression.json)
-- 로그: `test-output/correction-{unit,integration,api-regression,cli-regression,build,package,e2e,cli-e2e-regression}.log`.
-- 화면/프레임: `test-output/correction-{browser,desktop,mobile}.png`, `correction-export-{browser,desktop}.png`.
-
-공식 계약은 [OpenAI의 `text.format` 구조화 출력](https://developers.openai.com/api/docs/guides/structured-outputs), [Ollama의 `format` 스키마](https://docs.ollama.com/capabilities/structured-outputs), [Claude의 `output_config.format`](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)을 확인했다. 스키마를 따르는 응답과 실제 의미가 맞는 교정은 별도로 검증한다.
+- [2026-09-05-project-glossary-results.md](2026-09-05-project-glossary-results.md)
+- [2026-09-05-caption-correction-plan.md](../plans/2026-09-05-caption-correction-plan.md)
+- [2026-09-05-caption-correction-ui.json](results/2026-09-05-caption-correction-ui.json)
+- [2026-09-05-correction-cli-regression.json](results/2026-09-05-correction-cli-regression.json)
+- [structured-outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
+- [structured-outputs](https://docs.ollama.com/capabilities/structured-outputs)
+- [structured-outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)

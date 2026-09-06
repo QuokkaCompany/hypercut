@@ -1,17 +1,15 @@
-# 프로젝트 읽기·저장 응답 경합 검증
+# Project read/save response races
 
-현재 E06의 후속 범위다. 파일 읽기와 네이티브 저장의 완료 시점이 뒤집혀도 최신 프로젝트·편집을 잃지 않아야 한다. 다른 전사 성능 시험이 끝난 뒤 생성 영상과 임시 파일만 사용해 아래 순서를 재현한다.
+E06 follow-up: reversed file-read/native-save completion must not lose the latest project or edits. Use generated media and temporary files after other transcription performance work finishes.
 
-| 사례 | 제어하는 순서 | 기대 동작 |
+| Case | Order | Expected behavior |
 | --- | --- | --- |
-| READ_LATEST | 프로젝트 A의 파일 읽기를 대기시킨 뒤 B를 열고 A를 완료 | 마지막으로 선택한 B 유지. A의 늦은 완료·오류는 B를 변경하지 않음 |
-| READ_LATEST_ERROR | B를 연 뒤 A의 읽기가 오류로 끝남 | B와 이후 저장에 과거 오류를 적용하지 않음 |
-| READ_EDIT | A를 읽는 동안 현재 프로젝트를 편집한 뒤 A를 완료 | 이후 편집과 미저장 표시 보존. 다시 열기가 필요하면 안내 |
-| SAVE_EDIT | Mac에서 설정 -41인 저장을 대기시킨 뒤 -42로 편집하고 저장 완료 | 파일에는 요청 당시 -41, 화면에는 -42·미저장 표시. 최신 편집을 다시 저장 가능 |
-| SAVE_PROJECT | Mac에서 A의 저장을 대기시킨 뒤 B를 열고 편집한 후 A 저장 완료 | A 파일은 요청 당시 내용으로 저장. B의 편집·미저장 상태 유지, B에 저장 완료를 잘못 표시하지 않음 |
+| READ_LATEST | Hold A read; open B; complete A | Keep latest B; ignore stale A completion/error |
+| READ_LATEST_ERROR | Open B; fail held A read | No old error applied to B or later saves |
+| READ_EDIT | Edit current project while A read waits; complete A | Preserve later edit and dirty flag; explain reopening if needed |
+| SAVE_EDIT | Hold native save at −41; edit to −42; complete save | File contains −41 snapshot; UI retains −42 and dirty flag; resave works |
+| SAVE_PROJECT | Hold A save; open/edit B; finish A | Save A snapshot; preserve B edits/dirty state without false B success |
 
-READ 세 사례는 Chrome와 패키지 Mac에서 수행한다. 저장은 실제 앱 버튼·IPC·직렬화·쓰기·rename을 사용하되 rename 직전에 시험 장벽을 둔다. 브라우저에서는 파일의 실제 `text()` 결과 반환을 늦추거나 제어된 읽기 오류를 돌려준다. 수정 전에 재현 결과를 남기고, 실패한 경로를 수정한 뒤 같은 조건과 관련 저장·복구 흐름을 재검증한다. SAVE_EDIT에는 저장 중 버튼·단축키 중복 방지와 원본 경로 저장 거부 후 미저장 보존·재시도를 포함한다. 이 추가 오류 조건은 초기 재현 6회와 구분한다.
+Run the three read cases in Chrome and Mac. Native saves use actual button/IPC/serialization/write/rename, with a barrier before rename. Browser tests delay the actual `text()` result or return a controlled read error. Preserve pre-fix evidence and rerun identical orders after correction. SAVE_EDIT also covers duplicate button/shortcut prevention and rejecting the source path while preserving dirty state/retry; distinguish these additions from the initial six reproductions.
 
-수정이 필요한 경우 파일 선택의 순서와 편집 변경을 식별해 오래된 완료를 무효화한다. 저장 중 추가 편집은 보존하며, 중복 저장은 동시에 시작하지 않는다. 파일 형식이나 컷·자막·효과음 내용은 바꾸지 않는다.
-
-이 시험은 취소한 분석 요청과 새 원본의 경합, 실제 OS 교체 확인 창, 브라우저 다운로드 관리자의 디스크 저장 완료를 대신하지 않는다. 각 범위는 따로 기록한다.
+Invalidate reads by file-selection and edit sequence. Preserve edits during saves and prevent concurrent duplicate saves. Keep format/content unchanged. Canceled analysis/new-source races, actual OS replacement dialogs, and browser download-manager completion remain separate tests.

@@ -1,32 +1,29 @@
-# 구간 클립·대본·다국어 자막 구현과 검증
+# Clips, transcripts, and multilingual captions
 
-사용자가 구간 클립·대본 추출 흐름을 승인하고 다국어 적용을 요청했다. 기존 무음 편집을 유지하면서 아래 흐름을 완성한다. 작업 시작 기준은 `adf0624`이며 이전 기본 음량 모드 24회 통과는 해당 빌드의 기록으로 보존한다.
+Baseline: `adf0624`. The user approved source-range clips/transcript extraction and requested multilingual support. Preserve the previous build's 24 threshold-performance passes as evidence for that build only.
 
-## 구현 범위
+## Scope and persistence
 
-1. 원본 시작·끝 시각으로 MP4 클립을 저장한다. 기존 컷·자막·효과음과 같은 렌더링을 사용하며 프리뷰 해상도 대신 내보내기 해상도·품질을 적용한다. 대본의 연속된 문장 범위를 선택해 같은 클립 창으로 보낸다. 최종 포함 범위와 길이를 결과에 표시한다.
-2. 원본 전체 대본과 편집본 대본을 UTF-8 TXT로 저장한다. 원본은 인식된 문장 전체, 편집본은 유지 구간의 문장만 포함한다. 컷이 문장을 가로지르는 편집본은 기존 자막 경계 검토를 요구한다. Mac 저장 창과 브라우저 다운로드를 모두 지원한다.
-3. 다국어 음성 인식과 번역을 구분한다. 우선 한국어·영어·일본어·중국어·스페인어·프랑스어·독일어·포르투갈어·이탈리아어·러시아어 및 전사 자동 감지를 제공한다. 기존 Whisper multilingual 모델을 재사용한다. 언어 선택 지원과 언어별 정확도 평가를 구분한다.
-4. 번역은 선택한 로컬/API/구독 연결 또는 채팅/MCP 응답으로 제안받고 검토·선택 적용한다. 원문·시각을 보존하고 언어별 번역을 프로젝트에 저장한다. 원문이 바뀌면 이전 번역을 최신 번역으로 출력하지 않는다. 선택한 자막 언어로 SRT·TXT·자막 포함 MP4를 생성한다. 미번역·오래된 번역이 남은 구간은 출력 전에 안내한다.
-5. 다국어 글꼴을 번들하고 실제 문자 지원 여부를 검사한다. 표시할 수 없는 문자를 빈 상자로 출력 성공 처리하지 않는다. 별도 메뉴 언어 선택 답변이 없어 기본 범위인 음성 인식·자막 번역을 적용했다. 앱 메뉴는 한국어로 유지했다. 번역은 현재 문장부터 최대 20개·4,000자씩 비교·선택 적용하며 다음 미번역으로 이동할 수 있다.
+Export source-time MP4 ranges with the existing cuts/captions/effects renderer at export resolution/quality. Consecutive transcript sentences populate the same clip dialog. Display the final frame-aligned range and edited duration, using identical kept intervals for video/audio.
 
-번역의 외부 전송은 선택한 문구와 언어·지시만 포함한다. 설정 저장은 모델 호출을 하지 않는다. 번역 실패·취소 후 다른 공급자로 전환하지 않는다. 실제 유료 모델·비공개 영상 평가에는 기존 연결·자료 확보 조건을 유지한다.
+Export full-source or edited UTF-8 TXT in browser and native save flows. Full includes all recognized sentences; edited includes retained cues and requires existing cut-boundary review for partially cut sentences.
 
-## 저장과 편집 계약
+Distinguish transcription from translation. Reuse multilingual Whisper for Korean, English, Japanese, Chinese, Spanish, French, German, Portuguese, Italian, Russian, and automatic detection. Language selection support is not language-specific accuracy validation. App menus remain Korean; multilingual scope covers recognition and captions.
 
-- 프로젝트 v8로 다국어 정보를 보존하며 v1~v7은 기존 내용으로 읽는다. 원문, 번역문, 번역에 사용한 원문, 출력 언어를 구분한다.
-- 번역 적용·직접 수정·출력 언어 선택은 실행 취소·다시 실행과 저장 왕복에 포함한다. 재전사는 새 원문이므로 이전 번역을 새 문장에 묵시적으로 연결하지 않는다.
-- 요청 후 프로젝트·트랙·문구·범위를 바꾼 경우 이전 번역 또는 내보내기 응답이 새 상태를 덮어쓰지 않는다.
-- 클립 범위는 원본 시간축이다. 프레임에 맞춰 바뀐 실제 범위를 표시하며 영상·오디오는 같은 유지 구간을 사용한다.
+Translation uses the selected local/API/subscription connection or manual chat/MCP proposals, with comparison and selected application. Send selected text, language, and instructions only. Settings save does not infer; failure/cancellation does not switch providers. Process at most 20 cues/4,000 characters from the current cue, with navigation to the next untranslated cue.
 
-## 검증 순서
+Preserve source text/timing and per-language translations in project v8; read v1–v7 unchanged. Track source, translation, source snapshot used for translation, and output language separately. Applying/editing translations and selecting output language participate in undo/redo and round trips. Retranscription does not attach old translations to new cues. Source changes make old translations stale; missing/stale output translations require resolution before SRT/TXT/captioned MP4.
 
-| 묶음 | 확인할 동작 | 합격 증거 |
+Bundle multilingual fonts and validate glyph support rather than exporting missing-glyph boxes as success. Project/track/text/range changes invalidate old translation/export responses.
+
+## Validation
+
+| Layer | Checks | Evidence |
 | --- | --- | --- |
-| 도메인 | 언어 검증, 원문·번역 보존, 오래된 번역, TXT 원본/편집본, v1~v8 | 고정 기대값, 금지 응답 거부, 저장 왕복 및 실행 취소 |
-| 실제 미디어 | 임의 범위와 문장 범위 클립, 자막·효과음 포함, 다국어 SRT/TXT | 실제 MP4 전체 디코딩·범위·싱크, UTF-8 내용·문자 렌더 검사 |
-| 실제 전사 | 선택 언어·자동 감지와 작은 다국어 음성 fixture | 실제 엔진 인수·결과·시각, TTS와 사람 평가를 구분 |
-| AI 계약 | 공급자·언어·문장 ID, 누락/중복/잘못된 JSON, 실패·취소·늦은 응답 | 모의 공급자/CLI/MCP의 범위 검증과 원문 보존 |
-| 두 앱 | 클립 만들기·저장, TXT 저장, 번역·출력 언어·수정·저장/재열기 | Chrome 및 새 Mac 패키지의 실제 파일과 UI 결과 |
+| Domain | Languages, source/translation preservation, staleness, full/edited TXT, v1–v8 | Fixed expectations, forbidden-response rejection, round trips and undo |
+| Actual media | Arbitrary/sentence clips with captions/effects, multilingual SRT/TXT | Full MP4 decode, range/sync, UTF-8 and glyph rendering |
+| Actual transcription | Selected languages and auto detection | Real engine arguments/results/timing; distinguish TTS from human evaluation |
+| AI contract | Provider/language/cue IDs, missing/duplicate/invalid responses, failures/cancel/stale | Mock provider/CLI/MCP scope and preserved source |
+| Both apps | Clip/TXT save, translation/output language/edit/save/reopen | Actual Chrome and new Mac-package files and UI |
 
-관련 단위·통합 회귀와 새 기능의 두 앱 검증을 먼저 완료한 후 장시간 성능의 영향을 판정한다. 이전 후보의 장시간 통과를 새 기능의 통과로 합산하지 않는다. 실제 AI 번역 품질과 사람 음성 품질은 해당 자료·인증이 없는 동안 미검증이다.
+Complete related unit/integration and both-app checks before assessing long-run impact. Do not credit prior-candidate performance to new functionality. Real authenticated translation quality and human speech quality remain unverified without those accounts/data.

@@ -1,66 +1,66 @@
-# 실제 한국어 영상 평가 준비와 기록
+# Human evaluation of Korean recordings
 
-상태: 준비 절차와 빈 기록 양식. 실제 녹음·라벨·사용자 편집은 아직 수집하지 않았으며 Q01~Q05 및 실제 녹음 전사 품질은 `NOT_RUN`이다. [검증 계획](../plans/2026-09-05-validation-plan.md)의 목표와 [테스트 사례](../plans/2026-09-05-test-plan.md)를 실행하기 위한 안내다.
+This guide and its empty CSV templates are preparation, not completed evaluation. Human recordings, labels, and editing sessions have not been collected. Q01–Q05 and human-recording transcription quality remain `NOT_RUN`. Follow the [validation plan](../plans/2026-09-05-validation-plan.md) and [test cases](../plans/2026-09-05-test-plan.md).
 
-## 자료를 준비할 때
+## Prepare independent datasets
 
-사용자가 평가용으로 지정한 영상만 사용한다. 원본·정답 전사·개인 경로와 작성한 양식은 저장소가 무시하는 `test-output/private-evaluation/` 또는 사용자가 지정한 비공개 폴더에 둔다. Git에 넣는 결과에는 익명 영상 ID, 설정, 집계와 실패 원인만 남긴다. 기존 개인 폴더를 임의로 검색하지 않는다.
+Use only recordings explicitly designated for evaluation. Keep originals, reference transcripts, personal paths, and completed forms in ignored `test-output/private-evaluation/` or another designated private folder. Commit only anonymous video IDs, settings, aggregates, and failure explanations. Do not search unrelated personal folders.
 
-설정 조정용 R01~R03과 평가용 R04~R09 이상을 구분한다. 각각 5~15분이며 조용한 녹음·작은 발화·생활 소음, 무음이 거의 없는 조건을 포함한다. 같은 녹음의 잘라낸 부분이 양쪽 집합에 겹치지 않게 원본 녹음 ID를 기록한다. 트랙·채널·코덱·실제 프레임 시간표를 함께 기록하고, 지원 범위를 벗어난 자료는 별도 호환성 사례로 남긴다.
+Separate tuning recordings R01–R03 from at least six evaluation recordings R04–R09. Each should last 5–15 minutes, covering quiet recordings, low-volume speech, household noise, and little or no silence. Record the original recording ID so excerpts from one recording cannot appear in both sets. Record tracks, channels, codecs, and actual frame timestamps. Treat unsupported media as separate compatibility cases.
 
-1. 원본만 듣고 발화·제거 가능한 쉼·애매한 구간을 사람이 표시한다. 앱의 자동 컷이나 전사 결과를 정답으로 사용하지 않는다.
-2. 조정용 자료에서 설정과 말소리 보호 사용 여부를 정한다. 초기 제안값을 검증된 권장값이라고 부르지 않는다.
-3. 평가용 자료를 실행하기 전에 설정과 라벨 버전·해시를 고정한다. 평가 결과를 보고 설정을 바꾼 자료는 조정용으로 옮기고 새 평가 자료를 마련한다.
-4. 음량 모드와 말소리 보호 모드를 비교하면 각각 별도 실행 ID를 사용한다. 한 영상의 유리한 결과만 선택해 합산하지 않는다.
+1. Listen to the original and manually label speech, removable pauses, and ambiguous intervals. Automatic cuts and transcripts are not reference labels.
+2. Choose settings and optional speech protection using only the tuning set. Initial defaults are not validated recommendations.
+3. Freeze settings and label versions/hashes before evaluation. If evaluation results influence tuning, move those recordings to the tuning set and replace the evaluation set.
+4. Give amplitude-only and speech-protected comparisons separate run IDs. Do not aggregate only the favorable result for each recording.
 
-## 원본 시간축 라벨 양식
+## Source-timeline labels
 
-CSV의 UTF-8 헤더다. 시각은 원본 시작 기준 초, 구간은 `[start_seconds, end_seconds)`다. 출력 영상 시각을 넣지 않는다. 아래 줄은 데이터가 없는 양식이다.
+These are empty UTF-8 CSV headers. Times are seconds from source start, using half-open intervals `[start_seconds, end_seconds)`, never output-video times.
 
 ```csv
 video_id,recording_id,split,condition,duration_seconds,track_index,channel_index,source_sha256,label_version,label_sha256
 ```
 
-`split`은 `tuning` 또는 `evaluation`이다. 여러 환경이 섞인 영상은 조건을 구간별 기록에도 남긴다.
+Use `tuning` or `evaluation` for `split`. Record mixed conditions at interval level too.
 
 ```csv
 video_id,label_id,start_seconds,end_seconds,label,condition,reviewer,reviewed_at,notes
 ```
 
-`label`은 `speech`·`removable_pause`·`ambiguous`다. 같은 시간에 서로 충돌하는 라벨이 있으면 실행 전에 해결한다. 라벨 없는 시간은 정답이 없는 구간이며 자동으로 무음 취급하지 않는다. 전체 영상 평가에서 미라벨 구간이 남으면 그 길이와 원인을 보고하고 전체 품질 PASS를 보류한다. 애매한 구간은 원래 계획대로 정밀도 분모에서 제외하되 건수·길이를 따로 남긴다.
+Use `speech`, `removable_pause`, or `ambiguous` for `label`. Resolve conflicting labels before execution. Unlabeled time has no reference answer; it is not automatically silence. Report its duration and cause, and withhold an overall quality PASS if the evaluation remains incomplete. Exclude ambiguous intervals from the precision denominator as specified in the plan, but report their count and duration.
 
-쉼 제거율의 목표 구간은 고정한 최소 길이와 말 앞뒤 여유를 사람의 쉼 라벨에 적용해 별도로 기록한다. 앱이 만든 컷으로 목표 구간을 만들지 않는다. 이 목표를 만드는 규칙과 라벨 버전도 결과에 연결한다.
+Derive target removable intervals independently by applying the frozen minimum duration and speech padding to human pause labels. Do not derive targets from app cuts. Link the derivation rules and label version in the results.
 
-## 컷 청취와 복원 기록
+## Listen to cuts and record restoration
 
-모든 자동 컷의 양쪽 경계를 전후 1초 이상 듣는다. 발음이 애매하면 범위를 넓히고 원본과 결과의 재생 순서를 바꿔 다시 듣는다. 단어·음절 손상은 실제 청취로 판정하며 라벨 교집합과 전사 문자열만으로 판단하지 않는다. 마지막에는 결과 전체를 한 번 재생한다.
+Listen to at least one second on both sides of every automatic cut. Expand uncertain boundaries and alternate original/output playback order. Judge clipped words and syllables by listening, not label intersections or transcript strings alone. Finally, play the entire output.
 
 ```csv
 run_id,video_id,cut_id,source_start_seconds,source_end_seconds,reviewed,boundary_result,restored_for_quality,reason,review_active_seconds
 ```
 
-`boundary_result`는 `preserved`·`clipped`·`undecided`다. 모든 컷의 검토 여부와 전체 재생 완료를 기록한다. 미검토·미판정을 PASS에 포함하지 않는다. 같은 원래 컷을 여러 번 복원해도 복원 부담의 분자에는 해당 컷 ID를 한 번만 센다. 탐색을 위한 복원과 품질 문제 때문에 최종 복원한 컷을 구분한다.
+Use `preserved`, `clipped`, or `undecided` for `boundary_result`. Record every cut's review state and full-playback completion. Unreviewed or undecided cuts cannot pass. Count each original cut ID only once in the restoration-burden numerator, even if restored repeatedly. Distinguish exploratory restoration from cuts finally restored to repair quality.
 
-시간 구간의 겹침은 합집합으로 합쳐 중복 계산하지 않는다. 제거 정밀도는 평가 가능한 실제 제거 시간 중 제거 가능한 쉼과 겹치는 비율이다. 쉼 제거율은 위 독립 목표 구간 중 실제 제거된 비율이다. 두 값의 분자·분모, 제외한 애매한 시간, 영상별 결과와 전체 합산을 남긴다. 분모가 0이면 `N/A`다. 잘린 단어·음절 0건, 정밀도 99% 이상, 쉼 제거율 90% 이상, 품질 복원 부담 5% 이하라는 기존 목표를 유지한다.
+Merge overlapping time intervals before calculating totals. Removal precision is the proportion of evaluable removed time overlapping removable pauses. Pause-removal recall is the proportion of independently defined target time actually removed. Report numerators, denominators, excluded ambiguous time, per-video results, and pooled totals. A zero denominator is `N/A`. Targets remain zero clipped words/syllables, at least 99% precision, at least 90% target-pause removal, and at most 5% quality-related restoration burden.
 
-## 실제 작업 시간 비교
+## Compare active editing time
 
-연습용 별도 영상으로 조작을 익힌 뒤 영상별 순서를 미리 배정한다. 절반은 기존 편집기부터, 절반은 HyperCut부터 수행하고 세션 간격을 기록한다. 영상별로 같은 완료 조건인 ‘쉼 정리·발화 손상 수정·전체 검토·MP4 출력 완료’를 적용한다.
+Practice on separate material, then assign the comparison order in advance. Start half the recordings in the existing editor and half in HyperCut, recording the interval between sessions. Apply the same completion criterion: clean up pauses, repair speech damage, review the full result, and finish MP4 export.
 
 ```csv
 run_id,video_id,editor,editor_version,order,session_started_at,activity_started_seconds,activity_ended_seconds,activity,notes
 ```
 
-`activity`는 `active_editing`·`analysis_wait`·`export_wait`·`away`다. 시각은 세션 시작부터의 경과 초다. 사람이 관여한 설정·검토·복원·오류 복구 시간을 `active_editing`으로 기록한다. 작업과 자동 대기가 겹치면 두 구간을 보존하되 작업 시간은 active 구간의 합집합으로 계산한다. 대기를 active에 더해 이중 계산하지 않는다. 앱 작업과 무관한 이탈 시간은 별도 표시하고 전체 경과 시간도 숨기지 않는다.
+Use `active_editing`, `analysis_wait`, `export_wait`, or `away` for `activity`. Times are elapsed seconds from session start. Active editing includes setup, review, restoration, and error recovery. If work overlaps automatic waiting, retain both intervals but calculate active time from the union of active intervals. Do not add waiting again. Report unrelated absence separately and retain total elapsed time.
 
 ```csv
 video_id,manual_run_id,hypercut_run_id,manual_active_seconds,hypercut_active_seconds,manual_elapsed_seconds,hypercut_elapsed_seconds,quality_status,time_saved_ratio,exclusion_reason
 ```
 
-절감률은 `1 - HyperCut 작업 시간 / 기존 방식 작업 시간`이며 영상별 값의 중앙값 50% 이상이 목표다. 품질이 통과한 짝만 계산에 포함하되 제외 영상과 이유도 공개한다. 발화 손상으로 제외한 영상이 있으면 품질 게이트를 통과 처리하지 않는다. 분모 0·미측정은 `N/A`다. 전체 경과 시간, 순서와 재편집에 따른 학습 효과를 별도로 보고한다.
+Time saved is `1 - HyperCut active time / existing-editor active time`; the target is a median of at least 50% across videos. Include only quality-passing pairs in that calculation, but disclose excluded recordings and reasons. Excluding a recording for damaged speech does not make the quality gate pass. Zero denominators and missing measurements are `N/A`. Report elapsed time, order, and learning effects from repeated editing separately.
 
-## 후속 전사 평가와 결과 전달
+## Transcription evaluation and reporting
 
-전사를 평가할 때에는 별도 [전사·자막 계획](../plans/2026-09-05-caption-effects-validation-plan.md)의 6개 이상·합계 30분 이상 평가 구간, 정규화 규칙, CER 분자·분모와 조건별 목표를 따른다. 무음 편집의 시간 절감 50%와 자막 작업의 30% 목표를 합치지 않는다. 정답 전사는 앱 출력을 보기 전에 작성하며 숫자·단위·부정어·전문 용어를 보존한다.
+Follow the [transcription/caption plan](../plans/2026-09-05-caption-effects-validation-plan.md): at least six evaluation excerpts totaling at least 30 minutes, with its normalization rules, CER numerator/denominator, and condition-specific targets. Keep the 50% silence-editing time target separate from the 30% caption-work target. Write reference transcripts before viewing app output, preserving numbers, units, negation, and technical terms.
 
-최종 결과는 [실행 기록 양식](test-run-template.md)에 Q01~Q05를 각각 채운다. 코드·패키지·설정·라벨 버전, 완료한 영상 수, 미실행·미판정, 전체 재생과 컷 검토 범위, 분자·분모 및 작업 시간 원시값을 연결한다. 이 안내와 빈 CSV 헤더를 작성한 사실은 실제 평가 완료를 의미하지 않는다.
+Complete Q01–Q05 individually in the [run template](test-run-template.md). Link code/package/settings/label versions, completed recording counts, unexecuted or undecided cases, full-playback and boundary-review coverage, numerators/denominators, and raw timing values. Creating these instructions and empty headers does not constitute evaluation.

@@ -1,30 +1,25 @@
-# Mac 앱 저장 중 강제 종료와 재열기
+# Native save interruption and reopening
 
-실행일: 2026-09-05 America/New_York. [계획](../plans/2026-09-05-desktop-save-crash-plan.md), [원시값](results/2026-09-05-desktop-save-crash.json). 실행한 패키지는 끝 경계 수정 `1e927ff`의 앱이며, 문서 기준 커밋은 `674e72d`다. 패키지와 시험 코드의 SHA-256은 원시값에 보존했다.
+Executed 2026-09-05 America/New_York. Package contains end-boundary fix `1e927ff`; documentation baseline `674e72d`. Raw evidence preserves package/runner SHA-256.
 
-## 확인한 결과
+| SIGKILL point | Final project | Reopened result |
+| --- | --- | --- |
+| After temporary write/fsync, before rename | Byte/hash-identical old file, threshold −40 | Source reconnect, complete field comparison, resave PASS |
+| After real rename, before IPC success | Byte/hash-identical new file, threshold −41 | Full round trip, unreviewed SRT blocked, resave PASS |
 
-| 강제 종료 지점 | 최종 프로젝트 | 새 앱에서 확인 | 결과 |
-| --- | --- | --- | --- |
-| 임시 파일 작성·fsync 후, rename 직전 | 기존 파일과 바이트·SHA-256 일치. 임계값 -40 유지 | 원본 재연결, 전체 편집 필드, 재저장 | PASS |
-| 실제 rename 후, IPC 응답 직전 | 새 파일과 바이트·SHA-256 일치. 임계값 -41 반영 | 같은 필드 전체 왕복, 미검토 SRT 차단, 재저장 | PASS |
+Both used actual packaged buttons/IPC/write/fsync/rename. All five tracked app/child processes terminated. Before termination the dirty flag remained and no save-success message appeared. A fresh app reopened the preserved project and matched cuts/captions/style/glossary/end review, then saved a further −42 edit. Source hashes remained unchanged; zero page errors/observed external requests. Sandbox/contextIsolation/webSecurity stayed enabled and nodeIntegration disabled. Screenshots confirmed dirty state and pre-save settings.
 
-두 조건 모두 패키지 앱의 실제 저장 버튼·IPC·파일 쓰기를 사용했다. 저장 중 주 프로세스를 SIGKILL하고 해당 앱에서 추적한 주/자식 프로세스 5개가 모두 종료된 것을 확인했다. 종료 전에는 수정 표시가 남아 있고 저장 완료 문구는 없었다. 새 앱에서 파일을 열고 같은 원본을 재연결했으며, 컷·자막·스타일·용어·끝 경계 검토를 포함한 모든 프로젝트 필드를 다시 저장해 비교했다. 이어 임계값을 -42로 바꾸어 실제 저장이 다시 성공하는 것을 확인했다.
+Only file-dialog paths were substituted. Test barriers controlled before/after rename delivery, not serialization/validation/writing. Before-rename SIGKILL left one complete temporary file; the app did not auto-adopt it and reopened the prior completed file. After-rename left no temporary file. Only test-generated directories were cleaned.
 
-영상 원본 해시는 두 조건 모두 유지됐다. 페이지 오류·외부 브라우저 요청은 0건이었다. 앱의 `sandbox:true`, `contextIsolation:true`, `nodeIntegration:false`, `webSecurity:true`도 유지됐다. 진행 중 화면 캡처를 열어 수정 표시와 저장 전 설정을 확인했다.
-
-## 시험 제어와 한계
-
-경로 선택 창만 임시 파일 경로를 반환하도록 대체했다. 앱 주 프로세스의 rename 함수에 시험 장벽을 두어 종료 지점을 고정했으며, 제품의 검증·직렬화·쓰기·fsync·실제 rename 경로를 대체하지 않았다. rename 직후 조건은 실제 OS rename이 끝난 뒤 응답만 대기시켰다.
-
-rename 직전 종료에서는 완성된 임시 파일 1개가 남았다. 앱은 이를 정상 프로젝트 대신 자동으로 읽지 않았고 기존 저장본을 다시 열었다. 시험 종료 후 생성한 임시 폴더만 정리했다. rename 직후에는 해당 임시 파일이 남지 않았다.
-
-이 결과로 기존 E03의 **Mac 앱 전체 저장 중 강제 종료·재열기 조건**을 확인했다. 전원 차단 내구성, 브라우저 다운로드 관리자의 디스크 저장 완료, 실제 OS의 기존 파일 교체 확인 창(E04)을 검증한 결과는 아니다. 제품 코드 수정은 필요하지 않았다.
-
-실행 명령:
+This satisfies the native whole-app save-kill/reopen portion of E03, not power-loss durability, browser download completion, or actual OS replacement confirmation E04. No product fix was needed.
 
 ```sh
-node scripts/desktop-save-crash-e2e.mjs
+node scripts/desktop-save-crash-e2e.mjs --output=test-output/FRESH_RUN_NAME
 ```
 
-다시 실행할 때에는 기존 결과를 보존하고 `--output=test-output/새-시험-이름`을 사용한다.
+Preserve earlier output directories when repeating.
+
+## Evidence and related records
+
+- [2026-09-05-desktop-save-crash-plan.md](../plans/2026-09-05-desktop-save-crash-plan.md)
+- [2026-09-05-desktop-save-crash.json](results/2026-09-05-desktop-save-crash.json)

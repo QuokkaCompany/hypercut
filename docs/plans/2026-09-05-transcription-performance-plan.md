@@ -1,13 +1,11 @@
-# 긴 전사 성능 실행 계획
+# Long transcription performance plan
 
-기존 T07의 실제 모델 속도·메모리·취소 검증을 수행한다. 먼저 60초 자료로 측정 경로를 점검한 뒤 10분·60분 자료를 Chrome 로컬 서버와 패키지 Mac 앱에서 각각 3회 전사한다. 모델·설정·합격 목표는 기존 전사 계획의 Whisper small, CPU 4스레드, 처리 시간 ≤영상 길이, 앱/자식 합산 RSS ≤4GiB, 조작 p95 ≤200ms, 취소 표시 ≤300ms·재시도 가능 ≤5초를 유지한다.
+Execute T07 with real Whisper small, CPU four threads. Smoke-test 60 seconds, then transcribe 10-/60-minute inputs in Chrome/local server and packaged Mac, three times each. Targets: processing ≤ source duration, app/child RSS ≤4 GiB, interaction p95 ≤200 ms, visible cancellation ≤300 ms, ready to retry ≤5 seconds.
 
-- 직접 작성한 한국어 문장을 설치된 Eddy TTS로 생성한다. 1080p/30fps H.264/AAC48k 영상과 합쳐 지정 길이까지만 반복한다. 이 자료는 합성 반복 음성·단순 영상이며 실제 녹음 정확도나 복잡한 화면의 성능을 대표하지 않는다.
-- 앱을 실제로 열어 영상 가져오기, 기존 자막 프로젝트 열기, 다시 전사 버튼을 사용한다. 전사 요청 준비부터 모델 확인·오디오 디코딩·실제 추론·결과 표시까지 측정한다. 가져오기 시간은 별도 기록한다.
-- Chrome는 전용 브라우저 프로세스 트리와 별도 로컬 서버 프로세스 트리를 합산한다. Mac는 Electron 전체 트리를 합산한다. 측정 운전 프로그램은 제외한다. 250ms마다 RSS를 표본 측정하고 누락·실패를 기록한다. 표본 사이의 순간 최대치는 알 수 없다고 명시한다.
-- 최초 실행은 새 앱 프로세스, 이후 두 번은 같은 앱에서 실행한다. OS 캐시는 제거하지 않으므로 최초 실행을 cold-cache 성능으로 표시하지 않는다.
-- 실제 추론 중 기존 자막을 번갈아 선택하는 화면 반응을 30회 이상 기록한다. 실제 입력 이벤트부터 선택 상태 반영 후 다음 animation frame까지의 값이며 전체 UI의 응답 성능으로 일반화하지 않는다.
-- 각 조건에서 실제 추론 진행 후 취소하고 기존 자막·프로젝트 유지, 프로세스 정리, 재시도 가능 상태를 검사한다. 취소는 완료된 전사 시간과 섞지 않는다.
-- 실행별 원시 시간·RSS·진행 상태·자막 수/범위·모델 식별자와 실패 이유를 즉시 파일에 기록한다. 조건별 3회 완료 후 중앙값/최댓값을 계산한다. 실패를 숨기거나 합격선을 바꾸지 않는다.
+Generate original Korean sentences with installed Eddy TTS and repeat them only to the specified duration with simple 1080p30 H.264/AAC 48 kHz video. This synthetic repeated material does not represent human accuracy or complex visuals.
 
-무음+VAD, 자막/효과음 합성의 긴 영상 측정은 별도 단계다. 이번 전사 측정으로 그 단계나 실제 사용자 품질 게이트를 통과 처리하지 않는다.
+Open the actual app, import media, open an existing-caption project, and retranscribe. Measure request preparation through model checking, decoding, inference, and displayed results; record import separately. Sum dedicated Chrome plus server process trees or the whole Electron tree, excluding the driver. Sample RSS every 250 ms, record failures, and acknowledge unobserved inter-sample peaks.
+
+Start a fresh app for the first run, then reuse it twice. Do not purge OS caches or call the first run cold-cache. During inference, select existing captions at least 30 times and measure real input through selected-state update and the next animation frame; this does not characterize every UI action.
+
+Cancel actual inference in each condition and verify preserved captions/project, process cleanup, and retry. Keep cancellation separate from completed timing. Persist raw time/RSS/progress/cue counts/ranges/model identity/failure reasons immediately. Report median/maximum after three completed runs without hiding failures or relaxing limits. Long VAD and caption/effect composition remain separate.

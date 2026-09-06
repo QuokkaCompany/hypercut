@@ -1,156 +1,76 @@
-# HyperCut — 무음 자동 제거 MVP 설계
+# HyperCut: silence-first video editor design
 
-작성일: 2026-09-05
-상태: 사용자 요구사항을 반영한 설계. 이후 데스크톱·로컬 브라우저 프리뷰를 구현했으며 [검증 현황](../../testing/README.md)에 증거와 미실행 범위를 기록한다. 실제 한국어 발화 품질은 미검증이다.
+Created 2026-09-05. Initial product contract; later implementation and evidence are tracked in the [plan index](../../plans/README.md) and [testing index](../../testing/README.md).
 
-## 1. 제품 목표와 우선순위
+## Intent and scope
 
-HyperCut은 컷편집, 자막 교정과 디자인, 효과음 편집을 자동화하고 사용자가 결과를 직접 수정할 수 있는 데스크톱 영상 편집기다. 첫 번째 사용 가능한 버전의 목표는 반복적인 무음 구간 선택·삭제 시간을 줄이는 것이다.
+Build an affordable local video editor that reduces repetitive editing, beginning with automatic pause removal. Optional AI should connect to the user's chosen local model or supported ChatGPT/Claude integration for selected tasks. Core editing must work with AI disabled. Later features include transcription, typo correction, caption design, and sound effects.
 
-사용자가 명시한 요구사항:
+Start with personal use on macOS and a local browser UI. Do not assume a particular recording genre. Initial supported inputs are H.264 SDR MP4/MOV with one selected audio track; unsupported HDR/HEVC must be explicit. This does not promise parity with full professional editors.
 
-- 설정한 threshold를 기준으로 무음·저음량 구간을 자동 삭제하는 기능은 MVP 필수다.
-- 원한다면 로컬 LLM, 사용하는 ChatGPT 또는 Claude의 도움을 특정 작업에 받을 수 있어야 한다.
-- 이후 자막 오타 수정, 자막 디자인, 효과음 편집까지 확장한다.
+| Approach | Role |
+| --- | --- |
+| Amplitude threshold plus minimum duration | Required deterministic MVP baseline |
+| Optional local VAD | Protect detected quiet speech; independently validate model behavior and human quality |
+| STT plus LLM | Later captions/context proposals; transcription absence never establishes silence |
 
-첫 개발 대상은 **음량 임계값 기반의 자동 컷 → 수정 → 실제 영상 내보내기**다. AI가 연결되지 않은 상태에서도 이 흐름 전체가 동작해야 한다. AI 연결과 자막·효과음 기능은 뒤의 독립적인 단계로 구현한다. 이 단계 구분은 해당 요구사항을 제품에서 제외한다는 의미가 아니다.
+Amplitude dBFS, speech probability, and recognized text/timing are distinct concepts and controls.
 
-작업 가정: Mac용 개인 사용 앱부터 시작한다. 영상 장르, 평균 길이, 녹음 환경은 아직 제공되지 않았으므로 특정 강의나 쇼츠에 맞춘 자동 삭제 규칙을 기본값으로 강제하지 않는다.
+## Editing flow
 
-## 2. 검토한 접근과 선택
+1. Import media and inspect available tracks/waveform.
+2. Select the analysis track and configure threshold, minimum duration, and speech padding.
+3. Analyze and create a complete editable cut draft without requiring approval for every individual cut.
+4. Inspect the removal summary and listen around boundaries.
+5. Restore any cut or partial source interval; use undo/redo.
+6. Save project state without modifying the original.
+7. Export and validate the actual MP4, with clear progress, cancellation, and retry.
 
-| 접근 | 장점 | 제약 | 결정 |
-| --- | --- | --- | --- |
-| 음량 임계값 + 최소 지속 시간 | 사용자가 삭제 기준을 직접 이해하고 조절할 수 있으며 로컬 처리 가능 | 작은 목소리와 작은 잡음을 의미로 구별하지 못함 | 첫 버전 필수 |
-| 로컬 음성 활동 감지(VAD) | 사람이 말하는 구간을 분류해 발화 보호에 활용 가능 | 별도 모델과 검증이 필요하며 오분류 가능 | 선택형 보호 모드 구현. [검증 기록](../../testing/2026-09-05-speech-protection-results.md) |
-| 전사(STT) + LLM 판단 | 반복 문장·말실수 등 내용에 따른 편집 제안 가능 | 전사 오류, 추가 처리 시간, 모델별 비용 발생 가능 | 자막 및 의미 기반 편집 단계 |
+State transitions: empty → inspecting → ready → analyzing → draft → preview/edit → exporting → complete. Failures and cancellation return to usable state while preserving completed edits/files. Progress represents actual stages, not invented elapsed-time percentages. Fast seek-based preview and encoded boundary/full previews must be distinguished.
 
-음량(dBFS), 사람이 말할 확률(VAD), 인식한 문장(STT)은 서로 다른 정보다. 화면과 설정에서도 같은 threshold로 취급하지 않는다.
+## Silence contract
 
-## 3. 첫 버전의 사용자 흐름
-
-1. 로컬 영상을 열고 영상·오디오 형식과 길이를 확인한다.
-2. 분석할 오디오 트랙을 선택한다. 하나뿐이면 자동 선택한다. 여러 트랙이면 트랙 목록을 표시해 마이크 트랙을 선택할 수 있게 한다.
-3. 파형을 보며 음량 기준, 최소 무음 길이, 발화 앞뒤 여유 시간을 설정한다.
-4. 분석을 실행하면 기준에 맞는 구간을 자동으로 제외한 편집 초안이 만들어진다. 각 구간마다 승인을 요구하지 않는다.
-5. 원본 길이, 제거 구간 수, 제거할 총시간, 결과 길이를 표시한다.
-6. 편집 결과를 재생하고 원하는 구간만 복원하거나 다시 제외한다. 실행 취소·다시 실행을 지원한다.
-7. 프로젝트를 저장하거나 편집된 MP4를 새 파일로 내보낸다.
-
-자동 삭제는 프로젝트의 재생 구간에서 제외하는 동작이다. 원본 파일은 유지하며 재인코딩은 내보내기 또는 정확한 미리보기 생성 때 수행한다.
-
-## 4. 임계값과 구간 계산
-
-### 조절 항목
-
-아래 값은 검증 전의 초기 제안값이며 녹음 환경에 맞춰 변경·저장할 수 있다.
-
-| 항목 | 초기값 | 허용 범위 | 의미 |
-| --- | --- | --- | --- |
-| 음량 기준 | -40 dBFS | -96 ~ 0 dBFS | 이 값 이하인 소리를 저음량으로 판단 |
-| 최소 무음 길이 | 500 ms | 50 ~ 5,000 ms | 저음량 상태가 연속해서 유지되어야 하는 시간 |
-| 말 시작 전 여유 | 100 ms | 0 ~ 1,000 ms | 다음 발화 직전 남겨둘 시간 |
-| 말 끝난 뒤 여유 | 150 ms | 0 ~ 1,000 ms | 직전 발화 직후 남겨둘 시간 |
-
-음량 기준을 -50 dBFS에서 -30 dBFS로 높이면 더 큰 소리도 삭제 후보가 된다. 기본 모드에서는 기준 이하인 작은 발화 역시 제거될 수 있다는 의미를 설정 도움말과 예시로 설명한다.
-
-초기에는 FFmpeg `silencedetect`를 검토했으며, [구현 계획](../../plans/2026-09-05-implementation-plan.md)에서 디코딩한 PCM의 스트리밍 분석으로 정했다. 임계값 ‘이하’와 샘플 단위 지속 시간 계약을 직접 검사한다. 파형 표시를 위한 샘플 축약을 실제 삭제 판정에 사용하지 않는다. 선택한 트랙의 모든 채널이 기준 이하일 때만 해당 트랙을 저음량으로 판단해 한쪽 채널의 발화를 보존한다.
-
-### 구간 계산 규칙
-
-- 분석 결과는 원본 시간축의 반열린 구간 `[start, end)`으로 관리한다.
-- 먼저 최소 무음 길이를 충족하는 저음량 구간을 찾는다.
-- 중간 무음 구간이 `[s, e)`이면 실제 제거 구간은 `[s + 말 끝난 뒤 여유, e - 말 시작 전 여유)`다.
-- 시작 무음에는 앞선 발화가 없으므로 말 끝난 뒤 여유를 두지 않는다. 마지막 무음에는 다음 발화가 없으므로 말 시작 전 여유를 두지 않는다.
-- 여유 시간을 적용한 뒤 길이가 100 ms 미만인 제거 구간은 삭제하지 않는다.
-- 제거 구간을 미디어 범위 안으로 제한하고 중복·겹침을 합친다. 실제 제거 총시간은 이 최종 구간의 합으로 계산한다.
-- 영상 편집 경계는 원본 프레임 타임스탬프에 맞춘다. 제거 시작은 뒤쪽 프레임 경계로, 제거 끝은 앞쪽 경계로 조정해 유지할 발화 구간을 침범하지 않는다. 조정 후 100 ms 미만이면 제거하지 않는다.
-- 동일한 최종 유지 구간 목록을 영상과 오디오에 적용한다. 오디오만 줄여 영상과 싱크가 달라지는 처리는 허용하지 않는다.
-- 설정이 변경되면 현재 결과를 이전 설정으로 만든 결과로 표시한다. 재분석은 새 초안을 만들며, 기존 수동 복원·제외 편집은 실행 취소로 되돌릴 수 있다.
-
-예: 원본의 10.000~12.000초가 무음이고 앞뒤 여유가 위 초기값이면, 프레임 정렬 전 제거 구간은 10.150~11.900초다. 2초의 침묵 중 1.750초를 줄이고 발화 주변의 0.250초를 남긴다. 이는 설명용 계산이며 실제 영상 측정 결과가 아니다.
-
-## 5. 화면과 편집 상태
-
-첫 화면에는 파일 열기, 미리보기, 오디오 파형과 컷 표시, 무음 설정, 분석 및 내보내기가 필요하다. 제거 구간은 색과 텍스트 상태로 구별한다. 키보드로 재생·정지, 구간 이동, 복원, 실행 취소를 할 수 있어야 한다.
-
-상태 흐름은 파일 없음 → 미디어 확인 → 분석 준비 → 분석 중 → 초안 준비 → 미리보기/수정 → 내보내기 중 → 완료다. 분석·내보내기는 취소할 수 있고 오류 이후에도 프로젝트와 수동 편집 내용이 유지되어야 한다.
-
-긴 작업 중에는 단계, 처리한 미디어 시간, 취소 버튼을 표시한다. 측정 없이 남은 시간을 추정해 단정하지 않는다. 초기 미리보기는 유지 구간을 따라 원본을 탐색하며, 컷 경계의 정확한 청취를 위해 선택 범위의 미리보기 파일을 생성할 수 있도록 한다. 탐색 기반 미리보기와 최종 렌더의 차이는 컷 주변 미리보기 검증으로 확인한다.
-
-## 6. 구조와 저장
-
-데스크톱 UI와 로컬 미디어 작업 프로세스를 분리한다. 상세 프레임워크 선택은 구현 계획에서 확정하되 UI가 FFmpeg 명령이나 파일 접근을 직접 실행하지 않도록 한다.
-
-| 구성 요소 | 책임 | 입력과 출력 |
+| Setting | Range | Initial value |
 | --- | --- | --- |
-| 미디어 검사 | ffprobe로 트랙·코덱·시간 정보 확인 | 파일 → 미디어 정보 또는 지원 오류 |
-| 무음 분석 작업 | 선택한 오디오 트랙에서 후보 구간 계산 | 파일·설정 → 원본 기준 후보 구간 |
-| 편집 도메인 | 여유 시간, 프레임 정렬, 구간 합치기, 수동 복원, 실행 취소 | 후보·편집 동작 → 최종 유지 구간 |
-| 미리보기와 내보내기 | 같은 유지 구간으로 영상·오디오를 재생 또는 렌더링 | 미디어·유지 구간 → 미리보기/MP4 |
-| 프로젝트 저장 | 원본 참조와 편집 상태를 버전 있는 JSON으로 저장 | 편집 상태 ↔ 프로젝트 파일 |
-| AI 연결 계층 | 공급자마다 다른 인증·요청을 공통 작업으로 변환 | 특정 AI 작업 → 검증된 편집 제안 |
+| Amplitude threshold | −96 to 0 dBFS | −40 dBFS |
+| Minimum silence | 50–5,000 ms | 500 ms |
+| Before-speech padding | 0–1,000 ms | 100 ms |
+| After-speech padding | 0–1,000 ms | 150 ms |
 
-프로젝트에는 스키마 버전, 원본 경로와 파일 식별 정보, 선택 트랙, 분석 설정, 후보 구간, 편집 결정, 최종 유지 구간을 저장한다. API 키와 구독 인증 정보는 넣지 않는다. 원본 위치가 바뀌면 파일 다시 연결을 제공하며, 다른 파일을 잘못 연결했을 때 이전 구간을 자동 적용하지 않는다.
+Raising a threshold from −50 to −30 dBFS removes louder material and can cut quiet speech. Defaults require tuning and human validation.
 
-첫 입출력 검증 대상은 SDR H.264/AAC MP4·MOV, 출력은 H.264/AAC MP4다. VFR 소스는 실제 타임스탬프를 사용하며 프레임 번호를 고정 FPS로 나누지 않는다. HDR/HEVC 등 미검증 형식은 지원 여부를 명시한다. 첫 버전은 선택한 오디오 트랙 하나를 결과물에 포함하며 다른 트랙은 내보내기 요약에서 제외 상태를 보여준다.
+Analyze streaming decoded PCM, not downsampled display waveforms. An interval qualifies only while absolute sample amplitude on every channel is at or below the threshold for the minimum duration. Preserve either channel's speech, including opposite phase.
 
-## 7. AI를 선택해서 연결하는 후속 설계
+Represent source intervals as half-open `[start,end)`. For internal silence `[s,e)`, remove `[s + afterSpeech, e − beforeSpeech)`. Leading silence has no preceding-speech padding; trailing silence has no following-speech padding. Drop removals shorter than 100 ms after padding. Snap starts forward and ends backward to actual video-frame boundaries; drop again if shorter than 100 ms. Clamp/merge valid overlapping intervals and reject malformed values. Derive a single ordered kept-range list for both video and audio.
 
-AI를 끈 상태를 기본으로 제공하고, 작업별로 공급자와 모델을 선택할 수 있게 한다. 무음 분석 자체에는 LLM 호출이 필요하지 않다.
+Example: silence `[10,12)` with 150 ms after and 100 ms before leaves removal `[10.150,11.900)`, or 1.750 seconds, before frame snapping. Settings changes mark analysis stale; new analysis remains undoable. All-silent input must be recoverable by restoring content but cannot export an empty video.
 
-첫 AI 작업 후보는 자연어로 무음 설정 만들기다. 예를 들어 “0.7초 이상 쉰 부분을 줄이고 말 앞뒤는 여유 있게 남겨줘”를 구조화된 설정 제안으로 바꾼다. 모델이 값을 제안하면 앱이 범위와 타입을 검증하고 변경된 설정을 보여준다. 이후 같은 연결 계층으로 자막 교정, 반복 발화 후보 찾기, 자막 스타일 및 효과음 배치 제안을 추가한다.
+## Components and persistence
 
-| 연결 방식 | 제품에서 제공할 경로 | 범위와 제약 |
-| --- | --- | --- |
-| 로컬 LLM | Ollama 로컬 서버 주소와 설치된 로컬 모델 선택 | 로컬 모델 실행 여부와 기능을 확인. 클라우드 모델로 자동 대체하지 않음 |
-| OpenAI / Anthropic API | 사용자 본인의 API 인증을 통한 직접 호출 | API 사용량·요금 체계 적용. 구독 연동과 다른 연결 유형으로 표시 |
-| 기존 ChatGPT 사용 | 공식 플러그인/MCP를 통해 ChatGPT에서 HyperCut 작업 호출 | 계정·워크스페이스 지원 및 서버 연결 조건을 확인한 별도 통합. 로컬 앱 설치만으로 ChatGPT 웹에 연결된다고 약속하지 않음 |
-| 기존 Claude 사용 | 공식 Agent SDK/CLI 구독 인증 또는 지원되는 MCP 연결 검토 | 확인한 공식 문서상 구독 한도 사용 경로가 존재. 실제 계정 지원, 설치 버전과 인증을 통합 시 검증 |
+Separate media inspection/decoding, amplitude/VAD analysis, pure editing domain, rendering/validation, project storage, and AI adapters. Browser processing runs through the local server; Electron supplies native file access around the same core.
 
-앱 안에서 모델을 호출하는 방식과 ChatGPT·Claude 쪽에서 편집기를 도구로 호출하는 방식은 요청 방향이 다르므로 UI 설명에서도 구분한다. 연결 전에는 상태를 미연결로 표시하고 실제 요청 성공 전에는 연결 완료로 표시하지 않는다.
+Store source SHA-256 identity and editing metadata in versioned JSON, not credentials or original media. Reconnect and verify sources/assets when reopening; never silently apply cuts to a different file. Persist original source-time values, and derive edited timing on demand. VFR uses actual PTS rather than average fps. Output one selected audio track with continuous audio assembly and one final AAC encode.
 
-AI는 임의의 셸 명령을 생성·실행하지 않고 허용된 편집 제안만 반환한다. 요청 대상·작업·보낼 데이터를 확인할 수 있게 하고, 외부 모델로 원본 영상 전체를 자동 업로드하지 않는다. 인증 만료, 모델 없음, 한도 초과, 잘못된 결과, 취소를 구분한다. AI 실패가 로컬 편집·내보내기를 막아서는 안 된다.
+Handle no audio, unsupported/damaged files, all removed/no silence, stereo, music mixed with speech, missing tools, full disks, denied writes, cancellation, and atomic replacement. Never overwrite a source or label a partial/corrupt output successful. Full decode, duration, selected tracks, and independent A/V markers establish media correctness.
 
-## 8. 오류와 경계 조건
+## Optional AI contract
 
-- 오디오가 없는 영상: 자동 무음 분석을 실행하지 않고 원인을 설명한다.
-- 전체가 무음인 영상: 제거 총시간을 보여주되 빈 MP4를 만들지 않는다. 사용자가 유지 구간을 복원할 수 있다.
-- 무음이 없는 영상: 제거 0건과 원본 길이를 표시한다.
-- 한쪽 채널만 기준을 넘는 발화: 해당 발화 구간은 유지한다.
-- 배경 음악이 포함된 트랙: 음량 기준 분석이 음악과 발화를 분리하지 않는다는 도움말을 제공한다. 별도 마이크 트랙 선택 또는 이후 VAD 모드로 해결한다.
-- 파일 읽기 실패, 미지원 코덱, FFmpeg 없음, 디스크 공간 부족: 원인을 표시하고 재시도 경로를 제공한다.
-- 작업 취소·프로세스 종료: 작업별 임시 파일만 정리하고 원본과 저장된 프로젝트를 보존한다.
-- 내보내기 실패: 불완전 파일을 최종 성공 파일로 표시하지 않는다. 완성된 임시 결과를 검증한 뒤 목적 파일로 이동한다.
+AI proposes changes rather than arbitrary commands. Show selected provider/model and distinguish configuration saved, authentication checked, and actual valid inference. Requests may describe settings such as pauses longer than 0.7 seconds with speech margins. Later tasks use selected captions/terms/styles/effect metadata. Do not automatically upload complete original media, execute shell instructions, or give unrestricted file/tool access.
 
-## 9. 완료 기준과 검증 계획
+| Connection | Contract |
+| --- | --- |
+| Ollama | Local installed model, no fallback |
+| OpenAI / Anthropic API | Explicit model and API key; do not assume chat subscription includes API billing |
+| ChatGPT MCP | Official supported account path and HTTPS/tunnel setup must be verified; local installation alone is insufficient |
+| Claude CLI/SDK | Supported official authentication/plan must be verified separately from mocks |
+| Manual chat exchange | Copy request/import validated JSON; distinguish from direct integration |
 
-상세 계획은 [제품 검증 계획](../../plans/2026-09-05-validation-plan.md)과 [테스트 계획](../../plans/2026-09-05-test-plan.md)에 정의한다. 합격 목표, 정답 데이터, 테스트 사례 ID, 실행 순서 및 증거 기록 방법을 포함한다. 이 문서들은 계획이며 실제 테스트 통과 결과가 아니다.
+Missing auth, quota, provider errors, and cancellation preserve edits and allow recovery without silent provider changes. Bound data and operations; revalidate proposals against current snapshots, reject stale/duplicate/invalid targets, and apply only selected changes with undo.
 
-아래는 구현 후 수행할 검증 계획이며 현재 통과했다고 주장하지 않는다.
+References recorded during initial planning: [FFmpeg silencedetect](https://ffmpeg.org/ffmpeg-filters.html#silencedetect), [Ollama API](https://docs.ollama.com/api), [ChatGPT MCP connection](https://developers.openai.com/plugins/deploy/connect-chatgpt), and [Claude plan integration](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan). Actual account availability requires current verification; these links are not evidence of a working user connection.
 
-1. 계정 로그인, LLM 설치, 네트워크 없이 파일 열기 → 임계값 설정 → 분석 → 수정 → MP4 내보내기가 완료된다.
-2. 위치·길이를 알고 있는 무음/발화 합성 샘플로 임계값, 최소 길이, 앞뒤 여유, 시작·끝 무음, 경계값을 검증한다.
-3. 같은 파일과 설정으로 분석한 구간 목록이 반복 실행에서 동일하다.
-4. 스테레오 한쪽 발화, 완전 무음, 무음 없음, 오디오 없음, VFR, 여러 오디오 트랙을 검사한다.
-5. 내보낸 영상과 오디오가 동일한 유지 구간에 대응하고, 최종 길이가 유지 구간 합과 비교해 출력 1프레임 또는 오디오 1패킷 중 큰 값 이내다. 시작·중간·끝 동기화 표식으로 누적 싱크 오차가 없는지 확인한다.
-6. 저장 후 다시 열었을 때 설정과 수동 복원 결과가 재현된다. 원본 파일 내용은 변경되지 않는다.
-7. 취소·디스크 오류 후 재시도할 수 있고, 이전 성공 파일과 원본을 손상하지 않는다.
-8. 실제 사용자 영상에서 잘린 음절, 어색한 간격, 수동 복원 건수, 분석 시간, 내보내기 시간, 최종 확인에 든 시간을 기록한다. 절감률·처리 속도는 이 측정 전에는 약속하지 않는다.
+## Delivery and acceptance
 
-## 10. 구현 순서
+Progress through domain/oracle preparation, actual media engine, complete browser/native workflow, then optional AI and later editing features. Required outcomes are deterministic rules, zero clipped speech on independent evaluation, synchronized actual outputs, restorable/undoable edits, reproducible project saves, preserved sources and completed files under failure, offline core operation, and measured time/resource targets.
 
-1. 무음 자동 제거 MVP: 미디어 검사, 분석, 되돌릴 수 있는 컷, 미리보기, 저장, 내보내기를 하나의 완결된 흐름으로 구현한다.
-2. AI 선택 연결: 자연어 설정 제안부터 로컬 모델·API 연결을 구현하고, 기존 구독 연동은 공식 지원 경로를 실제 계정에서 검증한다.
-3. 발화 보호와 자막: 로컬 VAD, 전사, 전문 용어 사전, 자막 교정·스타일 적용을 추가한다.
-4. 편집 확장: 효과음 트랙, 배치 규칙, 반복 발화·말실수 후보, 추가 미디어 형식과 일반 타임라인 편집을 추가한다.
-
-## 11. 확인한 공식 자료
-
-2026-09-05에 확인했다. 계정별 가용성이나 실제 앱 연동 성공을 의미하지 않는다.
-
-- [FFmpeg silencedetect](https://ffmpeg.org/ffmpeg-filters.html#silencedetect): 음량 임계값과 지속 시간에 따른 무음 구간 분석.
-- [Ollama API](https://docs.ollama.com/api/introduction): 로컬 모델 서버에 접근하는 API.
-- [OpenAI: 플러그인/MCP 연결과 검증](https://developers.openai.com/plugins/deploy/connect-chatgpt): ChatGPT 개발자 모드, 계정·워크스페이스 조건, HTTPS 또는 지원되는 터널 연결.
-- [Claude: 구독과 API 제품 구분](https://support.claude.com/en/articles/9876003-i-have-a-paid-claude-subscription-pro-max-team-or-enterprise-plans-why-do-i-have-to-pay-separately-to-use-the-claude-api-and-console): 직접 API 사용은 별도 제품.
-- [Claude: Agent SDK와 구독 사용](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan): 페이지 상단의 2026-06-15 업데이트 기준으로 Agent SDK/CLI/서드파티 앱 사용은 구독 사용량 한도를 사용한다고 명시. 그 아래 보존된 과거의 월별 크레딧 변경안은 현재 적용 정책으로 채택하지 않는다.
+Use [validation definitions](../../plans/2026-09-05-validation-plan.md) and [test cases](../../plans/2026-09-05-test-plan.md) for numeric gates and evidence. A working preview or synthetic pass does not mean all completion criteria are satisfied. Human quality, actual provider behavior, and native distribution must be judged separately.

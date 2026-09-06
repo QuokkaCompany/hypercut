@@ -1,34 +1,22 @@
-# 클립·TXT 대본·다국어 자막 검증
+# Clips, TXT transcripts, and multilingual captions
 
-2026-09-06. 시작 기준 `adf0624` 이후 작업본. 이번 요청의 기능 구현·검증 기록이며 정식 MVP 전체 출시 판정은 아니다. [구현·검증 계획](../plans/2026-09-06-clips-multilingual-plan.md), [재현 자료와 파일 해시](results/2026-09-06-multilingual.json).
+2026-09-06, changes after `adf0624`. This feature record is not full MVP release acceptance.
 
-## 구현 결과
+Implemented ten selectable transcription languages (Korean, English, Japanese, Chinese, Spanish, French, German, Portuguese, Italian, Russian) plus automatic detection. Translation uses existing Ollama/OpenAI/Anthropic/Claude CLI/manual JSON/MCP paths, processing at most 20 cues/4,000 characters per batch with comparison, selected apply, and next-untranslated navigation. Preserve source text/timing and per-language translations; missing/stale translations block affected SRT/TXT/captioned MP4 until corrected. Output-language selection and translation edits support undo/redo, v8 persistence, and v1–v7 reading. Menus remain Korean.
 
-- 한국어·영어·일본어·중국어·스페인어·프랑스어·독일어·포르투갈어·이탈리아어·러시아어 전사 선택, 자동 언어 감지.
-- 기존 AI 연결(로컬 Ollama, OpenAI/Claude API, Claude CLI, 수동 채팅 JSON, MCP)을 이용한 번역. 현재 문장부터 최대 20개·4,000자씩 요청하고 비교·선택 적용한다. 다음 미번역 문장으로 이동할 수 있다. 전체 대본을 무제한으로 한 번에 번역하는 기능은 아니다.
-- 원문과 시각을 보존한 언어별 번역 저장. 원문을 수정하면 이전 번역을 재검토해야 한다. 번역이 없거나 오래된 출력 구간은 SRT/TXT/자막 포함 MP4 출력 전에 막는다. 직접 번역 수정은 원문을 바꾸지 않는다.
-- 출력 언어 전환, 번역 적용·수정의 실행 취소/다시 실행, 프로젝트 v8 저장과 v1~v7 읽기. 앱 메뉴는 한국어다.
-- 원본 전체/편집본 대본 UTF-8 TXT 저장. 편집본은 삭제 문장을 제외하고 일부만 잘린 문장은 검토를 요구한다.
-- 임의 원본 시작·끝 또는 대본의 연속 문장 범위로 MP4 클립 생성. 현재 컷·자막·효과음을 반영하고 원본 해상도를 유지한다. 프레임 경계로 넓어진 실제 범위와 출력 길이를 표시한다. 자막 문장 중간을 자르는 클립은 범위를 넓히거나 자막 포함을 끄도록 안내한다.
-- Noto Sans CJK KR 일반·굵은 글꼴 추가. 기존 글꼴에 없는 문자가 있을 때 선택한 굵기의 추가 글꼴만 읽는다. SHA-256·글리프 지원 여부를 확인한다. [고정 출처와 해시](../../assets/fonts/manifest.json), [OFL](../../assets/fonts/OFL.txt).
+Full/edited UTF-8 TXT includes all/retained sentences, with partial-cut review. Source-range or consecutive-sentence clips use current cuts/captions/effects at original resolution and report actual frame-expanded range/duration. Partial-caption clips require a wider range or captions disabled. Add verified regular/bold Noto Sans CJK KR fallback, loaded only for the selected weight when needed; check hashes/glyphs.
 
-## 확인한 결과
-
-| 검증 | 결과와 실제 범위 |
+| Verification | Outcome and scope |
 | --- | --- |
-| 단위 테스트 | 최종 `npm test` 97 PASS. 언어 코드, 번역 스냅샷, 중복·누락·잘못된 원문 거부, 동일 번역 허용, 오래된 번역 차단, TXT 내용, v8 왕복·이전 버전 읽기 포함 |
-| 미디어·API·효과음·MCP 통합 | 최초 46개 중 파일 이름 2개 실패 후 수정. 관련 API 재실행 13 PASS. CFR/VFR/원본 PTS 오프셋의 클립 플래시·비프 시각 및 효과음 꼬리 보존 확인. 모의 공급자 호출과 실제 MCP stdio 프로세스의 요청·적용 확인 응답 검증 |
-| 최종 렌더·교정 API | 글꼴 지연 로딩 후 17 PASS. 10개 언어 × 일반/굵은 글꼴 20개 견본, 경계·잘림·누락 글꼴·지원하지 않는 문자·취소, 실제 중국어 자막 MP4, 기존 교정 API 포함 |
-| 실제 로컬 전사 | 영어·일본어·중국어 TTS 및 일본어 자동 감지 4 PASS. Whisper small 실제 추론, 문장 존재·지정 핵심어·시각 범위·원본 해시 유지 확인. 사람 녹음 정확도 시험이 아님 |
-| 최종 Chrome·Mac 앱 | 각 1회 전체 흐름 PASS. 번역 누락 거부, 원문 보존, 오래된 번역 차단, 번역 직접 수정, 실행 취소/다시 실행, TXT·SRT의 정확한 내용, 문장 클립 5초·임의 클립 약 1.266초, 실제 MP4 전체 디코딩, v8 저장·재열기 |
-| 실제 MCP와 두 앱 | 설정·교정·일본어 번역·효과음의 비교·선택 적용과 확인 응답 PASS. 원문 보존, 실행 취소, 공유 해제·응답 실패 재시도 확인. 외부 AI 계정·모델 호출 없음 |
-| 기존 교정 UI 회귀 | 최종 두 앱 PASS. 숫자 변경 거부, 부정 표현 확인, 선택 적용, 오래된 요청 거부, 취소·재시도, SRT·프로젝트·자막 포함 MP4 저장 |
+| Final units | 97 PASS: language/source snapshots, duplicate/missing/wrong source rejection, unchanged translation acceptance, staleness, TXT, v8/migrations |
+| Media/API/effects/MCP | Initial 46 had two filename failures; fixed and related 13 API passed. Actual CFR/VFR/PTS clip markers/effect tails and mock-provider/real-stdio acknowledgments |
+| Final rendering/correction API | 17 PASS after lazy fonts: 20 language/weight samples, boundaries/clipping/missing fonts/unsupported glyphs/cancel, actual Chinese MP4, correction API |
+| Actual local transcription | Four PASS: English/Japanese/Chinese TTS and Japanese auto; real small-model inference, key text, valid timing, source hashes |
+| Final Chrome/Mac | One complete flow each: missing/stale rejection, source preservation, translation edit/undo, exact TXT/SRT, five-second sentence clip, ≈1.266-second arbitrary clip, full decode, v8 reopen |
+| MCP in both apps | Settings/correction/Japanese translation/effects selected apply and receipts, undo/revoke/acknowledgment retry; no external account/model |
+| Correction UI regression | Both apps PASS: numeric/negation guards, selected apply, stale/cancel/retry, SRT/project/styled MP4 |
 
-브라우저는 실제 다운로드 파일을 다시 읽었다. Mac은 새 패키지의 실제 저장 IPC와 파일 쓰기를 사용하되 저장 창의 목적지는 테스트가 지정했다. 운영체제 저장 창의 수동 조작까지 검증했다고 주장하지 않는다. 두 앱의 원문/번역 문구와 중국어 자막이 들어간 실제 출력 프레임을 확인했으며 390px 브라우저 화면도 확인했다.
-
-이전 MP4 결과가 있는 상태에서 두 번째 클립 생성 도중 이전 결과를 저장할 수 있는 문제를 UI 시험에서 재현했다. 렌더 중 저장 버튼과 저장 처리에 작업 상태 검사를 추가했고, 최종 두 앱에서 서로 다른 길이의 두 클립을 연속 생성·저장해 재검증했다.
-
-## 재현 명령
+Browser downloads were reopened; native used actual save IPC/writes with test-selected destinations, not manual OS dialogs. Viewed source/translation UI, Chinese output frames, and 390 px layout. A UI race allowed saving an old clip while another rendered; add job-state guards to save control/handler, then verify sequential different-length clips in both final apps.
 
 ```sh
 npm test
@@ -42,8 +30,11 @@ node scripts/mcp-e2e.mjs --desktop
 node scripts/caption-correction-e2e.mjs --desktop
 ```
 
-실제 전사에는 설치된 Whisper 모델·FFmpeg·해당 macOS TTS 음성이 필요하다. 두 앱 시험은 로컬 서버·Chrome·패키징된 Mac 앱을 실행한다. 모의 응답은 번역 문구의 품질을 측정하지 않으며 사용자의 유료 모델이나 영상을 사용하지 않는다.
+Requires local Whisper/FFmpeg/relevant macOS TTS voices, Chrome, and new package. Mocks do not establish translation quality; no user paid model/private video used. Real authenticated translation/cost, human recordings per language, post-change long composition, clean-Mac install/signing/notarization remain unverified. Chinese TTS also misrecognized a phrase, so connection success is not accuracy. Earlier `93d616f` 24-run performance does not transfer to this changed build.
 
-## 남은 검증
+## Evidence and related records
 
-인증된 실제 AI 모델의 번역 품질·비용, 언어별 사람 녹음 정확도, 이 변경 이후의 장시간 동시 합성 성능, 새 Mac 설치·서명·공증은 미검증이다. 중국어 TTS에서 원래 `自动生成`이 `最终生存`으로 인식되는 오류도 관찰했다. 따라서 전사 기능의 연결 성공과 문구 정확도를 구분해야 한다. 이전 `93d616f`의 24회 장시간 무음 편집 결과를 이 변경의 성능 통과로 재사용하지 않는다.
+- [2026-09-06-clips-multilingual-plan.md](../plans/2026-09-06-clips-multilingual-plan.md)
+- [2026-09-06-multilingual.json](results/2026-09-06-multilingual.json)
+- [manifest.json](../../assets/fonts/manifest.json)
+- [OFL.txt](../../assets/fonts/OFL.txt)

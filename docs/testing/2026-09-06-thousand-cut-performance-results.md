@@ -1,45 +1,37 @@
-# 최신 앱의 임계값 편집·1,000컷 성능
+# Threshold mode with 1,000 cuts: one memory failure
 
-2026-09-06. 12회와 취소·재시도 4조건을 모두 완료했다. 11회는 모든 측정 목표를 충족했다. 브라우저 60분 세 번째 실행의 합산 RSS가 **2.050GiB**로 2GiB 목표를 초과했다. Mac 60분 3회는 모두 통과했지만 전체 성능 판정은 메모리 실패다. [시험 계획](../plans/2026-09-06-thousand-cut-performance-plan.md)에 따라 10분·60분 × Chrome/Mac × 각 3회를 순차 실행한다. 앱은 인코더 메모리 개선이 적용된 `3bfd26d`와 같은 런타임이다.
+2026-09-06, candidate `3bfd26d`. All 12 long runs and four cancellation/retry conditions completed. Eleven runs met the measured targets; the third browser 60-minute run reached **2.050 GiB RSS**, exceeding the 2 GiB limit. The result is `completed`, `measuredGoalsPass: false`, exit code 1. Two short checks are separate from the matrix.
 
-## 도구 확인과 판정 범위
+| Surface / duration | Analysis median / max (s) | Export median / max (s) | Peak RSS (GiB) | Highest action p95 (ms) |
+| --- | --- | --- | --- | --- |
+| Chrome / 10 min | 6.564 / 6.797 | 24.068 / 24.086 | 1.791 | 67.79 |
+| Mac / 10 min | 6.325 / 6.409 | 24.039 / 24.041 | 1.194 | 48.38 |
+| Chrome / 60 min | 37.107 / 37.299 | 141.378 / 141.449 | **2.050 FAIL** | 115.21 |
+| Mac / 60 min | 36.813 / 36.820 | 142.384 / 142.459 | 1.404 | 90.48 |
 
-- 60초 두 앱의 분석·출력·저장·표식·조작 경로를 먼저 확인했다. [예비 측정 기록](results/2026-09-06-thousand-cut-smoke.json)의 이 두 실행은 12회 본 측정에 포함하지 않는다. 예비 측정 후 파일 저장 단계의 메모리 표본을 추가했다.
-- 독립 싱크 검사기의 양성/음성 대조군 4개가 통과했다. 정상 원본 6개 표식 쌍은 허용하고, 오디오 200ms 지연·오디오 표식 누락·영상 표식 누락을 각각 거부했다. 검사 자체의 첫 실행에서 부동소수점 반올림 차이 `-4.44e-16`을 정확히 0으로 비교하던 양성 대조군 단언만 수정했다. 제품의 1/30초 허용 기준은 바꾸지 않았다.
-- 첫 본 실행에서는 10분 브라우저 1회가 측정 목표를 충족한 뒤 취소 검사에서 중단됐다. 캐시가 있는 재분석의 진행 응답을 기다리는 동안 완료와 겹쳐 최종 상태가 `completed`였고, 이를 `cancelled`로 처리하지 않았다. [원시 실패](results/2026-09-06-thousand-cut-cancel-timing.json)와 당시 시험 코드는 `test-output/threshold-current/`에 보존했다.
-- 후속 도구는 분석 요청 직후 서버의 `running` 상태를 확인하고 취소한다. 실제 DELETE 응답의 `cancelled: true`와 최종 작업 상태를 모두 요구한다. 관측한 취소 전 단계·진행률도 기록하며 임의 지연이나 모의 작업으로 처리 시간을 늘리지 않는다.
+Browser 60-minute peaks increased from 1.942 to 1.997 to 2.050 GiB. Peaks occurred during export, with renderer memory increasing after interactions. This does not establish the root cause.
 
-## 최종 측정값
+## Runner and oracle checks
 
-[12회 최종 결과](results/2026-09-06-thousand-cut-results.json)는 `status: completed`, `measuredGoalsPass: false`다. 전체 실행은 측정 목표 실패를 알리는 종료 코드 1로 끝났다. 브라우저 60분 세 번째만 메모리 목표를 초과했고, 해당 실행의 시간·UI·저장·표식 검사는 통과했다.
+The independent sync verifier accepted a valid six-marker output and rejected a 200 ms audio delay, missing audio, and missing video. An exact-zero assertion encountered floating-point error of −4.44e−16; only that assertion was corrected, without relaxing the 1/30-second tolerance.
 
-| 조건 | 완료 | 분석 중앙값 / 최대 | 출력 중앙값 / 최대 | RSS 최대 | 조작 묶음 p95 중 최대 |
-| --- | --- | --- | --- | --- | --- |
-| browser / 10분 | 3/3 | 6.564 / 6.797초 | 24.068 / 24.086초 | 1.791GiB | 67.79ms |
-| desktop / 10분 | 3/3 | 6.325 / 6.409초 | 24.039 / 24.041초 | 1.194GiB | 48.38ms |
-| browser / 60분 | 3/3 | 37.107 / 37.299초 | 141.378 / 141.449초 | 2.050GiB | 115.21ms |
-| desktop / 60분 | 3/3 | 36.813 / 36.820초 | 142.384 / 142.459초 | 1.404GiB | 90.48ms |
+An initial 10-minute browser run passed, but its cancellation request arrived after completion. It was recorded as completed, not credited as a successful cancellation. The runner now checks that the job is running immediately before the request, requires both `cancelled: true` from DELETE and a terminal cancelled state, and records the cancellation stage without adding artificial delays. The original failure record is retained.
 
-60분 브라우저 RSS는 반복 순서대로 1.942 → 1.997 → 2.050GiB였다. 세 실행 모두 출력 단계가 최대였으며 UI 조작 후 브라우저 렌더러 점유 증가도 관측했다. 메모리 개선이 추가로 필요하지만, 아직 특정 화면 요소를 원인으로 확정하거나 제품 코드를 변경하지 않았다. [화면 렌더링 개선 계획](../plans/2026-09-06-editor-render-memory-plan.md)에 따라 다음 후보를 비교한다.
+The final matrix includes 1,152 interactions. Cancellation occurred during preparation for 10-minute inputs and early amplitude processing for 60-minute inputs, at progress 0.15001–0.15008; it does not prove midstream PCM cancellation. DOM feedback took 1.8–7 ms and retry readiness 302–316 ms. Complete projects were preserved and subsequent runs completed.
 
-네 조건의 취소는 서버가 `running`일 때 요청했다. 10분 두 앱은 `작업 준비`, 60분 두 앱은 `음량과 무음 구간 분석` 초기 진행률 약 0.15001~0.15008이었다. 실제 취소 응답·최종 `cancelled`·전체 프로젝트 보존과 두 번째 반복 완료를 확인했다. 이를 PCM 디코딩 중간 단계의 취소 시점으로 표현하지 않는다.
+Final file-copy medians were 0.245 / 0.055 seconds for browser/Mac 10-minute outputs and 1.214 / 0.100 seconds for 60-minute outputs. These copies are excluded from export timing but included in RSS monitoring. The maximum RSS sampling interval was 284 ms with no recorded sampling errors; shared pages and peaks between samples remain limitations.
 
-## 무결성·정확성 감사
+## Environment and scope
 
-본 측정 폴더는 `test-output/threshold-current-v2/`다. 각 실행에 분석·저장 프로젝트·실제 MP4·분석/출력/파일 저장/조작 RSS 원시 표본을 남긴다. [독립 감사 기록](results/2026-09-06-thousand-cut-audit.json)에서 12개 조건의 중복/누락, 원본 및 출력 파일 SHA-256, 실행 당시 소스/패키지 해시, RSS 원시 표본의 개수·최댓값과 UI 통계를 대조했다.
+M4 Max, 14 CPU cores, 36 GB RAM, AC power, Darwin 25.5, Node 24.14, FFmpeg 8.1.1. Sources stayed fixed through the audit and no competing media/build jobs ran. Synthetic inputs contain 440 Hz audio and simple 1080p/30 fps video. OS caches were not purged. The final cut removes trailing silence; the last sync marker follows 999 cuts.
 
-- 같은 길이의 두 앱 6회 분석 JSON은 모든 필드가 동일했다. 저장 프로젝트도 저장 시각을 제외한 전체 필드가 일치했다.
-- 12회 모두 컷 개수·출력 길이·전체 디코딩·원본 보존·72개 독립 플래시/오디오 쌍을 확인했다. 표식의 최대 추가 A/V 오차는 약 0.067ms였으며 처음 대비 마지막 변화도 1/30초 기준 이내였다. 이는 관측한 표식의 결과이며 모든 프레임이나 실제 발화 품질 판정은 아니다.
-- 조작은 매 실행 복원/실행 취소·설정·재생/정지 각각 32회, 총 1,152회다. 각 묶음 p95는 200ms 이내였다.
-- 취소 문구 DOM 갱신은 1.8~7.0ms, 종료 및 재시도 가능 상태는 약 302~316ms였다. 픽셀 표시 시각을 직접 관측한 수치는 아니다. 네 조건 모두 전체 프로젝트를 보존했고 두 번째 반복을 완료했다.
-- 파일 저장 시간 중앙값은 10분 Chrome 0.245초·Mac 0.055초, 60분 Chrome 1.214초·Mac 0.100초였다. 위 출력 시간에는 이 최종 경로 복사를 포함하지 않지만 메모리 표본에는 포함했다.
-- RSS 표본 오류·페이지 오류·관측한 외부 브라우저 요청은 0건이었다. 표본 간격 목표는 250ms, 실제 최대 간격은 약 284ms였다. 공유 메모리의 중복 합산과 표본 사이 순간 피크 누락 가능성은 유지된다.
+Run the threshold sync verifier with concurrency 1 and the benchmark with a fresh output directory. These measurements do not establish human speech quality, editing-time savings, cache-conditioned performance, caption/effect composition, or the complete G3 release gate.
 
-같은 M4 Max 14 CPU·36GiB·Darwin 25.5 arm64·전원 어댑터 환경에서 Node 24.14.1·FFmpeg 8.1.1을 사용했다. 첫 실행은 새 앱, 이후 두 실행은 같은 앱이다. 미디어 시험·빌드를 동시에 실행하지 않았고, 기준 측정 완료와 소스 해시 감사 전에는 제품 소스를 바꾸지 않았다.
+## Evidence and related records
 
-영상은 합성 440Hz 신호와 단순 1080p30 영상이다. OS 캐시는 비우지 않았다. 1,000컷에는 마지막 무음 제거가 포함되므로 마지막 표식은 999개 제거 뒤에 있다. 이 시험을 실제 한국어 청취 품질·작업 시간 절감·cold-cache·긴 영상 자막/효과음 동시 합성·전체 G3 완료 근거로 사용하지 않는다.
-
-```sh
-node --test --test-concurrency=1 tests/threshold-sync.integration.mjs
-node scripts/threshold-benchmark.mjs --output=test-output/새-시험-이름
-```
+- [2026-09-06-thousand-cut-performance-plan.md](../plans/2026-09-06-thousand-cut-performance-plan.md)
+- [2026-09-06-thousand-cut-smoke.json](results/2026-09-06-thousand-cut-smoke.json)
+- [2026-09-06-thousand-cut-cancel-timing.json](results/2026-09-06-thousand-cut-cancel-timing.json)
+- [2026-09-06-thousand-cut-results.json](results/2026-09-06-thousand-cut-results.json)
+- [2026-09-06-editor-render-memory-plan.md](../plans/2026-09-06-editor-render-memory-plan.md)
+- [2026-09-06-thousand-cut-audit.json](results/2026-09-06-thousand-cut-audit.json)

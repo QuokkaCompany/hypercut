@@ -1,88 +1,86 @@
-# HyperCut 검증 실행 기록 양식
+# HyperCut validation run template
 
-이 파일은 빈 양식이며 실행 결과가 아니다. 실행 전에 별도 파일로 복사하고 해당 값만 채운다. 미실행 항목은 `NOT_RUN`으로 유지한다.
+This is an empty template, not an execution result. Copy it before a run and fill only observed values. Leave unexecuted items as `NOT_RUN`.
 
-## 실행 정보
+## Run identity
 
-- 실행 ID / 일시 / 수행자:
-- 코드 커밋 / 미커밋 변경 유무:
-- 실행 대상 브라우저·로컬 서버 또는 설치한 Mac 앱 / 실제 번들·패키지 해시:
-- 테스트 계획·fixture manifest 버전:
-- 실행한 테스트 러너 / 독립 정답·사람 라벨의 버전·해시:
-- OS / 칩 / 메모리 / 전원 / 저장 위치 종류:
-- 앱·FFmpeg·ffprobe·테스트 러너 버전:
-- 입력 fixture ID / SHA-256 / 코덱·트랙·FPS·샘플레이트:
-- 음량 기준 / 최소 길이 / 말 앞뒤 여유 / 선택 트랙:
-- VAD 사용 여부 / 사용하는 모델·네이티브 런타임 버전·해시:
-- 냉간·캐시 실행 구분 / 네트워크 상태:
-- 실행 대상 게이트 / 제외 범위와 이유:
-- 실행할 사례·플랫폼·입력 조건 목록 / 준비되지 않은 자료·인증 조건:
+- Run ID / date and time / operator:
+- Code commit / uncommitted changes:
+- Browser and local server, or installed Mac app / actual bundle and package hashes:
+- Test plan and fixture-manifest versions:
+- Runner / independent oracle or human-label versions and hashes:
+- OS / chip / RAM / power / storage type:
+- App / FFmpeg / ffprobe / runner versions:
+- Input fixture IDs / SHA-256 / codecs, tracks, FPS, sample rates:
+- Amplitude threshold / minimum duration / speech padding / selected track:
+- VAD enabled / model and native-runtime versions and hashes:
+- Cold, warm, or uncontrolled cache condition / network state:
+- Target gates / exclusions and reasons:
+- Cases, platforms, and input conditions / missing material or authentication:
 
-고정한 제품·자료·설정이 바뀌면 새 실행 ID로 분리한다. 한 플랫폼·입력 조건의 통과로 다른 미실행 조건을 채우지 않는다. 브라우저 결과와 설치한 Mac 패키지 결과는 각각 식별 가능한 증거를 연결한다.
+Use a new run ID when the frozen product, data, or settings change. Do not fill an unexecuted condition using a pass on another platform or input. Identify browser evidence and installed Mac-package evidence separately.
 
-## 테스트 결과
+## Results
 
-| 사례 ID | 상태 | 독립 기대 결과 | 실제 결과·측정값 | 증거 위치 | 실패/차단/N/A 사유 |
+| Case ID | Status | Independent expectation | Actual result / measurement | Evidence | Failure, block, or N/A reason |
 | --- | --- | --- | --- | --- | --- |
-| 기입 필요 | NOT_RUN | 기입 필요 | 미측정 | 없음 | 미실행 |
+| To fill | NOT_RUN | To fill | Not measured | None | Not executed |
 
-상태: `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`, `N/A`. 실행하지 않은 항목을 PASS로 변경하지 않는다.
+Allowed states: `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`, `N/A`. Never mark an unexecuted case as PASS.
 
-## 미디어·음성 품질
+## Media and speech quality
 
-- 원본 SHA-256 처리 전 / 처리 후:
-- 정답 / 실제 후보·제거·유지 구간 파일:
-- 예상 길이 / 출력 디코딩 길이 / 오차 / 허용치 근거:
-- 표식별 source→output 시간 오차 / A/V 추가 오차 / 누적 오차:
-- 전체 디코딩 성공 여부 / 오류 로그:
-- 평가한 컷 수 / 잘린 단어·음절 수 / 미판정 수:
-- 시간 기준 제거 정밀도 / 목표 쉼 제거율 / 각 분모:
-- 복원한 컷 수 / 전체 컷 수 / 이유:
-- 전체 재생 및 경계 청취 기록:
+- Source SHA-256 before / after:
+- Expected and actual candidate, removed, and retained interval files:
+- Expected duration / decoded duration / error / tolerance basis:
+- Source-to-output marker errors / additional A/V error / cumulative error:
+- Full decode outcome / error logs:
+- Cuts reviewed / clipped words or syllables / undecided cuts:
+- Time-based removal precision / target-pause removal / denominators:
+- Restored cuts / total cuts / reasons:
+- Full-playback and boundary-listening records:
 
-## 시간·성능
+## Time and performance
 
-| 영상 ID / 실행 순서 | 수동 작업 시간 | HyperCut 작업 시간 | 분석 대기 | 출력 대기 | 전체 경과 시간 | 품질 판정 |
+| Video ID / order | Manual active time | HyperCut active time | Analysis wait | Export wait | Total elapsed | Quality |
 | --- | --- | --- | --- | --- | --- | --- |
-| 미실행 | 미측정 | 미측정 | 미측정 | 미측정 | 미측정 | NOT_RUN |
+| Not run | Not measured | Not measured | Not measured | Not measured | Not measured | NOT_RUN |
 
-- 영상별 작업 시간 절감률 / 중앙값 / 비교 한계:
-- 분석·내보내기 실행별 원시값 / 중앙값 / 최댓값:
-- 앱+자식 프로세스의 동시 합산 RSS 최대:
-- UI 조작 표본 수 / p95 / 측정 방식:
-- 취소 표시 지연 / 프로세스 종료 지연 / 재시도 결과:
+- Per-video time savings / median / comparison limits:
+- Per-run analysis and export values / median / maximum:
+- Maximum simultaneous app-plus-child-process RSS:
+- UI sample count / p95 / measurement method:
+- Cancellation feedback / process-exit delay / retry outcome:
 
-## AI 연결 검증 — 해당 단계에서만 작성
+## AI connections, when applicable
 
-- 공급자 / 모델·도구 / 연결 유형 / 모의 또는 실제:
-- 실행 전 호출 횟수·사용량 또는 비용 상한 / 중단 조건:
-- 요청한 작업 / 결과 검증 / 오류·취소 처리:
-- 설정 저장·전환 시 추론 요청 수 / 실제 요청·재시도·실패·취소 횟수:
-- 사용량 / 실제 과금 확인 여부 / 근거:
-- 요청 데이터 검사 결과:
+- Provider / model or tool / connection type / mock or actual:
+- Pre-run request, usage, or spending ceiling / stop conditions:
+- Requested task / result validation / error and cancellation handling:
+- Inference calls during settings save/switch / requests, retries, failures, cancellations:
+- Usage / actual billing verification / evidence:
+- Request-data inspection:
 
-청구 확인이 불가능하면 `확인 불가`로 기록한다. 미측정을 0원으로 바꾸지 않는다. 시험 운영 상한과 앱이 제공하는 비용 제한 기능의 유무는 별도로 기록한다.
+Record unavailable billing as `UNVERIFIED`, not zero cost. Distinguish the experiment's spending ceiling from any cost-limiting feature actually provided by the app. Do not include API keys, tokens, complete personal paths, or private recordings/transcript text.
 
-API 키, 토큰, 전체 개인 경로, 비공개 영상·자막 원문을 이 기록에 넣지 않는다.
+## Transcription, captions, and effects, when applicable
 
-## 전사·자막·효과음 — 해당 단계에서만 작성
+- Engine / model version and SHA-256 / language / track and channel:
+- Mock, TTS, or human recording / tuning or evaluation / reference source:
+- CER normalization / substitutions, deletions, insertions / reference character count / CER by condition:
+- False captions during silence / start/end error distributions / errors over 500 ms:
+- Meaning, numbers, units, names, and correction results / unresolved errors:
+- Source-to-edited cue times / cut-boundary reviews required and resolved:
+- Independent SRT parse / actual composed frames / font and renderer versions:
+- Effect asset IDs / placement, duration, gain / output markers, peaks, clipping:
+- Project version / migration / preserved changes:
+- Caption-work time savings / inference and render waits / total RSS:
+- Model preparation and inference network state / actual external requests and costs:
 
-- 엔진 / 모델 버전·SHA-256 / 언어 / 전사 트랙·채널:
-- 모의·TTS·실제 녹음 구분 / 조정용·평가용 구분 / 정답 출처:
-- CER 정규화 규칙 / 대치·삭제·삽입 수 / 정답 문자 수 / 조건별 CER:
-- 무음 허위 자막 수 / 시작·끝 시각 오차 분포 / 500ms 초과 사례:
-- 의미·숫자·단위·고유명사 교정 결과 / 미해결 오류 수:
-- 원본→편집 자막 시각 / 컷 경계 검토 필요·해결 건수:
-- SRT 독립 파싱 결과 / 실제 합성 프레임 / 폰트·렌더러 버전:
-- 효과음 원본 ID / 배치·길이·음량 / 실제 출력 표식·피크·클리핑:
-- 프로젝트 버전 / 이전 버전 마이그레이션 / 수정 내용 보존:
-- 자막 작업 시간 절감률 / 전사 대기·렌더 대기 / 합산 메모리:
-- 모델 준비와 추론의 네트워크 상태 / 실제 외부 요청·비용 여부:
+## Gates and follow-up
 
-## 게이트 판정과 후속 작업
-
-- G0 / G1 / G2 / G3 / G4 판정: NOT_RUN
-- 미해결 실패·미판정·차단 사례:
-- 재현 절차 / 수정 범위 / 재실행할 사례:
-- 기준을 변경했다면 변경 전후·이유·적용 시작 실행 ID:
-- 다음 단계로 진행 가능한 근거:
+- G0 / G1 / G2 / G3 / G4 verdicts: NOT_RUN
+- Unresolved failures, undecided cases, or blocks:
+- Reproduction / fix scope / cases to rerun:
+- Changed criteria: before, after, reason, first applicable run ID:
+- Evidence supporting progression to the next stage:

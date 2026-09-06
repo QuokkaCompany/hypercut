@@ -1,65 +1,50 @@
-# 로컬 효과음 편집 실행 기록
+# Local sound-effect editing results
 
-실행일: 2026-09-05. 기준 커밋 `eecfe38` 이후 이 문서와 함께 추가한 작업 트리에서 검증했다. [효과음 계획](../plans/2026-09-05-caption-effects-validation-plan.md)의 FX01~FX03과 FX05 일부를 실행했다. AI 배치 제안과 사람의 청취 품질 판정은 미실행이다.
+Executed 2026-09-05 after `eecfe38`. FX01–FX03 and part of FX05 were exercised; AI proposals and human listening were later work.
 
-후속 AI 제안 구현·검증은 [AI 효과음 실행 기록](2026-09-05-ai-effects-results.md)에 있다. 아래 내용은 로컬 수동 편집 단계의 실행 당시 상태다.
+Browser upload/native selection supports source placement, asset offset, duration, gain/mute, add/delete/exclude, undo/redo. Protect unapplied input before selection/close/render and window exit. Initial limits: one audio track, mono/stereo, 0.01–300 seconds and ≤1 GB per asset, 32 assets/128 clips per project, default −12 dB and at most three seconds, gain −60 to +12 dB. Generated WAV/MP3/M4A/AAC/FLAC/OGG each rendered; this is not every codec/channel combination.
 
-## 구현한 동작
+Source-time starts inside cuts are omitted and restored with cuts. Retained starts map to edited time and end at the earliest asset remainder/user duration/video end. Range preview clips the complete mix, retaining tails that started earlier. Project v5 stores SHA-256 identity/edits, not runtime paths; v1–v4 migrate with no effects. Reject wrong reconnects and recheck hashes before output. Missing/changed assets require reconnect/exclude/mute. Native saves protect registered effect sources too.
 
-브라우저의 로컬 음원 업로드와 Mac 앱의 네이티브 파일 선택을 지원한다. 효과음 창에서 원본 배치 시각, 음원 내부 시작 시각, 재생 길이, 음량, 음소거를 편집한다. 클립 추가·삭제·음원 제외·실행 취소·다시 실행을 제공한다. 적용 전 입력이 남아 있으면 다른 클립 선택·닫기·렌더를 막고 적용/입력 취소를 제공한다. 해당 상태에서 창 종료 경고도 유지한다.
+Encoded preview/MP4 include effects; fast seek preview does not. Edits invalidate prior renders. Convert effects to selected output sample rate/channels; tested numeric cases used matching mono/stereo combinations, not subjective multichannel spatial quality. Mix 4,096-frame blocks with decoded assets in job directories. Check PCM and decoded final AAC sample peaks; either exceeding 0 dBFS prevents success. No automatic normalization/limiting and no true-peak/loudness certification. Plain output's existing behavior is unchanged.
 
-첫 버전은 오디오 트랙 하나인 모노·스테레오 파일을 사용한다. 개별 음원은 0.01~300초·1 GB 이하, 프로젝트는 음원 32개·클립 128개까지다. 파일 선택기는 WAV·MP3·M4A·AAC·FLAC·OGG를 표시하며 실제 디코딩은 설치된 FFmpeg가 담당한다. 이 실행에서 위 여섯 형식의 생성 음원을 실제 출력했다. 모든 코덱·채널 조합을 검증한 것은 아니다. 새 클립의 기본 음량은 -12 dB, 기본 길이는 최대 3초다. 음량 범위는 -60~+12 dB다.
+Restrict probing/decoding to local files and WAV/MP3/MOV/FLAC/OGG/AAC demuxers. Disguised WAV playlists and real M3U8 generated zero external requests. Format-probe rejection and explicit allowlist rejection were tested separately.
 
-효과음은 원본 시각에 고정한다. 시작점이 제거된 클립은 출력하지 않고 컷 복원 시 다시 나타난다. 시작점이 남으면 편집 시각에 배치하고 음원 잔여 길이·설정 길이·편집 영상 끝 중 가장 짧은 범위에서 끝낸다. 선택 범위 미리보기는 전체 편집본의 합성을 잘라 보므로 범위 이전에 시작한 효과음의 뒷부분도 포함한다.
+| Check | Passes |
+| --- | ---: |
+| Units | 57 |
+| Effects | 13 (four overlapping units + nine integration) |
+| API | 12 |
+| Media | 8 |
+| Captions | 15 (nine overlapping units + six rendering) |
 
-프로젝트 v5에는 SHA-256 음원 식별 정보와 원본 배치 값을 저장한다. 실행 중 등록된 경로는 저장하지 않는다. 이전 v1~v4 프로젝트는 효과음 없는 상태로 읽으며 기존 컷·보호 설정·자막·스타일의 이행 규칙을 유지한다. 다른 파일의 재연결은 거부한다. 실제 출력 전에 음원의 해시를 다시 확인하며 이동·변경·유실 시 재연결 또는 명시적 제외/음소거를 안내한다. Mac의 프로젝트/결과 저장은 등록한 효과음 원본도 덮어쓰지 못한다.
+92 unique checks; build/package, both-app E2E and viewed desktop/390 px/Korean frames separate. Environment: Node 24.14.1/Electron 44.2.0/macOS arm64/FFmpeg 8.1.1.
 
-효과음은 정확한 미리보기와 MP4에 합성한다. 빠른 컷 미리보기에는 합성하지 않으며 화면에서 이 차이를 안내한다. 클립이 바뀌면 이전 렌더 결과는 무효화한다. 효과음 파일은 선택한 원본 오디오 트랙의 샘플레이트·채널 수로 변환한다. 채널 수가 다를 때는 FFmpeg의 채널 변환을 사용한다. 이번 실제 수치 검사는 모노 및 스테레오 동일 채널 조합을 사용했다. 다채널 출력의 주관적 공간감은 미검증이다.
+## Independent output measurements
 
-PCM은 4,096프레임씩 합성하며 사용한 음원별 디코딩 파일은 작업 폴더에 둔다. 겹친 소리를 자동 정규화하거나 제한하지 않는다. 합성 PCM과 최종 AAC를 다시 디코딩한 샘플에 대해 피크·0 dBFS 초과 샘플을 검사한다. 둘 중 하나라도 과부하이면 성공 파일로 등록하지 않고 음량 조정 안내를 표시한다. 샘플 피크 검사이며 true-peak/loudness 인증을 의미하지 않는다. 효과음 없는 기존 출력에 새 음량 제한을 적용하지 않는다.
+Original 48 kHz/1 kHz PCM beep and eight-second silent-audio H.264, flash at source four seconds, cut `[2,4)`. Expectations use independent arithmetic.
 
-음원 검사·디코딩에는 로컬 파일 프로토콜과 WAV/MP3/MOV/FLAC/OGG/AAC 디먹서만 허용한다. 재생목록의 외부 주소를 따라가지 않는다. 옵션 의미는 [FFmpeg 형식 문서](https://www.ffmpeg.org/ffmpeg-formats.html)와 [프로토콜 문서](https://ffmpeg.org/ffmpeg-protocols.html)를 확인했고, 설치된 실행 파일과 위장 WAV/실제 M3U8 입력으로 외부 요청 0건을 검사했다.
-
-## 실행 결과
-
-| 검사 | 결과 | 근거 |
+| Signal | Expected | Observed |
 | --- | --- | --- |
-| `npm test` | 57 PASS | 기존 53개와 효과음 도메인 4개 |
-| `npm run test:effects` | 13 PASS | 위 도메인 4개와 실제 FFmpeg/API 9개 |
-| `npm run test:api` | 12 PASS | 기존 미디어·AI API 회귀 |
-| `npm run test:media` | 8 PASS | 기존 컷·채널·VFR·범위 출력 회귀 |
-| `npm run test:captions` | 15 PASS | 단위 9개와 실제 자막 합성 6개 |
-| 빌드·Mac 패키징 | PASS | Node 24.14.1, Electron 44.2.0, macOS arm64, FFmpeg 8.1.1 |
-| 효과음 E2E | 브라우저·실제 Mac PASS | 재연결·오류·직접 편집·undo/redo·저장·렌더 무효화·실제 MP4 |
-| 화면 확인 | PASS | 데스크톱 편집 창, 390px 브라우저 창, 실제 한글 자막 출력 프레임 |
+| First effect | `[2,2.5)` s | `[2.000021,2.5)` |
+| −6.0206 dB effect | `[3,3.5)`, amplitude ratio 0.5 | `[3.000021,3.5)`, RMS ratio 0.500634 |
+| End-limited effect | `[5.8,6)` | `[5.800021,6)` |
+| Final peak | ≤0 dBFS | −13.8777 dBFS, zero over-range samples |
+| VFR/+5 PTS/44.1 kHz asset | `[2.1,2.5)` | `[2.100021,2.5)` |
+| Stereo overlap/asset offset | 48,000 frames × two-channel oracle | Every sample error <1e−7 |
+| PCM-mix cancel cleanup | <5 s, prior file preserved | About 3.20 ms, retry PASS |
 
-중복을 제외한 자동 검사 수는 **92개**다: 단위 57 + 효과음 통합 9 + 기존 API 12 + 미디어 8 + 자막 합성 6. 두 앱 E2E와 화면 확인은 별도 근거다. 이전 VAD·전사·실제 AI 검증 결과를 이번 테스트 수에 다시 포함하지 않았다.
+Detect AAC edges at absolute amplitude >0.005 with predeclared 1/30 s tolerance. One-sample beep offsets do not establish perceptual accuracy for arbitrary sounds; one short cancellation is not p95.
 
-## 독립 수치 정답과 관측
+Both-app UI output: source start 5 s, offset 0.1 s, duration 0.7 s, −7 dB plus separate muted clip → edited `[3,3.7)`, RMS 0.063141867, peak 0.092515111, checked silence peak zero. Captioned/effect MP4 fully decoded; zero observed external requests/page errors, no new OS block test. Runner now waits for actual React undo values before checking/screenshots; future-version rejection moved from newly supported v5 to v6.
 
-시험 음원은 샘플로 직접 작성한 48kHz·1kHz 비프다. 영상은 8초 H.264와 무음 오디오, 원본 4초 위치의 흰 표식으로 만들었다. 원본 `[2,4)`를 제거하면 표식과 원본 4초 효과음은 편집본 2초에 있어야 한다. 앱의 매핑 함수를 정답 생성에 재사용하지 않았다.
+Synthetic FX01–FX03 passed. FX05 still lacked human listening, every OS/save fault, and long performance; do not mark complete. Real assets, additional codecs, Korean quality/time, authenticated AI and other product gates remained unverified. Large local outputs/logs/screenshots use `test-output/effects-*` and are excluded from Git.
 
-| 항목 | 기대값 | 관측값 |
-| --- | --- | --- |
-| 첫 효과음 | `[2,2.5)`초 | `[2.000021,2.5)`초 |
-| -6.0206 dB 효과음 | `[3,3.5)`초, 진폭 비율 0.5 | `[3.000021,3.5)`초, RMS 비율 0.500634 |
-| 영상 끝의 효과음 | `[5.8,6)`초로 제한 | `[5.800021,6)`초 |
-| 최종 피크 | 0 dBFS 이하 | -13.8777 dBFS, 초과 샘플 0 |
-| VFR·PTS +5·44.1kHz 음원 | 편집본 `[2.1,2.5)`초 | `[2.100021,2.5)`초 |
-| 스테레오 겹침·음원 시작 오프셋 | 48,000프레임×2채널의 독립 PCM | 전 샘플 오차 <1e-7 |
-| 합성 중 취소 후 정리 | 5초 미만, 이전 파일 보존 | 약 3.20ms, 정리 및 재시도 PASS |
+## Evidence and related records
 
-시작·끝은 AAC의 파형 절댓값 0.005를 넘는 첫/마지막 샘플로 측정했고, 허용치는 1/30초로 사전에 고정했다. 비프의 한 샘플 차이를 일반 음원의 인지적 정밀도로 확대 해석하지 않는다. 취소 수치는 짧은 자료의 PCM 합성 단계에 대한 한 번의 측정이며 모든 단계의 p95가 아니다.
-
-UI 시험에서는 원본 5초, 음원 오프셋 0.1초, 길이 0.7초, -7 dB 클립과 별도 음소거 클립을 저장했다. 두 앱의 출력은 편집본 `[3,3.7)`초에 비프를 포함했고 RMS 0.063141867, 피크 0.092515111로 같았다. 검사한 무음 구간 피크는 0이다. 자막과 효과음이 포함된 MP4 전체 디코딩에 성공했다. 브라우저에서 관측한 외부 요청과 페이지 오류는 0건이며 OS 수준 네트워크 차단 시험은 이 효과음 단계에서 실행하지 않았다.
-
-원시 결과는 [효과음 수치](results/2026-09-05-effects-integration.json), [두 앱 흐름](results/2026-09-05-effects-ui.json)에 보관한다. 로컬 재현 산출물은 `test-output/effects-{browser,desktop}.mp4`, `effects-{browser,desktop,mobile}.png`, `effects-export-{browser,desktop}.png`와 `effects-*.log`다. 이 자료는 직접 생성한 시험 신호이며 Git에는 큰 미디어를 넣지 않는다.
-
-처음 UI 시험에서 undo 직후 React의 입력 반영보다 먼저 값을 읽어 실패했다. 실제 값이 바뀔 때까지 기다린 후 확인하도록 시험을 수정했다. 화면 캡처도 같은 대기 뒤 수행했다. 위장 WAV 재생목록은 FFmpeg가 형식 탐색 단계에서 먼저 거부했으므로 허용 목록 오류만 기대한 초기 테스트가 실패했다. 일반 확장자 거부와 M3U8의 명시적 허용 목록 거부를 각각 확인하도록 수정했다. 기존 미래 버전 거부 시험의 v5는 새로 지원되는 버전이므로 v6으로 옮겼다.
-
-## 남은 판정
-
-- FX01~FX03의 위 합성 자료·실제 파일 조건은 통과했다. 다양한 실제 음원·긴 영상의 자원 사용과 추가 코덱 조합은 미검증이다.
-- FX04 AI 효과음 배치/수정 제안은 아직 구현하지 않았다. 수동 편집 완료를 AI 자동 편집 완료로 표시하지 않는다.
-- FX05의 두 앱 출력·자동 동기 검사와 합성 취소/재시도는 확인했다. 실제 사람 청취, 창/OS 저장 대화상자의 모든 장애 조건, 긴 영상 성능은 남아 있다. 따라서 FX05 전체 PASS로 판정하지 않는다.
-- 기존 실제 한국어 발화·전사·작업 시간 평가, 프로젝트 용어 사전, 인증된 AI 작업, ChatGPT 통합의 남은 범위는 그대로다. 전체 제품 목표는 진행 중이다.
+- [2026-09-05-caption-effects-validation-plan.md](../plans/2026-09-05-caption-effects-validation-plan.md)
+- [2026-09-05-ai-effects-results.md](2026-09-05-ai-effects-results.md)
+- [ffmpeg-formats.html](https://www.ffmpeg.org/ffmpeg-formats.html)
+- [ffmpeg-protocols.html](https://ffmpeg.org/ffmpeg-protocols.html)
+- [2026-09-05-effects-integration.json](results/2026-09-05-effects-integration.json)
+- [2026-09-05-effects-ui.json](results/2026-09-05-effects-ui.json)

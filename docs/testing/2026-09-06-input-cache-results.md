@@ -1,63 +1,57 @@
-# 입력 파일 캐시를 관측한 실제 앱 검증
+# Input-file cache measurements for composition
 
-2026-09-06. [계획](../plans/2026-09-06-cache-verification-plan.md)에 따라 파일 선택 직전 원본 사본의 페이지 상주 상태를 관측하는 경로를 합성 러너에 연결했다. 먼저 기존 [10분/60분 장시간 12회](2026-09-06-encoder-two-results.md)를 모두 완료한 뒤 시험 도구를 변경했다.
+2026-09-06. After the completed encoder matrix, a runner-only controller added observed input-file cache conditions. It uses `F_NOCACHE_EXT` and fresh, byte-identical copies. Cold inputs must have zero resident pages immediately before selection; warm inputs must have all pages resident. A failed observation fails the run rather than relabeling it. The default remains uncontrolled.
 
-## 도구와 측정 경계
+Preparation and inspection are timed separately. Product analysis still includes ordinary file selection, upload, decoding, waveform/frame indexing, and draft creation. Hashes are checked after analysis and again after all work, without pre-reading the measured file. Native clock, compiler, tool, and source hashes are recorded. These conditions do not establish OS-wide, storage-device, or internal-copy cache state.
 
-`--input-cache=cold|warm`은 반복마다 같은 바이트·파일명의 새 사본을 준비한다. 검증한 C 도구의 `F_NOCACHE_EXT` 쓰기 후 cold는 상주 0개를 요구한다. warm은 일반 읽기 뒤 전체 페이지 상주를 요구한다. 파일 선택 직전에 다시 관측하며 조건이 다르면 실패로 남긴다. 미지정 시 기존 경로를 사용한다.
+## Controller and short checks
 
-준비·상주 관측은 별도 기록하고, 분석 시간은 기존처럼 실제 파일 선택부터 업로드/가져오기·디코딩·파형·프레임 시간표·최종 컷 준비를 포함한다. 사본 해시는 분석 뒤에만 읽는다. 분석 직후와 출력·조작 후의 바이트 보존도 검사한다. 원시 관측, 네이티브 단조 시각, 도구 호출과 선택 호출의 시각, 컴파일러·C 소스·도구 바이너리 해시를 기록한다.
+Nine controller checks passed using actual files: cold/warm preparation, premature reads, existing-file collisions, forbidden pre-hashing, changed inputs after analysis or all work, and invalid page counts.
 
-이는 선택하는 원본 파일의 상태다. 정상 업로드로 만들어지는 내부 작업 사본·실행 파일·OS 전체·저장장치 캐시가 없다는 뜻이 아니다. 관측은 해당 시점의 증거이며 이후 OS 동작까지 고정하지 않는다.
-
-## 연결 도구의 실제 파일 검사
-
-[Node 검사 기록](results/2026-09-06-file-cache-controller.json)은 9 PASS, 실패·생략 0이다. 실제 네이티브 도구로 cold/warm을 관측하고, 선택 전 잘못된 읽기·기존 경로 충돌·선택 전 해시 검사·분석 직후 및 조작 후 입력 변경·잘못된 상주 수를 거부하는지 확인했다. 이 수는 앱 실행 횟수나 제품 테스트 사례 수와 합산하지 않는다.
-
-## 60초 두 앱 사전 검사
-
-[전체 요약·감사 코드](results/2026-09-06-input-cache-smoke-summary.json)에 기본 경로 회귀 4회와 캐시 조건별 8회를 연결했다. 모두 실제 프로젝트·MP4/SRT 저장, 전체 출력 정답, 조작, 자막 준비 중 취소와 같은 앱의 다음 합성을 완료했다.
-
-| 조건 | 실제 앱 실행 | 선택 직전 상주 페이지 | 최대 합산 RSS GiB |
+| 60-second condition | Runs across both apps | Maximum RSS (GiB) | Resident pages |
 | --- | --- | --- | --- |
-| 기본 경로 | Chrome·Mac 각 2회 | 통제·관측하지 않음 | 1.511 |
-| cold | Chrome·Mac 각 2회 | 매번 0 / 74 | 1.425 |
-| warm | Chrome·Mac 각 2회 | 매번 74 / 74 | 1.593 |
+| Uncontrolled baseline | 4 | 1.511 | Not constrained |
+| Cold | 4 | 1.425 | 0 / 74 |
+| Warm | 4 | 1.593 | 74 / 74 |
 
-원시 실행과 감사는 [기본 경로](results/2026-09-06-input-cache-smoke-uncontrolled.json)·[감사](results/2026-09-06-input-cache-smoke-uncontrolled-audit.json), [cold](results/2026-09-06-input-cache-smoke-cold.json)·[감사](results/2026-09-06-input-cache-smoke-cold-audit.json), [warm](results/2026-09-06-input-cache-smoke-warm.json)·[감사](results/2026-09-06-input-cache-smoke-warm-audit.json)로 구분한다.
+Each input was 1,207,118 bytes with 16 KiB pages. Inspection-to-selection delays were 0.24–0.38 ms cold and 0.33–0.37 ms warm. Preparation took 3.13–158.60 ms cold and 6.07–167.41 ms warm.
 
-사본은 1,207,118바이트의 합성 영상이며 16KiB 페이지 74개다. 상주 관측의 반환부터 선택 호출까지 cold 약 0.24~0.38ms, warm 약 0.33~0.37ms였다. 준비는 cold 약 3.13~158.60ms, warm 약 6.07~167.41ms였다. 작은 파일의 사전 검사이므로 실제 촬영 파일의 I/O 성능이나 캐시로 인한 일반적인 속도 차이로 해석하지 않는다.
+All 12 MP4 outputs matched SHA-256 `c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402`: 1,448 frames, 16 captions/effects, excluded clips, six markers, SRT, and complete projects matched. Full-frame/PCM equivalence is inherited through identical output bytes, not counted as new independent decodes. Highest action p95 was 100.63 ms, maximum RSS sample interval 318.48 ms, and cancellation feedback/readiness at most 1.3 / 308.12 ms. Subsequent runs completed. The preparation driver is excluded from app RSS.
 
-12개 출력의 실제 MP4 SHA-256은 모두 `c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402`다. 전체 1,448프레임·PTS, 16개 자막·16개 효과음과 제외 클립·6개 A/V 표식, SRT 바이트와 원본/프로젝트를 보존했다. 이전에 전체 프레임·float32 PCM을 비교한 동일 바이트의 후보 파일과 연결했으며 같은 파일을 다시 디코딩한 것으로 집계하지 않는다.
+## Browser 60-minute checks
 
-모든 조작군의 32회 표본 p95는 200ms 이내였고 최대 약 100.63ms였다. RSS 최대 표본 간격은 약 318.48ms였다. 취소 표시는 최대 약 1.3ms, 재시도 가능 상태까지 최대 약 308.12ms였으며 기존 성공 파일을 보존했다. 캐시 준비 도구는 시험 드라이버의 작업이고, 앱 및 미디어 자식 프로세스의 RSS 측정 범위와 기존 목표는 유지했다.
+Inputs contained 71,258,047 bytes and 4,350 pages. Every cold repetition had 0 / 4,350 resident pages; every warm repetition had 4,350 / 4,350.
 
-## 60분 브라우저 cold 반복
-
-[실행 기록](results/2026-09-06-input-cache-browser-3600-cold.json)과 [독립 감사](results/2026-09-06-input-cache-browser-3600-cold-audit.json)에서 3회 모두 통과했다. 각 입력 사본은 71,258,047바이트·4,350페이지이며 파일 선택 직전 상주 페이지가 매번 0개였다. 관측 반환부터 선택까지 0.272~0.339ms, 파일 준비는 19.99~208.81ms였다.
-
-| 반복 | 분석 초 | 출력·앱 검증 초 | 별도 정답 검증 초 | 최대 합산 RSS GiB |
+| Condition / run | Analysis (s) | Export (s) | Oracle (s) | RSS (GiB) |
 | --- | --- | --- | --- | --- |
-| 1 | 38.022 | 191.863 | 125.804 | 1.484 |
-| 2 | 37.620 | 190.611 | 129.158 | 1.561 |
-| 3 | 37.846 | 192.477 | 129.156 | 1.590 |
+| Cold / 1 | 38.022 | 191.863 | 125.804 | 1.484 |
+| Cold / 2 | 37.620 | 190.611 | 129.158 | 1.561 |
+| Cold / 3 | 37.846 | 192.477 | 129.156 | 1.590 |
+| Warm / 1 | 37.262 | 188.763 | 124.799 | 1.738 |
+| Warm / 2 | 38.859 | 188.542 | 128.507 | 1.668 |
+| Warm / 3 | 39.462 | 194.895 | 127.893 | 1.542 |
 
-기존 60분 후보와 제품·독립 정답·UI 번들·패키지의 해시가 같았고, 실제 출력 3개의 MP4·SRT와 전체 프로젝트를 비교했다. MP4 SHA-256은 매번 `a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e`였다. 이는 이전에 전체 85,997프레임·PTS·float32 PCM을 확인한 파일과 같은 바이트이며 중복 디코딩 횟수로 집계하지 않는다.
+Cold inspection-to-selection delay was 0.272–0.339 ms, with preparation taking 19.99–208.81 ms. Warm delay was 0.249–0.372 ms, with preparation taking 50.70–210.24 ms. Product and runner identities remained fixed.
 
-조작군마다 32개 표본을 수집했고 모두 p95 200ms 이내였다. RSS 최대 표본 간격은 345.17ms였다. 자막 합성 준비 중 취소 표시는 약 0.8ms, 재시도 가능 상태까지 210.12ms였으며 기존 프로젝트·성공 파일을 보존하고 2회차 출력을 완료했다.
+All six outputs matched the encoder candidate's 85,997-frame output hash `a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e`, project, and SRT/oracle checks. Maximum RSS sample intervals were 345.17 ms cold and 349.69 ms warm. All 32-action groups stayed below 200 ms p95; the warm maximum was 117.85 ms. Cold cancellation feedback/readiness was 0.8 / 210.12 ms; warm was 0.9 / 201.83 ms, with successful retries.
 
-## 60분 브라우저 warm 반복
+Six of 24 planned long composition runs completed; the remaining 18 are `NOT_RUN`. Threshold mode has a separate matrix. These observations do not establish a general cold/warm speed difference, human quality, authenticated AI, OS-level offline behavior, or an entirely cold OS cache.
 
-[실행 기록](results/2026-09-06-input-cache-browser-3600-warm.json)과 [독립 감사](results/2026-09-06-input-cache-browser-3600-warm-audit.json)에서 3회 모두 통과했다. 선택 직전 매번 4,350페이지 전체 상주를 관측했다. 관측 반환부터 선택까지 0.249~0.372ms, 준비 시간은 50.70~210.24ms였다.
+## Evidence and related records
 
-| 반복 | 분석 초 | 출력·앱 검증 초 | 별도 정답 검증 초 | 최대 합산 RSS GiB |
-| --- | --- | --- | --- | --- |
-| 1 | 37.262 | 188.763 | 124.799 | 1.738 |
-| 2 | 38.859 | 188.542 | 128.507 | 1.668 |
-| 3 | 39.462 | 194.895 | 127.893 | 1.542 |
-
-cold 실행과 제품·시험 소스·번들·패키지 해시가 동일했다. 6개 실제 MP4의 바이트와 SRT, 독립 출력 정답이 같고 전체 프로젝트도 보존됐다. warm의 RSS 최대 표본 간격은 349.69ms, 조작군의 최대 p95는 117.85ms였다. 취소 표시 약 0.9ms·재시도 가능 상태까지 201.83ms, 기존 성공 파일 보존과 2회차 성공을 확인했다. 두 조건의 소규모 합성 결과로 일반적인 캐시 속도 향상을 주장하지 않는다.
-
-## 다음 검증
-
-10분/60분 × 두 앱 × cold/warm × 각 3회 중 브라우저 60분의 두 조건 6회를 완료했다. [전체 조건표](results/2026-09-06-input-cache-long-matrix.json)의 나머지 18회는 이 기록 시점에 미실행이다. 기본 무음 편집은 자막 없는 별도 경로이므로 [기본 모드 재검증](../plans/2026-09-06-thousand-cut-performance-plan.md)을 따로 수행한다. 미디어 작업을 순차 진행하고 완료된 실패를 해결하기 전에 다른 조건으로 확대하지 않는다. 실제 한국어 품질·작업 시간·인증 AI·Mac OS 네트워크 차단 및 OS 전체 cold-cache는 별도 미검증이다.
+- [2026-09-06-cache-verification-plan.md](../plans/2026-09-06-cache-verification-plan.md)
+- [2026-09-06-encoder-two-results.md](2026-09-06-encoder-two-results.md)
+- [2026-09-06-file-cache-controller.json](results/2026-09-06-file-cache-controller.json)
+- [2026-09-06-input-cache-smoke-summary.json](results/2026-09-06-input-cache-smoke-summary.json)
+- [2026-09-06-input-cache-smoke-uncontrolled.json](results/2026-09-06-input-cache-smoke-uncontrolled.json)
+- [2026-09-06-input-cache-smoke-uncontrolled-audit.json](results/2026-09-06-input-cache-smoke-uncontrolled-audit.json)
+- [2026-09-06-input-cache-smoke-cold.json](results/2026-09-06-input-cache-smoke-cold.json)
+- [2026-09-06-input-cache-smoke-cold-audit.json](results/2026-09-06-input-cache-smoke-cold-audit.json)
+- [2026-09-06-input-cache-smoke-warm.json](results/2026-09-06-input-cache-smoke-warm.json)
+- [2026-09-06-input-cache-smoke-warm-audit.json](results/2026-09-06-input-cache-smoke-warm-audit.json)
+- [2026-09-06-input-cache-browser-3600-cold.json](results/2026-09-06-input-cache-browser-3600-cold.json)
+- [2026-09-06-input-cache-browser-3600-cold-audit.json](results/2026-09-06-input-cache-browser-3600-cold-audit.json)
+- [2026-09-06-input-cache-browser-3600-warm.json](results/2026-09-06-input-cache-browser-3600-warm.json)
+- [2026-09-06-input-cache-browser-3600-warm-audit.json](results/2026-09-06-input-cache-browser-3600-warm-audit.json)
+- [2026-09-06-input-cache-long-matrix.json](results/2026-09-06-input-cache-long-matrix.json)
+- [2026-09-06-thousand-cut-performance-plan.md](../plans/2026-09-06-thousand-cut-performance-plan.md)

@@ -1,55 +1,25 @@
-# 진행률 갱신 중 편집 화면의 반복 렌더링 줄이기
+# Reusing editor rendering during progress updates
 
-현재 [1,000컷 기준 측정](../testing/2026-09-06-thousand-cut-performance-results.md)에서 Chrome 60분 세 번째 합산 RSS가 2.050GiB였다. 출력 피크의 FFmpeg는 세 번 모두 약 407~409MiB였고 편집 화면 렌더러는 약 405 → 437 → 482MiB로 증가했다. 이 수치만으로 메모리 누수를 확정하지 않는다.
+[Baseline](../testing/2026-09-06-thousand-cut-performance-results.md): Chrome's third 60-minute/1,000-cut run reached 2.050 GiB RSS. FFmpeg stayed around 407–409 MiB while renderer RSS rose roughly 405→437→482 MiB. This alone does not prove a leak.
 
-코드상 `App`의 작업 진행률·재생 시각·설정 갱신이 컷 목록 1,000개와 타임라인의 컷/파형 요소를 매번 다시 구성한다. 컷·선택·편집 가능 여부가 그대로인 갱신에서는 이 정적인 화면 요소를 재사용하는 후보를 검증한다. 기존 기능과 표시 범위는 유지하는 성능 개선이다.
+`App` progress/playback/settings updates rebuild 1,000 cut rows and timeline waveform/cut elements. First compare memoized rows, stable state-dependent handlers, and reusable waveform/tick/cut layers. Retain all elements, scrolling, keyboard/selection behavior, and file format. Virtualization and lower encoder concurrency are separate later options.
 
-## 선택한 접근
+Progress-only updates should reuse static layers while job locks change immediately. Edits/restores/undo/redo/source/project changes must update rows/selection. Source/edited/rendered views and seeks always use current ranges; stale closures fail the contract. Preserve zoom/drag/waveform/playhead and existing save revision/race handling.
 
-1. **정적 화면 재사용**: 컷 목록을 메모화하고 이벤트 핸들러를 실제 의존 상태에 따라 유지한다. 타임라인에서 재생 위치와 무관한 파형·눈금·컷 레이어를 재사용한다. 화면 항목 수, 키보드/선택 동작, 스크롤 방식과 파일 형식은 유지한다. 이번 첫 후보다.
-2. 목록 가상화: DOM 자체를 줄일 수 있지만 키보드 탐색·스크롤·선택 항목 접근 및 기존 전체 목록 계약을 바꿔야 한다. 첫 후보가 충분하지 않으면 별도로 검토한다.
-3. 인코더 병렬 수 추가 축소: 메모리를 줄일 수 있으나 앞선 4스레드 변경보다 출력이 더 느려질 수 있다. UI 반복 갱신이라는 코드상 비용을 먼저 검토한다.
+Finish/audit the 12-run baseline before modifying the app or overlapping media jobs. Apply candidate, run unit/build and both-app behavior/save/job-race regressions, then repeat the failing Chrome 60-minute three-run condition with identical runner/fixture. Compare analysis, complete project, output length/markers, and unchanged encoder/quality. Only expand to remaining conditions after meaningful improvement and functional passes; keep 2 GiB and existing time/UI/cancel limits.
 
-## 상태와 동작 계약
+## Candidate outcomes and diagnosis
 
-- 진행률만 바뀌면 목록/정적 타임라인은 재사용하고, 작업 중 버튼 잠금과 해제는 즉시 반영한다.
-- 컷 편집·복원·실행 취소/다시 실행·원본 교체·프로젝트 열기에서는 새 컷과 선택 상태가 즉시 반영된다.
-- 원본/편집본/렌더 결과 전환, 컷 복원 후 선택·이동은 항상 현재 유지 구간과 시간축을 사용한다. 캐시한 핸들러가 옛 원본·옛 컷을 참조하면 실패다.
-- 타임라인 확대/축소·드래그·파형·선택 이동 및 재생 위치 표시는 기존 동작을 유지한다.
-- 저장 시점·수정 번호·프로젝트 경합 방지는 변경하지 않는다. 필요한 콜백의 참조만 안정화하고 최신 값은 명시한 의존성 또는 기존 ref를 통해 읽는다.
+Candidate 1 passed 54 functional runs but failed repetition three at 2.172 GiB. Analysis/projects and all three output bytes matched baseline. Candidate 2 reused individual cut rows and separated waveform backgrounds, retaining all buttons and Space/Enter; it also failed repetition three at 2.145 GiB. The remaining nine long runs were not started. Preserve [results](../testing/2026-09-06-editor-render-memory-results.md).
 
-## 검증 순서
+After failure, compare browser/renderer/GPU/server/media children at peak, then separately instrument DOM/listeners/JS heap around import/analyze/export/save/interactions. Stable heap does not turn failing RSS into a pass. Diagnostic overhead is not part of formal runs. Do not force GC, restart between repetitions, lower quality, or add speculative caches.
 
-1. 현재 진행 중인 기준 측정 12회를 종료까지 관측하고 원시 파일·소스/패키지 해시를 감사한다. 기준 앱 소스·빌드·패키지를 그 전에 바꾸거나 미디어 시험을 겹쳐 실행하지 않는다.
-2. 후보를 적용하고 타입 검사·빌드·기존 단위 테스트를 실행한다. 현재 원본/컷의 선택·복원·렌더 시각·버튼 잠금을 실제 두 앱에서 확인한다. 일반 편집과 저장/작업 경합의 영향 범위를 회귀 검사한다.
-3. 동일한 시험 코드·fixture를 이용해 실패 조건인 Chrome 60분 3회부터 재측정한다. 분석·컷·저장 프로젝트·출력 길이와 표식이 기준과 일치해야 한다. 인코더·음량 계산·미디어 품질 설정은 그대로 둔다.
-4. 의미 있는 메모리 감소와 기능 회귀 통과 후 나머지 10분·60분 두 앱 조건을 확인한다. 메모리 목표 2GiB와 기존 시간/조작/취소 기준을 사후 변경하지 않는다.
+An initial diagnostic after 288 actions found stable DOM and non-monotonic used heap but high renderer RSS. Investigate playback, automation lookup, and repeated import/export resource lifetime without claiming a cause.
 
-실제 한국어 품질·cold-cache·긴 자막/효과음 동시 합성·인증된 AI 연결의 미검증 상태는 이 성능 변경으로 통과 처리하지 않는다.
+## Selector-overhead comparison
 
-후보 1 결과: 기능 회귀 54개 실행은 통과했으나 Chrome 60분 3회째 RSS가 2.172GiB로 실패했다. 3회 출력 바이트와 분석/프로젝트는 기준과 일치했다. [결과 기록](../testing/2026-09-06-editor-render-memory-results.md)을 보존한다. 다음 후보는 같은 접근 안에서 개별 컷 행을 재사용하고 파형 배경을 컷 표식에서 분리한다. 기존 전체 목록·스크롤·접근성 버튼을 유지하며 키보드 Space/Enter 복원/제거도 실제 두 앱에서 확인한다.
+Keep source/build/media, 288 actions, real clicks/input, and state assertions; change only `getByRole` versus CSS lookup. Initial CSS final renderer RSS was about 396 MiB versus 543 MiB in a separate role run. Reproduce with the same diagnostic revision before attributing causation.
 
-## 두 번째 후보 이후의 판정
+A formal optional CSS mode must target the same buttons by actual aria-label and inputs by type/name, retain Playwright interactions, and never invoke internal app functions. Keep 10/60 minutes, both apps, three repetitions, 1,000 cuts, 96 actions/run, analysis/export/save/cancel and independent decoding/sync. Preserve source/settings/quality/full-state comparisons and all targets. Report raw union RSS without subtracting estimated automation cost, force-GC, or extra restarts. Record selector mode and runner hash, verify identical product/package, and review runner-only changes. A CSS pass does not erase role-based failures or constitute a product memory fix; accessibility/name checks remain separately evidenced.
 
-두 번째 후보의 Chrome 60분 3회가 모두 통과하면 동일한 소스·번들·패키지로 10분 두 앱 6회와 Mac 60분 3회를 이어서 검사한다. 처음 3회의 통과를 전체 12회 완료로 표시하지 않는다. 각 출력과 저장 상태는 기준 실행의 실제 파일과 비교한다.
-
-다시 메모리 기준을 초과하면 나머지 9회를 시작하지 않고 원인을 측정한다. UI 재사용만으로 해결된다고 가정해 캐시를 더 추가하지 않는다.
-
-1. 실패한 후보 소스와 원시 RSS를 보존하고, 피크 시점의 브라우저·렌더러·GPU·서버·미디어 자식 프로세스별 사용량을 비교한다.
-2. 별도 진단 실행에서 가져오기·분석·출력·저장·UI 조작 전후의 DOM 노드 수, 이벤트 리스너 수, JavaScript 힙 사용량을 기록한다. 같은 앱에서 반복하며 어느 단계가 증가를 남기는지 확인한다.
-3. 힙·DOM 보유량과 프로세스 RSS를 구분한다. 힙이 안정적이어도 RSS 목표 실패를 통과로 바꾸지 않는다. 스냅샷 등 진단 도구가 추가한 비용은 정식 성능 결과에 합산하지 않는다.
-4. 원인이 좁혀진 뒤 해당 자원 수명 또는 반복 할당을 수정하고, 영향을 받는 동작과 정식 3회 조건을 재검사한다. 강제 GC, 반복마다 앱 재시작, 화질 저하로 기존 반복 조건을 우회하지 않는다.
-
-실행 현황: 두 번째 후보도 Chrome 3회째 2.145GiB로 실패해 남은 9회는 시작하지 않았다. 첫 별도 진단에서 288회 조작 후 DOM 수는 일정했고 사용 힙은 단조 증가하지 않았지만 렌더러 RSS는 높게 유지됐다. [측정 근거](../testing/2026-09-06-editor-render-memory-results.md)에 이를 기록했다. 다음은 미디어 재생·자동화 조작의 비용과 반복 가져오기/출력의 자원 수명을 구분하는 단계이며, 원인은 아직 확정하지 않았다.
-
-## 자동화 탐색 비용을 분리하는 비교
-
-추가 진단에서는 앱 소스·빌드·영상·288개 조작·실제 클릭/입력과 상태 검사를 유지하고 요소 탐색만 `getByRole`과 CSS 선택자로 구분한다. 첫 CSS 실행의 마지막 렌더러 RSS는 약 396MiB였으며 앞선 역할 기반 실행은 약 543MiB였다. 서로 다른 실행의 값이므로 한 번의 차이를 곧바로 제품의 메모리 절감으로 해석하지 않는다. 같은 버전의 진단 코드로 역할 기반 조건을 다시 확인한다.
-
-차이가 재현되면 정식 러너에 선택 가능한 CSS 탐색 모드를 추가해 앱 동작과 반복적인 전체 DOM 탐색의 비용을 구분한다. 기존 역할 기반 모드는 유지한다. 실행 전에 다음 계약을 고정한다.
-
-- CSS 모드는 반복 UI 조작의 대상 찾기만 바꾼다. 버튼의 실제 `aria-label`, 숫자 입력 타입과 이름으로 같은 대상을 선택하고 Playwright의 실제 클릭·입력을 사용한다. 앱 내부 함수를 직접 호출하지 않는다.
-- 10분/60분, 두 앱, 3회 반복, 1,000컷, 96개 조작, 분석/출력/저장/취소와 독립 디코딩·싱크 검사는 유지한다. 원본·설정·출력 품질·전체 상태 비교도 동일하다.
-- 소요 시간·합산 RSS·응답·취소의 합격 기준은 변경하지 않는다. 추정한 자동화 비용을 RSS에서 빼지 않고 각 실행의 실제 최대 합산값을 보고한다. 강제 GC나 실행 사이 앱 재시작을 추가하지 않는다.
-- 결과에 선택자 모드와 러너 해시를 기록한다. 변경 전 결과와 비교할 때 앱·미디어 처리 소스 및 패키지 해시가 같은지 확인하고, 러너의 달라진 부분은 별도로 검토한다.
-- CSS 조건이 통과하더라도 기존 역할 기반 조건의 실패를 덮어쓰거나 제품 메모리 수정으로 발표하지 않는다. 측정 방법의 차이로 표시하고, 기능·접근성 이름 검사는 기존 역할 기반 E2E 결과와 구분한다.
+Real Korean quality, cold-cache, long caption/effect composition, and authenticated AI remain unverified by this change.

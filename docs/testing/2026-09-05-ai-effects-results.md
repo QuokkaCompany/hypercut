@@ -1,71 +1,48 @@
-# AI 효과음 제안 실행 기록
+# AI sound-effect proposal results
 
-후속 프로젝트 용어 저장·재사용과 v6 이전은 [용어 실행 기록](2026-09-05-project-glossary-results.md)을 참고한다. 아래 버전·검사 수는 이 기록의 실행 시점 기준이다.
+Executed 2026-09-05 on changes after `6c8026b`. Implements the AI effects contract; zero authenticated model calls. Versions/counts describe this historical run. Later glossary/v6 work is separate.
 
-실행일: 2026-09-05. 기준 커밋 `6c8026b` 이후 이 문서와 함께 추가한 작업 트리에서 [AI 효과음 계약](../plans/2026-09-05-ai-effects-plan.md)을 구현·검증했다. 실제 인증된 모델 호출은 실행하지 않았다.
+## Implemented behavior
 
-## 제품 동작과 데이터 범위
+Users explicitly select up to eight assets, 32 editable/deletable clips, and optionally 20 captions/4,000 characters (selection pages of 20). Send aliases, descriptions, duration, source placement/asset offset/length/gain/mute, selected caption text/timing, video length, and at most 2,000 kept intervals. Reject excessive scope rather than truncating it; exclude filenames, paths, hashes, and media. Models cannot hear assets and rely on descriptions.
 
-효과음 창의 **AI 효과음 제안**에서 사용할 음원, 수정/삭제를 허용할 기존 클립, 참고할 자막을 선택한다. 모든 선택은 비어 있는 상태로 시작한다. 음원은 최대 8개, 기존 클립 32개, 참고 자막 20개·4,000자이며 자막을 보내지 않아도 시각을 직접 지시할 수 있다. 참고 자막 선택 목록은 20개씩 넘겨 본다.
+Existing Ollama/OpenAI/Anthropic/Claude Code/manual JSON paths share validation. Accept at most 20 add/update/delete proposals, checking request ID, selected targets, before values, numeric ranges, exact fields, and duplicates. Invalid entries reject the complete response. New IDs derive from request UUID/reserved aliases. Comparison shows source and estimated edited timing, audible duration, gain/mute/deletion, including removed starts and end truncation; encoded preview establishes final frame-aligned behavior.
 
-선택한 음원은 `asset-1` 같은 별칭, 사용자가 입력한 설명, 길이로 전달한다. 기존 클립과 자막도 별칭을 사용한다. 클립의 원본 배치 시각·음원 내부 시작·길이·음량·음소거, 선택한 자막 문구·원본 시각, 영상 길이·전체 유지 구간을 전달한다. 전체 유지 구간은 최대 2,000개이며 초과 시 요청 범위를 설명하고 거부한다. 입력을 조용히 잘라서 보내지 않는다. 파일명·경로·해시·실제 영상/음원은 자동 첨부하지 않는다.
+All proposals start unselected. Selected changes form one undo step; unselected deletions/out-of-scope clips survive. Revalidate local media/track/cut/effect/caption identity immediately before apply, including different sources with identical values. A changed background edit closes/cancels stale AI state and resets selections. Reuse project v5 and actual rendering. One active AI request, pre-cancel/deduplication/old-cancel isolation/disconnect protection remain; no retry/fallback.
 
-기존 선택형 연결을 재사용한다. Ollama, OpenAI API, Claude API, Claude Code 또는 기존 채팅에 복사한 JSON 응답을 가져올 수 있다. AI는 음원을 듣지 않으므로 소리의 내용은 사용자가 적은 설명에 의존한다. 요청 준비나 연결 설정 저장을 실제 모델 응답 확인으로 표시하지 않는다.
+## Checks and actual output
 
-응답은 추가·수정·삭제 제안 최대 20개다. 요청 ID, 선택한 음원/클립, before 값, 숫자 범위, 필수/추가 필드, 중복 타깃을 검증한다. 새 클립 ID는 요청 UUID와 예약한 별칭으로 결정한다. 잘못된 항목을 일부 적용하지 않으며 응답 전체를 거부한다.
+| Command | Passes |
+| --- | ---: |
+| `npm test` | 65 |
+| `npm run test:ai-effects` | 12 (eight domain/provider + four API/mock CLI) |
+| `npm run test:correction` | 11 |
+| `npm run test:api` | 12 |
+| `npm run test:effects` | 13 |
+| `npm run test:media` | 8 |
+| `npm run test:captions` | 15 |
 
-제안 비교 화면은 현재/제안의 원본 시각, 편집본 예상 시각·재생 길이, 음원 시작, 음량, 음소거/삭제를 보여 준다. 시작점이 잘려 출력되지 않는 경우와 영상 끝에서 짧아지는 경우도 로컬 매핑 결과로 표시한다. 렌더 전 표시이며 최종 프레임 정렬과 음원 디코딩 결과는 정확한 미리보기에서 확인하도록 안내한다. 특히 외부에서 편집해 프레임에 맞지 않는 컷이 들어간 프로젝트의 경계는 렌더에서 달라질 수 있다. 제안은 모두 미선택으로 시작하며 선택한 항목만 하나의 실행 취소 단위로 적용한다. 선택하지 않은 삭제 제안과 선택 범위 밖의 클립은 유지한다.
+108 unique unit/API/media checks; UI/build/package counted separately. Node 24.14.1, Electron 44.2.0, macOS arm64. Actual mock CLI subprocesses verified model/schema/stdin/no tools/no MCP/no session persistence/usage display, not user authentication.
 
-영상 식별자·오디오 트랙·컷·전체 효과음·자막의 로컬 스냅샷을 적용 직전에 비교한다. 다른 영상이나 트랙이 우연히 같은 시각/클립 값을 갖더라도 이전 제안을 적용하지 않는다. 이 식별 정보는 모델에 보내지 않는다. 요청 대기 중 편집 내용이 바뀌면 기존 AI 화면을 닫고 요청을 취소하며, 현재 상태에서 보낼 항목을 다시 선택하게 한다. 이전 선택 정보로 새 요청을 보내지 않는다. 적용 후 기존 프로젝트 v5와 실제 MP4 합성 경로를 사용한다.
+Both browser and package passed new AI-effects UI/output plus correction, manual-effects, and Claude-settings regressions. Fixture: eight-second H.264, original 1 kHz/800 Hz beeps, cut `[2,4)`, two captions/assets, three existing clips. Select only first asset, first two clips, first caption. Reject 99-second placement and an unselected asset. Apply first-clip update plus addition, leave second-clip deletion unselected: undo restores three clips; redo gives four. Stale/background-change/cancel-retry checks preserved state; intercepted cancellation does not establish actual model cancellation.
 
-설정·자막 교정·효과음 요청은 하나의 활성 작업을 공유한다. 요청 전 취소, 요청 ID 중복 방지, 이전 취소가 새 작업을 중단하지 않는 조건, 연결 해제 후 늦은 응답 폐기를 유지한다. 자동 재시도·공급자 전환을 추가하지 않았다.
+| Output | Expected edited interval | RMS, identical in both apps |
+| --- | --- | ---: |
+| Updated first clip, −6 dB | `[3,3.4)` | 0.070802721 |
+| Unselected deletion, −12 dB | `[4,4.5)` | 0.035504467 |
+| Added clip, −12 dB | `[4.5,4.75)` | 0.035499683 |
+| Unselected other asset, −12 dB | `[5,5.5)` | 0.035494882 |
+| Checked silence | `[2,2.8)` | 0 |
 
-## 자동 검사
+Interior decoded PCM, domain timing expectations, and existing effect boundary tests supported these results. Full decode and viewed Korean frames passed; zero page errors/observed external browser requests. No new OS network-block test. The initial PCM checker used fractional `4.1 × 48000` as a byte index; rounding sample indices fixed the runner without changing product timing/criteria.
 
-| 실행 | 결과 | 범위 |
-| --- | --- | --- |
-| `npm test` | 65 PASS | 기존 57개 + AI 효과음 도메인/HTTP 공급자 모의 계약 8개 |
-| `npm run test:ai-effects` | 12 PASS | 위 8개 + 로컬 API/실제 모의 CLI 프로세스 4개 |
-| `npm run test:correction` | 11 PASS | 교정 단위 7개 + 교정 API/모의 CLI 4개 |
-| `npm run test:api` | 12 PASS | 기존 미디어·AI API 회귀 |
-| `npm run test:effects` | 13 PASS | 효과음 단위 4개 + 실제 미디어/API 9개 |
-| `npm run test:media` | 8 PASS | 기존 컷·트랙·범위·실제 출력 회귀 |
-| `npm run test:captions` | 15 PASS | 자막 단위 9개 + 실제 프레임/합성 6개 |
-| 빌드·Mac 패키징 | PASS | Node 24.14.1, Electron 44.2.0, macOS arm64 |
+## Limits
 
-중복을 제외하면 **108개**다: 단위 65 + AI 효과음 API 4 + 교정 API 4 + 기존 API 12 + 효과음 통합 9 + 미디어 8 + 자막 합성 6. 아래 UI 시나리오는 별도로 기록한다. 실제 VAD/STT 품질이나 인증된 모델 결과를 이번 통과 수에 포함하지 않는다.
+FX04 contracts passed these conditions, not real model placement or perceptual sound quality. Human Korean quality, clipped syllables, editing-time savings, listening, long VAD/STT/composition, remaining OS/save conditions, authenticated AI and direct ChatGPT integration were outstanding at this record. Local artifacts: `test-output/ai-effects-*.log`, `ai-effects-{browser,desktop}.mp4`, UI/mobile/export PNGs. Large generated media is excluded from Git.
 
-모의 Claude 실행 파일은 실제 자식 프로세스로 실행했다. 선택 모델, JSON 스키마, stdin 요청, 도구 없음/MCP 없음/세션 저장 없음, 요청 사용량 표시를 확인했다. 실제 사용자 인증과 모델을 대신한 시험용 실행 파일이며 외부 모델을 호출하지 않는다. 별도 공급자 오류·취소·범위 위반 시험에서 기존 편집을 성공 응답으로 덮어쓰지 않았다.
+## Evidence and related records
 
-## 두 앱의 실제 출력
-
-| 시나리오 | 브라우저 | Mac 패키지 |
-| --- | --- | --- |
-| AI 효과음 입력 선택·비교·부분 적용·undo/redo·저장·MP4 | PASS | PASS |
-| 기존 자막 AI 교정·SRT·프로젝트·스타일 MP4 | PASS | PASS |
-| 기존 수동 효과음 편집·재연결·원본 보호·MP4 | PASS | PASS |
-| 기존 Claude Code 설정 제안·취소·실패 후 로컬 출력 | PASS | PASS |
-
-새 효과음 시험은 실제 8초 H.264 영상과 직접 만든 1kHz/800Hz 비프를 사용했다. `[2,4)` 컷, 자막 2개, 음원 2개, 기존 클립 3개를 로드했다. AI에는 첫 음원·첫 두 클립·첫 자막만 선택해 보냈다. 파일명·해시·선택하지 않은 자막이 요청에 없는지 확인했다. 시각 99초와 미선택 음원 제안은 거부됐다.
-
-모의 제안 중 첫 클립 수정과 새 클립 추가만 선택했다. 두 번째 클립 삭제 제안은 적용하지 않았다. 한 번 실행 취소하면 원래 세 클립으로 돌아가고 다시 실행하면 네 클립이 됐다. 과거 요청 응답은 새 선택 화면에서 거부됐으며 로컬 요청을 중단한 뒤 새로운 ID로 다시 요청할 수 있었다. 별도 요청을 대기시킨 상태에서 배경 컷 복원 이벤트를 발생시켜, 오래된 AI 화면이 사라지고 선택이 초기화되는지 확인했다. 늦은 응답은 편집을 바꾸지 않았고 현재 범위로 재선택 후 요청할 수 있었다. 취소 UI 응답은 이 시험의 로컬 요청을 가로챈 모의 응답이며 실제 모델 취소 성공을 뜻하지 않는다.
-
-| 출력 항목 | 편집본의 기대 범위 | 측정 RMS (두 앱 동일) |
-| --- | --- | --- |
-| 수정한 첫 클립 (-6 dB) | `[3,3.4)`초 | 0.070802721 |
-| 삭제 제안을 선택하지 않은 두 번째 클립 (-12 dB) | `[4,4.5)`초 | 0.035504467 |
-| 새로 추가한 클립 (-12 dB) | `[4.5,4.75)`초 | 0.035499683 |
-| 선택 범위 밖의 다른 음원 클립 (-12 dB) | `[5,5.5)`초 | 0.035494882 |
-| 검사한 무음 구간 | `[2,2.8)`초 | 0 |
-
-기대 범위 안의 안정 구간에서 디코딩한 PCM의 RMS를 검사했다. 원본 시각과 편집본 시각의 정확한 매핑은 도메인 고정 정답, 렌더링 경계는 기존 효과음 통합 검사와 함께 확인했다. 위 RMS 수치만으로 모든 실제 음원의 인지적 동기나 음질을 입증하지 않는다. 자막은 원문/시각을 그대로 저장했고 실제 MP4의 한글 프레임을 열어 확인했다. 두 앱 모두 결과 전체 디코딩, 페이지 오류 0건, 관측한 외부 브라우저 요청 0건이었다. 이 단계에서 OS 수준 네트워크 차단 시험은 새로 실행하지 않았다.
-
-처음 UI 시험의 PCM 측정 코드가 `4.1 × 48000`의 소수점 표현을 바이트 인덱스로 사용해 실패했다. 시작·끝을 정수 샘플로 반올림한 뒤 재실행했으며, 제품의 오디오 시각이나 합격 기준을 바꿔 통과시킨 것이 아니다. 적용 시 영상/트랙 식별자를 로컬 스냅샷에 추가해 값이 같은 다른 원본도 구별하도록 보강했다.
-
-원시 UI 기록은 [AI 효과음](results/2026-09-05-ai-effects-ui.json), [세 가지 기존 흐름 회귀](results/2026-09-05-ai-effects-ui-regressions.json)에 있다. 로컬 `test-output/ai-effects-*.log`, `ai-effects-{browser,desktop}.mp4`, `ai-effects-{browser,desktop,mobile}.png`, `ai-effects-export-{browser,desktop}.png`로 재현 결과를 확인할 수 있다. 큰 시험 미디어는 Git에서 제외했다.
-
-## 남은 검증
-
-FX04의 선택 범위·제안 검증·취소·적용·저장·출력 계약은 위 조건에서 통과했다. 실제 연결한 모델의 자연스러운 효과음 배치·편집 제안 품질은 아직 측정하지 않았다. 실제 음원을 듣고 적합성을 판정하는 기능을 구현한 것이 아니다.
-
-기존 실제 한국어 발화/전사·잘린 음절·시간 절감 평가, 사람 청취 품질, 긴 VAD/STT/자막/효과음 프로젝트 성능, 남은 저장/OS 장애 조건, 프로젝트 용어 사전, 인증된 AI 작업과 ChatGPT의 직접 통합은 여전히 미완료다. 전체 목표는 진행 중이다.
+- [2026-09-05-project-glossary-results.md](2026-09-05-project-glossary-results.md)
+- [2026-09-05-ai-effects-plan.md](../plans/2026-09-05-ai-effects-plan.md)
+- [2026-09-05-ai-effects-ui.json](results/2026-09-05-ai-effects-ui.json)
+- [2026-09-05-ai-effects-ui-regressions.json](results/2026-09-05-ai-effects-ui-regressions.json)

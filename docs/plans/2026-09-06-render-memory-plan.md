@@ -1,13 +1,11 @@
-# 출력 메모리 개선과 회귀 검증
+# Render memory improvement and regression plan
 
-[기준 측정](../testing/2026-09-06-vad-performance-results.md)에서 브라우저 합산 RSS가 10분·60분 각 3회 모두 2GiB를 초과했다. 피크는 출력 단계였다. 출력 인코더의 병렬 처리 수를 논리 CPU 수와 4 중 작은 값으로 제한하는 후보를 비교한다. 설정·컷·코덱·해상도·CRF·인코딩 프리셋은 유지하며 실제 시간·메모리·출력 정확성으로 판정한다.
+[Baseline](../testing/2026-09-06-vad-performance-results.md): all three browser runs at both 10 and 60 minutes exceeded 2 GiB, peaking during export. Compare an encoder limit of min(logical CPUs, 4), preserving settings, cuts, codecs, resolution, CRF, and preset.
 
-1. 현재 앱·패키지와 기준 측정 해시를 확인하고 인코더 스레드 상한만 변경한다.
-2. 새 패키지를 만든 뒤 10분 브라우저 1회로 메모리 개선 여부를 우선 확인한다. 이 단일 측정을 3회 성능 통과로 세지 않는다.
-3. 실제 CFR/VFR·PTS·선택 트랙·짧은/부분 출력·자막 스타일·회전/SAR·효과음 배치/음량/취소의 기존 통합 검사와 두 앱 일반 편집 흐름을 실행한다. 결과 길이·표식·프레임·PCM 정답·전체 디코딩·원본 보존을 확인한다.
-4. 의미 있는 메모리 감소와 회귀 통과 후 같은 VAD 시험 코드와 자료로 10분·60분 × 두 앱 × 3회, 취소·재시도 4조건을 재측정한다. 작업 시간과 앱 전체 합산 RSS·UI 조작을 기존 기준과 비교한다.
-5. 원시 실패 수치를 보존하고, 원본·모델·시험 코드·앱/패키지 해시를 대조한다. 반복 또는 긴 영상에서 계속 초과하면 통과로 표시하지 않고 다음 원인을 조사한다.
+1. Identify current app/package and baseline hashes; change only the encoder thread cap.
+2. Package and run one 10-minute browser check for direction, not a three-run performance pass.
+3. Regress real CFR/VFR, PTS, selected tracks, short/partial output, caption styles, rotation/SAR, effect placement/gain/cancel, and normal editing in both apps. Check duration/markers/frames/independent PCM/full decode/source preservation.
+4. After meaningful improvement and regression passes, rerun 10/60 minutes × both apps × three runs and four cancel/retry conditions with the same VAD runner/fixtures. Compare time, union RSS, and UI response.
+5. Preserve raw failures and compare source/model/runner/app/package hashes. Continued overages remain failures requiring investigation.
 
-입력은 합성 한국어와 단순 1080p 영상이다. 실제 영상의 인코딩 시간/화질, 모든 CPU/플랫폼, cold-cache, 긴 영상 자막·효과음 동시 합성 및 1,000컷 최신 측정을 대신하지 않는다. 인코더 스레드 제한은 비트스트림 바이트 동일성을 보장하는 변경으로 주장하지 않는다.
-
-완료 기록: [12회 재측정과 정확성·회귀 결과](../testing/2026-09-06-render-memory-results.md). 해당 조건의 메모리 실패를 해소했고 출력 시간 증가도 기록했다.
+Synthetic Korean/simple 1080p input does not represent all recordings, CPUs/platforms, cold caches, long caption/effect composition, or current 1,000-cut performance. Thread limits do not guarantee byte-identical bitstreams. [Completed rerun](../testing/2026-09-06-render-memory-results.md) met the same 12-run targets and records increased export time.

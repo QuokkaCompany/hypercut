@@ -1,64 +1,46 @@
-# 최신 앱의 임계값 편집·1,000컷 성능 검증
+# Threshold-only editing and 1,000-cut performance
 
-[원래 P01/P02 기준](2026-09-05-test-plan.md)에 따라 인코더 메모리 개선 후의 기본 음량 임계값 모드를 측정한다. 2026-09-06 작성. 앱은 현재 `3bfd26d`의 브라우저 빌드와 Mac 패키지를 사용한다. 별도 제품 동작 변경 없이 시험 도구와 증거만 추가한다.
+Created 2026-09-06 under [P01/P02](2026-09-05-test-plan.md). Initial target: browser/Mac at `3bfd26d`, adding runner/evidence without product changes after encoder-memory improvements.
 
-- 조건: 기존과 같은 단순 1080p30 H.264/AAC 48kHz 합성 입력, 10분 166컷·60분 1,000컷, Chrome/Mac 각각 3회. 말소리 보호는 끈다.
-- 분석: 파일 선택부터 업로드/검사/해시/프레임 시간표/음량/컷 표시 전체. 입력 길이 20% 이내.
-- 출력: 버튼 클릭부터 전체 디코딩 검증 및 저장 버튼 표시까지. 입력 길이 이내. 사용자가 고른 경로로 저장하는 시간은 별도다.
-- 메모리: 앱과 자식 프로세스의 동시 합산 RSS를 250ms마다 관측. 드라이버 제외, 분석·출력·파일 저장·조작 각각 기록. 최대 2GiB 이하. 샘플 오류는 실패다.
-- 조작: 매 실행 복원/실행 취소·설정·재생/정지 각각 32회. 각 묶음 p95 ≤200ms. 자동화 오버헤드와 두 번의 화면 갱신을 포함한다.
-- 취소: 조건별 최초 분석 완료 후 재분석 중 취소, 문구 DOM 갱신 ≤300ms, 종료 및 재시도 가능 ≤5초. 전체 프로젝트 보존을 비교하고 다음 반복의 완료로 재시도를 확인한다.
-- 정확성: 컷 개수·반복 시 경계·저장 프로젝트·원본 해시·출력 길이·전체 디코딩을 확인한다. 저장한 출력의 처음/중간/끝에서 원본 플래시·오디오 표식을 독립적으로 검출하고 실제 제거 구간의 단순 누적 합으로 계산한 위치와 대조한다. 허용 오차는 1/30초이며 A/V 추가 오차와 처음 대비 끝 변화도 검사한다. 이 fixture의 1,000개에는 마지막 무음 제거가 포함되어 마지막 표식은 999개 제거 뒤에 있다.
-- 동일 앱·패키지·fixture 해시와 환경을 기록한다. 결과 폴더는 덮어쓰지 않으며 실패를 보존한다. 3회 미디어 측정은 중앙값/최대만 보고한다.
+Use identical simple 1080p30 H.264/AAC 48 kHz: 10 minutes/166 cuts and 60 minutes/1,000 cuts, VAD off, three repetitions per app. Measure selection→upload/inspection/hash/frame index/analysis/editable cuts ≤20% of duration; export click→full decode/save readiness ≤duration. Final chosen-path save time is separate.
 
-먼저 짧은 60초 자료로 두 앱의 도구 경로를 점검하고, 성공하면 10분·60분 12회 조건을 순차 실행한다. 첫 실행은 새 앱 프로세스, 이후는 같은 앱이다. OS 캐시는 비우지 않는다. 합성 저복잡도 자료이며 실제 녹음 품질, cold-cache, 긴 영상의 자막·효과음 동시 합성, 전체 G3 완료를 증명하지 않는다.
+Sample simultaneous app/child union RSS every 250 ms across analysis/export/file save/actions, excluding driver, target ≤2 GiB; sample errors fail. Perform 32 restore/undo, 32 settings, 32 play/pause operations; each group's p95 ≤200 ms including automation and two frame updates. After first analysis, cancel reanalysis: visible ≤300 ms, cleaned up/retry-ready ≤5 s, full project preserved, next repetition completes retry.
 
-[최종 실행 기록](../testing/2026-09-06-thousand-cut-performance-results.md): 12회를 완료했고 60분 브라우저 세 번째 RSS가 2GiB를 초과했다. 전체 측정 통과로 표시하지 않으며 나머지 11회는 측정 목표를 충족했다.
+Check cut counts/repeated boundaries/full projects/source hashes/output duration/full decode. Independently detect first/middle/last flash/audio markers against simple cumulative removed-duration arithmetic. Allow 1/30 s and check additional A/V error and first-to-last drift. The last of 1,000 cuts removes trailing silence, so the last marker follows 999 deletions.
 
-## 현재 후보의 재검증
+Freeze app/package/fixture/environment hashes, never overwrite result directories, retain failures, and report median/max from three media runs. Smoke-test both apps at 60 seconds, then run 12 long conditions sequentially, fresh app first then reused. OS caches are not purged. Synthetic simple material does not establish human quality, cold-cache, long caption/effect composition, or all G3.
 
-2026-09-06 후속. 이후 인코더 동시 처리 2개 후보가 자막·효과음 합성 12회를 통과했지만, 기본 무음 모드는 자막 입력이 없는 별도 미디어 경로다. 합성 시험을 이 모드의 성능 통과로 대체하지 않는다. 기존 기본 모드 실패를 보존하고 같은 현재 앱·패키지에서 다시 측정한다.
+[Initial outcome](../testing/2026-09-06-thousand-cut-performance-results.md): 12 completed; third browser 60-minute RSS failed, other 11 met targets. Do not report the complete matrix as passing.
 
-- 기존 `threshold-benchmark.mjs`에 이미 검증한 입력 파일 캐시 컨트롤러를 연결한다. `--input-cache=uncontrolled|cold|warm`을 제공하며 기본값은 기존 경로다. 제품 코드·품질 설정·출력 정답은 바꾸지 않는다.
-- cold/warm은 매 반복 새 사본을 준비하고 실제 파일 선택 직전 상주 페이지를 다시 관측한다. 준비는 분석 시간 밖에 기록하고 정상 파일 선택·가져오기·분석 전체를 측정한다. 선택 전 해시 읽기는 하지 않는다. 분석 완료와 저장·조작 완료 뒤 사본 해시를 검사한다.
-- 실행한 러너·서버 소스를 보존하고 현재 브라우저 번들·미디어 소스와 Mac 패키지 내부 파일의 해시 일치를 확인한다. 각 실행의 캐시 관측·리소스 원본·실제 출력·프로젝트를 함께 남긴다.
-- 기존 분석·출력·MP4 저장·조작 단계에 프로젝트 저장과 취소 단계의 RSS 원본도 추가한다. 후자는 별도 단계로 기록하며 같은 2GiB 기준을 적용한다. 앞선 측정의 누락된 단계를 0으로 취급하지 않는다.
-- 먼저 60초 기본 경로와 cold/warm을 두 앱에서 각각 2회 확인한다. 이 짧은 검사에서 긴 영상 성능을 주장하지 않는다. 반복·취소 경로도 장시간 실행 전에 확인한다.
-- 장시간 조건은 10분/60분 × 두 앱 × cold/warm × 각 3회다. 미디어 작업을 순차 실행하고, 한 조건의 완료된 성능 실패를 무시하고 다음 조건으로 확장하지 않는다. 기본 모드의 취소는 재분석 단계에서 확인한다.
-- 조작은 기존 선택형 `--ui-locator=css`를 사용하고 입력·클릭·실제 상태 판정과 32회 표본을 유지한다. 자동화 시간을 빼거나 GC를 강제하지 않는다.
+## Cache-aware retesting
 
-현재 진행 중인 합성 시험의 제품·러너는 그대로 둔다. 기본 모드 러너의 검사는 해당 작업이 종료된 뒤 별도로 수행한다. 새 결과가 확보되기 전 기본 모드의 최종 성능은 미검증으로 유지한다.
+Later two-thread composition passed 12 runs, but plain output is a separate media path. Preserve old failures and retest threshold-only on the current app/package. Add verified `--input-cache=uncontrolled|cold|warm` to `threshold-benchmark.mjs`, defaulting to the original path, without product/quality/oracle changes.
 
-[60초 도구 검사](../testing/2026-09-06-threshold-input-cache-results.md)에서 기본 경로·cold·warm × 두 앱 × 2회, 총 12회와 취소·재시도 6조건을 완료했다. 새 감사기는 정상 자료를 허용하고 변조 7종을 거부했다. 다음 장시간 순서는 이전에 실패했던 브라우저 60분 기본 모드의 cold부터 시작한다.
+Create fresh copies per cold/warm repetition, inspect residency immediately before selection, avoid preselection hashes, separately report preparation, and measure normal import+analysis. Check input hashes after analysis and after saves/actions. Preserve runner/server sources and compare browser/media files to package contents. Include project-save and cancellation RSS under the same 2 GiB target; omitted historical phases are unknown, not zero.
 
-후속: `b60b115`의 브라우저 60분 cold 3회와 취소·재시도 1조건이 완료됐고 최대 RSS는 1.472GiB였다. 제품 변경 전 원본 감사를 마쳤다. 이후 MCP 기능을 추가한 앱은 다른 후보이므로 최종 성능 시험에서 새 소스·번들·패키지로 기록한다. 기존 24회 계획 중 실행하지 않은 21회를 통과로 채우지 않는다.
+First run ordinary/cold/warm × both apps × two at 60 seconds, including cancellation. Then 10/60 minutes × both apps × cold/warm × three sequential long runs, stopping expansion on completed failures. Use `--ui-locator=css` with actual clicks/inputs/state checks and 32 samples; no estimated-cost subtraction or forced GC. Do not modify active composition runners; wait until they finish.
 
-## MCP 상태 보존 수정 후 고정 후보
+[Short controls](../testing/2026-09-06-threshold-input-cache-results.md): 12 runs, six cancel/retry conditions, auditor accepted valid evidence and rejected seven mutations. `b60b115` then completed three browser 60-minute cold runs plus cancellation, maximum 1.472 GiB. Audit before changing code. Subsequent MCP changes create a different candidate; the other 21 planned runs were not automatically credited.
 
-`86a5c4d`에서 [MCP 지연 응답 12조건과 기존 전체 흐름](../testing/2026-09-06-mcp-lifecycle-results.md)을 완료했다. 이 후보의 JS는 `index-DNRAvftO.js`, Mac `app.asar`의 SHA-256은 `5c5c2caa3e918a0ba83345cef8814d6a6822a0a5f062b3885d66f69d2778b25f`다. 미디어 소스는 이전 인코더 2개 후보와 같지만 UI·패키지가 달라 성능 근거는 새로 기록한다.
+## MCP lifecycle candidate `86a5c4d`
 
-1. 기존 러너와 품질 기준을 유지하고 warm/cold의 60초 × 두 앱 × 2회로 현재 후보의 반복·취소·저장·출력 경로를 확인한다. 먼저 완료한 warm 결과를 현재 후보 안의 비교 기준으로 사용한다. 다른 후보의 통과 결과를 이번 반복 수에 합산하지 않는다.
-2. 짧은 검사가 통과하면 브라우저 60분 warm 3회를 우선 실행한다. 이전 후보의 cold 3회는 완료됐지만 warm은 미실행이었고, 기본 경로의 60분 3회째 메모리 초과 이력도 있으므로 이 조건을 먼저 판정한다.
-3. 완료된 실패가 없으면 같은 후보에서 브라우저 60분 cold, Mac 60분 cold/warm, 두 앱 10분 cold/warm을 순차 측정해 기본 모드의 24회 행렬을 채운다. 각 조건은 새 앱을 띄워 같은 앱에서 3회 반복한다.
-4. 완료 직후 원본 감사와 근거 보존을 수행한다. 그 전에는 제품·번들·패키지·러너·정답 소스를 바꾸지 않는다. 실패하면 해당 조건을 보존하고 원인을 해결한 다음 영향을 받은 조건을 새 후보로 검증한다.
+[Lifecycle checks](../testing/2026-09-06-mcp-lifecycle-results.md): 12 delayed-response cases plus existing flows. Browser bundle `index-DNRAvftO.js`; Mac app.asar SHA-256 `5c5c2caa3e918a0ba83345cef8814d6a6822a0a5f062b3885d66f69d2778b25f`. Media source matched the earlier two-thread candidate, but UI/package changed.
 
-자막·효과음을 포함한 합성 모드의 장시간 행렬은 별도다. 기본 모드의 결과로 합성 모드나 VAD·전사의 성능을 통과 처리하지 않는다. 이 절은 측정 순서이며 실제 실행 결과는 아니다.
+Run warm/cold short two-app repetitions first, then browser 60-minute warm three times, followed by browser cold, Mac cold/warm, and both apps' ten-minute cold/warm if passing. New app per condition, reuse within three runs. Freeze product/package/runner/oracles until each audit completes. Preserve failed conditions and use a new candidate after fixes. Do not credit prior-candidate passes or infer composition/VAD/transcription performance.
 
-후속: `86a5c4d`의 브라우저 60분 warm 3회가 최대 RSS 1.744GiB로 완료됐고 소스 변경 전 원본 감사를 마쳤다. 이후 전사 T05의 원인 구분이 아직 일반 안내 하나로 처리되는 것을 확인했다. [전사 준비 상태 계획](2026-09-06-transcription-readiness-plan.md)을 먼저 완료하고 다음 후보에서 나머지 전체 성능 행렬을 진행한다. 현재 후보의 3회는 [해당 실행 기록](../testing/2026-09-06-threshold-input-cache-results.md)으로 보존한다.
+The warm browser three-run condition completed at maximum 1.744 GiB and was audited before changes. T05 readiness still collapsed errors, so complete [readiness work](2026-09-06-transcription-readiness-plan.md) before the next matrix. Preserve the three runs in their [own record](../testing/2026-09-06-threshold-input-cache-results.md).
 
-## 전사 복구까지 검증한 `93d616f` 후보
+## Readiness candidate `93d616f`
 
-[전사 준비 상태 검사 22개와 두 앱의 실제 복구](../testing/2026-09-06-transcription-readiness-results.md), 기존 실제 전사 통합 4개를 완료했다. 이 후보의 제품·측정 소스·브라우저 번들과 Mac 앱의 파일 347개를 고정하고, 아래 묶음을 순차 실행한다.
+After 22 readiness checks, both-app real recovery, and four existing transcription integration checks, freeze product/runner/browser/native files (347 entries).
 
-| 순서 | 묶음 | 반복과 완료 조건 |
-| --- | --- | --- |
-| 1 | 60초 warm, Chrome/Mac | 각 2회와 취소·재시도. 4회 완료·감사, 최대 RSS 1.627GiB |
-| 2 | 60초 cold, Chrome/Mac | 각 2회와 취소·재시도. 4회 완료·감사, 최대 RSS 1.625GiB. 같은 후보의 warm과 비교 |
-| 3 | 60분/10분 warm, Chrome/Mac | 조건별 3회, 총 12회 완료·감사. 최대 RSS 1.883GiB, 취소·재시도 4조건 통과 |
-| 4 | 60분/10분 cold, Chrome/Mac | 조건별 3회, 총 12회 완료·감사. 최대 RSS 1.933GiB, 같은 후보의 warm과 비교, 취소·재시도 4조건 통과 |
+| Batch | Completed evidence |
+| --- | --- |
+| 60-second warm, both apps, twice each | Four audited runs, cancel/retry, max RSS 1.627 GiB |
+| 60-second cold, both apps, twice each | Four audited runs, cancel/retry, max RSS 1.625 GiB; compare same-candidate warm |
+| 60-/10-minute warm, both apps, three each | 12 audited runs, four cancel/retry conditions, max 1.883 GiB |
+| 60-/10-minute cold, both apps, three each | 12 audited runs, four cancel/retry conditions, max 1.933 GiB; compare warm |
 
-실행 순서는 `test-output/candidate-93d616f-threshold-matrix-run/run.sh`에 보존한다. 각 묶음 뒤 파일 집합과 해시를 다시 확인하며, 결과 감사 또는 어느 필수 기준이든 실패하면 다음 묶음을 실행하지 않는다. 파일 확인 도구는 원래 manifest 사본 허용, 해시 변경 거부, 파일 항목 누락 거부의 3개 대조를 통과했다. 대조에서는 제품 파일을 바꾸지 않았다.
+Sequence preserved at `test-output/candidate-93d616f-threshold-matrix-run/run.sh`. Recheck file sets/hashes after each batch; stop on identity/audit/criterion failure. Manifest checker controls accepted an original copy and rejected changed hashes and missing entries without changing product files.
 
-기본 무음 모드의 장시간 목표는 이 후보 안에서 총 24회다. 이전 후보의 60분 통과를 합산하지 않으며 자막·효과음 합성의 행렬도 별도로 유지한다. 문서·결과 기록은 갱신할 수 있지만, 측정 중 제품·패키지·러너·정답 자료는 변경하지 않는다.
-
-완료한 60초 warm/cold 8회와 장시간 warm/cold 24회의 [후보별 기록](../testing/2026-09-06-candidate-93d616f-results.md)을 보관했다. 짧은 묶음의 취소·재시도는 4조건, 장시간은 8조건이며 짧은 실행 수를 장시간 실행 수에 합산하지 않는다. 마지막 고정 파일 검사와 cold/warm 비교 감사 후 전체 순차 작업은 종료 코드 0으로 끝났다. 기본 음량 모드의 이 행렬은 완료이며 실제 한국어·동시 합성·실제 AI·배포 환경은 별도 판정한다.
+[Final candidate record](../testing/2026-09-06-candidate-93d616f-results.md): eight short plus 24 long runs, respectively four and eight cancellation conditions, final identity/cold-warm audits and sequential runner exit zero. This candidate's threshold matrix is complete. Human Korean quality, simultaneous composition, real AI, and distribution environments require separate judgments. Short runs and older candidates are not counted as long repetitions.

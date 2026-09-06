@@ -1,91 +1,129 @@
-# HyperCut 검증·테스트 안내
+# HyperCut validation and testing
 
-작성일: 2026-09-05. 계획, 자동 검증, 실사용 판정을 구분한다. 정식 MVP 전체 검증은 완료되지 않았다.
+Updated September 6, 2026. Plans, automated checks, and human acceptance are distinct. **Full MVP acceptance is not complete.** Historical results apply to the exact candidate, package, input, and runner named in each record.
 
-기본 무음 편집의 이전 후보 `93d616f`의 [기본 무음 편집 검사](2026-09-06-candidate-93d616f-results.md)는 60초 입력에서 warm/cold × 두 앱 × 2회, 총 8회와 취소·재시도 4조건을 완료·감사했다. 후속 10분/60분 × 두 앱 × warm/cold × 3회의 장시간 행렬 24회와 취소·재시도 8조건도 완료·감사했다. 최대 합산 RSS는 1.933GiB였으며 같은 후보의 cold/warm에서 실제 출력·프로젝트를 비교했다. 실제 한국어 품질·시간, 현재 후보의 동시 합성, 인증 AI·배포 환경 검증은 별도로 남아 있다.
+## Current evidence
 
-후속 [MCP 지연 응답 검증](2026-09-06-mcp-lifecycle-results.md)에서 이전 적용 확인 오류가 새 공유 화면을 바꾸는 문제를 재현하고 수정했다. 두 앱의 12개 지연/실패 조건과 설정·자막·효과음 6개 전체 흐름을 통과했다. 실제 계정 연결과 새 후보의 장시간 성능은 별도 검증 대상이다.
+The [multilingual feature record](2026-09-06-multilingual-results.md) covers ten language choices, translated captions, TXT transcripts, range/sentence clips, v8 projects, and save round trips in both apps. Actual local transcription was checked with English, Japanese, and Chinese TTS plus Japanese automatic detection. AI behavior was checked with mock responses and actual local MCP transport, without authenticated model requests.
 
-후속 [전사 준비 상태와 복구](2026-09-06-transcription-readiness-results.md)는 원인 구분 22개, 두 앱의 실제 복구·Whisper 전사·편집 보존, 기존 실제 전사 통합 4개를 통과했다. 그 직전 `86a5c4d`의 [브라우저 60분 warm 3회](2026-09-06-threshold-input-cache-results.md)도 최대 RSS 1.744GiB로 완료·감사했다. 전사 서버·패키지를 변경한 이후의 최종 성능으로 이전 값을 재사용하지 않는다.
+The earlier readiness candidate `93d616f` completed [eight short and 24 long threshold-mode runs](2026-09-06-candidate-93d616f-results.md), with four short and eight long cancellation/retry conditions. Long runs covered 10/60 minutes, both apps, warm/cold input files, and three repetitions, with maximum RSS 1.933 GiB. These measurements do not transfer to the later multilingual build.
 
-후속 [클립·다국어 자막 검증](2026-09-06-multilingual-results.md)은 10개 언어 선택·자막 번역·TXT 대본·구간 클립·프로젝트 v8과 두 앱의 저장 왕복을 확인했다. 실제 전사는 영어·일본어·중국어 TTS 및 일본어 자동 감지로 확인했으며, AI는 모의 응답과 실제 로컬 MCP 연결을 검증했다. 이 변경에 이전 후보의 장시간 성능이나 사람 녹음 품질 결과를 승계하지 않는다.
+[Transcription readiness](2026-09-06-transcription-readiness-results.md) passed 22 cause-specific checks, actual recovery and Whisper inference in both apps, edit preservation, and four existing transcription integrations. [MCP lifecycle](2026-09-06-mcp-lifecycle-results.md) passed 12 delayed/failure conditions and six complete settings/caption/effect flows. Neither establishes real-account connectivity or human model quality.
 
-## 계획 문서
+The earlier [two-thread composition candidate](2026-09-06-encoder-two-results.md) completed 12 long runs and four cancellation/retry conditions with maximum RSS 1.956 GiB. Full decoded frame/PTS/audio comparisons linked the 60-minute outputs to the earlier candidate. Its [cache-conditioned composition checks](2026-09-06-input-cache-results.md) completed six of 24 planned long conditions; the other 18 were not run.
 
-- [검증 계획](../plans/2026-09-05-validation-plan.md): 무엇을 입증할지, 품질·성능 목표, 정답 자료, 출시 게이트.
-- [테스트 계획](../plans/2026-09-05-test-plan.md): MVP 39개 사례(P0 28개/P1 11개)와 후속 AI 8개 사례의 입력·절차·기대 결과.
-- [실행 기록 양식](test-run-template.md): 환경·커밋·정답·측정값·실패·미실행을 남기는 양식.
-- [실제 한국어 평가 준비](manual-korean-evaluation.md): 조정/평가 자료 분리, 원본 라벨·컷 청취·복원·시간 비교용 빈 CSV 형식과 절차. 실제 영상과 사람 평가 결과는 아직 없다.
-- [말소리 보호 계획](../plans/2026-09-05-speech-protection-plan.md): 선택형 로컬 VAD의 S01~S07 추가 사례. 기존 MVP·AI 사례와 구분한다.
-- [전사·자막·효과음 계획](../plans/2026-09-05-caption-effects-validation-plan.md): 전사 7개·자막 10개·효과음 5개의 후속 사례, 한국어 품질·컷 시간축·실제 합성·작업 시간 기준. 실제 전사·텍스트 편집·SRT의 일부 실행 근거는 아래 기록에 연결했다.
-- [긴 영상 동시 합성 계획](../plans/2026-09-06-long-composition-plan.md): 10분/60분 컷·자막·효과음의 실제 출력·취소·저장·메모리·조작 검증. 독립 검증기와 두 앱 60초 동시 합성·취소·재시도 완료. 자막 행 렌더링 후보의 브라우저 60분 첫 실행은 RSS 1.962GiB·자막 p95 183ms로 통과했지만 두 번째는 RSS 2.140GiB로 실패했다. 두 출력의 정확성·조작 응답·취소 후 재시도는 통과했다. 세 번째 및 다른 장시간 조건은 미실행이며, 메모리 실패를 해결하기 전 반복을 확대하지 않는다.
-- [자막 화면 탐색 비교](2026-09-06-caption-selector-results.md): 역할/CSS 각 96회 조회에서 자동화 비용 차이를 관측했다. 같은 요소의 CSS 탐색과 이름·역할·활성 상태 검사로 보정한 러너가 두 앱 60초 4회를 통과했다. 같은 제품의 브라우저 60분 첫 반복은 1.976GiB로 통과했지만 두 번째는 2.146GiB로 실패했다. 출력·조작·취소 후 재시도는 통과했으며, 탐색 변경으로 메모리 실패가 해결되지는 않았다.
-- [투명 자막 영역 처리 감소](2026-09-06-caption-strip-results.md): 공통 세로 영역 PNG를 원래 위치에 합성하는 후보. 전체 RGBA 픽셀 비교·단위 80개·관련 통합 38개·패키징과 두 앱 60초 합성 4회 완료. 같은 MP4 바이트·취소 후 재시도를 확인했고 앱 RSS 최대는 Chrome 1.645GiB·Mac 1.067GiB였다. 브라우저 60분 첫 실행은 1.946GiB로 통과했지만 두 번째는 2.045GiB로 메모리 실패 후 종료했다. 두 출력은 157.127/157.697초로 빨라졌고 모든 출력 정답·바이트·프로젝트·조작·취소 후 재시도를 보존했다. 세 번째 및 다른 장시간 조건은 미실행이다.
-- [긴 목록 화면 요소 제한](2026-09-06-windowed-lists-results.md): 두 앱 탐색·편집·저장 회귀 16개 실행/조건, 단위 80개·패키징과 자막 견본 9개 표시 조건을 확인했다. 최종 패키지의 두 앱 60초 합성 4회 통과. 브라우저 60분 3회는 출력 바이트·전체 정답·조작·취소 후 재시도를 보존했으나 RSS 1.773 / 1.922 / 2.008GiB로 세 번째 메모리 실패다. 10분 및 Mac 장시간 조건은 확대하지 않았다.
-- [인코더 동시 처리 2개 후보](2026-09-06-encoder-two-results.md): 같은 화질 설정의 60초 백엔드 비교에서 최대 RSS가 약 39.42MiB 감소하고 출력은 약 0.47초 늘었다. 단위 80개·통합 38개·패키징·두 앱 60초 4회와 10분/60분 × 두 앱 × 3회, 장시간 12회가 모두 측정 기준을 통과했다. 최대 RSS는 1.956GiB였으며 Mac 60분은 1.161 / 1.097 / 1.099GiB였다. 전체 출력 정답·프로젝트·조작·취소 후 재시도를 확인했고, 두 앱의 60분 출력은 이전 후보와 전체 85,997프레임·PTS·오디오도 같았다. 파일 캐시 조건별 성능과 실제 녹음·인증 AI 등은 별도 미검증이다.
-- [입력 파일 캐시 관측과 실제 앱 검사](2026-09-06-input-cache-results.md): 네이티브 연결 도구 9 PASS, 기본 경로 60초 회귀 4회와 cold/warm 두 앱 8회 완료. 후속 브라우저 60분 cold/warm 각 3회도 매번 0/4,350 또는 4,350/4,350페이지를 확인하고 출력·프로젝트·취소·재시도를 통과했다. 최대 RSS는 cold 1.590GiB·warm 1.738GiB였다. 합성 경로 24회 중 나머지 18회와 기본 무음 경로·OS 전체 cold-cache는 아직 미검증이다. [측정 계획](../plans/2026-09-06-cache-verification-plan.md).
-- [모델 다운로드 취소·복구](2026-09-06-model-download-recovery-results.md): 기존 SIGINT 종료의 임시 파일 잔류를 재현하고 수정했다. 변경 후 12개 사례와 이전 실패 재현 1개 통과. 실제 모델 대신 로컬 합성 HTTP 자료를 사용했으며 CMake 빌드·전체 설치·다른 Mac 검증은 포함하지 않는다.
-- [기본 무음 모드의 입력 캐시 검사](2026-09-06-threshold-input-cache-results.md): 60초 12회와 취소·재시도 6조건 통과. 후속 `b60b115`의 브라우저 60분 cold 3회도 최대 RSS 1.472GiB로 통과했고 제품 변경 전 감사를 완료했다. 다른 캐시·플랫폼·길이 21회와 이후 MCP를 추가한 최종 후보의 성능은 별도 미검증이다.
-- [로컬 MCP 연결과 두 앱의 제안 수신](2026-09-06-mcp-results.md): 설정·자막·효과음의 실제 stdio 왕복, 공유 권한·만료·중복·종료·시간 초과, 두 앱에서 부분 적용·실행 취소·저장·MP4 출력을 검사했다. ChatGPT 계정·Secure MCP Tunnel·실제 모델은 아직 연결하지 않았다.
+Earlier failures remain in the records. Several browser candidates exceeded 2 GiB on repeated exports. A later full-frame oracle found a cut-boundary defect even though prior sync/byte-comparison checks had passed. Candidate-specific correctness fixes and performance reruns must not be combined into an unsupported current-build claim.
 
-테스트 코드의 개수는 계획 사례 개수와 다르다. 같은 사례를 여러 플랫폼과 실패 조건에서 실행하며, 한 조건이 통과해도 나머지 미실행 조건을 PASS로 채우지 않는다.
+## Plans and procedures
 
-## 핵심 통과 기준
+- [Validation plan](../plans/2026-09-05-validation-plan.md): quality/performance targets, independent references, and release gates.
+- [Test plan](../plans/2026-09-05-test-plan.md): 39 MVP cases, comprising 28 P0 and 11 P1 cases, plus eight subsequent AI cases.
+- [Run template](test-run-template.md): record environment, identity, expectations, measurements, failures, and unexecuted conditions.
+- [Human Korean evaluation](manual-korean-evaluation.md): separate tuning/evaluation recordings, source labels, boundary listening, restoration, and active-time comparisons. The templates contain no completed human evaluation.
+- [Speech protection](../plans/2026-09-05-speech-protection-plan.md): additional S01–S07 conditions for optional local VAD.
+- [Transcription, captions, and effects](../plans/2026-09-05-caption-effects-validation-plan.md): seven transcription, ten caption, and five effect cases, with quality, timeline, rendering, and time criteria.
+- [Long composition](../plans/2026-09-06-long-composition-plan.md): actual outputs, cancellation, saving, memory, and interaction across long recordings.
+- [Cache verification](../plans/2026-09-06-cache-verification-plan.md): distinguish observed input-file residency from OS-wide cold-cache claims.
+- [All implementation plans](../plans/README.md).
 
-| 검증 질문 | 통과 목표 | 연결된 사례 |
+Test-code counts are not plan-case counts. One case can run on multiple platforms and failure conditions. A passing condition never fills another condition that was not executed.
+
+## Acceptance targets
+
+| Question | Target | Cases |
 | --- | --- | --- |
-| 지정한 기준대로 자르는가? | 임계값·최소 길이·앞뒤 여유·채널·프레임 경계가 독립 정답과 일치 | D01~D15 |
-| 실제 말을 보존하는가? | 평가 영상의 잘린 단어·음절 0건, 제거 정밀도 99% 이상, 목표 쉼 제거율 90% 이상 | Q01~Q03, Q05 |
-| 싱크가 유지되는가? | 컷 전후 독립 표식·누적 오차가 해당 위치의 영상/오디오 프레임 기준 이내 | M01~M06 |
-| 작업을 잃지 않는가? | 원본 변경·저장된 편집 손실·거짓 성공 0건, 실패 후 재시도 | U03~U05, E01~E06 |
-| 편집 시간이 줄어드는가? | 품질 통과 결과의 실제 작업 시간 절감률 중앙값 50% 이상 | Q04 |
-| 긴 영상도 사용할 수 있는가? | 분석 ≤영상 길이의 20%, 출력 ≤영상 길이, 앱+자식 RSS ≤2GiB, 조작 p95 ≤200ms | P01~P02 |
-| AI 없이도 완결되는가? | 외부 네트워크 차단 상태에서 열기→편집→저장→출력 성공 | U01 |
-| 선택한 AI만 사용하며 실패에서 복구하는가? | 설정 제안 검증, 현재 편집 보존, 공급자별 실제 인증·응답 근거 | A01~A08 |
+| Do cuts follow settings? | Threshold, minimum duration, padding, channel, and frame boundaries match an independent oracle | D01–D15 |
+| Is speech preserved? | Zero clipped words/syllables, at least 99% removal precision, at least 90% target-pause removal | Q01–Q03, Q05 |
+| Is sync preserved? | Independent local/cumulative markers stay within the applicable video/audio frame tolerance | M01–M06 |
+| Is work preserved? | No original modification, lost saved edits, or false success; failures allow retry | U03–U05, E01–E06 |
+| Is editing faster? | Median active-time saving of at least 50% for quality-passing pairs | Q04 |
+| Are long inputs usable? | Analysis ≤20% of input duration; export ≤input duration; app-plus-children RSS ≤2 GiB; interaction p95 ≤200 ms | P01–P02 |
+| Does core editing work offline? | Open, edit, save, and export under OS-enforced external-network blocking | U01 |
+| Is AI explicit and recoverable? | Validated proposals, preserved edits, and provider-specific actual authentication/response evidence | A01–A08 |
 
-위 수치는 합격 목표다. 실제 품질·생산성 결과로 발표하는 수치가 아니다. 계산 방법과 예외는 검증 계획을 따른다.
+These are acceptance goals, not published human-quality or productivity results. Transcription has its own resource criteria in the corresponding plan. Use the documented formulas and exclusions.
 
-## 실행 순서
+## Running checks
 
-1. 합성 PCM·영상과 앱 코드와 독립된 정답을 준비해 임계값·컷 경계를 검사한다.
-2. 실제 MP4를 만들고 전체 디코딩·표식·길이·선택 트랙을 검사한다.
-3. Chrome와 Mac 앱에서 편집·복원·저장·취소·장애를 검사한다.
-4. 설정 조정용 한국어 영상 3개로 초기값을 조정하고 고정한다.
-5. 별도의 한국어 평가 영상 6개 이상으로 발음·쉼·복원 부담·작업 시간을 비교한다.
-6. 10분·60분·1,000컷 성능과 최종 후보의 필수 사례를 실행해 G1~G3를 판정한다.
-7. AI 연결은 모의 계약 검사 뒤 공급자별 실제 인증·요청으로 G4를 따로 판정한다.
+Start with the contributor checks:
 
-## 실행 근거와 현재 한계
+```sh
+npm ci
+npm test
+npm run build
+npm run test:media
+npm run test:api
+```
 
-| 기록 | 확인할 내용 |
-| --- | --- |
-| [첫 프리뷰](2026-09-05-preview-results.md) | 핵심 엔진·실제 출력·초기 사례별 상태 |
-| [복구·부분 복원·앱 성능](2026-09-05-recovery-results.md) | 실제 OS 오류·취소·저장·1,000컷 조작·갱신된 미실행 사례 |
-| [프로젝트 I/O 경합](2026-09-05-project-io-race-results.md) | 늦은 파일 읽기·저장 응답, 최신 프로젝트·미저장 표시 보존, 중복/실패 후 저장 |
-| [취소 응답·새 프로젝트 경합](2026-09-05-job-cancellation-race-results.md) | 이전 취소 실패의 오류 표시 수정, 사전 취소·늦은 완료·현재 취소 재시도, 두 앱 14조건 |
-| [편집창별 취소·새 원본 경합](2026-09-05-editor-job-race-results.md) | 전사·SRT의 취소 버튼 재시도 수정, 부분 복원·실제 효과음 미리보기 포함 두 앱 34조건 |
-| [효과음 가져오기·프로젝트 읽기 경합](2026-09-05-effect-import-project-race-results.md) | 이전 파일 읽기로 인한 효과음/자막 혼합 수정, 두 앱 8조건·저장 전체 비교·실제 합성 |
-| [Mac 저장 중 앱 종료](2026-09-05-desktop-save-crash-results.md) | 실제 저장의 교체 직전/직후 SIGKILL, 마지막 프로젝트 재열기·재저장 |
-| [Mac 실제 저장·교체 창](2026-09-05-native-save-dialog-results.md) | OS 교체 취소·승인, 프로젝트/MP4 바이트 검증, 원본 경로 차단 |
-| [선택 범위 미리보기](2026-09-05-range-preview-results.md) | 컷 경계 렌더, CFR/VFR/PTS 오프셋, 60분 뒤쪽 구간 |
-| [Claude Code 연결](2026-09-05-claude-cli-results.md) | 모의 CLI 프로세스·API·UI·종료, 실제 설치/로그인 확인과 모델 미실행 구분 |
-| [로컬 전사·자막](2026-09-05-transcription-results.md) | 실제 Whisper 추론·문구/시각 수정·SRT·v3 저장·Mac 패키지·브라우저 OS 오프라인 |
-| [자막 디자인·MP4 합성](2026-09-05-caption-rendering-results.md) | 3종 스타일·v4 저장·가로/세로/회전/SAR/VFR/PTS 실제 프레임·두 앱·브라우저 OS 오프라인 |
-| [전사 끝 경계 복구](2026-09-05-transcription-end-results.md) | 실제 60분 전사의 240ms 초과 오류, 검토 표시·출력 차단·v7 보존·두 앱 저장 |
-| [긴 영상 말소리 보호 성능](2026-09-06-vad-performance-results.md) | 수정 전 10분·60분 두 앱 12회와 브라우저 6회 RSS 초과 기록 |
-| [출력 메모리 개선](2026-09-06-render-memory-results.md) | 인코더 동시 처리 제한, 동일 조건 재측정 12회·취소/재시도 4조건 통과. 출력 시간 증가도 기록 |
-| [최신 임계값·1,000컷 성능](2026-09-06-thousand-cut-performance-results.md) | 12회 완료·취소 4조건 통과. 60분 브라우저 3회째 RSS 2.050GiB로 목표 초과, 나머지 11회는 측정 목표 충족 |
-| [편집 화면 메모리 개선 후보](2026-09-06-editor-render-memory-results.md) | 두 후보의 60분 3회째 RSS가 각각 2.172/2.145GiB로 실패. 두 번째 후보의 기능 12조건·출력 동일성 통과, 메모리 원인 진단 필요 |
-| [자동화 탐색 비용 비교](2026-09-06-selector-overhead-results.md) | 같은 앱의 CSS 조건 12회가 당시 기준 통과·최대 1.980GiB. 후속 전체 프레임 검사에서 경계 결함 발견. 수정 후 성능으로 재사용하지 않음. 기존 역할 기반 실패 보존 |
-| [컷 경계·동시 합성 검증기](2026-09-06-composition-oracle-results.md) | 전체 프레임 검사로 경계 프레임 누출 발견·정수 PTS 수정. 독립 회귀 3건·60초 엔진 합성·두 앱 threshold 사전 검사 통과. 장시간 후속 실행은 아래 기록 참조 |
-| [두 앱 동시 합성](2026-09-06-composition-app-results.md) | 행 렌더링 후보의 두 앱 기능·60초 합성 4회 통과. 브라우저 60분 첫 실행 통과·두 번째 RSS 2.140GiB로 실패. 두 실행의 전체 출력 정확성·조작 응답·취소 후 재시도는 통과 |
-| [긴 영상 전사 성능](2026-09-05-transcription-performance-results.md) | 실제 Whisper·두 앱 프로세스 트리 RSS·전사 중 자막 선택·취소/재시도, 완료 조건과 진행 중 조건 구분 |
-| [프로젝트 교정 용어](2026-09-05-project-glossary-results.md) | v6 저장·기존 프로젝트 이전·입력 보호·요청별 임시 용어·두 앱의 복구/회귀 |
-| [AI 자막 교정](2026-09-05-caption-correction-results.md) | 원문 비교·선택 적용·숫자/부정어 검사·요청별 취소/중복 방지·두 앱·실제 모델 미실행 구분 |
-| [효과음 편집·MP4 합성](2026-09-05-effects-results.md) | 원본 시각 배치·길이/음량/음소거·v5 저장·음원 재연결·실제 PCM/AAC 수치·두 앱 |
-| [AI 효과음 제안](2026-09-05-ai-effects-results.md) | 명시적 음원/클립/자막 선택·별칭 전달·추가/수정/삭제 비교·부분 적용·요청별 취소·두 앱의 실제 출력 |
-| [로컬 말소리 보호](2026-09-05-speech-protection-results.md) | 실제 VAD·한국어 TTS·다채널·네이티브 패키지·OS 오프라인·프로젝트 v2 |
+Unit tests and build are quick checks. Media/API integration suites require FFmpeg/ffprobe and permission to launch subprocesses and local servers. Public CI runs unit tests, build, and media integrations on Linux with Node 22 and 24; this does not establish a supported Linux desktop package.
 
-G1 핵심 미디어 검증 근거는 확보했다. G2의 Mac 앱 전체 저장 중 강제 종료·재열기, 파일 읽기·저장 응답의 경합, 실제 OS의 기존 프로젝트/MP4 교체 취소·승인과 원본 경로 차단을 확인했다. 기본 분석·출력의 취소 응답과 새 원본 경합도 두 앱에서 확인했다. 전사·SRT·부분 복원·효과음 미리보기와 새 원본의 경합도 확인했다. 효과음 파일 가져오기·재연결 중 이전 프로젝트 파일 읽기가 적용되는 교차도 두 앱에서 확인하고 수정했다. Mac의 OS 네트워크 차단 등은 남아 있다. G3의 실제 한국어 Q01~Q05와 현재 후보의 자막·효과음 동시 합성 등은 미완료다. 기본 음량 모드의 현재 후보는 위 기록처럼 입력 파일 warm/cold 장시간 24회를 완료·감사했다. G4의 인증된 LLM 요청은 아직 수행하지 않았다. 로컬 VAD의 최초 합성 한국어 10분·60분 측정에서 브라우저 6회가 RSS 2GiB를 초과했다. 인코더 메모리 개선 후 동일한 12회와 취소·재시도 4조건이 측정 기준을 충족했다. 별도 임계값 모드의 이전 1,000컷 후보에서는 브라우저 60분 세 번째 RSS가 2.050GiB로 목표를 초과했고, Mac 긴 영상 3회는 통과해 당시 12회 중 1회 메모리 실패로 판정했다. 실제 녹음 품질·OS cold-cache와 다른 장시간 조건은 남아 있다. 전사·자막 문구/시각 수정·SRT·디자인 MP4 저장은 실제 모델과 두 앱에서 확인했다. AI 교정 제안의 비교·선택 적용은 모의 공급자와 두 앱에서 확인했다. 로컬 효과음 편집·MP4 합성·재연결은 두 앱과 고정 오디오 정답으로 확인했다. AI 효과음 제안의 범위 제한·비교·선택 적용도 모의 공급자와 두 앱에서 확인했다. 실제 모델의 교정·배치 품질, 효과음 청취 품질과 ChatGPT MCP 통합은 후속 범위다.
+| Additional area | Entry point | Prerequisites or limits |
+| --- | --- | --- |
+| VAD | `npm run test:speech` | Bundled ONNX model and compatible native runtime; macOS TTS fixtures where used |
+| Transcription | `npm run test:transcription` | Prepared whisper.cpp/model, FFmpeg, and fixture TTS voices |
+| Captions / effects | `npm run test:captions`, `npm run test:effects` | FFmpeg and bundled fonts/native canvas |
+| AI contracts | `npm run test:correction`, `npm run test:ai-effects`, `npm run test:claude` | Mocks and local subprocesses; no authenticated quality claim |
+| MCP | `npm run test:mcp` | Local HTTP/stdio subprocesses; no account/tunnel validation |
+| Multilingual | `npm run test:multilingual` | Media/API fixtures; actual language inference has a separate script |
+| Browser UI | `npm run test:e2e` and area-specific E2E scripts | Installed browser, running/launchable app, test-owned output paths |
+| Native UI | Area-specific scripts with `--desktop` where documented | Fresh Mac package and required native resources |
+| Long performance | Area-specific benchmark scripts | Frozen candidate, inputs, settings, runner, and a fresh evidence directory |
 
-기본은 음량 임계값 모드이며 선택형 VAD 보호를 추가했다. 기본 음량 분석을 음성 인식으로 표현하지 않으며, VAD의 TTS 통과를 실제 녹음 정확도로 표현하지 않는다. 작은 발화를 계속 자른다면 규칙 시험이 통과해도 제품 품질은 실패이며, 발화 보호 방식과 기본값을 다시 검토한다.
+Inspect the relevant script and dated record before running specialized suites. Native save-dialog, disk-full, offline, process-kill, and cache tests have environment-specific requirements. Never run destructive failure injection against personal files or an unrelated app session. Use synthetic test-owned data and fresh `test-output/` directories. Large media and private human-evaluation files are intentionally ignored; checked-in JSON summaries retain the useful measurements.
+
+## Evaluation order and remaining gates
+
+1. Validate synthetic PCM/video against independently derived cut boundaries.
+2. Produce actual MP4 files and check complete decoding, markers, duration, and selected tracks.
+3. Exercise editing, restoration, save, cancellation, and failures in Chrome and the Mac package separately.
+4. Tune settings on three designated Korean recordings, then freeze them.
+5. Evaluate at least six separate Korean recordings for speech, pauses, restoration burden, and active time.
+6. Run required 10/60-minute and 1,000-cut conditions against the final candidate before judging G1–G3.
+7. After mock contracts, validate each authenticated AI provider separately for G4.
+
+G1 has core media evidence. Named G2 checks include native save/crash/reopen, delayed I/O, cancellation/project races, actual overwrite dialogs, and source-path protection. Mac OS-level network blocking remains outstanding. G3 human Q01–Q05 and final-candidate long composition remain incomplete. G4 authenticated LLM requests remain unexecuted. Human CER, translation/correction quality, effect listening quality, clean-machine installation, signing, and notarization are also unverified.
+
+Default silence analysis is amplitude-based; it is not speech recognition. Optional VAD detects speech, while Whisper provides transcription. Passing synthetic TTS does not prove recording accuracy. If quiet syllables are still cut, product quality fails even when rule tests pass.
+
+## Dated evidence index
+
+Each record below identifies its own scope, failures, and source evidence. Older unimplemented or incomplete states describe that stage, not necessarily the current feature set.
+
+- [AI sound-effect proposal results](2026-09-05-ai-effects-results.md)
+- [AI caption correction results](2026-09-05-caption-correction-results.md)
+- [Caption design and actual MP4 rendering results](2026-09-05-caption-rendering-results.md)
+- [Claude Code integration verification — 2026-09-05](2026-09-05-claude-cli-results.md)
+- [Native save interruption and reopening](2026-09-05-desktop-save-crash-results.md)
+- [Caption-editor cancellation retry and source preservation](2026-09-05-editor-job-race-results.md)
+- [Preventing project replacement and mixed effects during import](2026-09-05-effect-import-project-race-results.md)
+- [Local sound-effect editing results](2026-09-05-effects-results.md)
+- [Cancellation responses versus the next project](2026-09-05-job-cancellation-race-results.md)
+- [Actual Mac save and replacement dialogs](2026-09-05-native-save-dialog-results.md)
+- [Initial preview execution and validation — 2026-09-05](2026-09-05-preview-results.md)
+- [Project correction glossary results](2026-09-05-project-glossary-results.md)
+- [Preserving edits against late project reads and saves](2026-09-05-project-io-race-results.md)
+- [Selected-range preview verification — 2026-09-05](2026-09-05-range-preview-results.md)
+- [Recovery, partial restoration, and app performance — 2026-09-05](2026-09-05-recovery-results.md)
+- [Local speech-protection results — 2026-09-05](2026-09-05-speech-protection-results.md)
+- [Transcription end-overflow reproduction and recovery](2026-09-05-transcription-end-results.md)
+- [Long transcription performance results](2026-09-05-transcription-performance-results.md)
+- [Local transcription and caption editing results](2026-09-05-transcription-results.md)
+- [Threshold editing on readiness candidate 93 d 616 f](2026-09-06-candidate-93d616f-results.md)
+- [Caption-screen selector overhead and lifecycle comparisons](2026-09-06-caption-selector-results.md)
+- [Reducing transparent caption-image work](2026-09-06-caption-strip-results.md)
+- [Composition in the browser and native app](2026-09-06-composition-app-results.md)
+- [Whole-frame checks found and fixed cut-boundary errors](2026-09-06-composition-oracle-results.md)
+- [Editor rendering reuse: both candidates failed memory limits](2026-09-06-editor-render-memory-results.md)
+- [Two encoder threads: composition performance](2026-09-06-encoder-two-results.md)
+- [Input-file cache measurements for composition](2026-09-06-input-cache-results.md)
+- [Late MCP application checks and new-request preservation](2026-09-06-mcp-lifecycle-results.md)
+- [Local MCP protocol and editing proposals](2026-09-06-mcp-results.md)
+- [Local transcription download cancellation and recovery](2026-09-06-model-download-recovery-results.md)
+- [Clips, TXT transcripts, and multilingual captions](2026-09-06-multilingual-results.md)
+- [Encoder concurrency: VAD memory improvement](2026-09-06-render-memory-results.md)
+- [Automation selector overhead and historical performance](2026-09-06-selector-overhead-results.md)
+- [Threshold mode with 1,000 cuts: one memory failure](2026-09-06-thousand-cut-performance-results.md)
+- [Threshold-mode input cache verification](2026-09-06-threshold-input-cache-results.md)
+- [Transcription readiness and actual recovery](2026-09-06-transcription-readiness-results.md)
+- [VAD performance: initial memory failures](2026-09-06-vad-performance-results.md)
+- [Windowed cut and caption lists](2026-09-06-windowed-lists-results.md)

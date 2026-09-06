@@ -1,66 +1,54 @@
-# 긴 목록의 화면 요소 제한과 자막 견본 수정
+# Windowed cut and caption lists
 
-2026-09-06. [계획](../plans/2026-09-06-windowed-lists-plan.md)에 따라 200개 이상인 컷·자막 목록에서 보이는 항목 주변과 선택·포커스 항목을 유지한다. 데이터는 전체를 보존하며 실제 높이를 측정해 긴 문구를 잘라내지 않는다. 작은 목록은 기존 전체 표시를 유지한다. 이전 브라우저 60분 두 번째의 2.045GiB 메모리 실패는 보존하며 이 문서의 기능 검사만으로 장시간 성능 통과를 주장하지 않는다.
+2026-09-06. Lists with at least 200 items render visible, overscan, selected, and focused rows using dynamic heights while retaining all logical data. Smaller lists retain their earlier rendering path. The previous candidate's 2.045 GiB memory failure remains recorded.
 
-## 확인한 기능과 범위
+## Functional and visual checks
 
-| 검사 | 완료한 결과 | 증거 |
-| --- | --- | --- |
-| 단위·타입·빌드·Mac 패키징 | 단위 80 PASS, 타입/빌드와 Electron 44.2.0 arm64 패키징 완료 | [소스·로그 기록](results/2026-09-06-windowed-lists-source.json) |
-| 큰 목록 탐색·편집·저장 | 두 앱 2회 PASS | [새 목록 검사](results/2026-09-06-windowed-lists-apps.json) |
-| 기존 컷 편집·미리보기·잠금 | 두 앱 2회 PASS | [현재 시간축 회귀](results/2026-09-06-windowed-lists-editor.json) |
-| 기존 자막 문구·시각·청취·복원 | 두 앱 2회 PASS | [자막 회귀](results/2026-09-06-windowed-lists-captions.json) |
-| 일반 분석·출력·저장 | 두 앱 2회 PASS | [기본 회귀](results/2026-09-06-windowed-lists-general.json) |
-| 프로젝트 읽기·저장 경합 | 두 앱 8조건 PASS | [경합 회귀](results/2026-09-06-windowed-lists-project-io.json) |
-| 자막 디자인 견본 | 두 앱 흐름 완료, 9개 표시 조건 PASS | [견본 검증](results/2026-09-06-caption-preview-layout.json) |
+All 80 unit tests, build, and packaging passed. Sixteen UI conditions covered large lists (2), editor behavior (2), captions (2), general flows (2), and project I/O (8). Nine style-preview conditions covered two browser widths across three styles plus three Mac styles.
 
-목록·일반·프로젝트 검사는 합계 16개 실행/조건이다. 1,000회의 키보드 이동을 1,000개의 테스트로 합산하지 않는다. 견본 검사의 9조건은 브라우저 2개 화면 폭 × 3스타일과 Mac 기본 크기 × 3스타일이다.
+A manually constructed 16-second project contained 1,000 cuts and cues; it is a navigation fixture, not a quality or performance sample. Both apps traversed all 1,000 captions with Tab and exercised 80 cut buttons using forward/backward navigation, Home/End, Enter/Space, final-cut restoration, Tab exit, and offscreen focus. Multiline editing, next-review navigation, unsaved-discard decline/accept, delete/undo, text/time undo, and project switching preserved complete project data except `savedAt`. Observed DOM rows ranged from 12–22 cuts and 8–15 captions.
 
-큰 목록 검사는 16초 합성 신호의 수동 프로젝트에 1,000컷·1,000자막을 넣는다. 실제 영상 편집 품질이나 성능 자료로 사용하지 않는다. 두 앱에서 자막 1,000개를 실제 Tab으로 모두 순서대로 탐색했다. 컷의 80개 버튼을 순서대로 방문하고 역순으로 복귀했으며 Home/End·Enter/Space·마지막 컷의 복원/제거·목록 끝에서 Tab으로 빠져나오기를 확인했다. 스크롤해 포커스 항목이 화면 밖으로 가도 포커스를 유지했다.
+A resize-cache reset moved the selected cue offscreen; preserving the logical anchor fixed it, and the result was viewed. A 150 px style grid inherited a 229 px minimum row height and cropped its bottom. Setting grid/image minimum heights to zero and using `object-fit: contain` changed the preview bounds from 407.094 × 228.984 to 407.094 × 150 px without changing MP4 rendering.
 
-여러 줄 문구, 다음 검토 항목 이동, 미적용 입력 폐기 거절/수락, 선택 자막 삭제/실행 취소, 문구·시각 수정과 실행 취소/다시 실행, 작은 프로젝트와 큰 프로젝트 사이 교체를 확인했다. 저장한 두 프로젝트는 저장 시각만 제외하고 전체 1,000컷·1,000자막과 독립적으로 만든 기대 상태를 다시 비교했다. 단순한 총개수 표시는 전체 데이터 검증의 대체 증거가 아니다.
+Final visual checks waited for the new response, decoded image, bounds, and pixels for every style. Earlier harness failures involving stale image references, exit handling, and save waits were retained rather than counted as passes; version 5 exited successfully. List reports preceded the preview-only CSS change, while the latest preview and project-I/O checks used the final package. Their source identities remain distinct.
 
-이 합성 프로젝트에서 관측한 화면 요소 수는 컷 12~22개, 자막 8~15개였다. 모든 목록 항목의 DOM을 항상 유지하던 이전 구현 조건을, 전체 데이터와 실제 키보드/스크롤 접근을 유지하는 조건으로 변경했다. 긴 영상 러너도 DOM 개수 대신 전체 목록 개수 표시를 확인하고 기존 전체 프로젝트·SRT·출력 검증은 유지한다.
+## Candidate `3d572b4`: short composition checks
 
-화면 폭 변경 시 측정 캐시를 초기화하면서 선택한 자막이 목록 밖으로 밀리는 문제를 화면 검토에서 발견했다. 크기 변경 직전 보이던 논리 항목을 기준으로 스크롤을 복원하도록 수정했고, 좁은 화면에서 해당 자막의 문구와 표시 위치를 다시 확인했다. 기본 목록·Mac 편집 화면과 큰 자막 목록도 직접 열어 확인했다.
-
-## 디자인 견본이 비어 보이던 문제
-
-150px 표시 영역의 CSS grid가 이미지의 자동 최소 높이 때문에 약 229px 행을 만들고, 아래쪽 자막을 영역 밖으로 잘라냈다. [진단](results/2026-09-06-caption-preview-layout-diagnostic.json)에서 원래 이미지 박스는 407.094×228.984px, 수정 후에는 407.094×150px였다. 같은 이미지와 `object-fit:contain`을 사용하면서 grid 행·열의 최소 크기와 이미지 최소 크기를 0으로 정해 전체 그림을 담는다. 자막 렌더 엔진과 MP4 품질은 변경하지 않았다.
-
-최종 견본 검사는 새 스타일 응답과 이미지 디코딩을 기다린 뒤 이미지 전체 사각형이 표시 영역 안에 있는지 확인했다. 실제 화면 PNG의 내부에서 배경과 다른 글자 픽셀도 검사했다. 기본형·박스·강조형을 넓은/좁은 브라우저와 Mac에서 확인했고 실제 견본 이미지를 열어 검토했다. 초기 검사에는 이전 이미지 참조와 시험 종료·저장 대기의 문제가 있었으며, 해당 실행을 완료 수에 합산하지 않았다. 완료 결과는 `test-output/caption-preview-layout-apps-v5/`의 종료 코드 0 기록이다.
-
-큰 목록·일반 기능 보고서는 이 견본만 수정하는 CSS 보정 직전의 실행이다. 목록 컴포넌트·현재 컷/자막 상태 코드는 그 뒤 바꾸지 않았으며 각각의 실제 소스·패키지 해시는 보고서에 보존했다. 최종 견본·프로젝트 경합은 보정한 패키지에서 실행했다. 이후 동시 합성은 이 최종 패키지의 해시를 확인해서 실행한다.
-
-## 최종 패키지의 짧은 동시 합성
-
-제품 커밋 `3d572b4`의 최종 패키지와 브라우저에서 60초 입력을 각각 두 번 처리해 4회 모두 통과했다. 전체 1,448프레임·16자막·16효과음과 제외 효과음, SRT, 싱크를 독립 검증했다. [실행 기록](results/2026-09-06-composition-windowed-smoke.json)과 [원시 자료 감사](results/2026-09-06-composition-windowed-smoke-audit.json)에 각 실행값과 프로세스별 RSS 합계를 보존했다.
-
-| 앱 | 분석 초, 1·2회 | 출력 초, 1·2회 | 최대 합산 RSS GiB, 1·2회 |
+| Surface | Analysis (s) | Export (s) | RSS (GiB) |
 | --- | --- | --- | --- |
-| 브라우저 | 1.062 / 0.845 | 3.198 / 3.132 | 1.554 / 1.636 |
+| Chrome | 1.062 / 0.845 | 3.198 / 3.132 | 1.554 / 1.636 |
 | Mac | 1.280 / 1.014 | 3.095 / 3.096 | 0.978 / 1.069 |
 
-각 회차의 세 조작군 p95는 모두 200ms 이내였다. 두 앱에서 자막 준비 단계 중 취소 후 표시까지 0.9/0.8ms, 재시도 가능 상태까지 306.55/301.82ms였고 두 번째 출력이 완료됐다. 저장된 영상·프로젝트와 화면에 표시된 이전 성공 결과가 취소 후 보존됐다. 전체 프로젝트를 저장 시각만 제외하고 비교했으며, 실제 MP4와 SRT의 바이트 및 모든 독립 검증 값은 이전 세로 영역 자막 합성 사전 검사와 동일했다. RSS 실제 표본 간격의 최댓값은 278.85ms 미만이었다.
+All four outputs retained 1,448 frames, 16 captions/effects, independent oracles, and byte equality with the earlier caption-strip candidate. Interaction p95 remained below 200 ms. Browser/Mac cancellation feedback was 0.9 / 0.8 ms, readiness 306.55 / 301.82 ms, followed by completed retries. Maximum RSS sample interval was below 278.85 ms. These short lists contain fewer than 200 rows and do not measure virtualization performance.
 
-이 60초 자료는 목록이 200개 미만이라 목록 가상화 성능 자체를 검증하지 않는다. 최종 CSS 패키지의 전체 합성·저장·취소 회귀를 확인한 증거이며, 큰 목록의 실제 기능 검사는 위 1,000항목 흐름으로 구분한다.
+## Browser 60-minute repetitions
 
-## 브라우저 60분 반복: 세 번째 메모리 실패
+| Run | Analysis (s) | Export (s) | Oracle (s) | RSS (GiB) | Caption / effect / cut p95 (ms) |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 36.669 | 156.985 | 125.073 | 1.773 | 67.23 / 101.54 / 66.15 |
+| 2 | 36.999 | 158.026 | 125.905 | 1.922 | 66.85 / 119.71 / 65.63 |
+| 3 | 37.689 | 160.405 | 126.200 | **2.008 FAIL** | 67.63 / 102.17 / 66.40 |
 
-같은 앱에서 60분 입력을 세 번 처리한 뒤 러너는 종료 코드 1로 끝났다. 세 실행의 출력 정확성·저장 보존·조작 응답은 통과했고, 세 번째 합산 RSS가 2GiB보다 8.1875MiB 많아 성능 목표는 실패다. [원본 결과](results/2026-09-06-composition-windowed-long.json), [원시 자료 감사](results/2026-09-06-composition-windowed-long-audit.json), [세 번째 전체 출력 검증](results/2026-09-06-composition-windowed-long-third-verification.json)을 보존했다.
+The third run exceeded the limit by 8.1875 MiB; the report exited with code 1. All outputs retained 85,997 frames, 1,000 captions, 64 effects plus two excluded effects, six markers, and the earlier strip candidate's `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a` output hash. The third output was compared against that candidate's second output because no third earlier run existed.
 
-| 회차 | 가져오기 포함 분석 초 | 앱 자체 검증 포함 출력 초 | 독립 출력 검증 초 | 최대 합산 RSS GiB | 자막 / 효과음 / 컷 p95 ms | 판정 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 36.669 | 156.985 | 125.073 | 1.773 | 67.23 / 101.54 / 66.15 | PASS |
-| 2 | 36.999 | 158.026 | 125.905 | 1.922 | 66.85 / 119.71 / 65.63 | PASS |
-| 3 | 37.689 | 160.405 | 126.200 | 2.008 | 67.63 / 102.17 / 66.40 | 메모리 FAIL |
+Maximum RSS intervals were 278.47 / 309.05 / 278.20 ms. Cancellation feedback/readiness was 0.8 / 221.28 ms, with a successful retry. Server peaks grew from 196.55 to 232.31 to 261.02 MiB; renderer peaks grew from 325.64 to 429.06 to 484.36 MiB. This does not prove a leak.
 
-각 실행에서 85,997프레임·1,000자막·64효과음·제외 효과음 2개·6개 A/V 표식 쌍을 확인했다. MP4 해시 `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`, SRT 바이트와 독립 검증의 모든 정답 값이 이전 세로 영역 자막 합성 결과와 같았다. 세 번째의 비교 기준은 이전 버전에서 완료된 두 번째 출력이다. 이전 버전의 세 번째는 미실행이었다. 샘플 프레임 해시도 같으며 모든 글리프를 OCR하거나 실제 한국어 발화를 평가한 결과는 아니다.
+The memory failure stopped expansion to other long conditions. The full matrix did not pass. Human quality, authenticated AI, cache-conditioned performance, and OS-level network blocking remain separate.
 
-원시 RSS 표본마다 프로세스 합계를 다시 계산했다. 최대 표본 간격은 1·2·3회 각각 278.47 / 309.05 / 278.20ms였다. 각 조작군 32개 표본의 p95도 다시 계산했다. 전체 프로젝트는 저장 시각만 제외하고 입력·저장·조작 후 상태를 비교했고 원본·효과음 원본 해시를 확인했다. 첫 회차 자막 준비 중 취소 표시는 0.8ms, 재시도 가능 상태는 221.28ms였다. 기존 성공 출력·프로젝트를 보존하고 같은 앱의 두 번째 출력까지 완료했다.
+## Evidence and related records
 
-메모리 최고점은 세 번 모두 출력 단계였다. 그 표본에서 서버 RSS는 약 196.55 → 232.31 → 261.02MiB, 주요 렌더러는 325.64 → 429.06 → 484.36MiB로 증가했다. 이 자료만으로 누수 원인을 확정하지 않는다. 큰 목록 최적화가 이전 두 번째 실패 조건을 통과하도록 개선했지만 반복 메모리 목표를 완전히 해결하지는 못했다. 10분 및 Mac 장시간 동시 합성 조건은 확대하지 않았다.
-
-## 남은 검증
-
-반복 실행에서 증가한 메모리와 출력 중 동시 버퍼 사용을 조사하고 다음 최적화 후보를 검증해야 한다. RSS 2GiB·조작군 p95 200ms·모든 출력 프레임/자막/효과음/싱크 기준을 유지한다. 실제 한국어 발화 품질·작업 시간 절감·인증 AI·캐시·Mac OS 네트워크 차단은 별도 검증으로 남아 있다. [실제 한국어 평가 안내](manual-korean-evaluation.md)는 준비 절차와 빈 기록 양식이며 실제 평가 완료 증거가 아니다.
+- [2026-09-06-windowed-lists-plan.md](../plans/2026-09-06-windowed-lists-plan.md)
+- [2026-09-06-windowed-lists-source.json](results/2026-09-06-windowed-lists-source.json)
+- [2026-09-06-windowed-lists-apps.json](results/2026-09-06-windowed-lists-apps.json)
+- [2026-09-06-windowed-lists-editor.json](results/2026-09-06-windowed-lists-editor.json)
+- [2026-09-06-windowed-lists-captions.json](results/2026-09-06-windowed-lists-captions.json)
+- [2026-09-06-windowed-lists-general.json](results/2026-09-06-windowed-lists-general.json)
+- [2026-09-06-windowed-lists-project-io.json](results/2026-09-06-windowed-lists-project-io.json)
+- [2026-09-06-caption-preview-layout.json](results/2026-09-06-caption-preview-layout.json)
+- [2026-09-06-caption-preview-layout-diagnostic.json](results/2026-09-06-caption-preview-layout-diagnostic.json)
+- [2026-09-06-composition-windowed-smoke.json](results/2026-09-06-composition-windowed-smoke.json)
+- [2026-09-06-composition-windowed-smoke-audit.json](results/2026-09-06-composition-windowed-smoke-audit.json)
+- [2026-09-06-composition-windowed-long.json](results/2026-09-06-composition-windowed-long.json)
+- [2026-09-06-composition-windowed-long-audit.json](results/2026-09-06-composition-windowed-long-audit.json)
+- [2026-09-06-composition-windowed-long-third-verification.json](results/2026-09-06-composition-windowed-long-third-verification.json)
+- [manual-korean-evaluation.md](manual-korean-evaluation.md)

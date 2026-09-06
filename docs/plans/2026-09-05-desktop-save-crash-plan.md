@@ -1,15 +1,11 @@
-# Mac 앱 저장 중 강제 종료 검증
+# Forced termination during native project save
 
-기존 E03은 제품의 원자적 저장 함수를 별도 프로세스에서 종료했다. 이번에는 패키지 Mac 앱의 실제 버튼·IPC·저장 경로를 사용하고 앱의 주 프로세스를 SIGKILL해 마지막 정상 프로젝트의 보존과 재열기를 확인한다.
+Earlier E03 killed a standalone process using the atomic-save function. This test uses the packaged Mac app's actual button, IPC, and save path, then SIGKILLs its main process. Use generated media and temporary projects, separately from transcription benchmarks. Only dialog path selection is substituted; actual OS replacement confirmation belongs to E04.
 
-시험은 생성한 영상과 임시 프로젝트만 사용한다. 전사 성능 측정과 동시에 앱을 실행하지 않는다. 실제 저장 창의 경로 선택만 시험용 경로로 대체하므로 OS 교체 확인 창의 검증인 E04와는 구분한다.
+1. Open a v7 project with cuts, captions/end review, style, and glossary; create a baseline through the real save button.
+2. Edit settings and save again. Put a test barrier immediately before filesystem rename, after temporary writing and fsync. Do not replace the product save function.
+3. Confirm no success message and a dirty state, then SIGKILL. Verify main/child termination, unchanged destination bytes/hash, and unchanged source.
+4. Reopen in a new packaged app, reconnect the source, compare all fields, and save again.
+5. Repeat immediately after the real rename but before IPC success. The destination must contain the complete new project and reopen successfully.
 
-1. 생성 영상, 컷, 전사 문구·끝 경계 검토 정보, 스타일, 프로젝트 용어를 포함한 v7 파일을 앱에서 열고 실제 저장 버튼으로 기준 파일을 만든다.
-2. 설정을 바꾸고 다시 저장한다. 앱 프로세스의 파일 rename 호출 직전에 시험 장벽을 두어 임시 파일 작성과 fsync가 끝난 상태를 관측한다. 제품 저장 함수는 교체하지 않는다.
-3. 저장 성공이 표시되지 않고 수정 표시가 유지되는지 확인한 뒤 앱 주 프로세스를 SIGKILL한다. 해당 앱과 자식 프로세스 종료, 기존 대상 파일의 바이트·해시 일치, 원본 영상 불변을 확인한다.
-4. 새 패키지 앱에서 보존된 프로젝트를 열고 원본을 다시 연결한다. 설정·컷·자막·스타일·용어가 유지되고 다시 저장되는지 확인한다.
-5. 같은 절차를 실제 rename이 완료된 직후, IPC 성공을 반환하기 전에도 수행한다. 이 경우 새 내용 전체가 유효한 프로젝트로 보존되고 새 앱에서 열려야 한다.
-
-합격 기준은 두 종료 지점 모두 손상된 최종 파일·거짓 저장 완료·원본 변경 0건, 기대한 전체 프로젝트 재열기 및 재저장 성공이다. 강제 종료 직전의 임시 파일이 남는지는 별도로 기록한다. 남은 임시 파일을 마지막 정상 프로젝트로 자동 채택하거나 사용자 파일을 임의 삭제하지 않는다.
-
-이 검사는 OS 전원 차단, 저장 장치 오류, 브라우저 다운로드 관리자의 저장 완료, 네이티브 OS 교체 확인 창의 검증을 대신하지 않는다. 실제 파일 교체와 앱 전체 종료를 사용하되 종료 지점은 시험 장벽으로 제어한다. 결과가 나온 뒤 E03 상태와 증거 링크를 갱신한다.
+Both points require zero corrupt final files, false save success, or source changes. Record leftover temporary files separately; do not auto-adopt them or delete user files. This does not test power loss, hardware failure, browser download completion, or native replacement dialogs. Update E03 evidence after execution.

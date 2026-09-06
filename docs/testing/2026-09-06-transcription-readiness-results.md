@@ -1,35 +1,23 @@
-# 로컬 전사 준비 상태와 실제 복구 검증
+# Transcription readiness and actual recovery
 
-2026-09-06. [전사 준비 상태 계획](../plans/2026-09-06-transcription-readiness-plan.md)의 파일·엔진 오류 구분과 복구를 검증했다. [실행 근거](results/2026-09-06-transcription-readiness-verification.json)에 수정 전 실패, 첫 후보의 실제 엔진 호환 문제, 최종 테스트·앱 결과와 파일 해시를 보관했다.
+2026-09-06. Distinguish engine/model absence, path type, access, model size, exact supported version, process failure, and timeout with reason codes and actionable UI guidance, without exposing raw stderr/internal paths. Recheck uses the existing caption control. Status does not initiate inference/download/AI and does not claim full integrity: SHA-256 remains checked before actual transcription.
 
-## 변경한 동작
+Before the fix, unreadable models and lookalike versions `1.9.30 `/` 11.9.3` could report ready. Final implementation checks model readability and complete version syntax.
 
-엔진과 모델의 누락, 경로 종류, 접근 권한, 모델 길이, 지원 버전, 실행 실패와 시간 초과를 구분한다. 상태 API는 원인 코드와 한국어 복구 안내를 반환하며, 자막 창의 기존 ‘다시 확인’으로 재검사할 수 있다. 엔진의 표준 오류나 내부 경로를 화면에 노출하지 않는다.
-
-수정 전에는 읽을 수 없는 모델과 `1.9.30`·`11.9.3` 엔진도 준비 완료로 표시됐다. 이제 모델의 읽기 권한을 검사하고 버전 전체를 비교한다. 정상 상태 확인은 파일·권한·길이·버전 확인이며, 전체 모델 SHA-256은 실제 전사 시작 전에 계속 검사한다. 전사나 모델 다운로드·외부 AI 요청을 상태 확인만으로 시작하지 않는다.
-
-## 최종 결과
-
-| 검증 | 결과 |
+| Check | Final result |
 | --- | --- |
-| 파일 시스템·엔진 프로세스·API | 22개 통과. 실제 실행 권한·읽기 권한, 버전 판정, 자식 프로세스 실패, 실제 10초 제한, 사전/실행 중 취소, 손상 모델의 추론 전 거부, 인증 경계 |
-| Chrome 복구 | 엔진 누락→모델 누락→실제 준비 완료→실제 Whisper 전사 성공 |
-| 패키징한 Mac 복구 | 같은 흐름 성공. 복구 시 사용한 실행 파일과 모델은 앱 패키지에 포함된 것 |
-| 기존 편집 보존 | 모델이 없어도 자막 수정·프로젝트 저장 가능. 복구 후 전사, 실행 취소·다시 실행, 저장·재열기 후 전체 프로젝트 비교 |
-| 기존 실제 전사 통합 | 4개 통과. 한국어 TTS·우측/반대 위상 채널·PTS 오프셋, 실제 추론 취소/재시도, 같은 크기의 손상 모델, 인증 API와 SRT |
-| 빌드·패키지 | TypeScript·Vite·Mac 패키징 완료. 관련 런타임·UI·번들 9개 파일이 패키지 내부와 일치 |
+| Files/process/API | 22 PASS: actual permissions, version, process failure, real 10 s timeout, pre/in-flight cancel, corrupt model before inference, authentication |
+| Chrome recovery | Missing engine→missing model→ready→actual Whisper success |
+| Packaged Mac recovery | Same flow using bundled engine/model |
+| Edit preservation | Model-absent manual edit/save; repaired inference/undo/redo/save/reopen; full project match |
+| Existing transcription | Four PASS: Korean TTS/channel/PTS/cancel/retry/same-size corruption/authenticated API/SRT |
+| Build/package | PASS; nine relevant runtime/UI/bundle files match packaged contents |
 
-두 앱의 실제 전사는 각각 자막 2개를 생성했고 ‘작은 목소리’를 포함한 문구와 원본 길이 안의 시각을 확인했다. 모델이 없을 때 수정한 자막은 전사를 실행 취소하면 돌아왔고, 다시 실행하면 실제 전사 결과로 복원됐다. 저장 시각을 제외한 전체 프로젝트를 기대값과 비교했다. 원본 영상 해시가 보존됐으며 JavaScript 오류와 관측된 외부 페이지 요청은 없었다.
+Both actual transcriptions returned two cues with the expected Korean key phrase and in-source timing. Undo restored captions edited while the model was missing; redo restored inference. Compare all fields except saved timestamp. Original hash preserved, zero JS/observed external page errors.
 
-## 실패 기록과 판정 범위
+Initial 18-case run: five PASS/13 FAIL. First fix passed 18 but rejected actual CLI prefix `whisper.cpp version: `. Preserve real output, add valid/invalid prefix cases, then 22 and real installed engine passed. First UI runner read an old native success notice and checked too early; actual file arrived later. Record failure recovery and clean only the stalled test app. Second UI attempt had async-response/assertion ordering issues; explicitly await new save and matching transcription completion and record failures before shutdown. Product unchanged between these UI reruns.
 
-첫 계약 실행은 18개 중 5개 통과·13개 실패였다. 원인 코드가 없는 조건과 읽기 권한·부분 버전 일치 문제를 확인했다. 첫 보완안은 준비 상태 검사 18개를 통과했으나 실제 CLI의 `whisper.cpp version: ` 접두사를 거부했다. 실제 버전 응답을 보존하고 해당 형식의 정상·비정상 사례를 추가한 뒤 최종 22개와 실제 설치 엔진을 확인했다.
-
-첫 UI 실행은 Mac 저장 도우미가 이전 성공 알림을 읽어 새 파일을 너무 일찍 확인했다. 실제 파일이 뒤이어 저장된 것을 확인했다. 실패 뒤 종료 확인에 멈춘 시험 소유의 앱을 정리했으며, 일반 결과 파일이 쓰이지 않아 별도 실패 복구 기록을 남겼다. 두 번째 실행은 시험의 비동기 응답 읽기와 화면 검사 순서 문제였다. 새 저장 알림과 해당 전사 완료 응답을 명시적으로 기다리고, 종료 전 실패 기록을 보관하도록 시험을 보완했다. 앱의 제품 코드는 이 UI 재실행 사이에 바꾸지 않았다.
-
-복구 시험은 시험 소유 폴더의 링크로 이미 준비된 엔진·모델을 연결했다. 다운로드·새 컴퓨터 설치를 완료한 증거는 아니다. Mac 파일 창의 반환 경로도 시험이 지정했다. OS 전체 네트워크 차단, 서명·공증, 실제 사람의 녹음 정확도·편집 시간, 외부 AI 인증은 별도 검증 대상이다.
-
-이 수정 전에 `86a5c4d`의 브라우저 60분 warm 3회를 완료·감사했다. 서버와 앱 패키지가 바뀌었으므로 [그 성능 기록](2026-09-06-threshold-input-cache-results.md)을 새 후보의 최종 성능으로 그대로 사용하지 않는다.
+Recovery used links in test-owned directories to already prepared resources, not download or clean-machine setup. Native paths were test-supplied. OS network blocking, signing/notarization, human quality/time, and external AI remain separate. Prior `86a5c4d` warm 60 min three-run audit remains for that old package.
 
 ```sh
 node --test tests/transcription-readiness.integration.mjs
@@ -37,4 +25,10 @@ npm run package:desktop
 node scripts/transcription-readiness-e2e.mjs --desktop
 ```
 
-기존 실제 전사 통합은 별도 작업 디렉터리에서 원래 테스트 파일을 실행해 이전 결과 파일을 덮어쓰지 않았다. 합성 프로세스로 상태 검사를 통과한 것과 실제 Whisper 추론 성공을 구분해 기록했다.
+Existing real transcription integrations used a separate output directory to preserve previous evidence. Mock readiness processes and real inference are separately recorded.
+
+## Evidence and related records
+
+- [2026-09-06-transcription-readiness-plan.md](../plans/2026-09-06-transcription-readiness-plan.md)
+- [2026-09-06-transcription-readiness-verification.json](results/2026-09-06-transcription-readiness-verification.json)
+- [2026-09-06-threshold-input-cache-results.md](2026-09-06-threshold-input-cache-results.md)

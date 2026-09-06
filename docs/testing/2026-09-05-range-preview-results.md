@@ -1,56 +1,32 @@
-# HyperCut 선택 범위 미리보기 검증 — 2026-09-05
+# Selected-range preview verification — 2026-09-05
 
-## 구현한 동작
+Both apps gained an encoded selected-cut preview, defaulting to two source seconds either side, editable and played in a separate dialog without replacing main playback/export state. Expand the requested outer range to complete frames while retaining full-output internal cut boundaries. Exclude outside fragments even below the automatic 100 ms minimum without editing project cuts. An all-removed range errors with retry.
 
-선택한 컷의 경계를 확인할 짧은 미리보기를 데스크톱·브라우저에 추가했다. 타임라인에서 컷을 선택하고 **선택 컷 미리보기**를 누르면 컷의 앞뒤 2초가 기본값으로 제시된다. 원본 기준 시작·끝을 수정할 수 있고, 현재 제거·복원 결정을 적용한 영상을 별도 창에서 재생한다. 전체 편집본의 재생 위치와 내보내기 결과는 이 작업으로 교체되지 않는다.
+Build the source frame index once, then seek shortly before the requested region and trim preserved source timestamps. Decoding a large included silence range still costs time; no universal instant-preview claim.
 
-미리보기 범위는 바깥쪽 영상 프레임까지 확장한다. 내부 컷은 전체 출력과 같은 경계를 사용한다. 범위 밖의 짧은 조각은 자동 컷의 100ms 최소 길이와 관계없이 제외한다. 미리보기 파일을 만들기 위해 프로젝트의 컷을 수정하지 않는다. 범위 안에 남는 구간이 없으면 원인을 표시하고 다른 범위로 다시 시도할 수 있다.
+Checks rerun: 30 units, eight media, nine API, ten compatibility; package, new/core both-app E2E, long-range oracle PASS. With nine older atomic/failure/ENOSPC checks retained, historical total 66; distinguish those not rerun. Native paths substituted. A native close/Playwright dialog conflict was fixed by saving test projects before cleanup, not altering product prompts. At 390 px, inspect actual modal bounds/close clicks rather than page width alone.
 
-처음 필요한 프레임 시간표는 전체 원본에서 수집한다. 이후 범위 미리보기는 해당 위치보다 앞선 짧은 구간으로 탐색하고 원본 타임스탬프에서 자른다. 지정한 범위가 긴 무음 전체를 포함하면 그 원본 범위의 디코딩 비용은 남는다. 모든 자료에서 즉시 생성된다고 보장하지 않는다.
+16-second sample source `[2,6)` preview yielded 2.266667 s with its cut or four seconds after restore. Full export remained unchanged; failed preview preserved existing output; dialog arrow keys did not seek the background player.
 
-## 검증 결과
+## Timing and long-source evidence
 
-| 검사 | 결과 | 확인한 내용 |
+Initial input seeking lost a marker on +3 s PTS input despite passing full exports. Disable automatic accurate input seeking and apply video trim/audio resampler start samples against preserved timestamps. Earlier keyframes are allowed for decoding but filters define final range/cuts. Verify actual output against the linked FFmpeg contracts.
+
+CFR/VFR/+3 PTS preview `[2.4,7)` with cut `[4.2,5.2)` yielded 3.6 s and 172,800 pre-encode samples; flashes 0.6/2.6 s, beeps within 0.7 ms, no inherited cumulative offset. Subframe `[2.01,2.02)` yielded one complete frame. Source six seconds/audio ends at one second, 44.1k, preview `[4,5)` yielded one second with silent audio.
+
+On M4 Max/36 GiB/FFmpeg8.1.1, reuse synthetic 1080p30 H.264/AAC48k 60-minute input. Inspection/hash/frame index/1,000-cut analysis took 32.981 s separately. Source 59:50–59:59 (nine seconds) became about 7.533 s.
+
+| Run | Generation/full decode seconds | Maximum additional marker error |
 | --- | --- | --- |
-| `npm test` | PASS 30개 | 구간 창의 프레임 확장, 짧은 바깥 조각 제외, 복원 결정과 시간 매핑 추가 |
-| `npm run test:media` | PASS 8개 | 실제 전체/범위 출력, CFR·VFR·PTS +3초, 한 프레임, 오디오가 먼저 끝난 영상 |
-| `npm run test:api` | PASS 9개 | 범위 검증, 제거만 있는 범위 오류, 원본 기준 응답, 전체 출력에 범위 지정 거부 |
-| `npm run test:compatibility` | PASS 10개 | 기존 MP4/MOV·대표 fps·44.1/48kHz 전체 출력 회귀 확인 |
-| `npm run package:desktop` | PASS | 최신 Mac arm64 패키지 |
-| `node scripts/range-preview-e2e.mjs --desktop` | PASS | Chrome와 실제 Mac 패키지에서 새 기능 실행 |
-| `npm run test:e2e -- --desktop --packaged` | PASS | 기존 전체 편집·저장·원본 보호·프로젝트 왕복 검사 |
-| `node scripts/verify-range-preview.mjs` | PASS | 60분·1,000컷 원본 뒤쪽 구간의 독립 표식과 생성 시간 3회 |
+| 1 | 0.281 | 0.254 ms |
+| 2 | 0.273 | 0.254 ms |
+| 3 | 0.275 | 0.254 ms |
 
-앞선 오류/원자적 저장 8개와 실제 ENOSPC 1개의 결과를 유지하면 최근 자동 테스트 결과 합계는 **66개 PASS**다. 이번에 재실행한 범위는 표에 명시했다. 테스트 개수는 계획 사례 개수와 다르다. 사람의 청취와 실제 한국어 평가를 대체하지 않는다.
+Median 0.275 s measures a prepared frame-index/cache engine call, excluding selection/initial analysis/UI, app RSS, or speech quality. No concurrent media tests. M06 listening, Q01–Q05 human quality/time, real AI, and other unverified gates remain outstanding.
 
-E2E의 Mac 파일 선택·저장 창 반환값은 시험이 지정했다. 처음에는 저장하지 않은 테스트 편집의 네이티브 종료 확인과 Playwright의 JavaScript 대화상자 처리가 충돌했다. 시험용 프로젝트를 저장한 뒤 닫도록 정리했고 제품의 저장 확인 동작은 유지했다. 브라우저의 390px 화면에서도 창과 닫기 버튼이 화면 안에 들어오는지 확인했다. 페이지 전체 폭만 검사하면 고정된 모달이 넘치는 문제를 놓칠 수 있어, 모달의 실제 경계 좌표와 닫기 버튼 클릭도 검사했다. [UI 실행 증거](results/2026-09-05-range-preview-ui.json).
+## Evidence and related records
 
-UI 검증의 고정 예: 16초 샘플에서 원본 [2, 6)초 미리보기는 현재 컷을 적용하면 **2.266667초**, 해당 컷을 복원하면 **4초**였다. 전체 내보내기는 원래의 전체 편집 결과를 유지했다. 미리보기 실패 후에도 기존 출력이 남았고, 미리보기 창에서 누른 방향키가 뒤의 메인 플레이어를 탐색하지 않았다.
-
-## 타임스탬프 회귀와 수정
-
-초기 구현에서 입력 탐색을 추가하자 PTS가 +3초인 자료의 미리보기 표식 하나가 누락됐다. 전체 내보내기는 통과했지만 새 탐색 경로는 실패했다. 입력 단계의 자동 정확 탐색을 끄고, 보존한 원본 타임스탬프에서 영상 trim과 오디오 resampler의 시작 샘플 기준을 적용해 수정했다. 탐색 위치 이전 키프레임을 읽더라도 최종 범위·컷은 별도 필터로 결정한다.
-
-근거로 확인한 공식 계약은 [FFmpeg의 accurate_seek·seek_timestamp](https://ffmpeg.org/ffmpeg.html#Advanced-options)와 [오디오 resampler의 first_pts](https://ffmpeg.org/ffmpeg-resampler.html#Resampler-Options)다. 실제 구현의 판정은 문서만으로 하지 않고 위 미디어 출력 검사로 확인했다.
-
-CFR·VFR·PTS +3초 자료에서 원본 [2.4, 7)초를 미리보기로 만들고, 중간의 [4.2, 5.2)초 컷을 적용했다. 결과는 3.6초, 인코딩 전 172,800개 오디오 샘플이었다. 독립적으로 검출한 플래시는 출력의 0.6/2.6초, 비프는 각 기대 위치에서 0.7ms 이내였다. 이전 컷에서 누적된 시간이 미리보기의 시작 오프셋으로 남지 않았다.
-
-추가로 [2.01, 2.02)초처럼 프레임보다 작은 범위는 온전한 한 프레임으로 출력했다. 6초 영상에서 오디오가 1초에 끝나는 44.1kHz 자료의 [4, 5)초 미리보기도 무음 오디오 트랙을 포함한 1초 영상으로 출력했다.
-
-## 60분 영상의 뒤쪽 구간
-
-앞선 성능 시험과 같은 Apple M4 Max / 36GiB / macOS / FFmpeg 8.1.1 환경에서 기존 합성 1080p30 H.264/AAC 48kHz 자료를 재사용했다. 실제 촬영 영상보다 단순한 화면과 사인파다. 입력 검사·해시·프레임 시간표·1,000컷 분석에 **32.981초**가 걸렸으며 아래 값과 분리했다.
-
-원본 **59:50–59:59**의 9초를 선택한 결과는 컷 적용 후 약 7.533초였다.
-
-| 회차 | 미리보기 생성·전체 디코딩 검증 | 영상·음성 추가 표식 오차 최대 |
-| --- | --- | --- |
-| 1 | 0.281초 | 0.254ms |
-| 2 | 0.273초 | 0.254ms |
-| 3 | 0.275초 | 0.254ms |
-
-중앙값은 **0.275초**다. 프레임 시간표와 OS 캐시가 준비된 엔진 호출만 측정했고, 파일 선택·첫 분석·UI 준비 시간은 포함하지 않았다. 앱 전체 메모리나 실제 발화 품질의 측정도 아니다. 생성 시간 측정 구간에 다른 미디어 시험은 병행하지 않았다. [원시값·입력 해시·표식 위치](results/2026-09-05-range-preview-long.json).
-
-## 남은 판정
-
-설계 5장의 ‘선택 범위 미리보기 파일 생성’ 동작은 구현·자동 검증했다. 계획 M06의 정확한 사람 청취와 Q01–Q05의 실제 한국어 품질·작업 시간은 여전히 NOT_RUN이다. 이번 측정으로 그 기준을 낮추거나 전체 MVP 완료를 선언하지 않는다. 실제 AI 계정 연결과 기존 보고서의 나머지 미검증 항목도 유지한다.
+- [2026-09-05-range-preview-ui.json](results/2026-09-05-range-preview-ui.json)
+- [ffmpeg.html](https://ffmpeg.org/ffmpeg.html#Advanced-options)
+- [ffmpeg-resampler.html](https://ffmpeg.org/ffmpeg-resampler.html#Resampler-Options)
+- [2026-09-05-range-preview-long.json](results/2026-09-05-range-preview-long.json)

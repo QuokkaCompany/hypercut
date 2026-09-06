@@ -1,13 +1,13 @@
-# 실제 Mac 파일 교체 확인 창 검증
+# Actual Mac replacement confirmation dialogs
 
-E04의 남은 실제 OS 확인 창 조건을 검사한다. 현재 앱의 저장 처리는 `dialog.showSaveDialog`가 선택한 경로를 원자적으로 교체한다. 이전 검사는 파일 선택 응답을 지정했으므로 macOS 확인 창 자체를 증명하지 못했다.
+Complete the OS-dialog portion of E04. `dialog.showSaveDialog` selects the destination before atomic replacement; earlier substituted return paths did not establish native confirmation behavior.
 
-현재 패키지를 시험 전용 데이터 폴더에서 실행하고 생성 영상·프로젝트·MP4만 사용한다. 저장 창을 호출하는 함수와 그 반환값은 대체하지 않는다. 초기 영상 선택만 시험용 파일로 지정한 뒤 원래 선택 함수를 복원한다. 실제 저장 창과 교체 확인은 접근성 도구로 조작하며 이름과 선택을 화면에서 확인한다.
+Launch the package with test-only application data and generated media/projects. Do not replace the save dialog or its response. Only initial media selection is supplied by the test, then the original function is restored. Operate actual save/replacement dialogs through accessibility tools and inspect the selected name onscreen.
 
-1. 기존 프로젝트 이름으로 저장을 시도하고 교체 확인을 취소한다. 저장 창도 닫은 뒤 기존 파일의 바이트·해시와 미저장 표시, 저장 재시도 가능 상태를 확인한다.
-2. 같은 경로로 다시 저장하고 교체를 승인한다. 파일이 현재 편집의 유효한 v7 프로젝트로 교체되고 미저장 표시가 해제되어야 한다.
-3. 생성된 편집 MP4를 기존 MP4 이름으로 저장하고 교체 확인을 취소한다. 기존 MP4와 원본이 유지되어야 한다.
-4. 다시 저장해 교체를 승인한다. 실제 출력 파일과 같은 바이트가 저장되고 전체 디코딩에 성공해야 한다.
-5. 편집 MP4의 저장 경로를 생성한 원본 영상으로 선택하고 OS 교체를 승인한다. 앱은 원본 경로를 거부하고 원본을 보존해야 한다.
+1. Save over an existing project, cancel replacement, then close the save dialog. Verify unchanged bytes/hash, dirty state, and retry availability.
+2. Retry and approve replacement. Verify a complete current v7 project and cleared dirty state.
+3. Save the edited MP4 over an existing MP4 and cancel. Preserve both existing MP4 and source.
+4. Retry and approve. Saved bytes must match the generated output and fully decode.
+5. Select the generated source as export destination and approve the OS prompt. The app must reject that destination and preserve the source.
 
-각 확인 창의 관측·동작 기록과 파일 해시를 보존한다. 사용자 문서나 기존 영상을 사용하지 않는다. OS 전원 차단이나 브라우저 다운로드 관리자의 충돌 처리를 대신하는 시험은 아니다.
+Preserve observed dialog actions and hashes. Do not use private documents or existing user videos. Power failure and browser download collisions remain separate.

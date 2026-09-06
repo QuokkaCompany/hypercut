@@ -1,58 +1,37 @@
-# 전체 프레임 검사로 발견한 컷 경계 결함과 수정
+# Whole-frame checks found and fixed cut-boundary errors
 
-2026-09-06. [긴 영상 동시 합성 계획](../plans/2026-09-06-long-composition-plan.md)의 사전 검사에서 실제 출력 결함을 발견했다. 초 단위 소수로 컷 경계를 비교하던 처리를 영상의 정수 타임스탬프 비교로 수정했다. 60초 엔진 합성은 수정 후 통과했으며 장시간 동시 합성은 아직 실행하지 않았다.
+2026-09-06. A 60-second 1080p/30 fps source with 16 cuts should produce 48.266667 seconds and 1,448 frames. The old output contained 1,463 frames, even without captions or effects. Original output and failure evidence are retained. Nine-decimal serialization compared `83/30 ≈ 2.7666666667` against `2.766666667`, retaining a deletion-boundary frame. Conversion of fractional output ticks also rounded incorrectly.
 
-## 재현과 수정
+`shared/timeline.mjs` now compares `pts`/`PTS` with `round(boundary/TB)`. `server/media.mjs` rounds the start offset and cumulative removals to integer ticks without duplicating input frames to force a fixed frame rate. Independent fixtures vary frame brightness and derive expected arrays from source timestamps and cuts, checking every frame count, PTS, and top-region pixel.
 
-60초 1080p/30fps 영상의 16개 컷 뒤 예상 출력은 48.266667초·1,448프레임이다. 수정 전 실제 출력은 1,463프레임이었다. 자막과 효과음을 끈 대조 출력에서도 1,463프레임이 나왔다. [최초 실패](results/2026-09-06-composition-before.json)와 원시 파일 `test-output/composition-engine-94unIH/`를 보존했다.
-
-프레임 시각 `83/30`은 약 2.7666666667초다. 기존 필터는 경계를 소수 아홉 자리로 직렬화해 `2.766666667`과 비교했기 때문에 첫 삭제 프레임을 남길 수 있었다. 출력 시각 계산에서도 소수 tick을 정수로 내리는 오차가 생겼다. `shared/timeline.mjs`는 컷 경계를 `round(경계/TB)`로 변환해 `pts`/`PTS`와 비교하고, `server/media.mjs`는 시작 오프셋과 누적 제거 시간을 정수 tick으로 반올림해 차감하도록 수정했다. 입력 프레임을 고정 FPS로 복제하지 않는다. 변수 단위는 [FFmpeg select/setpts 공식 문서](https://ffmpeg.org/ffmpeg-filters.html#select_002c-aselect)를 확인했다.
-
-독립 회귀 테스트는 프레임마다 밝기가 달라지는 영상을 만들고, 실제 입력 시각과 컷 구간만으로 기대 프레임 배열을 계산한다. 출력의 모든 프레임 수·시각·상단 밝기를 원본과 비교한다. 자막 아래의 일부 픽셀이나 출력 길이만으로 성공을 판단하지 않는다.
-
-| 조건 | 수정 전 | 수정 후 |
+| Condition | Before | After |
 | --- | --- | --- |
-| 30fps CFR | 280개 예상, 282개 출력 | 280개·모든 프레임 내용/시각 PASS |
-| 자막 포함 30fps CFR | 280개 예상, 282개 출력 | 280개·모든 프레임 내용/시각 PASS |
-| 29.97 기반 VFR·시작 PTS +3초·자막 | 첫 컷 후 1 tick 시각 오차 | 220개·모든 프레임 내용/시각 PASS |
+| 30 fps CFR | 282 frames; expected 280 | 280; all content and PTS checks passed |
+| Captioned 30 fps | 282 frames; expected 280 | 280; all checks passed |
+| 29.97-based VFR / +3 s PTS / captions | One-tick error after the first cut | 220; all checks passed |
 
-[수정 전 3건 실패](results/2026-09-06-frame-boundary-before.json), [수정 후 3건 통과](results/2026-09-06-frame-boundary-after.json). 같은 테스트를 사용했다. 수정 후 최대 밝기 차이는 0, 부동소수 계산을 포함한 최대 시각 차이는 약 1.78e-15초였다. 이 결과를 모든 영상 포맷의 무손실 화질 보장으로 해석하지 않는다.
+The same three tests failed before and passed after the fix. Maximum brightness error was zero and maximum floating-point timing difference approximately 1.78e−15 seconds. This is not a universal lossless-video guarantee.
 
-## 동시 합성 검증기를 먼저 검증
+## Oracle controls and actual composition
 
-`scripts/helpers/composition-oracle.mjs`는 제품의 컷 매핑·자막·효과음 함수를 가져오지 않는다. 입력 구간 산술로 기대 시각을 계산하고 실제 저장한 SRT, AAC 디코딩 샘플, H.264 프레임을 검사한다.
+The independent `composition-oracle.mjs` imports no product timeline, caption, or effect functions. Five pure tests distinguish SRT text/order/timing and missing, late, short, wrong-gain, extra, or truncated audio, as well as missing, delayed, or extra captions/frames. Four codec tests contain ten controls: two valid outputs accepted and eight corrupt outputs rejected. Yellow rectangles calibrate presence detection, not Korean glyph quality. A quoting error initially failed generation of the tenth fixture after nine; the failure was preserved, generation corrected, and all ten controls completed.
 
-- 순수 검증기 5개 테스트: SRT 문구·순서·시각, 정상 오디오와 누락·지연·짧은 길이·다른 음량·추가 소리·잘린 출력, 자막 누락·지연·추가·프레임 누락을 판별했다.
-- 실제 AAC/H.264 보정은 4개 테스트 안의 10조건을 통과했다. 정상 오디오/영상 2조건을 받아들이고, 잘못된 오디오 4조건·영상 4조건을 거부했다. 노란 사각형은 색 검출기 보정 자료이며 한글 글리프 품질의 증거가 아니다.
-- 보정 첫 실행은 마지막 잘못된 영상 생성 명령의 따옴표 오류로 실패했다. 당시 9조건과 [실패 기록](results/2026-09-06-composition-calibration-fixture-failure.json)을 보존했고, 생성 명령만 고친 뒤 [10조건 완료](results/2026-09-06-composition-calibration.json)를 확인했다.
-- 장시간 threshold 러너에도 전체 보존 프레임 수·PTS 검사를 추가했다. [실제 수정 전/후 출력 대조](results/2026-09-06-whole-frame-output-comparison.json)에서도 이전 파일은 거부하고 새 파일은 통과시켰다. `tests/threshold-sync.integration.mjs`의 7건은 정상 시각·싱크를 받아들이고 프레임 누락/추가, 음성 200ms 지연, 표식 누락을 거부했다.
+The threshold runner gained complete frame-count/PTS checks and rejected the actual old output while accepting the corrected output. Seven threshold-sync integrations accept valid output and reject missing/extra frames, a 200 ms audio delay, and missing markers.
 
-## 수정 후 실제 60초 합성
-
-[완료한 엔진 결과](results/2026-09-06-composition-after.json)는 한국어 수동 자막 16개와 실제 효과음 16개를 함께 합성했다. 별도의 음소거 클립과 제거된 구간의 클립은 출력에서 제외했다.
-
-| 검사 | 결과 |
+| Post-fix 60-second composition check | Result |
 | --- | --- |
-| MP4 전체 프레임 | 1,448개, 자막 존재/부재와 경계 시각 PASS |
-| 실제 SRT | 16개 문구·순서 일치, 최대 시각 반올림 오차 0.333ms |
-| 효과음 | 16개 시작·끝·내부 진폭 PASS, 음소거/삭제 클립 누출 없음 |
-| AAC 디코딩 | 2,317,312샘플, 피크 약 0.19125, 내부 880Hz 진폭 약 0.049925–0.050340 |
-| 독립 A/V 표식 | 처음·중간·끝 6쌍 PASS, 최대 추가 오차 약 0.000333ms |
-| 원본 | 영상과 효과음 SHA-256 유지 |
+| Frames and captions | 1,448 frames; all presence, absence, and timing checks passed |
+| SRT | 16 texts in order; maximum rounding error 0.333 ms |
+| Effects | 16 onset, end, and interior-gain checks; no muted/deleted leakage |
+| AAC | 2,317,312 decoded samples; peak ≈0.19125; 880 Hz interior ≈0.049925–0.050340 |
+| A/V markers | Six pairs; maximum additional error ≈0.000333 ms |
+| Source and asset | Hashes preserved |
 
-효과음 내부 진폭 허용 오차는 0.006, 시작·끝과 자막 존재 허용 오차는 1/30초다. AAC 말미 패딩에는 1프레임 이내 길이 오차를 허용한다. 노란색 픽셀 검출은 모든 프레임의 자막 존재를 검사하며 모든 글자의 내용을 읽지는 않는다.
+Amplitude tolerance remained 0.006, timing tolerance 1/30 second, and AAC tail at most one frame. Pixel detection checks caption presence, not every word. Separate viewing covered the first, middle, and last numbered Korean caption PNGs, 0001/0009/0016: yellow text, black stroke, lower-center placement, and no clipping. The automated report's `visualReview: NOT_RUN` remains accurate; viewing evidence is separate.
 
-처음·중간·마지막 PNG를 직접 열어 `합성 검증 0001`, `0009`, `0016` 문구와 노란색·검은 외곽선·하단 중앙 배치, 잘림 없는 표시를 확인했다. [별도 시각 검토](results/2026-09-06-composition-visual-review.json)를 남겼다. 자동 테스트 원시 보고서의 `visualReview: NOT_RUN`은 자동 검사 범위를 정확히 유지한다.
+Eighty unit tests and 33 media/caption/effect/compatibility integrations passed. Thirty-one ran initially; two port-dependent FX03 cases passed after a permitted rerun following sandbox `EPERM`. Overlap is excluded from the count. Type checking, build, and packaging passed. Both apps passed 60-second threshold controls for import, analysis, save, complete projects, 96 actions per app, and all 1,448 frames/PTS, with matching package identities. Concurrent independent ffprobe work means those timings and resources are not standalone performance results.
 
-## 회귀 검증과 남은 범위
-
-단위 테스트 80건 통과. 미디어·자막·효과음·호환성 통합 검사 33건 중 31건은 일반 실행에서 통과했고, 로컬 HTTP 포트가 필요한 2건은 샌드박스의 `listen EPERM`으로 실행하지 못했다. 로컬 서버 실행 권한으로 해당 `FX03:` 검사를 재실행해 두 건 모두 통과했다(필터와 함께 실행된 이미 통과한 검사 한 건은 중복 집계하지 않음). TypeScript·프로덕션 빌드·Mac 패키징도 완료했다.
-
-수정 후 [브라우저/Mac의 60초 threshold 사전 검사](results/2026-09-06-frame-boundary-app-smoke.json)도 종료 코드 0으로 완료했다. 두 앱에서 실제 가져오기·분석·MP4 저장·프로젝트 저장·각 96개 UI 조작을 통과했고, 두 출력 모두 1,448프레임과 전체 PTS 검사를 통과했다. [Mac 패키지](results/2026-09-06-frame-boundary-package.json) 안의 수정 파일 해시도 작업 소스와 같았다. 이 사전 검사 중 별도 출력 비교용 ffprobe를 실행했으므로 기록된 자원·시간 수치를 독립 성능 결과로 사용하지 않는다. 장시간 반복 수에도 합산하지 않는다. 두 앱에서 자막·효과음을 함께 편집하는 흐름, 10분/60분 동시 합성 반복, 해당 단계 취소·재시도·메모리·UI 성능은 아직 검증하지 않았다. [기존 CSS 12회](2026-09-06-selector-overhead-results.md)는 수정 전 러너의 기준을 통과한 측정으로 보존하며 수정 후 정확성·성능으로 재사용하지 않는다.
-
-실제 한국어 발화 CER, 사람의 컷 호흡·청취 품질 평가와 작업 시간 절감, 인증된 AI, Mac OS 오프라인 차단, OS cold-cache 검증도 별도로 남는다.
-
-재현 명령:
+At this stage, actual composed editing in both apps, long composition, cancellation/retry, RSS, and UI performance were not yet run; the later app record continues this work. Earlier CSS-based 12-run measurements remain pre-fix evidence. Human Korean quality/CER/pacing/listening/time, authenticated AI, native OS-level offline behavior, and OS-wide cold caches are separate.
 
 ```sh
 node --test tests/frame-boundary.integration.mjs
@@ -62,4 +41,19 @@ node --test tests/composition-smoke.integration.mjs
 node --test tests/threshold-sync.integration.mjs
 ```
 
-후속 두 앱 동시 합성, 첫 60분 실패 및 개선 후보 재검사는 [두 앱 동시 합성 기록](2026-09-06-composition-app-results.md)에서 이어간다. 위 미실행 표기는 이 사전 검사 시점의 범위다.
+## Evidence and related records
+
+- [2026-09-06-long-composition-plan.md](../plans/2026-09-06-long-composition-plan.md)
+- [2026-09-06-composition-before.json](results/2026-09-06-composition-before.json)
+- [ffmpeg-filters.html](https://ffmpeg.org/ffmpeg-filters.html#select_002c-aselect)
+- [2026-09-06-frame-boundary-before.json](results/2026-09-06-frame-boundary-before.json)
+- [2026-09-06-frame-boundary-after.json](results/2026-09-06-frame-boundary-after.json)
+- [2026-09-06-composition-calibration-fixture-failure.json](results/2026-09-06-composition-calibration-fixture-failure.json)
+- [2026-09-06-composition-calibration.json](results/2026-09-06-composition-calibration.json)
+- [2026-09-06-whole-frame-output-comparison.json](results/2026-09-06-whole-frame-output-comparison.json)
+- [2026-09-06-composition-after.json](results/2026-09-06-composition-after.json)
+- [2026-09-06-composition-visual-review.json](results/2026-09-06-composition-visual-review.json)
+- [2026-09-06-frame-boundary-app-smoke.json](results/2026-09-06-frame-boundary-app-smoke.json)
+- [2026-09-06-frame-boundary-package.json](results/2026-09-06-frame-boundary-package.json)
+- [2026-09-06-selector-overhead-results.md](2026-09-06-selector-overhead-results.md)
+- [2026-09-06-composition-app-results.md](2026-09-06-composition-app-results.md)

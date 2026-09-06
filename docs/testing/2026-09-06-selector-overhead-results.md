@@ -1,61 +1,50 @@
-# 반복 UI 탐색 비용 분리 — 기존 측정 기준 12회 통과
+# Automation selector overhead and historical performance
 
-2026-09-06. [편집 화면 재사용 후보](2026-09-06-editor-render-memory-results.md)는 Chrome 60분 세 번째 실행에서 2.145GiB로 실패했다. UI만 반복한 진단에서도 사용 중인 JavaScript 힙보다 렌더러 RSS가 크게 유지됐다. [진단 계획](../plans/2026-09-06-editor-render-memory-plan.md)에 따라 앱 변경 없이 자동화의 요소 탐색 방식을 비교했다. 이 기록은 제품 메모리를 수정했다는 주장이 아니다.
+2026-09-06. Following the editor candidate's 2.145 GiB memory failure, this experiment changed only the benchmark locator. Product code remained `a06c2b0`.
 
-## 동일 코드의 진단 비교
+## Controlled interaction diagnostic
 
-같은 앱·진단 스크립트·실제 번들·영상으로 분석 한 번과 288개 조작을 수행했다. 요소 탐색을 역할 기반(`getByRole`) 또는 CSS로 선택했다. 실제 Playwright 클릭·입력, 복원/실행 취소·설정·재생 상태 검사는 유지했다. 강제 GC나 힙 스냅샷은 사용하지 않았다.
+Each condition executed 288 real click actions against the same app, runner, build, and media, without forced garbage collection or heap snapshots.
 
-| 조건 | 합산 RSS 최대 | 마지막 렌더러 RSS | UI 구간 브라우저 TaskDuration 증가 | UI 경과 시간 |
+| Locator | Peak app RSS (GiB) | Final renderer RSS (MiB) | Task duration (s) | Interaction elapsed (s) |
 | --- | --- | --- | --- | --- |
-| CSS 선택자 | 1.528GiB | 396.47MiB | 3.824초 | 25.842초 |
-| 역할 기반 재실행 | 1.679GiB | 541.23MiB | 28.135초 | 45.458초 |
+| CSS | 1.528 | 396.47 | 3.824 | 25.842 |
+| Role | 1.679 | 541.23 | 28.135 | 45.458 |
 
-[CSS 원시 결과](results/2026-09-06-selector-diagnostic-css.json), [역할 기반 원시 결과](results/2026-09-06-selector-diagnostic-role.json), [동일 소스·입력 및 RSS 감사](results/2026-09-06-selector-diagnostic-comparison.json). 두 실행 모두 288개 조작을 완료했고 앱 오류·외부 요청·원본 변경이 없었다. 종료 시 실제 DOM 수는 11,962개, 컷 행은 1,000개였다. 앞선 역할 기반 진단의 마지막 렌더러도 543.47MiB로 비슷했지만, 이 소수 실행으로 일반적인 절감률이나 메모리 누수를 단정하지 않는다.
+Both retained 11,962 DOM nodes and 1,000 rows with no errors or source changes. The earlier role-based diagnostic ended at 543.47 MiB renderer RSS. Installed Playwright source and hashes confirmed that role queries perform accessibility-related work. This is evidence about this diagnostic, not a general memory saving or proof of a product leak.
 
-설치된 Playwright의 `queryRole` 구현은 후보 요소의 역할·가시성·접근성 이름을 계산한다. 실제 설치 번들의 해시도 [소스 기록](results/2026-09-06-selector-source.json)에 남겼다. 위 실행 차이는 자동화 탐색 비용의 영향을 지지하는 관측이며, 앱의 모든 메모리 사용 원인을 설명하는 증거는 아니다. `TaskDuration`은 브라우저 진단 지표로, 사용자가 편집에 쓴 시간을 의미하지 않는다.
+The threshold runner gained optional `--ui-locator=css`; role lookup remains the default. CSS selection still checks the actual accessible label, element type/name, and enabled state. Actions, output oracles, and limits stayed unchanged. Two short checks across both apps passed separately from the long matrix.
 
-## 정식 러너의 비교 조건
+## Historical long matrix
 
-`scripts/threshold-benchmark.mjs`에 `--ui-locator=css` 옵션을 추가했다. 기본값 `role`과 기존 실행 기록은 유지한다. 변경 범위는 반복 조작의 대상 찾기와 결과에 모드를 기록하는 부분이다. CSS는 실제 버튼의 `aria-label`, 숫자 입력 타입·이름으로 같은 대상을 선택한다.
+Browser 60-minute repetitions had analysis times of 37.023 / 37.193 / 37.451 seconds, export times of 142.172 / 141.479 / 141.347 seconds, and RSS peaks of 1.845 / 1.929 / 1.980 GiB. Earlier role runs reached 1.860 / 1.924 / 2.145 GiB. Full analyses, projects, and MP4 bytes matched that earlier candidate. The 18 markers passed with maximum additional A/V error of 0.067 ms. Highest action p95 was 68.234 ms. Early PCM cancellation became visible in 1.1 ms, readiness took 318.117 ms, and the next run completed. The maximum sample interval was 279.029 ms; the narrowest RSS margin was 20.44 MiB.
 
-분석·출력·저장·취소·1,000컷·96개 조작·전체 디코딩·독립 싱크·원본 해시 검사는 유지한다. RSS에서 추정 자동화 비용을 빼지 않으며, 메모리 2GiB·응답 p95 200ms를 포함한 기존 기준도 그대로다. [고정한 소스·번들·패키지 해시](results/2026-09-06-selector-source.json)를 확인했다. 앱은 `a06c2b0`의 실행 파일과 같고 테스트 러너만 변경됐다.
-
-[60초 브라우저/Mac 사전 검사](results/2026-09-06-selector-smoke.json)는 두 앱 모두 실제 분석·출력·저장·각 96개 조작·디코딩·싱크를 통과했다. 이 두 실행은 10분/60분 성능 12회에 포함하지 않는다.
-
-## Chrome 60분 3회 완료
-
-`test-output/threshold-selector-comparison/browser-long/`의 3회가 종료 코드 0으로 완료됐다. [원시 결과](results/2026-09-06-selector-browser-long.json)와 [전체 분석·프로젝트·출력 및 RSS 감사](results/2026-09-06-selector-browser-long-audit.json)를 보존한다.
-
-| 반복 | 분석 시간 | 출력 시간 | 합산 RSS 최대 | 같은 앱의 이전 역할 기반 RSS |
+| Surface / duration | Analysis median / max (s) | Export median / max (s) | Peak RSS (GiB) | Highest action p95 (ms) |
 | --- | --- | --- | --- | --- |
-| 1 | 37.023초 | 142.172초 | 1.845GiB | 1.860GiB |
-| 2 | 37.193초 | 141.479초 | 1.929GiB | 1.924GiB |
-| 3 | 37.451초 | 141.347초 | 1.980GiB | 2.145GiB |
+| Chrome / 10 min | 6.529 / 6.712 | 24.065 / 24.084 | 1.733 | 67.319 |
+| Mac / 10 min | 6.310 / 6.450 | 24.044 / 24.050 | 1.160 | 41.046 |
+| Mac / 60 min | 36.457 / 36.503 | 142.146 / 142.707 | 1.319 | 50.548 |
 
-CSS 조건은 3회 모두 기존 시간·메모리·조작 기준을 통과했다. 각 동작군의 p95 중 최대는 68.234ms였다. 전체 분석 데이터와 저장 프로젝트(저장 시각 제외)는 기준과 같았고 실제 저장한 MP4 SHA-256도 일치했다. 전체 디코딩과 18쌍의 독립 표식을 확인했으며 최대 추가 A/V 오차는 약 0.067ms였다.
+The 10-minute cancellations occurred during preparation; no 10-minute role comparison was run. Mac 60-minute cancellation occurred during early PCM processing, with 1.0 ms feedback and 308.297 ms readiness. Across all 12 runs and four cancellation/retry conditions, 1,152 interactions passed, output hashes matched, and the maximum RSS sample interval was 280.129 ms.
 
-취소는 PCM 분석 초기의 실제 작업에서 표시 1.1ms, 재시도 가능 상태까지 318.117ms였다. 취소 응답·프로젝트 보존·두 번째 반복의 완료를 확인했다. 중간 PCM 또는 자막 합성 취소까지 검사한 결과로 확대하지 않는다. RSS 표본 간 최대 간격은 279.029ms였다.
+## Later correctness finding
 
-메모리 최대값의 기준 대비 여유는 약 20.44MiB에 불과하다. 같은 앱이라도 두 번째 실행의 CSS RSS가 이전 역할 기반 값보다 조금 높았으므로, 모든 실행에서 일정한 메모리를 절감한다고 주장하지 않는다. 이 결과는 기록한 합성 입력·기기·캐시·탐색 모드의 관측값이다. 제품 메모리 수정 또는 모든 환경의 2GiB 보장으로 표현하지 않는다.
+A subsequent independent full-frame oracle found retained boundary frames. These 12 runs passed the earlier runner's performance and sync checks, but byte equality did not prove correct cutting. They must **not** be reused as performance or correctness evidence for the later integer-PTS fix. Earlier role-based failures remain valid historical records. Human quality, OS-wide/cache conditions, and authenticated AI also remain separate.
 
-## 10분 두 앱 6회 완료
+## Evidence and related records
 
-같은 소스·번들·패키지로 [10분 두 앱 6회](results/2026-09-06-selector-ten-minute.json)도 완료했다. [완료된 전체 9회 감사](results/2026-09-06-selector-nine-run-audit.json)에서 모든 실행의 전체 분석·프로젝트(저장 시각 제외)·실제 출력 바이트가 기준과 같음을 확인했다.
-
-| 조건 | 분석 중앙값 / 최대 | 출력 중앙값 / 최대 | RSS 최대 | 동작군별 최대 p95 |
-| --- | --- | --- | --- | --- |
-| Chrome 10분 × 3 | 6.529 / 6.712초 | 24.065 / 24.084초 | 1.733GiB | 67.319ms |
-| Mac 10분 × 3 | 6.310 / 6.450초 | 24.044 / 24.050초 | 1.160GiB | 41.046ms |
-
-두 조건의 취소·기존 프로젝트 보존·재시도를 확인했다. 취소 시점은 작업 준비 단계였으므로 실제 PCM 중간 취소의 근거로 사용하지 않는다. 이 표는 CSS 조건의 절대 측정값이며, 같은 앱의 역할 기반 대조 측정이 없는 10분 조건에서 선택자 변경의 절감 효과를 계산하지 않는다.
-
-## Mac 60분 완료 및 전체 12회 감사
-
-[Mac 60분 3회](results/2026-09-06-selector-mac-long.json)가 종료 코드 0으로 완료됐다. 분석 중앙값/최대는 36.457/36.503초, 출력은 142.146/142.707초, 합산 RSS 최대는 1.319GiB, 동작군별 최대 p95는 50.548ms였다. 실제 PCM 분석 초기에 취소해 표시 1.000ms·재시도 가능 상태 308.297ms와 다음 반복 완료를 확인했다.
-
-[전체 12회 감사](results/2026-09-06-selector-twelve-run-audit.json)는 고정한 소스·번들·패키지, 전체 분석·프로젝트(저장 시각 제외), 실제 MP4 바이트 동일성, 디코딩·싱크·원시 RSS를 확인했다. 네 조건의 취소·프로젝트 보존·재시도와 총 1,152개 UI 조작을 완료했다. 전체 RSS 최대 표본 간격은 280.129ms다. 같은 앱의 역할 기반 대조가 없는 Mac 조건에서 선택자 변경의 절감률을 계산하지 않는다.
-
-**후속 정확성 검사에서 발견한 제한:** 이 12회는 당시 러너의 시간·메모리·조작·표식 싱크 기준을 통과한 기록이다. 이후 전체 프레임 수를 검사한 60초 자료에서 컷 경계에 프레임이 남는 결함이 발견됐다. 기존 출력과 바이트가 같다는 사실은 그 결함이 없다는 증거가 아니다. 정수 타임스탬프 수정 후의 성능·출력 증거로 이 기록을 재사용하지 않는다. 상세 재현과 수정 검사는 [프레임 경계 및 동시 합성 검사](2026-09-06-composition-oracle-results.md)에 기록한다.
-
-기존 역할 기반 메모리 실패와 실제 한국어 품질·cold-cache·인증 AI 등 미검증 범위는 그대로 남는다. 다음 동시 합성 범위는 [긴 영상 계획](../plans/2026-09-06-long-composition-plan.md)에 따로 고정했다.
+- [2026-09-06-editor-render-memory-results.md](2026-09-06-editor-render-memory-results.md)
+- [2026-09-06-editor-render-memory-plan.md](../plans/2026-09-06-editor-render-memory-plan.md)
+- [2026-09-06-selector-diagnostic-css.json](results/2026-09-06-selector-diagnostic-css.json)
+- [2026-09-06-selector-diagnostic-role.json](results/2026-09-06-selector-diagnostic-role.json)
+- [2026-09-06-selector-diagnostic-comparison.json](results/2026-09-06-selector-diagnostic-comparison.json)
+- [2026-09-06-selector-source.json](results/2026-09-06-selector-source.json)
+- [2026-09-06-selector-smoke.json](results/2026-09-06-selector-smoke.json)
+- [2026-09-06-selector-browser-long.json](results/2026-09-06-selector-browser-long.json)
+- [2026-09-06-selector-browser-long-audit.json](results/2026-09-06-selector-browser-long-audit.json)
+- [2026-09-06-selector-ten-minute.json](results/2026-09-06-selector-ten-minute.json)
+- [2026-09-06-selector-nine-run-audit.json](results/2026-09-06-selector-nine-run-audit.json)
+- [2026-09-06-selector-mac-long.json](results/2026-09-06-selector-mac-long.json)
+- [2026-09-06-selector-twelve-run-audit.json](results/2026-09-06-selector-twelve-run-audit.json)
+- [2026-09-06-composition-oracle-results.md](2026-09-06-composition-oracle-results.md)
+- [2026-09-06-long-composition-plan.md](../plans/2026-09-06-long-composition-plan.md)

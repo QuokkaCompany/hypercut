@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a reproducible problem in HyperCut.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Use English and synthetic or shareable examples. Do not attach private media, API keys, or personal paths. For vulnerabilities, follow SECURITY.md."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Commit/version, OS, CPU, browser or native app, Node and FFmpeg versions.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include input format, selected track, settings, and a minimal example when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots
+      description: Redact private information. State whether the issue also occurs after restarting.

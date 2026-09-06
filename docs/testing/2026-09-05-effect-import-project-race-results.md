@@ -1,56 +1,36 @@
-# 효과음 가져오기 중 프로젝트 바뀜과 데이터 혼합 수정
+# Preventing project replacement and mixed effects during import
 
-실행일: 2026-09-05 America/New_York. `6787a35`에서 문제를 재현한 뒤 수정한 브라우저 번들과 Mac 패키지를 검사했다. [계획](../plans/2026-09-05-effect-import-project-race-plan.md), [수정 전 8조건](results/2026-09-05-effect-import-project-races-before.json), [수정 후 8조건](results/2026-09-05-effect-import-project-races-after.json)을 연결한다.
+Executed 2026-09-05 America/New_York. Reproduced on `6787a35` and verified corrected browser/Mac builds. A pending read of project B could finish while adding C to A despite disabled new-open controls. B became current, then A's stale effect list plus C was installed: saved data mixed B settings/cuts/captions/glossary with A+C effects. Reconnect similarly replaced A with B, without necessarily mixing lists.
 
-## 재현과 수정
+Advance the shared operation sequence when effect import begins, invalidating earlier project reads. Keep current target through import and permit a later explicit B selection. `Effects.tsx` validation/add/cancel behavior stayed unchanged.
 
-같은 영상을 사용하는 프로젝트 A를 편집하면서 B 파일 열기를 요청하고, B의 파일 읽기가 끝나기 전에 A에 효과음 C를 추가하는 순서를 검사했다. 효과음을 불러오는 중에는 새 파일 열기 버튼이 비활성화되지만 이미 시작한 B 읽기는 여전히 완료될 수 있었다. 그러면 B가 화면에 설치되고, 나중에 완료한 효과음 추가는 A의 이전 효과음 목록을 사용했다. 실제 저장 파일에 **B의 설정·컷·자막·용어와 A+C의 효과음이 섞였다.** Chrome와 Mac에서 각각 재현했다.
-
-효과음 재연결 중에도 이전 B 읽기가 적용돼 작업 대상이 바뀌었다. 이 경우는 효과음 목록이 혼합되는 것이 아니라 A의 재연결 도중 B로 교체되는 문제였다. 두 앱에서 각각 재현했다. 효과음 추가가 먼저 끝난 경우는 기존 편집 수정 번호 검사로 보호됐으며, 취소 후 B를 명시적으로 다시 선택하는 경우도 이미 정상 동작했다.
-
-효과음 가져오기를 시작할 때 공통 작업 순서 번호를 갱신하도록 수정했다. 앞선 프로젝트 읽기는 적용하지 않고 현재 효과음 작업 대상을 유지한다. 취소·완료 후 사용자가 B를 다시 선택하면 새로운 읽기 요청으로 정상 적용된다. `Effects.tsx`의 음원 검사·추가·취소 동작은 변경하지 않았다.
-
-## 결과
-
-| 실행 순서 | 수정 전 Chrome / Mac | 수정 후 Chrome / Mac |
+| Order | Before, Chrome/Mac | After |
 | --- | --- | --- |
-| B 읽기 → C 가져오기 시작 → B 읽기 완료 → C 완료 | FAIL / FAIL, 저장 데이터 혼합 | PASS / PASS |
-| B 읽기 → C 가져오기 완료 → B 읽기 완료 | PASS / PASS | PASS / PASS |
-| B 읽기 → A 음원 재연결 시작 → B 읽기 완료 → 재연결 완료 | FAIL / FAIL, 작업 대상 교체 | PASS / PASS |
-| B 읽기 → C 가져오기 취소 → B 다시 선택 → 이전 응답 해제 | PASS / PASS | PASS / PASS |
+| B read held; start C; release B; complete C | FAIL/FAIL, mixed saved data | PASS/PASS |
+| B held; complete C; release B | PASS/PASS | PASS/PASS |
+| B held; reconnect A; release B; finish reconnect | FAIL/FAIL, changed target | PASS/PASS |
+| B held; cancel C; select B again; release old responses | PASS/PASS | PASS/PASS |
 
-수정 전 4 FAIL·4 PASS, 수정 후 **8 PASS**다. 수정 전·후에는 같은 시험 코드 SHA-256을 사용했다. 모든 조건에서 저장 시각을 제외한 전체 v7 프로젝트를 정답과 비교했다. 추가 성공 4조건은 실행 취소 후 A, 다시 실행 후 A+C로 복원되는 전체 저장 내용과 실제 미리보기의 효과음 1개 합성도 확인했다. 마지막으로 B를 다시 열고 저장한 전체 내용이 B와 일치하는지 검사했다.
+Pre-fix: four FAIL/four PASS. Post-fix: **eight PASS**, same runner SHA-256. Compare complete v7 projects excluding save timestamp. Four successful-add conditions verified undo→A, redo→A+C, real preview with one effect, and subsequent complete B reopen/save. All source video/three asset hashes remained; zero page errors/observed external requests, not OS-wide network proof.
 
-수정 후 모든 조건에서 영상과 세 음원의 SHA-256이 유지됐다. 페이지 오류와 관측한 외부 브라우저 요청은 0건이었다. 이는 브라우저 요청 관측 범위이며 OS 전체 네트워크 차단 시험을 뜻하지 않는다.
+Regressions: 75 units, build/package, ordinary effects in both apps (two), project read/save races (eight), and core editing/manual-AI JSON in both apps (two): 12 UI regression runs, separate from eight new races. Package/source hashes matched.
 
-[관련 회귀 실행 기록](results/2026-09-05-effect-import-project-races-regressions.json)은 다음과 같다.
+Delay real `File.text()` returns rather than invoking disabled actions. Browser relays selected bytes to actual `/api/effects`, verifies returned fingerprint, then supplies the real result; Mac delays selection responses but uses real import IPC. Native dialog operation is not tested. Canceled-response `fulfill-resolved` is not evidence of consumed body; saved state independently confirmed C absent.
 
-| 관련 검증 | 결과 |
-| --- | --- |
-| 단위 테스트 | 75 PASS |
-| 타입 검사·브라우저 빌드·Mac 패키징 | PASS |
-| 일반 효과음 편집·잘못된 재연결 후 재시도·프로젝트 저장·자막 포함 MP4 전체 디코딩·PCM 수치 | Chrome/Mac 2회 PASS |
-| 기존 프로젝트 파일 읽기·저장 응답 경합 | 8조건 PASS |
-| 기본 무음 분석·복원·프로젝트·미리보기·MP4 출력·수동 AI JSON | Chrome/Mac 2회 PASS |
-
-회귀는 3개 흐름의 12회 실행이다. 이번 경합 8회와 별도이며 실제 한국어 품질이나 인증된 모델 응답을 평가한 횟수가 아니다. 회귀 기록의 앱 소스·Mac 패키지 해시도 수정 후 경합 기록과 일치한다.
-
-## 시험 구현과 초기 실패 기록
-
-순서를 제어하기 위해 `File.text()`가 실제 파일 내용을 읽은 뒤 반환하는 시점을 대기시켰다. 앱 내부의 비활성화된 열기 동작을 강제로 호출하지 않았다. 브라우저는 선택한 실제 음원 파일의 바이트를 실제 `/api/effects`에 multipart로 중계하고, 서버가 검사해 반환한 음원 지문이 원본과 일치하는지 확인한 뒤 그 응답을 앱에 전달했다. Mac은 파일 선택 응답을 대기시킨 뒤 생성 파일 경로나 취소를 반환했다. Mac 음원 검사·가져오기는 실제 IPC 경로다. 네이티브 파일 선택 창 자체를 조작하는 시험은 아니다.
-
-브라우저 취소 조건은 앱의 실제 취소 버튼을 사용했다. 취소한 원래 요청에 대한 `fulfill-resolved`는 앱이 응답을 소비했다는 의미가 아니다. 뒤늦은 응답 후 저장 내용에 C가 추가되지 않았음을 별도로 확인했다.
-
-초기 [v1 기록](results/2026-09-05-effect-import-project-races-harness-v1.json)은 첫 조건 이후 결과 정리가 끝나지 않아 시험 전용 프로세스를 종료한 미완료 실행이다. [v2 기록](results/2026-09-05-effect-import-project-races-harness-v2.json)은 브라우저 `route.fetch()` 중계 파일이 FFprobe에서 유효하지 않은 입력으로 거부돼 브라우저 4조건을 제품 판정에서 제외했다. Mac에서는 혼합·교체를 재현했으나 이 실행도 전체 통과 수치에 합산하지 않았다. 또한 연결된 브라우저를 닫은 뒤 브라우저 서버가 남는 정리 문제를 수정했다. v2 결과가 저장된 것을 확인한 후 이 시험이 시작한 네 개 브라우저만 종료했고 드라이버는 종료 코드 1로 끝났다.
-
-기준이 되는 수정 전 v3와 수정 후 실행은 실제 바이트 중계와 명시적인 브라우저 서버 종료를 사용한다. 두 실행 모두 업로드 중계 오류 없이 저장 비교까지 도달했고, 수정 전은 검증 실패에 따른 종료 코드 1, 수정 후는 종료 코드 0으로 끝났다. 일반 효과음 회귀에서는 중계 없는 브라우저 업로드를 별도로 검사한다.
-
-## 실행 방법과 범위
+Harness v1 was incomplete after cleanup stalled and test processes were stopped. v2 browser `route.fetch()` payloads were invalid to ffprobe, excluding all four browser conditions from product judgment; Mac reproduced the defects but the run was not counted as complete. Explicit browser-server cleanup fixed four runner-owned leftovers; driver exited 1. Canonical v3 before/after used actual-byte relays and explicit cleanup, reaching saved comparisons without upload errors; exit 1 before/0 after. Ordinary effect regressions separately exercised unrelayed browser uploads.
 
 ```sh
-node scripts/effect-import-project-race-e2e.mjs --output=test-output/새-시험-이름
+node scripts/effect-import-project-race-e2e.mjs --output=test-output/FRESH_RUN_NAME
 ```
 
-현재 브라우저 빌드, Mac 패키지, Chrome와 FFmpeg가 필요하다. 생성한 영상과 세 개의 합성 WAV만 사용하며 인증된 LLM 요청은 발생시키지 않는다. 기존 결과 폴더를 덮어쓰지 않는다. 소스·시험 코드·패키지 해시는 원시 JSON에 기록했다.
+Requires current browser build, Mac package, Chrome, FFmpeg; generated video/three WAVs only, no authenticated LLM. This closes the previous named effect-import gap, not every file/project/OS race or all E06. Human quality/time, native network isolation, real AI, and final-candidate long performance remained separate.
 
-이번 검사는 앞선 [편집창별 취소 검사](2026-09-05-editor-job-race-results.md)에서 남겨 둔 효과음 파일 가져오기와 진행 중인 프로젝트 파일 읽기의 교차를 보완한다. 모든 종류의 파일 창·프로젝트 변경 경합이나 E06 전체의 완료로 확대하지 않는다. 실제 한국어 음성 품질·작업 시간 절감, 인증된 AI 호출, Mac OS 네트워크 차단 및 최종 후보 장시간 성능은 별도의 미완료 항목이다.
+## Evidence and related records
+
+- [2026-09-05-effect-import-project-race-plan.md](../plans/2026-09-05-effect-import-project-race-plan.md)
+- [2026-09-05-effect-import-project-races-before.json](results/2026-09-05-effect-import-project-races-before.json)
+- [2026-09-05-effect-import-project-races-after.json](results/2026-09-05-effect-import-project-races-after.json)
+- [2026-09-05-effect-import-project-races-regressions.json](results/2026-09-05-effect-import-project-races-regressions.json)
+- [2026-09-05-effect-import-project-races-harness-v1.json](results/2026-09-05-effect-import-project-races-harness-v1.json)
+- [2026-09-05-effect-import-project-races-harness-v2.json](results/2026-09-05-effect-import-project-races-harness-v2.json)
+- [2026-09-05-editor-job-race-results.md](2026-09-05-editor-job-race-results.md)

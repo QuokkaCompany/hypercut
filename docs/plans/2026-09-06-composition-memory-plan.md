@@ -1,68 +1,61 @@
-# 자막 포함 합성 메모리 검사
+# Caption composition memory investigation
 
-2026-09-06. 첫 브라우저 60분 동시 합성의 출력 단계에서 앱 트리 RSS 2.205GiB를 관측했다. 해당 표본의 FFmpeg는 약 669.97MiB였다. 출력 정확성·취소·UI까지의 실행 결과는 별도로 완료해서 보존한다. 메모리 기준 2GiB를 변경하지 않는다.
+2026-09-06. First browser 60-minute composition peaked at 2.205 GiB union RSS, including FFmpeg about 669.97 MiB, above the unchanged 2 GiB target. Complete and preserve output/cancel/UI evidence separately.
 
-현재 출력 인코더는 최대 4개 스레드로 제한하지만 복합 필터의 동시 처리는 기본값이다. [FFmpeg 공식 문서](https://ffmpeg.org/ffmpeg.html#Advanced-options)는 `-filter_complex_threads`의 기본값을 사용 가능한 CPU 수로 설명한다. 자막 PNG의 크기 변환과 합성에 쓰는 필터 스레드를 1개로 제한하는 후보를 검사한다. 이것이 원인이라는 결론은 비교 측정 후에 낸다.
+[FFmpeg](https://ffmpeg.org/ffmpeg.html#Advanced-options) documents default complex-filter threads as available CPUs. Compare narrowly scoped candidates using the same 60-second backend input before expanding to app runs. Preserve actual source, project, output hashes, all frames/captions/effects/sync, raw RSS, process peaks, and time. Backend-only diagnostics do not establish whole-app performance.
 
-먼저 같은 60초 합성 입력과 현재 엔진에서 백엔드 전용 진단을 실행한다. 후보 적용 뒤 같은 진단을 반복해 출력 SHA-256·프로젝트 입력·모든 프레임과 자막/효과음/싱크 결과를 비교한다. 프로세스 트리 RSS의 원시 표본·프로세스별 피크와 출력 시간을 보존한다. 이 진단에는 브라우저가 없으므로 전체 앱 성능 통과로 사용하지 않는다.
+## Decoder/filter and caption-response comparisons
 
-첫 후보는 자막이 켜진 합성 그래프의 필터 동시 처리만 대상으로 했다. 비교 결과가 부족해 되돌렸고, 다음 후보는 자막 포함 출력에서 원본 영상과 PNG 입력의 디코더 스레드를 각각 1개로 제한한다. 인코더 설정·해상도·프레임·음량·검증 기준은 유지한다. CFR/VFR·원본 PTS 오프셋·범위 미리보기·자막 3종·효과음 통합 회귀 검사를 수행하고 Mac 앱을 다시 패키징한다. 실제 두 앱 60초 동시 합성·저장·취소·재시도를 통과한 후 브라우저 60분부터 재측정한다.
+| Candidate | Backend RSS MiB | Seconds | Decision |
+| --- | --- | --- | --- |
+| Baseline | 730.203 | 3.579 | Reference |
+| One complex-filter thread | 713.141 | 4.684 | Insufficient improvement; reverted |
+| One decoder thread per source/PNG input | 452.375 | 3.537 | Same output SHA-256/oracle; advance through regressions |
 
-시간이 늘면 실제 증가량도 기록한다. 바이트 차이 또는 정확성 실패가 있으면 원인을 확인하기 전 장시간 반복으로 확대하지 않는다. 첫 장시간 조건을 통과한 뒤에도 나머지 반복과 플랫폼을 모두 확인해야 하며, 과거 실패를 덮어쓰지 않는다.
+Keep encoder/resolution/frames/gain/quality targets. Regress CFR/VFR, PTS offset, range preview, three caption styles, effects; repackage and pass both apps' short composition/save/cancel/retry before long runs. Investigate unexplained bytes/correctness changes first and report time costs.
 
-## 비교와 추가 조작 목표
+Initial long caption-action p95 was 239.359 ms. Memoize a separate caption list with primitive row props, retaining 1,000 rows, current handlers, keyboard controls, unapplied text protection, timing edits, undo/redo, and complete saved-project checks. The first rerun met memory at 1.968 GiB but failed caption p95 at 224.978 ms. Stop further conditions; a 32.375 MiB margin is not repeated stability. Preserve [app results](../testing/2026-09-06-composition-app-results.md).
 
-동일 60초 백엔드 진단에서 기본값은 730.203MiB·3.579초였다. 필터 1개 후보는 713.141MiB·4.684초로 개선 폭이 작아 되돌렸다. 디코더 1개 후보는 452.375MiB·3.537초이며 실제 출력 SHA-256과 독립 정답이 같았다. 단일 백엔드 비교이며 전체 앱·장시간 절감률로 일반화하지 않는다.
+`caption-ui-diagnostic.mjs` measures 32 actions on the same 1,000-caption project, separating delivered input, state checks, and two animation frames, with CDP traces and final project comparison. Instrumentation is separate from formal runs; event-to-frame timing alone is not visual correctness proof.
 
-첫 60분 자막 조작 p95도 239.359ms로 200ms 기준을 초과했다. 자막 목록을 별도 컴포넌트로 나누고 행에는 숫자·문자열·불리언을 전달해 선택·문구·시각·검토 상태가 달라진 행을 다시 그린다. 모든 1,000개 행과 기본 버튼 키보드 동작을 유지하며 최신 목록의 이벤트 처리기로 선택한다. 미적용 문구 보호·시각 수정·실행 취소/다시 실행·저장 전체 비교를 두 앱에서 검사한 뒤 같은 장시간 러너로 판정한다.
+| Diagnostic | p95 / max ms | Interpretation |
+| --- | --- | --- |
+| No prior analysis/export | 145.416 / 282.421 | Diagnostic only |
+| Test-only empty valid source VTT | 198.863 / 264.640 | Does not support VTT as main cause |
+| Actual analysis/waveform present | 204.211 / 221.280 | Reproduces latency |
+| Test-only background blur disabled | 205.592 / 209.739 | Does not support changing design |
+| Offscreen rows with `content-visibility:auto` | 185.047 / 190.624 | Candidate; not a formal pass |
 
-## 첫 후보의 장시간 결과와 지연 진단
+Directly removing React-owned track nodes caused a React removal error: invalid diagnostic, not a product defect/performance result. Diagnostics missing a project confirmation or assuming one renderer were runner failures. Native samples mostly resolved to ChromeMain offsets; about 98 ms top-level work did not identify a specific function. Confirm target PID through page markers/process lists. Keep raw scripts/results.
 
-첫 후보의 60분 재측정은 RSS 1.968GiB로 메모리 기준을 충족했지만 자막 p95 224.978ms로 실패했다. 두 번째 반복과 다른 조건으로 확대하지 않았다. 소스·패키지·원시 RSS·전체 프로젝트·MP4/SRT·독립 정답을 감사했고 결과를 [동시 합성 기록](../testing/2026-09-06-composition-app-results.md)에 보존했다. 이 한 실행의 여유 32.375MiB를 반복 안정성으로 일반화하지 않는다.
+Content-visibility reduced one diagnostic's TaskDuration 2.186→1.883 s and frame-task sum 2.695→2.305 s. Inspect visible wording/timing/selection, then test both apps' last row, Enter/Space, text/timing edits, undo/redo/save and short composition before formal repetition. Do not add a unit test mirroring CSS.
 
-`scripts/caption-ui-diagnostic.mjs`는 같은 60분 원본과 1,000개 자막 프로젝트에서 32개 선택/수정/취소 조작을 수행한다. 클릭/입력의 전달 완료, 결과 확인, 두 번의 animation frame까지 시간을 구분하고 CDP 실행 기록을 보존한다. 진단용 추가 계측의 비용이 있으므로 정식 성능 반복에 합산하지 않는다. 입력 이벤트의 두 프레임 시간도 최종 모든 시각 결과가 올바르다는 독립 증거로 사용하지 않는다. 종료 후 전체 저장 프로젝트를 비교한다.
+The CSS candidate passed short/function checks. Long run one: 1.962 GiB, caption p95 183.357 ms; run two: 2.140 GiB, 184.149 ms, memory failure. Both outputs/oracles/bytes/projects and cancel→next output passed. Stop third/other conditions. At export peak, renderer grew 403.688→516.563 MiB and backend 212.750→253.094 MiB; do not label this a proven leak.
 
-분석·출력을 생략한 최초 진단은 p95 145.416ms·최대 282.421ms였다. 원본 청취용 VTT 전체 재생성의 영향을 분리하기 위해 테스트 페이지에서만 해당 Blob을 빈 유효 VTT로 바꾼 대조는 p95 198.863ms·최대 264.640ms였다. 이 두 소수 실행은 VTT가 주원인이라는 가설을 뒷받침하지 않아 제품의 원본 자막을 변경하지 않는다. DOM의 track 요소를 직접 제거했던 앞선 대조는 React의 자식 제거 오류를 유발해 무효이며, 제품 결함이나 성능 결과로 판정하지 않는다. 세 실행의 원시 결과와 정확한 실행 스크립트를 별도로 보존한다.
+## Selector and video-lifetime diagnostics
 
-다음 진단은 실제 분석 뒤 파형이 있는 상태를 포함하고 브라우저 최상위 작업 기록도 수집한다. 필요한 경우 테스트 페이지의 모달 배경 blur만 해제한 대조로 합성 비용을 확인한다. 원인을 지지하는 차이가 있을 때 해당 제품 변경과 기능·화면 검사를 수행한다. 근거 없는 VTT/목록 재작성이나 200ms 기준 변경은 하지 않는다.
+`caption-selector-diagnostic.mjs` queries the same active SRT button 96 times by role or CSS without clicking/editing. Record three groups of RSS, browser heap/DOM/task time, and server heap through test-parent private IPC only. No HTTP memory endpoint or forced GC. Compare final project.
 
-실제 분석을 포함한 진단은 p95 204.211ms·최대 221.280ms였다. 같은 소스의 배경 blur 제거 대조는 205.592ms·209.739ms로 개선을 뒷받침하지 않아 디자인을 유지한다. 브라우저 최상위 프레임 작업에 약 98ms가 관측됐으나, macOS 네이티브 샘플의 Chrome 내부 이름이 대부분 `ChromeMain` 오프셋으로만 해석돼 특정 함수의 원인까지 확정하지 않았다. 샘플 대상은 이 테스트 페이지의 추적 표식 PID와 자체 브라우저 프로세스 목록을 대조했다. 분석 뒤 프로젝트 열기의 확인창을 빠뜨린 진단과 렌더러 개수를 1개로 가정했던 진단은 도구 실패로 보존한다.
+[Comparison audit](../testing/results/2026-09-06-caption-selector-comparison-audit.json): role/CSS TaskDuration increase 3.580/0.345 s; embedder heap 38.371→177.720 / 38.070→38.589 MiB. DOM/projects preserved. Different initial RSS and sample durations prevent assigning long-memory causation from peaks.
 
-모든 버튼을 유지하고 화면 밖 행만 `content-visibility:auto`로 렌더링을 미루는 대조는 p95 185.047ms·최대 190.624ms였다. 브라우저 TaskDuration 합계는 2.186→1.883초, 프레임 작업 시간 합은 2.695→2.305초였다. 단일 진단의 차이이며 정식 성능 합격이나 보장된 절감률이 아니다. 보이는 행의 문구·시각·선택 표시를 직접 확인했다.
+Scoped CSS in the formal runner verifies each target's tag/role/exact name/enabled state and preserves actual clicks/downloads/cancel/oracles and all app processes. Record runner/test-server hashes; keep product/bundle/package unchanged. Four [short runs](../testing/results/2026-09-06-composition-scoped-smoke.json) and [audit](../testing/results/2026-09-06-composition-scoped-smoke-audit.json) passed with identical bytes/projects/retry. Long runs reached 1.976 then 2.146 GiB, failing the second despite correct output/actions/retry. Preserve [raw](../testing/results/2026-09-06-composition-scoped-long.json) and [audit](../testing/results/2026-09-06-composition-scoped-long-audit.json). Lookup changes alone did not solve it.
 
-이 CSS를 후보로 적용하고 기존 1,000개 자막의 두 앱 기능 검사에서 마지막 행·Enter/Space·문구/시각 수정·실행 취소/다시 실행·저장을 확인한다. 새로운 단위 테스트로 CSS 구현 자체를 반복하지 않는다. Mac 패키지를 갱신하고 두 앱의 짧은 동시 합성으로 전체 출력·취소·재시도를 확인한 뒤, 같은 60분 러너로 다시 측정한다. 실패하면 나머지 장시간 반복으로 확대하지 않는다.
+Compare six caption-dialog open→seek second cue→close cycles with ordinary behavior versus test-only pause/remove `src`/load before actual close. Do not remove React DOM children. Observe RSS/heaps/DOM/server state, reopened video/VTT/text, and final project without forced GC/restarts. [Lifecycle audit](../testing/results/2026-09-06-caption-lifecycle-comparison-audit.json): baseline peak 1.737 GiB, explicit release 1.746 GiB; both preserved 1,000 cues, 4.4-second seek, and project. Insufficient support for a product change; final renderer differences alone do not diagnose leaks.
 
-## 반복 시 메모리 증가 분리
+## Encoder comparison and caption strips
 
-CSS 후보의 두 앱 기능·짧은 합성 검사를 통과했다. 60분 첫 실행은 1.962GiB·자막 p95 183.357ms로 통과했고, 두 번째는 2.140GiB·184.149ms로 메모리만 실패했다. 두 출력의 모든 독립 정답·파일 바이트·전체 프로젝트와 실제 취소 뒤 두 번째 성공 출력은 확인했다. 세 번째 및 다른 장시간 조건은 실행하지 않는다. 결과와 실패 기준은 유지한다.
+The long peak included about 406 MiB FFmpeg during encoding, before output decode verification. Sequential same-input backend comparison with fixed decoder/CRF/preset/resolution/audio/oracle:
 
-각 출력 단계의 합산 피크 표본에서 같은 큰 렌더러는 403.688→516.563MiB, 백엔드는 212.750→253.094MiB였다. 이것을 바로 누수로 단정하지 않는다. 기존 반복 UI는 CSS 탐색이지만 SRT·출력 등의 일부 제어는 여전히 역할 기반 탐색을 쓴다.
+| Encoder threads | RSS MiB | Seconds |
+| --- | --- | --- |
+| 4 | 451.359 | 3.524 |
+| 2 | 413.875 | 3.995 |
+| 1 | 372.406 | 6.796 |
 
-먼저 제품을 바꾸지 않고 `scripts/caption-selector-diagnostic.mjs`로 동일한 실제 분석·1,000컷·1,000자막 화면의 SRT 버튼을 역할 또는 CSS로 각각 96번 조회한다. 버튼을 누르거나 편집하지 않고, 매 조회가 같은 활성 버튼인지 검증한다. 세 그룹의 앱 트리 RSS·브라우저 힙/DOM/작업 시간과 서버 힙을 기록한다. 서버 메모리는 테스트 부모의 비공개 IPC로만 읽으며 HTTP 경로나 강제 GC를 추가하지 않는다. 종료 후 프로젝트 전체를 비교한다.
+[Evidence](../testing/results/2026-09-06-composition-encoder-comparison.json): all independent expectations and three sample-frame pixel hashes matched, but bitstreams changed. About 79 MiB saved with one thread did not establish long-run resolution; preserve results and restore four threads at this investigation stage.
 
-이 대조는 조회 비용을 분리하며 실제 합성·조작이나 정식 성능 통과를 대신하지 않는다. 차이가 확인되면 같은 행동을 유지하는 러너의 탐색 방법을 비교하고, 그렇지 않으면 실제 반복 편집/가져오기의 자원 보존을 조사한다. RSS에서 추정 자동화 비용을 빼거나 메모리 한도를 바꾸지 않는다.
+Next reduce full-frame transparent PNG work to a common vertical strip. Calculate layout in original coordinates, include background/glyph ascent/descent/stroke/antialiasing margins, retain uniform PNG dimensions, and align y/height to even pixels where possible for 4:2:0. Use a small transparent strip for empty intervals. Keep full-canvas style samples, output resolution/fonts/CRF/preset/threads unchanged.
 
-역할/CSS 각 96회 조회를 완료했고 [비교 기록](../testing/2026-09-06-caption-selector-results.md)과 [감사](../testing/results/2026-09-06-caption-selector-comparison-audit.json)를 보존했다. 같은 입력·빌드·스크립트에서 조회 구간의 브라우저 TaskDuration 증가는 역할 3.580초·CSS 0.345초, embedder heap은 각각 38.371→177.720MiB·38.070→38.589MiB였다. 전체 프로젝트와 실제 DOM 수는 보존됐다. RSS 시작값과 조회 시간·표본 수가 달라 피크 차이로 장시간 메모리 실패의 원인을 확정하지 않는다.
+Require complete RGBA equality after placing strips back on the full canvas: landscape/portrait, three styles, top/bottom, multiline/large Korean and Latin text, and empty sequences. Cropped glyphs or shifted y fail. Regress real CFR/VFR/PTS/rotation/SAR/ranges/cancel, then compare backend MP4/oracle/RSS/time before app/long expansion.
 
-다음 검증은 정식 합성 러너의 남은 전체 역할 탐색을 같은 요소의 CSS 탐색으로 바꾼 조건이다. 대상이 실제 활성 버튼이고 이름·역할이 맞는지는 해당 요소에 한정해 검사한다. 사용자 클릭·다운로드·취소·전체 정답·메모리 한도와 모든 앱 프로세스 포함은 유지한다. 러너와 테스트 서버의 해시, 탐색 모드를 실행 기록에 명시한다. 두 앱 60초 사전 검사를 통과한 뒤 같은 앱에서 브라우저 60분 3회를 확인하며, 실패하면 확대하지 않는다. 아직 이 조건의 정식 합성은 실행하지 않았다.
-
-위 탐색 조건을 러너에 적용했다. 각 대상의 기본 버튼 태그·역할·정확한 이름·활성 상태를 해당 요소에서 검사한 뒤 기존 클릭/저장을 실행한다. 실행 스크립트와 테스트 서버를 결과 폴더에 복사하고 서버 해시도 추가 기록한다. 제품 번들·패키지·미디어 처리는 변경하지 않았다. 두 앱 60초 4회의 [원시 결과](../testing/results/2026-09-06-composition-scoped-smoke.json)와 [감사](../testing/results/2026-09-06-composition-scoped-smoke-audit.json)를 완료했다. 전체 정답·파일 바이트·프로젝트·취소 후 두 번째 출력이 기존 후보와 같았다. 이 짧은 검사는 통과했으며 다음은 브라우저 60분 반복이다.
-
-브라우저 60분 재측정은 첫 실행 1.976GiB·두 번째 2.146GiB로 두 번째 메모리 기준을 초과했다. 두 번의 정확성·조작·취소 후 재시도는 통과했지만 전체 반복은 실패다. [원시 결과](../testing/results/2026-09-06-composition-scoped-long.json)와 [감사](../testing/results/2026-09-06-composition-scoped-long-audit.json)를 보존했다. 탐색 보정만으로 장시간 메모리 실패가 해결된다는 가설은 이 실행이 뒷받침하지 않는다.
-
-다음에는 자막 원본 영상의 수명 관리를 분리한다. 현재 자막 창은 Blob URL을 해제하지만 창이 닫힐 때 원본 video의 src를 명시적으로 비우고 load하지는 않는다. 이것이 원인인지는 미확정이다. 기존 진단 러너의 별도 모드에서 실제 분석과 같은 프로젝트로 창 열기→두 번째 자막으로 탐색→닫기를 6회 수행한다. 기본 동작과 닫기 직전 해당 video만 pause/removeAttribute('src')/load하는 조건을 같은 제품에서 비교한다. 자막 DOM 자식을 직접 제거하지 않고 실제 닫기 버튼을 누른다. 각 열림·닫힘 상태의 전체 프로세스 RSS·힙/DOM·서버 메모리와 재열기 영상/VTT/문구를 확인하고 최종 프로젝트를 비교한다. 강제 GC·브라우저 재시작·출력 및 품질 기준 변경은 하지 않는다. 이 진단은 영상 자원의 해제 영향을 확인하며 장시간 합성 통과를 대신하지 않는다.
-
-6회씩의 [영상 수명 비교](../testing/results/2026-09-06-caption-lifecycle-comparison-audit.json)는 기본 피크 1.737GiB·명시 해제 1.746GiB였다. 두 조건 모두 재열기·1,000자막·4.4초 탐색·전체 프로젝트를 보존했다. 명시 해제를 메모리 해결책으로 적용할 근거가 부족해 제품 코드는 유지한다. 최종 렌더러 RSS는 차이가 있지만 수집 시점과 GC 상태에 영향을 받으므로 이 한 쌍으로 누수 여부를 결론 내리지 않는다.
-
-다음 후보는 자막 포함 출력의 인코더 동시 처리 수다. 최종 긴 영상 피크는 인코딩 단계의 FFmpeg 약 406MiB를 포함하며, 출력 디코딩 검사는 이후 단계로 피크 원인이 아니었다. 기존 60초 백엔드 진단을 현재 설정 4개, 후보 2개, 후보 1개로 순차 실행한다. 입력·디코더·CRF·프리셋·해상도·오디오·정답은 유지한다. 각 실행의 실제 소스를 복사하고 해시·시간·RSS·출력 정답을 보존한다. 스레드 수가 비트스트림을 바꿀 수 있으므로 파일 차이는 그 이유와 독립 프레임/싱크/자막/효과음 결과, 실제 샘플 프레임을 확인한 후 판정한다. 메모리 절감이 확인된 후보만 두 앱의 기존 미디어 회귀·패키징·짧은 합성 후 장시간 검사로 확대한다. 출력이 느려지는 정도를 기록하며 기존 영상 길이 이내 기준은 유지한다.
-
-[인코더 비교](../testing/results/2026-09-06-composition-encoder-comparison.json)는 4개 451.359MiB·3.524초, 2개 413.875MiB·3.995초, 1개 372.406MiB·6.796초였다. 모든 독립 정답과 세 샘플 프레임의 픽셀 해시는 같았지만 MP4 비트스트림은 변경됐다. 1개의 약 79MiB 절감만으로 장시간 초과분이 해결될지는 확인되지 않았고 출력 시간도 늘었다. 세 후보 결과와 실행 소스를 보존하고 현재 제품의 인코더는 4개로 되돌렸다.
-
-## 투명한 자막 영역을 처리하는 비용 줄이기
-
-코드에서 모든 자막 PNG가 영상 전체 해상도로 생성되고 디코딩되는 것을 확인했다. 다음 후보는 글자·배경이 존재하는 세로 띠만 PNG 시퀀스로 만들고, 원래 y 위치에 합성하는 방식이다. 글자 레이아웃은 원본 캔버스 좌표로 계산하고 배경·실제 글리프의 ascent/descent·외곽선·안티앨리어싱 여유를 모두 포함한 공통 영역을 구한다. 모든 PNG의 크기는 같게 유지하며, y와 높이를 가능한 짝수 픽셀에 맞춰 4:2:0 색차 정렬을 보존한다. 자막이 없는 범위에는 작은 투명 띠를 사용한다. 스타일 견본은 기존 전체 캔버스와 동일하게 유지하고 영상 출력의 해상도·폰트·CRF·프리셋·스레드 수는 변경하지 않는다.
-
-회귀 기준은 투명 영역까지 포함한 전체 RGBA 픽셀의 보존이다. 가로/세로 영상·3종 스타일·상단/하단·여러 줄·큰 글자·한글/라틴 글리프에서, 시퀀스 PNG를 원래 위치에 복원한 픽셀과 전체 캔버스 견본을 비교한다. 공통 영역 밖의 글자가 잘리거나 y 위치가 바뀌면 실패다. 빈 시퀀스의 투명 이미지도 검사한다. 기존 실제 CFR/VFR·PTS 오프셋·회전/SAR·범위 미리보기·취소 검사를 실행한 뒤 60초 백엔드 진단의 실제 MP4·독립 정답·RSS·시간을 비교한다. 보존·절감이 확인된 경우에만 패키지와 두 앱·장시간 검사를 진행한다.
-
-
-세로 영역 PNG 후보의 실제 두 앱 60초 4회와 브라우저 60분 2회를 완료했다. 긴 영상 출력은 157.127/157.697초로 단축됐고 두 실행 모두 전체 정답·MP4/SRT 바이트·프로젝트·조작·취소 후 재시도를 보존했다. 그러나 RSS는 첫 실행 1.946GiB·두 번째 2.045GiB로 두 번째 목표를 초과했다. [실행 결과와 감사](../testing/2026-09-06-caption-strip-results.md)에 원시 표본·해시와 독립 검증을 연결했다. 세 번째 및 다른 장시간 조건은 미실행이다. 세로 영역 처리 개선은 유지하되 반복 메모리 문제의 해결로 표시하지 않는다.
+The strip candidate passed four both-app short runs. Browser long exports took 157.127/157.697 s with identical MP4/SRT/project/oracle/action/retry results, but RSS 1.946/2.045 GiB failed repetition two. Preserve [strip results](../testing/2026-09-06-caption-strip-results.md); third/other conditions were not run. Keep the rendering improvement without claiming the repeated-memory problem solved.

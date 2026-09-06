@@ -1,11 +1,9 @@
-# 편집창별 취소·새 원본 경합
+# Editor-specific cancellation and new-source races
 
-기본 분석·출력 경합에 이어 공통 작업 처리의 나머지 결과 분기를 검증한다. 전사는 생성한 한국어 TTS와 실제 Whisper를 사용하며, SRT·부분 복원·효과음 포함 미리보기는 실제 서버 결과를 만든다.
+Extend analysis/export races to transcription, SRT, partial restoration, and effect-inclusive preview. Use generated Korean TTS with actual Whisper and real server-generated results.
 
-각 작업에서 완료 조회 응답을 보류한 뒤 취소하고 B 원본을 열어 새 미리보기를 시작한다. 이전 완료 응답을 해제해도 B의 컷·자막·용어·효과음·미저장 상태·진행 작업이 유지돼야 한다. 같은 작업별로 취소 응답만 늦은 503이 되는 조건도 검사한다. SRT는 취소한 A의 다운로드나 Mac 저장 요청이 새로 나타나지 않아야 한다. 효과음 조건에서는 실제 음원을 재연결하고 A/B의 서로 다른 클립 배치를 저장해 비교한다.
+Hold each completion poll, cancel, open source B, and start its preview. Releasing A must preserve B's cuts, captions, glossary, effects, dirty state, and active work. Also test a delayed cancellation response replaced with 503. Canceled A SRT must not trigger a download/native save request. Reconnect actual effect assets and compare distinct A/B placements in saved projects.
 
-전사 중 자막 창 닫기를 통해 메인 편집 화면으로 돌아간 경우와, SRT 취소를 자막 창 안에서 수행한 경우를 포함한다. 작업 중 새 영상 열기는 비활성 상태여야 하며 취소가 정리된 뒤에만 새 영상을 연다.
+Include closing the caption editor during transcription and canceling SRT inside it. Opening new media remains disabled until cancellation cleanup permits it. For transcription and SRT, fail the current cancellation with 503 while holding polls: show the error and re-enable cancellation for a second attempt. Clear cancellation-in-progress only for the still-current job, retaining stale-job protection.
 
-추가로 전사·SRT 각각에서 현재 취소 요청을 503으로 실패시키고, 조회 응답은 계속 보류한다. 오류 안내 뒤 자막 창의 취소 버튼이 다시 활성화되고 두 번째 취소 요청이 가능해야 한다. 실패를 재현하면 현재 작업에 한해 취소 진행 상태를 해제하도록 고친다. 작업 교체 후 이전 응답을 무시하는 앞선 수정은 유지한다.
-
-Chrome와 실제 Mac 패키지에서 작업 4종 × 지연 순서 2종 × 앱 2종 = 16회, 자막 창 취소 재시도 2종 × 앱 2종 = 4회를 실행한다. 합계 20회다. 기존 14개 기본 경합도 관련 회귀로 유지한다. native 파일 선택·저장 경로는 생성 파일로 지정하며 실제 OS 창·녹음 품질·인증된 모델 연결을 검증한 것으로 계산하지 않는다.
+Run four jobs × two delayed orders × two apps = 16 cases, plus two current-cancel retry cases × two apps = four: 20 new runs. Retain the existing 14 baseline races. Native paths are supplied by the test; this does not establish OS dialog operation, human recording quality, or authenticated AI.

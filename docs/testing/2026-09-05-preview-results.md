@@ -1,94 +1,37 @@
-# HyperCut 실행·검증 결과 — 2026-09-05 프리뷰
+# Initial preview execution and validation — 2026-09-05
 
-> 이 문서는 첫 프리뷰의 실행 기록이다. 이후 부분 복원·작업 취소·실제 OS 장애·전체 앱 성능과 갱신된 사례 상태는 [후속 검증 결과](2026-09-05-recovery-results.md)에 기록했다.
+A working Electron Mac/local-browser preview was implemented, not a fully validated MVP. It includes import/track selection/settings/waveform/cuts/restore/undo/projects/reconnect/fast and rendered preview/validated MP4. At this stage the engine was amplitude-only; VAD/STT, automatic subscription login/MCP/CLI were later work. Optional settings adapters used Ollama/OpenAI/Anthropic or manual ChatGPT/Claude JSON exchange. No hosted deployment.
 
-## 판정
+Environment: M4 Max/Mac16,9, 14 CPUs/36 GiB, Darwin 25.5.0 arm64, Node 24.14.1, Electron 44.2.0, FFmpeg 8.1.1. Power/background load uncontrolled, OS caches unpurged. Native package at `release/HyperCut-darwin-arm64/HyperCut.app`, browser `dist/`; external FFmpeg, unsigned/unnotarized, Windows/Linux untested.
 
-**데스크톱·로컬 브라우저에서 사용할 수 있는 프리뷰를 구현했다. 정식 MVP 게이트 전체 통과는 아직 아니다.** 실제 한국어 자료와 사람의 경계 청취, 작업 시간 비교가 필요하다. 자동 테스트 개수와 계획의 사례 개수는 서로 다르다.
+Checks: 25 units, five media, ten compatibility, six API, three failure = **49 PASS**. Build/package/both-app E2E, benchmarks, long sync, and stress separate. Native dialog return paths were supplied, not actual OS interaction. Large local logs/media/screenshots are excluded; small evidence JSON is linked.
 
-- 동작: 파일 열기, 트랙 선택, 음량·지속 시간·앞뒤 여유 설정, 파형, 자동 컷, 구간 복원, 실행 취소/다시 실행, 프로젝트 저장/재연결, 빠른·렌더 미리보기, 검증된 MP4 출력.
-- 형태: Electron Mac 앱 및 로컬 서버를 사용하는 브라우저 앱. 외부 호스팅 배포는 하지 않았다.
-- 현재 엔진: 음량 임계값 검출. 음성 인식·전사·VAD로 사람의 목소리를 판별하는 기능은 아니다.
-- 선택형 AI: Ollama / OpenAI API / Claude API의 설정 제안 어댑터와, 기존 ChatGPT·Claude 채팅에 요청을 복사하고 JSON을 가져오는 수동 흐름. 구독 계정의 자동 로그인·MCP·CLI 연결은 후속 작업이다.
+## Media and measured performance
 
-## 환경과 증거
+A fixed two-cut 16-second input yielded exactly 12 seconds, 360 frames, and 576,000 pre-encode audio samples, fully decoded with unchanged source hash. Default −40 dBFS/500 ms/pre100/post150 produced five cuts and about 9.067 s from a tone/silence demo, not speech.
 
-Apple M4 Max / Mac16,9 / 14 CPU / 36 GiB RAM / macOS Darwin 25.5.0 / arm64 / 로컬 작업 폴더. Node 24.14.1, Electron 44.2.0, FFmpeg·ffprobe 8.1.1. 전원 모드·백그라운드 앱 부하는 통제하지 않았고 OS 캐시를 강제로 비우지 않았다.
+CFR/VFR/+3 s PTS markers showed additional A/V error ≤5 ms across five markers; retain original VFR offset separately. Last two markers after a 60-minute/1,000-cut run had additional error about −0.066/0 ms, not a human review of every boundary. Selected microphone/other track matched analysis/source preview/output with one output audio track. Ten representative MP4 mono48k/MOV stereo44.1k ×24/25/29.97/30/60 fps combinations passed, not every format combination.
 
-소스는 이 문서와 같은 구현 커밋에 포함된다. 앱은 `release/HyperCut-darwin-arm64/HyperCut.app`, 웹 빌드는 `dist/`다. Mac 패키지는 로컬 FFmpeg 설치에 의존하며, 서명·공증한 배포용 설치 프로그램이 아니다. Windows·Linux는 실행 검증하지 않았다.
+A 29.97 fps fractional-sample end mismatch incorrectly retained nonexistent trailing speech padding. Extend only final continuous silence to the video's fractional sample end; actual format and unit regression passed.
 
-| 실행 | 결과 | 증거 |
-| --- | --- | --- |
-| `npm test` | PASS, 25개 | `tests/*.test.mjs`, `test-output/unit.log` |
-| `npm run test:media` | PASS, 5개 | `tests/media.integration.mjs`, `test-output/media.log` |
-| `npm run test:compatibility` | PASS, 10개 | `tests/compatibility.integration.mjs`, `test-output/compatibility.log` |
-| `npm run test:api` | PASS, 6개 | `tests/api.integration.mjs`, `tests/ai-api.integration.mjs`, `test-output/api.log` |
-| `npm run test:failures` | PASS, 3개 | `tests/failures.integration.mjs`, `test-output/failures.log` |
-| `npm run build` / `npm run package:desktop` | PASS | `test-output/package.log` |
-| `npm run test:e2e -- --desktop --packaged` | PASS, 브라우저·패키지 실제 실행 | `scripts/e2e.mjs`, `test-output/e2e.log` |
-| `node scripts/benchmark.mjs` | 10분·60분 각 3회 완료 | [원시 측정값](results/2026-09-05-results.json) |
-| `node scripts/verify-long-sync.mjs` | 1,000컷 후 마지막 표식 2쌍 PASS | [독립 표식 검출](results/2026-09-05-long-sync.json) |
-| `node scripts/stress-e2e.mjs` | 복원·실행 취소 32회 및 분석 취소 PASS | [UI 원시 측정값](results/2026-09-05-ui-stress.json) |
-
-합계 **49개 자동 테스트 통과**와 별도 E2E·성능 실행이다. `test-output/`의 미디어·스크린샷·로그는 로컬 증거이며 Git에서 제외했다. 작고 비식별인 성능 JSON은 위 링크에 보존했다. E2E의 네이티브 파일 창 반환값은 테스트가 임시 경로로 지정했다. 실제 OS 창을 사람이 선택하는 수동 테스트와 구분한다.
-
-## 미디어 정확성
-
-- 16초 합성 영상의 고정 컷 두 개를 적용한 결과는 정확히 12초, 영상 360프레임, 인코딩 전 오디오 576,000샘플이었다. 출력 전체 디코딩을 통과했고 처리 전후 원본 해시가 같았다.
-- 자동 분석의 기본 설정은 −40dBFS / 500ms / 말 전 100ms / 말 후 150ms다. 16초 데모에서 5개 컷, 약 9.067초 출력. 데모는 실제 발화가 아닌 사인파와 무음이다.
-- 고정 FPS, VFR, 시작 PTS +3초 자료의 독립 플래시·비프 표식을 비교했다. 여러 컷 뒤 5개 표식에서 추가 A/V 오차가 5ms 이내였다. VFR 자료의 원래 비동시 프레임 오차는 별도로 보존해 비교했다.
-- 60분·1,000컷 결과의 마지막 두 표식에서 추가 A/V 오차는 약 −0.066ms, 0ms였다. 장시간 자료 전체의 모든 컷 경계를 사람이 청취한 결과는 아니다.
-- 마이크/다른 음원 트랙 선택이 분석, 원본 미리보기, 출력에 일치하는지 검증했다. 출력은 선택한 오디오 한 개다.
-- 대표 형식 10개: MP4의 모노 48kHz 및 MOV의 스테레오 44.1kHz 각각 24/25/29.97/30/60fps. 이 조합들을 확인했으며 가능한 모든 형식·음원 조합을 검증했다는 뜻은 아니다.
-
-검증 중 찾은 29.97fps 경계 오류를 수정했다. 영상 끝과 디코딩된 오디오 끝의 차이가 한 샘플 미만인 경우, 마지막 무음 뒤에 존재하지 않는 발화 여유를 남기던 문제다. 마지막 연속 무음만 영상 끝의 분수 샘플까지 포함하게 했고, 실제 29.97fps 조합 및 단위 회귀 테스트가 통과했다.
-
-## 긴 영상 성능
-
-자료는 1080p/30fps H.264, AAC 48kHz이며 단순한 배경과 반복 신호로 만들었다. 실제 촬영 영상보다 인코딩하기 쉬운 자료다. 분석에는 파일 검사·해시·프레임 시간표·PCM·파형을, 출력에는 전체 디코딩 검증을 포함했다. 브라우저 업로드·UI 준비 시간은 아래 분석 시간에 포함하지 않았다.
-
-| 자료 | 분석 중앙값 / 최대 | 출력 중앙값 / 최대 | 측정된 합산 RSS 최대 | 컷 |
+| Input | Analysis median/max s | Export median/max s | Engine/child RSS GiB | Cuts |
 | --- | --- | --- | --- | --- |
-| 10분 | 5.52 / 5.55초 | 15.34 / 15.60초 | 0.808 GiB | 166 |
-| 60분 | 35.54 / 35.87초 | 114.33 / 114.95초 | 1.022 GiB | 1,000 |
+| 10 min | 5.52/5.55 | 15.34/15.60 | 0.808 | 166 |
+| 60 min | 35.54/35.87 | 114.33/114.95 | 1.022 | 1,000 |
 
-RSS는 Node 편집 엔진과 자식 프로세스를 250ms 간격으로 합산했다. **브라우저·Electron 화면 프로세스는 제외**했으므로 계획의 앱 전체 2GiB 합격을 주장하지 않는다. 메모리 샘플 사이의 순간 피크도 포착하지 못할 수 있다. 생성 직후의 첫 실행도 OS 캐시가 차가웠다고 간주하지 않았다. 반복 실행 중 문서 편집과 짧은 빌드·AI 모의 테스트는 있었고, 다른 미디어 시험은 성능 실행 종료 후 수행했다.
+Three runs each on simple 1080p30 H.264/AAC48k. Analysis includes inspection/hash/frame index/PCM/waveform, excluding browser upload/UI readiness. Export includes full decode. RSS samples every 250 ms exclude browser/Electron renderers, so these do not pass whole-app 2 GiB. Inter-sample peaks/cold cache are unknown. Some documentation/build/mock work overlapped, other media tests did not.
 
-브라우저에서 60분 영상을 실제 열고 분석한 뒤 1,000컷 상태에서 복원/실행 취소를 32회 측정했다. 클릭부터 두 번의 화면 갱신까지 p95 32.9ms, 분석 취소부터 작업 표시 제거까지 264.7ms였다. 전체 1,000컷은 보존됐다. 재생·정지·설정 변경의 모든 성능 및 Mac 앱 성능을 대신하는 측정은 아니다.
+Browser 1,000-cut restore/undo 32 actions: p95 32.9 ms through two frames; analysis cancellation to cleared job 264.7 ms. Does not cover all actions or Mac performance.
 
-## 계획 사례별 상태
+## Historical case status
 
-`NOT_RUN`에는 일부 하위 검증은 통과했으나 해당 사례의 전체 조건을 아직 실행하지 않은 경우도 포함한다. 계획의 기준을 낮추어 PASS로 바꾸지 않았다.
+PASS in specified fixture scope: D01–D11, D13–D14, M01–M05, U04–U05, mocked A03–A04. NOT_RUN/partial: D12 (short-media/full restore), D15 (late responses), M06 (human boundary listening), U01 (native OS offline), U02–U03 (full controls/all-silent partial restore), E01–E06 (remaining phases/OS/save/stale combinations), P01–P02 (whole-app/cache/final UI), Q01–Q05 (no human data/labels/timing), A01–A02/A05–A08 (actual connections and remaining lifecycle/privacy/tool cases). Some subchecks passed; this does not lower full-case requirements. Ollama was not found and authenticated usage was not tested.
 
-| 사례 | 상태 | 확인한 범위 / 남은 범위 |
-| --- | --- | --- |
-| D01–D11 | PASS | 인접 f32 임계값, 샘플 길이, 연속성, 여유, 채널, 선택 트랙, 프레임·구간 불변식 |
-| D12 | NOT_RUN | 전부 무음·무음 없음 도메인 PASS. 매우 짧은 실제 입력과 모든 UI 복원 조합은 남음 |
-| D13–D14 | PASS | 동일 PCM 반복, 임계값 단조성, 실제 복원·undo·redo·프로젝트 저장/열기 |
-| D15 | NOT_RUN | 작업 중 설정 조작은 잠김. 설정 변경 A/B의 늦은 응답 주입 시나리오는 남음 |
-| M01–M05 | PASS | 위에 명시한 실제 출력·싱크·대표 형식·선택 트랙 범위 |
-| M06 | NOT_RUN | 같은 컷으로 렌더 미리보기·출력, 재생 확인. 실제 경계 청취 비교는 남음 |
-| U01 | NOT_RUN | 브라우저 외부 요청 차단 상태에서 전체 편집 완료, 외부 요청 0건. OS 수준 네트워크 차단을 적용한 Mac 실행은 남음 |
-| U02–U03 | NOT_RUN | UI 주요 동작·전체 복원 PASS. 전체 키보드/재생 성능 및 전부 무음의 부분 복원 조합은 남음 |
-| U04–U05 | PASS | 한글·셸 특수문자 파일명, 다른 해시 원본 거부, 이동한 같은 원본 재연결 |
-| E01 | NOT_RUN | 분석·출력 취소와 재시도 PASS. 렌더 미리보기 취소의 독립 실행 및 모든 지연 측정은 남음 |
-| E02 | NOT_RUN | 실제 ENOTDIR 및 프로세스 실패 후 복구 PASS. ENOSPC·EACCES·작업 도중 강제 종료는 남음 |
-| E03 | NOT_RUN | 손상 값 검증, Mac 임시 파일→rename 저장, 저장 취소 시 dirty 유지 PASS. 저장 중 앱 강제 종료 시험은 남음 |
-| E04 | NOT_RUN | 실제 네이티브 저장 경로의 원본 덮어쓰기 차단 PASS. 기존 출력명 충돌에 대한 OS 확인 창 수동 시험은 남음 |
-| E05 | NOT_RUN | 도구 없음·비정상 종료·손상 헤더·다른 코덱·오디오 없음 PASS. 읽기 권한 거부는 남음 |
-| E06 | NOT_RUN | 취소→완료 정리→다음 작업 PASS. 새 프로젝트와 늦은 이벤트의 전체 오류 주입은 남음 |
-| P01–P02 | NOT_RUN | 위 합성 성능·부분 UI 측정 완료. 전체 앱 RSS, 전원 통제, 전체 조작·취소 조합은 남음 |
-| Q01–Q05 | NOT_RUN | 실제 한국어 자료 R01–R09, 독립 라벨·사람 청취·시간 비교가 아직 없음 |
-| A01–A02 | NOT_RUN | 어댑터 모의 요청·UI 구현 완료. 실제 서버 실패 후 편집과 실제 모델 연결은 남음 |
-| A03–A04 | PASS | 모의 응답의 JSON·범위·허용 필드 검증, 401/403/429/503·시간 초과·취소. 외부 실제 계정 시험은 아님 |
-| A05 | NOT_RUN | 서버 연결 해제 후 늦은 응답 거부 PASS. UI 프로젝트·설정 변경의 전체 지연 시나리오는 남음 |
-| A06 | NOT_RUN | 키를 응답/프로젝트로 보내지 않는 계약과 명시적 공급자 선택 PASS. 실제 공급자의 최종 네트워크 검증은 남음 |
-| A07 | NOT_RUN | 실제 인증·사용량을 사용하는 호출 없음. Ollama 실행 파일도 이 환경에서 찾지 못함 |
-| A08 | NOT_RUN | 연결 해제·중복 요청 거부 PASS. 외부 MCP 읽기/편집 도구는 아직 미구현 |
+Next: user-designated Korean tuning/evaluation, remaining failures/UI/whole-app measurements, and separately selected authenticated AI. No unrelated private media was searched. G1 core technical evidence passed its scope, G2 partial, G3 NOT_RUN, G4 actual-provider acceptance pending. Later recovery records supersede only explicitly updated conditions.
 
-## 다음 검증
+## Evidence and related records
 
-1. 사용자의 대표 한국어 원본으로 초기 설정을 검토하고, 별도 평가 영상에서 모든 컷 경계를 청취한다. 실제 파일 경로를 요청한 상태이며 다른 개인 영상을 임의로 탐색하지 않았다.
-2. 위 NOT_RUN 장애·UI·전체 앱 메모리 항목을 실행한다. 실패하면 구현을 수정한 뒤 해당 경로를 재검증한다.
-3. 사용자가 선택한 실제 AI 연결을 별도 세션에서 인증·요청·사용량까지 검증한다. ChatGPT/Claude 구독의 공식 자동 연동은 별도 구현·검증 대상으로 유지한다.
-4. Q01–Q05와 나머지 MVP P0/P1이 끝난 뒤 정식 MVP 게이트를 판정한다. G1의 핵심 기술 시험은 통과했으며 G2는 부분 실행, G3 실사용은 NOT_RUN, G4 AI의 실제 공급자 지원 완료 판정은 보류다.
+- [2026-09-05-recovery-results.md](2026-09-05-recovery-results.md)
+- [2026-09-05-results.json](results/2026-09-05-results.json)
+- [2026-09-05-long-sync.json](results/2026-09-05-long-sync.json)
+- [2026-09-05-ui-stress.json](results/2026-09-05-ui-stress.json)

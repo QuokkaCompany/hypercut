@@ -1,38 +1,31 @@
-# 로컬 말소리 보호 구현·검증 계획
+# Local speech protection implementation and validation
 
-기존 설계의 VAD 단계를 구현한다. 음량 임계값 모드는 유지하고, 선택형 말소리 보호를 켜면 감지된 발화를 삭제 후보에서 제외한다. STT 전사·자막과 구별하며 실제 단어를 이해하거나 모든 발음을 보존한다고 주장하지 않는다.
+Implement optional VAD without changing amplitude-only editing. Detected speech is removed from deletion candidates. This is separate from transcription and does not guarantee every word or phoneme.
 
-## 제품 계약
+## Contract
 
-- 기본값은 꺼짐. 기존 프로젝트는 보호 꺼짐으로 읽고, 새 프로젝트는 보호 여부·감지 기준을 저장한다.
-- 음량 기준은 dBFS, 별도의 음성 감지 기준은 0.1~0.9(기본 0.5). 낮출수록 더 많은 소리를 발화로 보존한다.
-- 선택한 오디오 트랙을 원본 시간축에 맞춰 16kHz로 재표본화한다. 최대 8채널을 각각 독립된 모델 상태로 판정한 뒤 어느 채널이든 발화인 구간을 보존한다. 채널 평균으로 반대 위상의 목소리를 지우지 않는다.
-- 모델 분석 입력에만 전체 트랙 최대 음량 기준 증폭(목표 peak 0.5, 최대 100배)을 적용한다. 원본·출력 음량은 변경하지 않는다. 큰 잡음이 섞인 작은 발화까지 항상 복구하는 정규화는 아니다.
-- 32ms 창의 음성 점수가 기준 이상인 구간을 모으고 160ms 이내의 간격을 합친다. 짧은 음절 보호를 위해 최소 발화 길이로 버리지 않는다. 앞뒤 한 창을 추가 보존한다.
-- 음량 후보에서 발화 보호 구간을 뺀 뒤 기존 최소 무음 길이·앞뒤 여유·안쪽 프레임 정렬을 적용한다. 보호 기능으로 제거 시간이 늘어나서는 안 된다.
-- 보호 설정이 바뀌면 재분석이 필요함을 표시한다. 이전 컷·복원·프로젝트는 실패나 취소로 바꾸지 않는다. 모델 없음·손상·실행 실패 시 보호를 몰래 끄고 분석하지 않는다.
-- Silero VAD v6.2.1의 고정 모델·SHA-256·MIT 라이선스를 앱에 포함한다. 모델 추론은 로컬 CPU에서 수행하고 실행 중 다운로드나 AI 계정 연결은 요구하지 않는다.
+Default off; preserve the setting and detection threshold in projects. dBFS remains the amplitude criterion. The separate speech probability threshold is 0.1–0.9, default 0.5; lower values preserve more detected speech.
 
-## 구현 경계
+Resample the selected track to 16 kHz aligned to source time. Analyze up to eight channels independently with separate model state, preserving the union. Do not average away opposite-phase speech. Amplify analysis input only toward peak 0.5, capped at 100×. Source/output volume remains unchanged; this cannot reliably recover all quiet speech amid loud noise.
 
-모델 실행은 `server/vad.mjs`, 구간 보호 계산은 `shared/speech.mjs`, 설정 검증은 `shared/speech-settings.mjs`에서 맡는다. 미디어 분석 작업이 두 경로를 연결한다. 기존 네 가지 AI 제안 설정은 그대로 두고 VAD 값을 AI가 묵시적으로 수정하지 않게 한다.
+Collect 32 ms windows at or above probability threshold, merge gaps up to 160 ms, retain short syllables without a minimum-speech filter, and pad one window on both sides. Subtract protection from amplitude candidates, then apply minimum silence, speech padding, and inward frame snapping. Protection must never increase removed duration.
 
-프로젝트 v2는 말소리 보호 설정을 필수로 저장한다. v1을 열면 보호 꺼짐 기본값으로 변환한다. v1 앱이 v2를 지원하는 것으로 표시하지 않는다.
+Changed settings require reanalysis. Failure/cancellation preserves prior cuts/restorations/projects. Missing/corrupt models or inference failure must not silently disable protection. Bundle pinned Silero VAD v6.2.1, SHA-256, and MIT license; run on local CPU without inference-time downloads or accounts.
 
-## 추가 검증
+`server/vad.mjs` owns inference, `shared/speech.mjs` interval protection, and `shared/speech-settings.mjs` validation. Existing AI proposals still modify only their four silence settings. Project v2 requires speech-protection settings; v1 migrates to off. Old v1 apps are not declared compatible with v2.
 
-| ID | 필수 검사 | 통과 기준 |
+## Cases
+
+| ID | Test | Pass criterion |
 | --- | --- | --- |
-| S01 | 구간 차집합·단조성·프레임·최소 길이 | 독립 고정 정답과 일치, 보호 구간 침범·제거 시간 증가 없음 |
-| S02 | 음성 점수 경계·채널·짧은 음절·마지막 창 | 기준 이상/미만 구분, 한 채널만 발화해도 보존, 빈/NaN 응답 거부 |
-| S03 | 실제 ONNX 모델 + 한국어 TTS fixture | 알려진 발화 내부 보존, 중간 긴 무음 제거, 실제 출력 전체 디코딩 |
-| S04 | 왼쪽/오른쪽만 발화·반대 위상·44.1kHz·PTS 오프셋 | 원본 시간축의 같은 발화 구간 보존. 단순 다운믹스 상쇄 없음 |
-| S05 | 프로젝트 v1→v2·저장 왕복·설정 변경 | 기존 컷 보존, 설정 왕복 일치, 재분석 필요 표시 |
-| S06 | 보호 중 취소·모델 손상·분석 실패 | 현재 컷 보존·재시도, 조용한 보호 해제 없음 |
-| S07 | 실제 브라우저·Mac 패키지 | 설정→분석→미리보기→저장→출력, 외부 요청 없음, UI 오류 없음 |
+| S01 | Subtraction, monotonicity, frames, minimum duration | Independent expected intervals; no protected deletion or increased removal |
+| S02 | Probability boundaries, channels, short syllables, final window | Correct threshold/union; reject empty/NaN outputs |
+| S03 | Real ONNX and Korean TTS | Preserve known speech interior, remove long middle pause, fully decode output |
+| S04 | Left/right-only, opposite phase, 44.1 kHz, PTS offset | Same source-time speech preserved without downmix cancellation |
+| S05 | v1→v2, round trip, setting change | Preserve cuts/settings and show reanalysis need |
+| S06 | Cancel, corrupt model, failed analysis | Preserve cuts, retry, no silent fallback |
+| S07 | Browser and packaged Mac | Settings/analyze/preview/save/export without external requests/UI errors |
 
-TTS는 실제 ONNX 입출력의 재현용 fixture이며 사용자 한국어 영상 Q01~Q05를 대체하지 않는다. 이 모드의 실제 녹음 정확도와 긴 영상 성능은 별도로 측정한다.
+TTS tests real inference mechanics, not human Q01–Q05. Actual recording accuracy and long performance remain separate. Sources: [Silero](https://github.com/snakers4/silero-vad/tree/v6.2.1), [state/context wrapper](https://github.com/snakers4/silero-vad/blob/v6.2.1/src/silero_vad/utils_vad.py), [ONNX Node](https://onnxruntime.ai/docs/get-started/with-javascript/node.html).
 
-공식 계약: [Silero VAD](https://github.com/snakers4/silero-vad/tree/v6.2.1), [ONNX 상태·문맥 래퍼](https://github.com/snakers4/silero-vad/blob/v6.2.1/src/silero_vad/utils_vad.py), [ONNX Runtime Node](https://onnxruntime.ai/docs/get-started/with-javascript/node.html).
-
-긴 영상의 후속 측정은 [VAD 성능 계획](2026-09-05-vad-performance-plan.md)과 [12회 실행 기록](../testing/2026-09-06-vad-performance-results.md)을 따른다. 최초 브라우저 RSS가 2GiB를 초과했고 [출력 메모리 개선 후](../testing/2026-09-06-render-memory-results.md) 동일한 12회가 측정 목표를 충족했다. 실제 녹음·cold-cache 등 전체 성능 통과로 확대하지 않는다.
+See [performance plan](2026-09-05-vad-performance-plan.md), [initial 12-run results](../testing/2026-09-06-vad-performance-results.md), and [render-memory follow-up](../testing/2026-09-06-render-memory-results.md). Initial browser RSS exceeded 2 GiB; the later same-condition matrix met targets. Neither establishes real-recording or cold-cache acceptance.

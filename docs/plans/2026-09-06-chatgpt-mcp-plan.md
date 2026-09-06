@@ -1,58 +1,43 @@
-# ChatGPT에서 HyperCut에 편집 제안 전달하기
+# Sending editing proposals from ChatGPT to HyperCut
 
-2026-09-06. 기존 설계의 ChatGPT MCP 연결을 구체화한다. 계획 작성 당시 앱에는 MCP 서버가 없었다. 이후 로컬 stdio 연결과 두 앱의 제안 수신을 구현했으며 [검증 기록](../testing/2026-09-06-mcp-results.md)에 범위를 남겼다. 실제 ChatGPT 계정·터널·모델 응답의 완료 기록은 아니다.
+2026-09-06. This plan predates the MCP server; local stdio and proposal reception in both apps were subsequently implemented. See [execution results](../testing/2026-09-06-mcp-results.md). Actual ChatGPT account, tunnel, and model execution remain unverified.
 
-## 확인한 공식 연결 조건
+## Connection assumptions
 
-[공식 연결 안내](https://developers.openai.com/plugins/deploy/connect-chatgpt)에 따르면 ChatGPT 개발자 모드의 MCP 연결은 공개 HTTPS 또는 Secure MCP Tunnel을 사용할 수 있다. 개발자 모드의 이용 가능 여부는 계정·워크스페이스 정책에 따라 달라진다. 서버 도구 목록·입출력 스키마·인증·확인 동작과 실제 채팅의 도구 선택을 별도로 시험해야 한다.
+The [connection guide](https://developers.openai.com/plugins/deploy/connect-chatgpt) and [Secure MCP Tunnel guide](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) described public HTTPS or a tunnel for developer-mode connections. Account/workspace policy, execution credentials, tunnel ID, Platform organization permissions, and target workspace linkage require separate verification. Documentation does not establish this user's access or free use. Personal development and public plugin distribution also differ. No account settings, keys, tunnels, or model calls were accessed/created during this investigation.
 
-[Secure MCP Tunnel 안내](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels)는 비공개 stdio/HTTP MCP 서버를 외부 인바운드 포트 없이 연결하는 경로를 설명한다. 실행용 API 키, tunnel ID, Platform 조직의 터널 권한 및 대상 ChatGPT 워크스페이스 연결이 필요하다. 문서의 지원 안내는 이 사용자의 권한·실제 연결·무료 사용을 입증하지 않는다. 개인 개발 연결과 공개 플러그인 배포의 조건도 다르다.
+Start with a local stdio adapter and limited app bridge, then verify actual account connectivity. Public HTTPS would additionally require hosting, per-user authentication, access controls, and operational checks. Existing manual request/JSON import remains available but is not direct ChatGPT tool use. Do not change product/package during active performance measurements.
 
-이번 조사에서는 계정 설정·키·터널을 읽거나 만들지 않았고 외부 모델 요청도 보내지 않았다.
+## Scope and tools
 
-## 연결 방식과 권장 구현 순서
+The user chooses a task and its scope: silence settings, selected caption corrections, or selected effect placement, reusing existing limits. Freeze a snapshot with separate share ID, scoped credential, and expiry. Do not expose the editor's full API token or automatically attach media, filenames, source paths, or other projects.
 
-| 경로 | 역할 | 확인할 제약 |
+`get_shared_edit_context` returns only allowed data for that share. No project enumeration, arbitrary file access, network proxy, or command tool is provided. `submit_edit_proposal` carries share ID/context version and passes existing validators before appearing in the comparison UI. Reception does not edit the timeline, render, or start paid inference. User-selected application uses existing undo/save, and external clients can distinguish receipt from application.
+
+Changed target/settings/scope reject old proposals. Revocation, expiry, and shutdown reject new requests. Authentication material stays out of project JSON, shared results, and normal logs. Missing authorization is never allowed by default.
+
+## Fixed limits and lifecycle
+
+- At most eight concurrent shares. Creation/proposal/review JSON ≤128 KiB UTF-8; stdio buffer ≤132 KiB including protocol framing; app responses ≤384 KiB. Adapter permits four concurrent app requests, each with a five-second timeout.
+- Maximum share lifetime 15 minutes. Only the app's share screen renews the 90-second lease; external reads cannot renew it. Active UI polls every 1.5 seconds. Each share has a new access key/configuration.
+- One proposal per share. Identical ID/body replay returns the same result; changed ID/body is rejected. Changed app state requires a new share.
+- Explicit revocation is complete only after server acknowledgment. On failure, stop renewals and offer retry. Close/target-change revocation can fail offline; expiry remains 90 seconds after the last app heartbeat.
+- Apply synchronously in the app, then record the result. Failed acknowledgment must never reapply edits; settings UI supports retrying only the result delivery.
+- After apply/reject, erase request/proposal bodies; retain a receipt only for the remaining lease. It records the historical event, not the current timeline after undo. Explicit revocation deletes the receipt too.
+- Effect application changes its snapshot and closes the dialog before acknowledgment. A disconnect may preserve the edit while preventing the external client from confirming success; do not infer acknowledgment.
+
+Use official TypeScript MCP SDK 2.0.0 stdio, testing local operation and older initialization compatibility separately from ChatGPT.
+
+## Additional A-case checks
+
+| Cases | Check | Required evidence |
 | --- | --- | --- |
-| 로컬 MCP 어댑터 + Secure MCP Tunnel | 개인 사용을 위한 우선 후보. 미디어 파일은 로컬에 두고 선택한 편집 정보만 공유 | 계정·워크스페이스·터널 권한과 실행용 인증이 필요 |
-| 공개 HTTPS MCP | 향후 여러 사용자에게 배포할 때 검토 | 별도 호스팅·사용자별 인증·접근 제어·운영 검증 필요 |
-| 현재 수동 요청/응답 가져오기 | 자동 연결을 아직 설정하지 않은 사용자의 기존 경로 | ChatGPT가 앱을 직접 호출한 것으로 표시하지 않음 |
+| A01/A06 | Disconnected, unshared, expired, revoked | Deny requests while local editing/save/export remain usable |
+| A02/A07 | Initialize/list tools/read context/submit three task types | Actual protocol round trip and schema agreement; distinguish mock model from ChatGPT |
+| A03 | Invalid schema/settings, unshared cues/assets, command strings | Reject without edits, file changes, or external calls |
+| A04 | Adapter exit, transport loss, timeout, reconnect | Preserve work and show retryable errors |
+| A05/A08 | Replay, old versions, project changes | No duplicate/stale application; compare projects after apply/undo |
+| A06 | Serialized payloads/logs | Allowed text/numbers only; no credentials/media/filenames/other projects |
+| A07 | Actual account/developer mode/tunnel/chat | Independently verify setup, auth, tool discovery, proposal, apply, and usage; unknown billing is not zero |
 
-먼저 로컬 MCP 계약과 앱의 제안 수신을 검증한다. 사용자 계정 연결과 실제 ChatGPT 실행은 별도 단계다. 제품 성능 기준이 실행 중인 동안 패키지·제품 코드를 바꾸지 않는다.
-
-## 앱과 도구의 계약
-
-1. 사용자가 앱에서 공유할 작업과 범위를 고른다. 자연어 무음 설정, 선택한 자막 교정, 선택한 효과음 배치에 기존 AI 범위 제한을 재사용한다. 영상·음성·파일명·원본 경로·다른 프로젝트는 자동 첨부하지 않는다.
-2. 앱은 고정된 작업 스냅샷을 만들고, 별도 공유 ID·권한·만료 시간을 부여한다. MCP에는 이 공유 범위만 노출한다. 로컬 편집 API의 전체 권한 토큰을 터널로 전달하지 않는다.
-3. `get_shared_edit_context`는 지정한 공유 ID의 허용 데이터만 반환한다. 전체 프로젝트 목록·임의 파일 읽기·네트워크 프록시·명령 실행 도구는 제공하지 않는다.
-4. `submit_edit_proposal`은 공유 ID와 문맥 버전을 포함한 제안을 받는다. 기존 설정·자막·효과음 검증기를 적용하고 앱의 비교 화면에 제안을 표시한다. 제안 수신만으로 타임라인을 변경하거나 렌더링·유료 추론을 시작하지 않는다.
-5. 사용자가 앱에서 선택 적용하면 기존 실행 취소·프로젝트 저장 흐름을 사용한다. 모델은 적용 성공 여부를 제안 수신 성공과 구분해 읽을 수 있어야 한다.
-6. 편집 대상·설정·공유 범위가 바뀌면 이전 제안의 적용을 거부한다. 공유 해제·만료·앱 종료 뒤에는 새 요청을 거부한다. 브라우저 탭이 사라져도 무기한 공유가 남지 않도록 만료를 적용한다.
-
-첫 구현은 사용자가 실행한 로컬 stdio 어댑터와 범위가 제한된 앱 연결을 사용한다. 인증 자료는 프로젝트 JSON·공유 결과·일반 로그에 저장하지 않는다. 요청 크기·작업 수·수명은 실행 전에 고정하고 누락된 권한을 기본 허용으로 처리하지 않는다.
-
-### 첫 구현의 고정 한도와 적용 상태
-
-- 동시 공유 최대 8개, 공유 생성·제안·검토 결과 JSON은 UTF-8 128KiB 이하. stdio 입력 버퍼는 프로토콜 포장을 포함해 132KiB, 앱 응답은 384KiB, 어댑터의 동시 앱 요청은 4개·요청당 5초다.
-- 각 공유는 최대 15분이다. 앱의 공유 화면만 90초 임대를 갱신하며 외부 AI의 조회로 수명을 연장할 수 없다. 사용 중인 화면은 1.5초 간격으로 제안을 확인한다. 공유마다 새 접근 키와 실행 설정이 필요하다.
-- 한 공유에는 제안 하나만 받는다. 같은 제안 ID·동일 본문 재전송은 같은 결과를 반환하고 다른 본문/ID는 거부한다. 앱 변경 후에는 새 공유가 필요하다.
-- 명시적 공유 해제는 서버 응답 후에만 완료로 표시한다. 실패하면 상태 갱신을 중단하고 해제 재시도를 제공한다. 창 닫기·대상 변경의 해제 요청도 연결 단절 시 즉시 완료를 보장하지 않으며 마지막 앱 상태 확인에서 90초 후 만료된다.
-- 적용은 앱의 기존 동기 편집 동작에서 수행하고 그 뒤 결과를 기록한다. 결과 전달 실패는 이미 적용한 편집을 다시 실행하지 않는다. 설정 화면에서 결과 전달만 재시도하는 흐름을 검증한다.
-- 적용·거절 후에는 요청 원문과 제안 본문을 지우고, 남은 임대 기간에 한해 결과 영수증을 조회할 수 있다. 영수증은 당시 적용 이벤트의 기록이며 이후 실행 취소까지 추적하는 현재 타임라인 상태가 아니다. 명시적 공유 해제는 영수증도 폐기한다.
-- 효과음 적용은 대상 스냅샷을 바꾸므로 해당 창을 즉시 닫은 뒤 결과 전달을 완료한다. 이때 결과 전달까지 연결이 끊기면 편집은 보존되지만 외부 AI에서 적용 완료를 확인하지 못할 수 있다. 이를 성공으로 추정하지 않는다.
-
-프로토콜은 공식 TypeScript MCP SDK 2.0.0의 stdio 서버를 사용한다. 로컬 실행과 구형 초기화 호환을 검사하며, 실제 ChatGPT의 계정 권한·터널 연결·도구 사용은 별도 단계다.
-
-## 기존 A01~A08에 추가할 실제 검사
-
-| 연결 사례 | 검사 | 필요한 증거 |
-| --- | --- | --- |
-| A01, A06 | 미연결·공유 전·만료·해제 후 요청 | 요청 거부, 무음 편집·저장·출력은 계속 사용 가능 |
-| A02, A07 | MCP 초기화·도구 목록·공유 문맥 읽기·세 작업 제안 | 실제 프로토콜 왕복, 선언한 스키마와 결과 일치. 모의 모델 단계와 실제 ChatGPT 호출을 구분 |
-| A03 | 잘못된 스키마·범위 밖 설정·미공유 자막/음원·명령 문자열 | 제안 거부, 편집·파일·외부 호출 변화 없음 |
-| A04 | 어댑터 종료·전송 단절·시간 초과·재연결 | 기존 편집 보존, 설명 가능한 오류와 재시도 |
-| A05, A08 | 같은 요청 재전송·옛 버전 제안·프로젝트 변경 | 중복 적용 없음, 오래된 대상 변경 차단, 적용/실행 취소 후 실제 프로젝트 비교 |
-| A06 | 각 작업의 직렬화된 요청·응답·로그 | 허용한 텍스트·수치만 포함, 키·영상·파일명·다른 프로젝트 누출 없음 |
-| A07 | 실제 계정의 개발자 모드·터널·ChatGPT 채팅 | 설치/인증/도구 발견/실제 제안/앱 적용 각각 확인. 사용량·청구 미확인은 0원으로 표시하지 않음 |
-
-로컬 프로토콜과 두 앱의 제안 흐름을 통과한 뒤 실제 계정 단계로 진행한다. 필요한 계정·터널 권한이 없으면 해당 연결을 미검증으로 남긴다. 수동 JSON 가져오기나 OpenAI API 성공을 ChatGPT MCP 연결 성공으로 대체하지 않는다.
+Advance to account testing after local protocol and both-app flows pass. Missing permissions leave the integration unverified. Manual JSON or direct API success cannot substitute for ChatGPT MCP success.

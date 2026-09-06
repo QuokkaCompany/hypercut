@@ -1,87 +1,70 @@
-# 기본 무음 편집의 입력 캐시 검증
+# Threshold-mode input cache verification
 
-2026-09-06. [기본 모드 재검증 계획](../plans/2026-09-06-thousand-cut-performance-plan.md)에 따라 기존 시험 도구에 파일 캐시 관측을 연결했다. 현재 인코더 동시 처리 2개 후보의 브라우저 번들·Mac 패키지를 사용했다. 제품 코드와 2GiB·시간·조작·취소 기준은 바꾸지 않았다.
+2026-09-06. The threshold runner gained observed cold/warm input conditions while retaining the uncontrolled default. Preparation is separate from analysis, residency is checked immediately before file selection, and hashes are checked afterward. Project save and cancellation are included in RSS monitoring. Product behavior and limits were unchanged; execution stops on a measured failure.
 
-## 변경한 시험 경로
+## Initial short matrix
 
-`threshold-benchmark.mjs`는 기본 음량 모드로 실제 파일 가져오기·분석·MP4 출력·저장·복원/설정/재생 조작을 수행한다. 기존 기본 경로를 유지하고 `--input-cache=cold|warm`을 추가했다. 캐시 사본 준비는 분석 시간 밖에 기록하고, 선택 직전 상주 수와 분석 후·작업 후 사본 해시를 검사한다.
+Twelve 60-second runs covered three cache conditions, two apps, and two repetitions, with six cancellation/retry conditions.
 
-실행한 러너·서버 소스를 보존하고 브라우저 번들 및 Mac 패키지 내부 미디어·시간축·번들이 현재 파일과 같은지 확인한다. 기존 RSS 측정에 프로젝트 저장과 취소 단계도 추가했다. 완료된 성능 실패는 기록한 뒤 다음 조건으로 확장하지 않는다.
+| Condition | Peak RSS (GiB) | Highest action p95 (ms) | Resident pages |
+| --- | --- | --- | --- |
+| Uncontrolled | 1.625 | 66.87 | Not constrained |
+| Cold | 1.528 | 66.82 | 0 / 74 |
+| Warm | 1.630 | 67.09 | 74 / 74 |
 
-## 실제 두 앱의 60초 검사
+The input was 1,207,118 bytes. All outputs shared the recorded `f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1` hash, 1,448 frames, 16 cuts, six markers, and complete project content. This is not a full-pixel comparison; an output compared with itself is an internal consistency check rather than an independent correctness oracle. The longest RSS sample interval was 318.82 ms. Cancellation happened early, not midstream.
 
-[전체 실행 요약](results/2026-09-06-threshold-cache-smoke-summary.json)은 3조건 × Chrome/Mac × 2회, 총 **12회 통과**다. 합성 60초 영상의 16개 컷과 실제 출력 1,448프레임·PTS, 6개 A/V 표식 쌍, 전체 프로젝트를 확인했다. 전사·자막·효과음은 포함하지 않았다.
+Eight audit controls accepted one valid report and rejected seven altered copies: lowered RSS, lowered p95, changed frame count, changed hash, missing repetition, changed project, and invalid cold residency. Only copied test data were modified.
 
-| 입력 조건 | 실행 수 | 선택 직전 상주 페이지 | 최대 합산 RSS GiB | 조작군 최대 p95 ms |
-| --- | --- | --- | --- | --- |
-| 기존 경로 | 4 | 관측·통제하지 않음 | 1.625 | 66.87 |
-| cold | 4 | 매번 0 / 74 | 1.528 | 66.82 |
-| warm | 4 | 매번 74 / 74 | 1.630 | 67.09 |
+## Candidate `b60b115`: browser 60-minute cold runs
 
-캐시 파일은 1,207,118바이트다. 모든 실제 MP4의 SHA-256은 `f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1`로 일치했다. 각 조건의 분석 JSON과 저장 시각을 제외한 프로젝트 전체 필드도 두 앱·반복 간 일치했다. 기본 경로를 기준으로 cold와 warm을 비교했다. 첫 기본 실행과 자기 자신을 비교한 항목은 내부 일관성 검사이며 독립 정답 증거로 세지 않는다.
-
-재분석 중 취소·재시도 6조건도 통과했다. 취소 직전 작업이 `running`인지 확인하고, 기존 프로젝트·저장 MP4와 입력 사본을 보존한 뒤 같은 앱의 다음 반복을 완료했다. 프로젝트 저장·취소를 포함한 RSS 원본을 보존했으며 최대 표본 간격은 약 318.82ms였다. 짧은 분석의 초기 단계 취소를 장시간 디코딩 중간 취소로 표현하지 않는다.
-
-실행과 감사 원본: [기본](results/2026-09-06-threshold-cache-smoke-uncontrolled.json) / [감사](results/2026-09-06-threshold-cache-smoke-uncontrolled-audit.json), [cold](results/2026-09-06-threshold-cache-smoke-cold.json) / [감사](results/2026-09-06-threshold-cache-smoke-cold-audit.json), [warm](results/2026-09-06-threshold-cache-smoke-warm.json) / [감사](results/2026-09-06-threshold-cache-smoke-warm-audit.json).
-
-## 결과 검증기의 대조
-
-`audit-threshold-benchmark.py`는 실행 행렬 누락·중복, 현재/실행 소스 해시, 실제 출력·입력 해시, 프로젝트 전체, 원시 RSS 합·최댓값, UI 32회 통계, 프레임 수·시각과 싱크 기준, 캐시 관측 및 취소 후 2회차 완료를 검사한다. 실제 미디어 정답 검사는 러너에서 수행하며 감사 시 다시 실행한 것으로 집계하지 않는다.
-
-[대조 기록](results/2026-09-06-threshold-cache-audit-controls.json)의 8조건은 정상 자료 1개 허용과 변조 자료 7개 거부다. 보고된 RSS 낮추기, UI p95 낮추기, 프레임 수 변경, 출력 해시 변경, 반복 누락, 프로젝트 변경, cold의 상주 페이지 변경을 각각 거부했다. 원래 결과·미디어는 수정하지 않고 새 시험 폴더의 자료만 바꿨다.
-
-## 브라우저 60분 cold 후속 실행
-
-MCP 연결을 앱에 추가하기 전 `b60b115` 후보에서 **3회와 취소·재시도 1조건을 완료**했다. [실행 기록](results/2026-09-06-threshold-cache-browser-3600-cold.json)과 [감사 기록](results/2026-09-06-threshold-cache-browser-3600-cold-audit.json)을 보관했다. 제품·번들·패키지를 변경하기 전에 감사를 수행했다.
-
-| 반복 | 분석 초 | 출력 초 | 최대 합산 RSS GiB |
+| Run | Analysis (s) | Export (s) | RSS (GiB) |
 | --- | --- | --- | --- |
 | 1 | 37.644 | 182.753 | 1.472 |
 | 2 | 39.210 | 181.904 | 1.448 |
 | 3 | 37.599 | 182.787 | 1.470 |
 
-매번 71,258,047바이트 입력의 4,350페이지 중 상주 0페이지를 파일 선택 직전에 확인했다. 1,000컷, 전체 85,997프레임·PTS, 6개 A/V 표식 쌍, 전체 프로젝트와 실제 출력 해시를 확인했다. 세 MP4의 SHA-256은 `b43732d6d879804b5a6cd22d33ea48a3c572c1a7b999bc2f37f50001bf3c6fd1`로 같았다. 전체 픽셀 동일성 검사는 아니다.
+Each 71,258,047-byte input had 0 / 4,350 resident pages. Outputs contained 1,000 cuts, 85,997 frames, and six markers, with the same recorded `b43732d6d879804b5a6cd22d33ea48a3c572c1a7b999bc2f37f50001bf3c6fd1` hash. Preparation-stage cancellation became visible in 0.8 ms and ready in 308.99 ms, followed by a successful retry. This was not a comparison against an earlier candidate.
 
-취소 표시 약 0.8ms, 재시도 가능한 상태까지 308.99ms였고 두 번째 반복을 완료했다. 취소 직전 단계는 `작업 준비`였으므로 디코딩 중간 취소의 증거로 사용하지 않는다. 이 감사는 이전 후보의 출력과 비교한 것이 아니며, 반복 간 일관성과 러너의 독립 정답·원시 측정값을 확인했다.
-
-## 다음 단계와 재현
-
-이전 [60분 기본 모드의 2.050GiB 실패](2026-09-06-thousand-cut-performance-results.md)를 보존한다. 후속 cold 3회는 해당 후보·조건의 통과 근거이며 모든 조건의 해결로 확대하지 않는다. 계획한 24회 중 나머지 warm·Mac·10분 21회는 미실행이다. 이후 MCP 기능을 추가해 번들·패키지가 바뀌었으므로 최종 후보의 성능으로 이 값을 그대로 재사용하지 않는다. 자막·효과음 합성의 캐시 행렬은 [별도 기록](2026-09-06-input-cache-results.md)으로 유지한다.
+Only three of the 24 long conditions were completed before MCP changed the product. The remaining 21 are not completed results for this candidate. Composition-cache measurements are separate.
 
 ```sh
-node scripts/threshold-benchmark.mjs --durations=60 --surfaces=browser,desktop --iterations=2 --ui-locator=css --input-cache=cold --output=test-output/새-기본-무음-시험
-python3 scripts/audit-threshold-benchmark.py test-output/새-기본-무음-시험
+node scripts/threshold-benchmark.mjs --durations=60 --surfaces=browser,desktop --iterations=2 --ui-locator=css --input-cache=cold --output=test-output/FRESH_RUN_NAME
 ```
 
-실제 한국어 발화·작업 시간 절감·OS 전체 캐시·인증 AI 품질은 이 합성 시험으로 검증하지 않는다. 네이티브 파일 대화상자의 선택 경로는 시험이 지정했다.
+Audit the fresh report before extending the matrix.
 
-## `86a5c4d` 후보의 60초 재검증
+## MCP lifecycle candidate `86a5c4d`
 
-MCP 상태 보존 수정 후 앱·패키지를 고정하고 warm/cold × Chrome/Mac × 2회, 총 **8회와 취소·재시도 4조건을 완료**했다. [후보별 실행 요약과 감사](results/2026-09-06-final-candidate-threshold-smoke.json)에 근거를 보관했다. 이전 후보의 실행은 이 수에 합산하지 않았다.
+Eight short runs and four cancellation/retry conditions passed. Warm maximum analysis/export/RSS/action-p95 values were 1.347 seconds / 3.512 seconds / 1.623 GiB / 67.11 ms. Cold maxima were 1.364 seconds / 3.512 seconds / 1.618 GiB / 66.86 ms. Residency, 1,448 frames, and the `f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1` output identity matched. Maximum cancellation feedback/readiness was 0.8 / 312.67 ms, followed by successful retries.
 
-| 입력 파일 조건 | 실행 수 | 최대 분석 시간 | 최대 출력 시간 | 최대 RSS | 최대 조작 p95 |
-| --- | --- | --- | --- | --- | --- |
-| warm | 4 | 1.347초 | 3.512초 | 1.623GiB | 67.11ms |
-| cold | 4 | 1.364초 | 3.512초 | 1.618GiB | 66.86ms |
-
-매번 1,207,118바이트 입력의 74페이지 전부 또는 0페이지가 선택 직전에 상주했음을 확인했다. 16컷, 1,448프레임의 수·PTS, 6개 A/V 표식 쌍과 프로젝트 전체를 검사했다. 8개 MP4는 기존 60초 fixture의 출력 SHA-256 `f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1`로 같았다. 전체 픽셀 동일성을 다시 검사한 것은 아니다.
-
-취소 표시 최대 0.8ms, 작업 종료·재시도 가능 상태까지 최대 312.67ms였다. 각 조건의 두 번째 반복 완료로 재시도를 확인했다. warm의 첫 비교는 해당 후보 내부 일관성 검사이며 독립 정답을 대신하지 않는다. cold는 같은 후보의 warm 결과와 전체 분석·프로젝트·출력을 비교했다.
-
-이 검사는 현재 후보의 짧은 경로 확인이다. 장시간 검증은 [고정 후보 계획](../plans/2026-09-06-thousand-cut-performance-plan.md#mcp-상태-보존-수정-후-고정-후보)에 따라 브라우저 60분 warm 3회부터 별도로 판정한다.
-
-## `86a5c4d` 브라우저 60분 warm 완료
-
-같은 앱에서 3회 반복과 취소·재시도 1조건을 완료했고 제품 변경 전에 [원본 감사](results/2026-09-06-candidate-86a5c4d-browser-3600-warm-audit.json)를 수행했다. [실행 기록](results/2026-09-06-candidate-86a5c4d-browser-3600-warm.json)의 수치는 다음과 같다.
-
-| 반복 | 전체 분석 | 출력·앱 내부 검증 | 최대 합산 RSS |
+| Browser 60-minute warm run | Analysis (s) | Export (s) | RSS (GiB) |
 | --- | --- | --- | --- |
-| 1 | 37.558초 | 176.447초 | 1.744GiB |
-| 2 | 37.353초 | 177.665초 | 1.577GiB |
-| 3 | 37.594초 | 180.608초 | 1.634GiB |
+| 1 | 37.558 | 176.447 | 1.744 |
+| 2 | 37.353 | 177.665 | 1.577 |
+| 3 | 37.594 | 180.608 | 1.634 |
 
-세 번 모두 1,000컷·85,997프레임의 수와 PTS·6개 A/V 표식 쌍·전체 프로젝트를 확인했다. MP4 SHA-256은 모두 `b43732d6d879804b5a6cd22d33ea48a3c572c1a7b999bc2f37f50001bf3c6fd1`였다. 입력 71,258,047바이트의 4,350페이지 전부가 매번 선택 직전에 상주했으며, 읽은 뒤 입력 해시도 확인했다. 전체 픽셀 동일성 검사는 아니다.
+All runs observed 4,350 / 4,350 resident pages and passed post-run hashes. Outputs matched the `b43732d6d879804b5a6cd22d33ea48a3c572c1a7b999bc2f37f50001bf3c6fd1` identity, 1,000 cuts, 85,997 frames, and six markers; no complete pixel comparison is claimed. Highest action p95 was 67.36 ms. Cancellation at preparation progress 0 became visible in 0.8 ms, ready in 313.29 ms, and the next run completed.
 
-조작 p95 최대 67.36ms, 취소 표시 0.8ms, 작업 종료·재시도 가능 상태까지 313.29ms였다. 취소 전 상태는 ‘작업 준비’·진행률 0이었으며 실제 음량 분석 중 취소한 것으로 확대하지 않는다. 두 번째 반복 완료로 재시도를 확인했다.
+This candidate completed three of 24 long conditions. Do not combine its warm results with the previous candidate's cold results. Later transcription-readiness changes require their own performance measurements.
 
-이 후보의 기본 무음 장시간 행렬은 3/24회 완료다. 이전 후보의 cold 3회나 2.050GiB 실패는 각각의 근거로 보존하며 같은 후보의 횟수로 합산하지 않는다. 후속 [전사 준비 상태의 원인 구분](../plans/2026-09-06-transcription-readiness-plan.md)이 서버·패키지를 변경하면, 그 다음 후보의 전체 성능은 다시 판정해야 한다. 실제 한국어 품질·작업 시간과 다른 길이·앱·캐시 조건은 이 결과로 통과 처리하지 않는다.
+## Evidence and related records
+
+- [2026-09-06-thousand-cut-performance-plan.md](../plans/2026-09-06-thousand-cut-performance-plan.md)
+- [2026-09-06-threshold-cache-smoke-summary.json](results/2026-09-06-threshold-cache-smoke-summary.json)
+- [2026-09-06-threshold-cache-smoke-uncontrolled.json](results/2026-09-06-threshold-cache-smoke-uncontrolled.json)
+- [2026-09-06-threshold-cache-smoke-uncontrolled-audit.json](results/2026-09-06-threshold-cache-smoke-uncontrolled-audit.json)
+- [2026-09-06-threshold-cache-smoke-cold.json](results/2026-09-06-threshold-cache-smoke-cold.json)
+- [2026-09-06-threshold-cache-smoke-cold-audit.json](results/2026-09-06-threshold-cache-smoke-cold-audit.json)
+- [2026-09-06-threshold-cache-smoke-warm.json](results/2026-09-06-threshold-cache-smoke-warm.json)
+- [2026-09-06-threshold-cache-smoke-warm-audit.json](results/2026-09-06-threshold-cache-smoke-warm-audit.json)
+- [2026-09-06-threshold-cache-audit-controls.json](results/2026-09-06-threshold-cache-audit-controls.json)
+- [2026-09-06-threshold-cache-browser-3600-cold.json](results/2026-09-06-threshold-cache-browser-3600-cold.json)
+- [2026-09-06-threshold-cache-browser-3600-cold-audit.json](results/2026-09-06-threshold-cache-browser-3600-cold-audit.json)
+- [2026-09-06-thousand-cut-performance-results.md](2026-09-06-thousand-cut-performance-results.md)
+- [2026-09-06-input-cache-results.md](2026-09-06-input-cache-results.md)
+- [2026-09-06-final-candidate-threshold-smoke.json](results/2026-09-06-final-candidate-threshold-smoke.json)
+- [2026-09-06-thousand-cut-performance-plan.md](../plans/2026-09-06-thousand-cut-performance-plan.md#mcp-lifecycle-candidate-86a5c4d)
+- [2026-09-06-candidate-86a5c4d-browser-3600-warm-audit.json](results/2026-09-06-candidate-86a5c4d-browser-3600-warm-audit.json)
+- [2026-09-06-candidate-86a5c4d-browser-3600-warm.json](results/2026-09-06-candidate-86a5c4d-browser-3600-warm.json)
+- [2026-09-06-transcription-readiness-plan.md](../plans/2026-09-06-transcription-readiness-plan.md)

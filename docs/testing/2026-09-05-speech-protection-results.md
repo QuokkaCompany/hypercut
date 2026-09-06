@@ -1,64 +1,42 @@
-# HyperCut 로컬 말소리 보호 검증 — 2026-09-05
+# Local speech-protection results — 2026-09-05
 
-## 구현과 판정
+After `0a5f98e`, optional default-off VAD subtracts detected speech from amplitude candidates, displays extra preserved time/segments, supports source seeking and reanalysis prompts. Real Silero/TTS/multichannel/output and both-app checks passed; **human Korean Q01–Q05 remained NOT_RUN**. Energy preservation does not prove zero clipped syllables.
 
-음량 임계값으로 찾은 삭제 후보에서 VAD가 감지한 발화를 제외하는 **말소리 보호**를 추가했다. 기본은 꺼짐이며 음성 감지 기준을 별도로 조절한다. 설정을 바꾸면 재분석 안내가 나온다. 분석 초안에서 추가로 보존한 시간과 감지 구간을 보여주고, 구간을 눌러 원본 위치로 이동할 수 있다.
+Environment: M 4 Max/macOS arm 64, Node 24.14.1/Electron 44.2.0/FFmpeg 8.1.1/ONNX Node 1.29.0. Bundled Silero 6.2.1 commit `7e30209a3e901f9842f81b225f3e93d8199902b1 `, 2,327,524-byte ONNX, SHA-256 ` 1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3`, MIT. Verify hash per model session; errors never silently disable protection.
 
-실제 Silero VAD 모델을 사용한 한국어 TTS·다채널·출력과 브라우저·Mac 패키지 검사는 통과했다. **실제 사용자 한국어 영상의 Q01~Q05는 아직 NOT_RUN이다.** TTS 에너지 보존으로 잘린 음절 0건이나 실제 녹음 정확도를 입증한 것으로 처리하지 않는다.
+Source-aligned 16 kHz PCM uses independent per-channel state, 512-sample windows/64-sample context. No averaging/phase cancellation; analysis-only gain capped 100×, original output volume. Apply existing min/padding/frame rules after protection subtraction. Set `ORT_DISABLE_TELEMETRY=1` before initialization; separate this configuration from actual OS-block evidence. Windows/Linux packages untested.
 
-기준 소스는 `0a5f98e` 이후 이 문서와 같은 변경 묶음이다. Apple M4 Max / macOS arm64 / Node 24.14.1 / Electron 44.2.0 / FFmpeg 8.1.1 / ONNX Runtime Node 1.29.0에서 실행했다. [추가 계획과 S01~S07](../plans/2026-09-05-speech-protection-plan.md)을 따른다.
+Checks: 37 units, eight media, 11 API, five VAD (four initially plus one real in-progress cancel). With 22 retained earlier compatibility/failure/ENOSPC/CLI checks, historical total of 83 PASS; those 22 were not rerun after this change. Package/both-app VAD E2E/core E2E/browser offline separate; core E2E preceded final ONNX unpack correction.
 
-## 실제 모델과 처리 계약
+## Actual media and cancellation
 
-Silero VAD v6.2.1, 커밋 `7e30209a3e901f9842f81b225f3e93d8199902b1`의 ONNX 파일 2,327,524바이트를 포함했다. SHA-256은 `1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3`이며 매 세션 모델을 읽을 때 확인한다. MIT 라이선스와 [명세](../../assets/models/silero-vad.json)를 함께 보관한다. 모델이 없거나 손상되면 보호를 조용히 끄는 대신 오류를 반환한다.
+Installed Korean Eddy TTS repeated twice with three-second middle silence, PCM peak≈0.004,17.7-second MP4. Default−40 dBFS removes all without VAD; probability 0.5 protection:
 
-선택 트랙을 원본 시간축의 16kHz PCM으로 만들고 채널별로 독립 상태를 유지한다. 512샘플 입력 창과 64샘플 문맥을 사용한다. 채널 평균을 쓰지 않아 반대 위상의 발화를 상쇄하지 않는다. 분석 입력에만 최대 100배까지 증폭하고, 출력은 원래 음량의 PCM에서 만든다. 감지한 구간을 제외한 후보에 기존 최소 무음·앞뒤 여유·프레임 정렬 규칙을 적용한다. [공식 상태·문맥 계약](https://github.com/snakers4/silero-vad/blob/v6.2.1/src/silero_vad/utils_vad.py).
-
-ONNX Runtime 초기화 전에 `ORT_DISABLE_TELEMETRY=1`을 설정한다. 이는 공식 비-Windows 프로세스 수명 동안의 원격 진단 차단 옵션이다. [공식 개인정보 문서](https://github.com/microsoft/onnxruntime/blob/main/docs/Privacy.md). 실제 OS 차단 실행 근거는 아래와 별도로 구분한다. Windows·Linux 패키지는 실행 검증하지 않았다.
-
-## 실행 결과
-
-| 실행 | 결과 | 범위 |
-| --- | --- | --- |
-| `npm test` | PASS 37개 | 기존 도메인과 구간 차집합·발화 점수·프로젝트 v1/v2 3개 추가 |
-| `npm run test:speech` | PASS 4개, 추가 전 실행 | 실제 TTS 3종 + 모델 실패/취소/재시작 |
-| VAD 진행 중 취소를 지정한 추가 Node test 실행 | PASS 1개 | 실제 180초 자료의 VAD 진행 상태 관측→취소→다음 분석 성공 |
-| `npm run test:api` | PASS 11개 | VAD 잘못된 설정 거부 포함, 기존 작업 계약 |
-| `npm run test:media` | PASS 8개 | 기존 음량 모드·출력·CFR/VFR/PTS·범위 미리보기 회귀 |
-| `npm run package:desktop` | PASS | 모델과 실제 파일로 푼 Mac용 네이티브 라이브러리 포함 |
-| `npm run test:speech:e2e -- --desktop` | PASS | 실제 Chrome·Mac 앱에서 VAD 분석·미리보기·MP4 저장·프로젝트 왕복 |
-| `npm run test:e2e -- --desktop --packaged` | PASS | 기존 편집·프로젝트·원본 보호 회귀. 최종 ONNX 압축 해제 변경 전 실행 |
-| `npm run test:speech:offline` | 브라우저 PASS | OS에서 비-loopback 네트워크를 막은 VAD 전체 흐름 |
-
-VAD 통합 파일에는 현재 5개 테스트가 있으며 위 두 실행에서 4개+1개를 확인했다. 최근 자동 테스트 합계는 **83개 PASS**다. 이번 단위 37개·미디어 8개·API 11개·VAD 5개와 이전 호환성 10개·장애/원자적 저장 8개·ENOSPC 1개·CLI 프로세스 3개의 한정된 결과를 합한 값이다. 이전 22개를 이번 변경 뒤 재실행한 것으로 표현하지 않는다. 자동 테스트 수와 계획 사례 수는 다르다.
-
-## 한국어 TTS 자료
-
-설치된 macOS `Eddy (Korean (South Korea))` 음성으로 시험 문장을 생성했다. 동일 발화 두 개 사이에 3초 무음을 넣고 PCM peak를 약 0.004로 낮췄다. 실제 MP4는 17.7초이며 기본 -40dBFS 음량 모드에서는 전체가 삭제 후보였다. VAD 기준은 0.5다.
-
-| 자료 | 보호 후 출력 | 합성 원본 PCM 에너지 보존 | 출력 peak |
+| Input | Output seconds | Independent original-PCM energy retained | Output peak |
 | --- | --- | --- | --- |
-| 모노 48kHz | 11.466667초 | 100% | 약 0.003999 |
-| 오른쪽 채널만 발화, 48kHz | 11.466667초 | 100% | 약 0.003999 |
-| 반대 위상 스테레오, 44.1kHz, PTS +3초 | 11.433267초 | 100% | 약 0.004006 |
+| Mono / 48 kHz | 11.466667 | 100% | ≈0.003999 |
+| Right-only / 48 kHz | 11.466667 | 100% | ≈0.003999 |
+| Opposite-phase stereo / 44.1 kHz/+3 sPTS | 11.433267 | 100% | ≈0.004006 |
 
-모든 자료에서 중간 긴 무음을 제거했고, 출력 전체 디코딩과 원본 해시 보존이 통과했다. 에너지 보존은 앱이 반환한 VAD 구간이 아닌 **별도로 만든 원본 PCM 샘플**과 실제 제거 구간을 비교한 결과다. 발음·자연스러움에 대한 청취 판정은 아니다. 최대 100배의 분석용 증폭이 출력 음량에는 적용되지 않았다. [입력 해시·검출 구간·출력 수치](results/2026-09-05-speech-media.json).
+Middle pause removed, full decode/source hashes passed. Independent PCM energy versus actual removals was used, not VAD output as its own oracle; listening quality remains separate.
 
-## UI·취소·오프라인
+Both apps exercised all-removed→protection→reanalyze→seek speech→encoded preview→save, v2 round trip and v1 migration preserving cuts/default-off. 390 pxcontrols passed; native paths substituted. Real 180-second VAD canceled at≈55.69% with 2.59 ms API response, no result, followed by successful short analysis. Single API latency, not UI/p95. Model session recreation/final short window also checked.
 
-브라우저와 실제 패키지에서 기본 음량 모드의 빈 출력 상태→보호 켜기→재분석→발화 위치 이동→렌더 미리보기→MP4 저장을 수행했다. 프로젝트 v2에는 보호 설정이 저장되고 다시 열면 복원된다. v1을 열면 기존 컷을 유지하면서 보호를 끈 상태로 읽는다. 보호 설정 변경의 재분석 안내와 390px 화면의 조작 범위도 확인했다. 네이티브 파일 선택·저장 창의 반환 경로는 시험이 지정했다. [UI 근거](results/2026-09-05-speech-ui.json).
+OS non-loopback blocking covered Chrome/server/children after TEST-NET probe EPERM; zero external page requests. Mac same condition NOT_RUN due nested sandbox; app security unchanged.
 
-180초 합성 자료에서 실제 VAD 추론 단계의 진행률 약 55.69%를 관측한 뒤 API 작업을 취소했다. 취소 응답까지 2.59ms였고 작업 결과는 남지 않았다. 이어서 짧은 파일의 보호 분석이 완료됐다. 이는 단일 API 실행값이며 전체 UI 지연이나 p95가 아니다. 별도 모델 세션의 취소·재생성과 마지막 짧은 입력 창도 확인했다. [취소 근거](results/2026-09-05-speech-cancellation.json).
+## Failures fixed and limits
 
-OS의 비-loopback 연결 차단 프로필을 적용한 Chrome·로컬 서버·자식 프로세스에서 VAD 전체 흐름을 완료했다. 예약 TEST-NET 주소 연결이 EPERM으로 거부되는 것을 먼저 확인했다. 페이지 외부 요청은 0건이었다. Electron은 앞선 중첩 샌드박스 제약 때문에 동일 OS 조건이 NOT_RUN이며 제품의 샌드박스를 끄지 않았다. [오프라인 근거](results/2026-09-05-speech-offline.json).
+Unbounded fixture padding produced a large temporary PCM; stop only identified test process/remove its file, replace with exact-sample construction and decoded-size bounds (final folder≈5 MiB). Browser success did not catch native missing dylib: unpack native library and companion dylib into app.asar.unpacked, retain only target-platform binaries, then actual Mac passed. Runner cleanup recorded failures before closing only its processes, preserving unsaved prompts; project assertions now wait for async reads.
 
-## 검사 중 수정한 문제
+Real/noisy/music-mixed recordings, long VAD/cold-cache, clean-machine distribution and all model-error UI/native offline combinations remained unverified. Named S01–S05 and S06/S07 subconditions passed, not full product acceptance. STT/captions/effects/actual LLMs were subsequent work.
 
-- 시험 영상 생성의 FFmpeg 무한 패딩 경로가 목표 길이에서 종료되지 않아 큰 임시 PCM 파일을 만들었다. 확인한 시험 프로세스를 종료하고 해당 파일을 삭제했다. 시험 자료는 정확한 샘플 수의 배열로 발화와 무음을 배치하도록 바꾸고 입력 디코딩 길이·파일 크기를 제한했다. 최종 시험 작업 폴더는 약 5MiB다.
-- 브라우저가 통과한 뒤 Mac 패키지의 VAD 결과 대기가 실패했다. 네이티브 라이브러리와 동반 dylib를 `app.asar.unpacked`로 풀어 포함한 뒤 실제 Mac 흐름이 통과했다. 배포 패키지에는 해당 플랫폼·아키텍처의 바이너리만 남긴다.
-- 실패한 네이티브 시험은 저장하지 않은 시험 프로젝트의 종료 확인 때문에 대기할 수 있었다. 시험 실패를 먼저 기록하고 시험이 생성한 앱 프로세스만 정리하도록 harness를 바꿨다. 제품의 저장 확인은 유지했다.
-- 프로젝트 복원 검사는 비동기 파일 읽기를 기다리도록 수정했다. 파일 선택 직후의 이전 UI 값으로 판정하지 않는다.
+## Evidence and related records
 
-## 남은 범위
-
-실제 한국어 녹음, 음악·큰 잡음 속 작은 발화, VAD 포함 10분·60분 앱 성능과 cold-cache, 일반 사용자 환경의 설치·배포, Q01~Q05는 아직 미검증이다. S01~S05와 위에 명시한 S06/S07 조건은 확인했지만 모델 오류 후 모든 UI 조합·Mac OS 차단 등을 포괄하는 전체 제품 완료 판정은 하지 않는다. 전사·자막·효과음과 실제 LLM 요청도 후속 작업이다.
+- [2026-09-05-speech-protection-plan.md](../plans/2026-09-05-speech-protection-plan.md)
+- [silero-vad.json](../../assets/models/silero-vad.json)
+- [utils_vad.py](https://github.com/snakers4/silero-vad/blob/v6.2.1/src/silero_vad/utils_vad.py)
+- [Privacy.md](https://github.com/microsoft/onnxruntime/blob/main/docs/Privacy.md)
+- [2026-09-05-speech-media.json](results/2026-09-05-speech-media.json)
+- [2026-09-05-speech-ui.json](results/2026-09-05-speech-ui.json)
+- [2026-09-05-speech-cancellation.json](results/2026-09-05-speech-cancellation.json)
+- [2026-09-05-speech-offline.json](results/2026-09-05-speech-offline.json)

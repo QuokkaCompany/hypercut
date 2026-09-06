@@ -1,19 +1,19 @@
-# 취소한 작업과 다음 편집의 응답 경합
+# Canceled jobs versus subsequent edits
 
-E06의 후속 검사다. 현재 UI는 작업 중 새 영상 열기를 막지만, 취소 응답보다 작업 완료 응답이 먼저 도착하면 작업 표시를 정리하고 새 영상을 열 수 있다. 따라서 비활성화된 버튼을 강제로 실행하지 않고 실제 허용되는 순서로 검사한다.
+Follow-up to E06. New-media selection is disabled during work, but a completion response can clear the job before a pending cancellation returns. Test reachable orders without forcing disabled buttons.
 
-| 조건 | 제어할 순서 | 기대 결과 |
+| Case | Order | Expected result |
 | --- | --- | --- |
-| POST_LATE | 작업 POST 전달 전 취소 → B 열기·새 작업 → 이전 POST 전달 | 서버의 사전 취소 기록으로 이전 작업은 cancelled. B 상태·작업 유지 |
-| POLL_LATE_ANALYZE | A의 실제 분석 완료 응답 대기 → 취소 → B 열기·새 작업 → A 응답 해제 | A 컷·진행·알림을 B에 적용하지 않음 |
-| POLL_LATE_EXPORT | A의 실제 출력 완료 응답을 같은 순서로 해제 | A의 저장 버튼·출력 경로를 B에 적용하지 않음 |
-| CANCEL_LATE_SUCCESS | 실제 작업 완료와 취소 요청의 응답을 따로 대기 → 작업 완료 수신·B 열기·새 작업 → 취소 성공 수신 | B 작업과 편집 유지 |
-| CANCEL_LATE_ERROR | 같은 순서에서 이전 취소 응답만 503으로 대체 | 이전 취소 오류를 B에 표시하지 않음 |
-| CANCEL_AFTER_EDIT | 작업 완료 후 같은 프로젝트의 설정 편집 → 이전 취소 실패 수신 | 이후 편집·미저장 상태 보존, 종료된 작업의 오류를 표시하지 않음 |
-| CURRENT_CANCEL_ERROR | 현재 작업의 취소 실패를 먼저 수신 → 다시 취소 | 유효한 실패는 표시하고 취소 재시도 가능 |
+| POST_LATE | Cancel before POST delivery; open B/start work; deliver old POST | Server pre-cancel record cancels old job; preserve B |
+| POLL_LATE_ANALYZE | Hold real A completion; cancel; open B/start work; release A | No A cuts/progress/messages in B |
+| POLL_LATE_EXPORT | Same order for export completion | No A result path/save button in B |
+| CANCEL_LATE_SUCCESS | Hold cancellation separately; accept completion; open B/start work; release cancel success | Preserve B work and edits |
+| CANCEL_LATE_ERROR | Same order with old cancel response changed to 503 | Do not show A's error in B |
+| CANCEL_AFTER_EDIT | Complete work; edit current project; release old cancellation error | Preserve later edit/dirty state; suppress obsolete error |
+| CURRENT_CANCEL_ERROR | Receive current cancellation error; cancel again | Show valid error and allow retry |
 
-각 조건은 Chrome와 현재 Mac 패키지에서 실행한다. 생성한 서로 다른 두 원본과 자막·용어·수동 컷이 있는 프로젝트를 사용한다. 완료 내용은 실제 서버 결과이며 HTTP 전달 순서만 제어한다. 503 응답만 오류 주입이다. 네이티브 파일 선택·저장 경로는 시험이 지정하며 OS 창 자체의 검증은 별도 완료 기록을 따른다.
+Run each in Chrome and the current Mac package with generated distinct sources and projects containing captions, glossary, and manual cuts. Completion payloads come from real jobs; only delivery order and injected 503s are controlled. Native paths are test-supplied, with OS dialogs covered separately.
 
-새 프로젝트 검사에서는 다음 미리보기 요청을 대기시킨 상태에서 이전 응답을 해제한다. 새 작업의 진행 상태·원본 경로·설정·컷·미저장 상태가 유지되어야 한다. 이후 새 미리보기를 실제 렌더링하고 저장한 프로젝트의 전체 필드, 두 원본의 해시를 확인한다. 이미 취소돼 브라우저가 폐기한 HTTP 응답은 전달 성공으로 표현하지 않는다.
+Hold B's next preview while releasing old responses. Check progress, source, settings, cuts, and dirty state; then really render B, compare the complete saved project and both source hashes. Do not report an aborted HTTP response as delivered.
 
-수정이 필요하면 취소 요청의 완료·오류를 해당 작업의 현재 유효성에 연결한다. 현재 작업의 실제 취소 실패는 계속 표시한다. 수정 전 실패 증거와 수정 후 동일 순서, 기존 복구·프로젝트 I/O·전사 회귀를 확인한다. 본 검사는 모든 모델 추론·효과음·OS 오류 조합이나 실제 녹음 품질을 대신하지 않는다.
+If needed, bind cancellation success/failure to current job identity while retaining current-error visibility. Preserve pre-fix failures and rerun the same orders plus recovery/project-I/O/transcription regressions. This does not cover every model/effect/OS-error combination or real recording quality.

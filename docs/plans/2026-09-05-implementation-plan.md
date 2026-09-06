@@ -1,49 +1,28 @@
-# HyperCut 데스크톱·브라우저 구현 계획
+# HyperCut implementation plan
 
-사용자의 2026-09-05 구현 진행 지시에 따라 설계·검증 계획을 실행한다.
+Created 2026-09-05. This is an implementation sequence and historical progress record; acceptance remains governed by the [validation plan](2026-09-05-validation-plan.md) and [test plan](2026-09-05-test-plan.md).
 
-## 구조
+## Architecture
 
-- React + TypeScript: 두 실행 형태에서 공유하는 편집 화면.
-- Node 로컬 서버: 스트리밍 업로드, 미디어 검사, 분석 작업, 컷 출력, 취소.
-- Electron: 같은 서버를 앱 내부에서 시작하고 네이티브 파일 선택을 제공.
-- FFmpeg/ffprobe: 디코딩, 프레임 시간표, 인코딩. 로컬 설치 경로와 환경 변수로 선택.
-- Node test runner: 시간축 도메인, PCM 검출, API, 실제 미디어 통합 테스트.
+Use a shared React/TypeScript UI with a Node local server for streamed imports and processing jobs. Electron embeds the server and supplies native file dialogs; the browser uses the same local service rather than uploading media to a hosted backend. Discover FFmpeg/ffprobe locally with environment overrides.
 
-브라우저 모드는 `localhost`의 서버를 실행한 후 사용하는 웹 앱이다. 영상이 외부 서비스에 업로드되는 호스팅 배포는 현재 실행하지 않는다.
+Keep editing-domain functions independent from UI/process execution. Use Node tests for deterministic domain contracts and real FFmpeg fixtures for media correctness. Preserve source identity and nondestructive project edits, with job IDs/revisions preventing stale results.
 
-## 작업 순서
+## Implementation order
 
-1. 음량 임계값·연속 길이·다채널 판정과 구간 도메인을 구현하고 수치 정답으로 검증.
-2. 입력 시간축·프레임 경계·동일 구간의 영상/음성 출력과 실제 파일 검증.
-3. 작업 API, 스트리밍 업로드, 진행 상황·취소·원본 보호.
-4. 편집 UI, 파형, 자동 컷·복원·실행 취소, 프로젝트 저장/불러오기, 정확한 미리보기.
-5. 브라우저 및 Electron 앱 실제 실행, 패키징, E2E.
-6. AI 공급자 연결과 자연어 설정 제안, 후속 자막·효과음 및 실사용 검증을 이어 진행.
+1. Implement settings validation, half-open source intervals, padding/minimum-removal rules, inward frame snapping, kept ranges, restoration, undo/redo, and project serialization against independent examples.
+2. Implement actual probing/decoding/analysis/rendering and independent full-output validation before expanding the UI. Stream f32 PCM and use inclusive absolute-value comparison across all channels. FFmpeg silencedetect parsing is not an interchangeable oracle because its boundaries/comparison may differ.
+3. Assemble kept audio continuously and encode AAC once to avoid per-segment packet-padding drift. Use balanced expressions for large video selection graphs. Handle VFR with actual frame timestamps and verify selected tracks, PTS normalization, and supported formats.
+4. Add local API imports, job progress/cancel, atomic outputs, failure recovery, and source protection. Exit zero or an existing file is not sufficient success.
+5. Add the editing UI: import, settings, waveform/timeline, editable cut draft, restore, precise previews, project save/reconnect, and validated MP4 export. Exercise both browser and native paths, including packaged native dependencies.
+6. Add optional AI settings proposals with bounded structured output, selected-provider routing, explicit review/apply, cancellation, and no fallback. Local editing remains usable without AI.
 
-## 엔진 결정
+## Follow-on implementation
 
-임계값 ‘이하’, 채널별 절댓값 비교, 샘플 단위 최소 길이를 제품 계약대로 고정하기 위해 FFmpeg로 디코딩한 f32 PCM을 스트리밍 분석한다. `silencedetect`의 로그와 제품의 경계 정의가 우연히 일치한다고 가정하지 않는다. 원 설계의 임계값·지속 시간·여유 시간 동작은 유지한다.
+The initial preview/core stages and AI settings paths were implemented. Manual ChatGPT JSON exchange did not establish account-connected MCP support. Mock CLI child-process and installed login-status checks did not establish authenticated inference.
 
-많은 컷에서 오디오 패킷 단위 삭제와 구간별 AAC 패딩이 누적되지 않도록, 오디오는 유지 구간의 PCM 샘플을 연속으로 기록하고 마지막에 한 번 인코딩한다. 영상은 프레임 선택과 원본→편집 시간 매핑을 적용한다. 선택식은 균형 트리로 만들어 컷 개수에 비례하는 깊은 중첩을 피한다.
+Add local Whisper transcription with source-time captions, text/timing edits, review gates, SRT, and project v3. Add bundled-font caption designs and actual MP4 overlay with v4; distinguish renderer readiness, actual output, and language accuracy. AI correction sends at most 20 cues/4,000 characters without cue timing, rejects numeric changes, flags negation review, and applies selected proposals through existing undo history.
 
-## 완료 증거
+Local effects add hashed asset identity/reconnection, source-time placement, gain/mute/trim, actual mixing, and pre/post-AAC peak checks in project v5. AI effects use bounded selected assets/clips/reference text and existing proposal validation; its 108-check record establishes contracts, not real model placement quality. Project v6 adds glossary persistence and per-request overrides. Project v7 preserves narrow end-overflow warnings and explicit review before output.
 
-검증/테스트 계획의 사례별 실제 증거를 결과 문서에 연결한다. 합성 검증, 실행 가능한 앱, 실제 출력과 실사용 품질을 구분하며 실제 영상·계정이 필요한 평가는 미검증 상태로 남긴다. 앱이 뜨거나 일부 테스트가 통과했다고 전체 목표를 완료 처리하지 않는다.
-
-## 현재 프리뷰
-
-1~5의 주요 동작과 6의 자연어 설정 제안 어댑터를 구현했다. [검증 현황](../testing/README.md)에 통과·부분 검증·미실행을 구분했다. 기존 채팅의 요청 복사/JSON 가져오기에 더해 설치된 Claude Code 구독 로그인으로 요청하는 실험 연결을 추가했다. 실제 CLI 설치/로그인 상태와 모의 프로세스 계약은 확인했지만 인증된 모델 요청은 아직 실행하지 않았다. ChatGPT의 공식 MCP 통합을 복사/붙여넣기로 대체 완료한 것으로 처리하지 않는다. 실제 발화 품질, 남은 장애 시나리오, 인증된 AI 통합과 자막·효과음은 후속 작업으로 남아 있다.
-
-후속 VAD 단계의 [말소리 보호 계획](2026-09-05-speech-protection-plan.md)을 구현했다. 고정 버전 Silero 모델·ONNX Runtime을 번들하고 실제 한국어 TTS·채널·시간축·프로젝트 v2·브라우저·Mac 패키지로 검증했다. 전체 제품 품질 게이트와 실제 녹음 평가는 별도로 남긴다.
-
-다음 단계의 [전사·자막·효과음 검증 계획](2026-09-05-caption-effects-validation-plan.md)에 시간축·수정 보존·한국어 품질·실제 출력의 기준과 22개 테스트를 정의했다. 이후 실제 로컬 전사·자막 수정·SRT·프로젝트 v3를 구현했다. [전사 실행 기록](../testing/2026-09-05-transcription-results.md)에 근거와 미실행 조건을 연결했다. 후속으로 번들 글꼴·PNG 렌더러·FFmpeg overlay를 사용한 3종 자막 디자인과 프로젝트 v4를 구현했다. [합성 검증 기록](../testing/2026-09-05-caption-rendering-results.md)에 실제 프레임·두 앱·브라우저 오프라인 근거를 남겼다. AI 교정의 실제 모델 품질·효과음과 실사용 품질·성능은 다음 범위다.
-후속 [AI 자막 교정 계약](2026-09-05-caption-correction-plan.md)에 따라 공유 연결 계층에 교정 작업을 추가하고 원문 비교·선택 적용·요청별 취소/중복 방지를 구현했다. [교정 실행 기록](../testing/2026-09-05-caption-correction-results.md)에 도메인·모의 공급자·실제 모의 CLI·두 앱의 저장 근거를 연결했다. 실제 모델 품질은 남아 있으며 프로젝트 용어 저장·재사용은 아래 후속 단계에서 구현했다.
-
-후속 효과음 단계에서 원본 시각 배치·음원 시작/길이/음량/음소거·프로젝트 v5·해시 재연결·PCM 합성을 구현했다. 합성 전후 샘플 피크가 0 dBFS를 넘으면 출력 성공으로 등록하지 않는다. [효과음 실행 기록](../testing/2026-09-05-effects-results.md)에 92개 중복 제외 자동 검사, 두 앱의 실제 저장·렌더, 남은 FX04/FX05 조건을 연결했다. AI 효과음 제안과 실제 청취 품질은 다음 범위다.
-
-후속 [AI 효과음 계약](2026-09-05-ai-effects-plan.md)에 따라 선택한 음원·클립·참고 자막만 별칭으로 전달하고 추가/수정/삭제를 비교·선택 적용하도록 구현했다. 원본·트랙·컷·효과음·자막 스냅샷과 요청별 취소/중복을 검증한다. [실행 기록](../testing/2026-09-05-ai-effects-results.md)에 108개 중복 제외 자동 검사와 새 흐름/기존 세 흐름의 두 앱 회귀를 연결했다. 실제 인증된 모델 작업, 실사용 품질 및 남은 장애·성능 판정은 계속 진행한다.
-
-후속 [프로젝트 용어 계획](2026-09-05-project-glossary-plan.md)에 따라 v6 저장/이전·실행 취소·입력 보호·AI 교정 기본값 및 요청별 임시 변경을 구현했다. [실행 기록](../testing/2026-09-05-project-glossary-results.md)에 저장/복구와 두 앱의 검증 범위를 연결한다. 실제 모델의 용어 반영률은 별도 평가가 필요하다.
-
-긴 전사 측정에서 발견한 끝 시각 초과는 [끝 경계 계획](2026-09-05-transcription-end-review-plan.md)에 따라 원본 범위로 제한하고 필수 검토 정보로 보존한다. [실행 기록](../testing/2026-09-05-transcription-end-results.md)에 실제 원시 출력 재현·v7 저장·출력 차단 근거를 연결한다. 원시 시각을 임의의 정상 자막으로 확정하지 않으며 성능 재검증은 별도로 진행한다.
+Later plans and results cover local MCP lifecycle, readiness/download recovery, repeated-memory investigation, source-range clips, TXT transcripts, multilingual recognition/translation, and project v8. See the [plan index](README.md), [feature plan](2026-09-05-caption-effects-validation-plan.md), [multilingual plan](2026-09-06-clips-multilingual-plan.md), and [testing index](../testing/README.md) for build-specific completion and outstanding gates. Historical performance passes do not automatically transfer to a changed UI or package.

@@ -1,52 +1,48 @@
-# 투명한 자막 영역의 처리 비용 감소 후보
+# Reducing transparent caption-image work
 
-2026-09-06. 자막 PNG 시퀀스에 영상 전체 높이의 투명 영역이 포함돼 있었다. 글자·배경·외곽선과 안티앨리어싱 여유가 들어가는 공통 세로 영역을 계산하고, 원래 y 좌표에 합성하도록 변경했다. PNG마다 같은 크기를 사용하며 4:2:0 색차 정렬을 위해 y와 높이를 짝수 픽셀에 맞춘다. 원본 좌표의 줄바꿈·글꼴·스타일과 전체 캔버스 스타일 견본은 유지한다. 자막이 없는 범위에는 투명한 2픽셀 높이 이미지를 사용한다.
+2026-09-06. Render a common vertical PNG strip containing glyph/background/stroke/antialiasing margins and overlay at original y, with uniform image size and even y/height for 4:2:0 alignment. Preserve source-coordinate layout/fonts/styles/full-canvas samples; empty spans use transparent two-pixel strips. Resolution/CRF/preset/four encoder threads/one input decoder unchanged; earlier 2/1 encoder comparisons were not applied at this stage.
 
-출력 해상도·CRF·프리셋·인코더 4스레드·입력 디코더 1스레드는 그대로다. 앞선 인코더 2/1스레드 비교는 [별도 기록](results/2026-09-06-composition-encoder-comparison.json)으로 보존했고 제품에 적용하지 않았다. 이 후보는 백엔드와 두 앱의 짧은 검증까지 통과했으며 장시간 성능의 통과 결과가 아니다.
+Eight caption tests passed, including 24 PNG pixel comparisons (landscape/portrait × three styles × top/bottom × single/multiline). Restored full RGBA matched full-canvas reference including Korean/Latin/large text/transparency. Empty-span preview matched plain output in every frame. CFR/VFR/PTS/rotation/SAR/ranges/font-error/cancel regressions passed.
 
-## 픽셀과 미디어 회귀
+80 units and 30 other media/compatibility/frame/effect integrations passed: 28 initially, two FX03 requiring local ports after rerun in permitted environment following `listen EPERM`. These are environment failures, not product defects/approval rejections. Total integrations 38 including eight caption tests; do not count 24 pixel conditions again. Build/package passed with unchanged UI but updated media/worker; unsigned/unnotarized.
 
-[자막 렌더링 검사](results/2026-09-06-caption-strip-rendering.json)의 8개 테스트를 통과했다. 새 픽셀 검사는 가로/세로 × 3종 스타일 × 상단/하단의 12조건에서 각각 한 줄·여러 줄 문구를 사용해 24개 PNG를 비교했다. 시퀀스 이미지를 원래 위치에 복원한 전체 RGBA 픽셀이 전체 캔버스 견본과 일치했다. 한글·라틴 글리프와 큰 글자, 서로 다른 줄 높이, 투명 영역과 빈 이미지도 포함한다. 자막이 없는 범위의 실제 미리보기는 자막을 끈 결과와 모든 프레임의 픽셀이 같았다.
+## Backend and both-app checks
 
-기존 실제 CFR/VFR·PTS 오프셋·회전·SAR·범위 미리보기·폰트 오류·취소도 통과했다. 별도로 단위 80개와 미디어·호환성·프레임 경계·효과음 통합 30개를 확인했다. 통합 30개 중 28개는 첫 실행에서 통과했고, 로컬 서버 바인딩이 `EPERM`으로 차단된 FX03 두 개는 각각 허용된 로컬 서버 환경에서 재실행해 통과했다. 두 실패는 제품 결함이나 자동 승인 거절로 분류하지 않는다. 8개 자막 검사와 합하면 통합은 38개이며 픽셀 비교 조건을 테스트 수에 중복 합산하지 않는다.
-
-실행 명령은 `npm test`, `node --test tests/caption-rendering.integration.mjs`, 그리고 `tests/media.integration.mjs`, `tests/compatibility.integration.mjs`, `tests/frame-boundary.integration.mjs`, `tests/effects.integration.mjs`를 지정한 Node 테스트다. 후자의 첫 로그와 두 한정 재실행 로그는 `test-output/caption-strip-regression.log`, `caption-strip-effects-network.log`, `caption-strip-effects-upload.log`에 보존했다.
-
-타입 검사·Vite 빌드와 Electron 44.2.0 Mac arm64 패키징을 완료했다. UI 소스·번들은 바꾸지 않았으며 변경된 미디어 엔진·자막 작업자를 패키지에 포함했다. 패키지는 서명·공증된 배포본이 아니다.
-
-## 같은 60초 백엔드 비교
-
-| 조건 | 백엔드 및 자식 RSS 피크 | 출력 및 앱 검증 시간 |
+| Same 60 s condition | Backend RSS MiB | Export/app validation s |
 | --- | --- | --- |
-| 전체 높이 PNG | 451.359MiB | 3.524초 |
-| 공통 세로 영역 PNG | 392.203MiB | 2.889초 |
+| Full-height PNG | 451.359 | 3.524 |
+| Vertical strip | 392.203 | 2.889 |
 
-[원시 결과](results/2026-09-06-composition-caption-strip.json)와 [감사](results/2026-09-06-composition-caption-strip-audit.json)에서 모든 1,448프레임·16자막·16효과음·6 A/V 표식의 독립 정답과 샘플 PNG 해시를 비교했다. 실제 MP4 바이트도 같았으며 SHA-256은 `94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211`이다. 원본과 효과음 해시도 유지됐다.
+All 1,448 frames/16 captions/16 effects/six markers, sample PNGs and actual MP4 bytes matched, SHA-256 `94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211`; source/asset unchanged. One backend comparison is not whole-app/long savings.
 
-각 조건 한 번의 백엔드 진단이며 Chrome·Mac 전체 메모리 절감률이나 60분 반복 통과로 일반화하지 않는다. 다음은 새 패키지를 포함한 두 앱 60초 실제 합성·저장·취소·재시도와 이후 장시간 재측정이다. 기존 브라우저 60분 두 번째의 2.146GiB 실패는 유지한다.
+Candidate `5002212` then passed four 60 s app runs with audited runner/server/bundle/package/project/RSS identities and same bytes/oracles:
 
-## 두 앱의 실제 합성 4회
-
-커밋 `5002212`의 제품과 패키지에서 [60초 합성 4회](results/2026-09-06-composition-strip-smoke.json)가 완료됐다. [전체 감사](results/2026-09-06-composition-strip-smoke-audit.json)는 실제 실행 스크립트·서버·번들·패키지 해시, 전체 프로젝트와 MP4/SRT 바이트, 모든 독립 정답과 원시 RSS 합계를 확인했다. 네 실행 모두 기존 MP4 바이트와 전체 1,448프레임·16자막·16효과음·6 A/V 표식이 같았다.
-
-| 조건 | RSS 최대 | 조작군별 최대 p95 | 출력 시간 범위 |
+| App ×2 | Max RSS GiB | Max action p95 ms | Export s |
 | --- | --- | --- | --- |
-| Chrome 60초 × 2 | 1.645GiB | 101.413ms | 3.114~3.115초 |
-| Mac 60초 × 2 | 1.067GiB | 61.321ms | 3.093~3.099초 |
+| Chrome | 1.645 | 101.413 | 3.114–3.115 |
+| Mac | 1.067 | 61.321 | 3.093–3.099 |
 
-Chrome의 실제 자막 준비 진행률 0.45에서 취소해 표시 0.900ms·재시도 가능 상태 304.582ms였다. Mac은 진행률 0.421875·표시 0.800ms·재시도 가능 상태 301.307ms였다. 두 앱의 기존 프로젝트·화면 출력·MP4가 보존됐고 같은 앱의 두 번째 합성이 완료됐다. 진행률은 전체 가중 값이며 영상 렌더링 중 취소로 표현하지 않는다. 최대 RSS 표본 간격은 284.547ms였다. 다음 검증은 같은 제품의 브라우저 60분 반복이며 짧은 결과를 장시간 목표 충족으로 사용하지 않는다.
+Caption-preparation cancel Chrome progress 0.45, visible 0.900 ms, ready 304.582 ms; Mac 0.421875,0.800/301.307 ms. Preserve prior project/output/MP4 and complete second composition. Weighted progress is not percent captions complete or video-render cancellation. Max sample interval 284.547 ms.
 
-## 60분 반복 결과: 두 번째 메모리 기준 초과
+## Long failure retained
 
-같은 커밋 `5002212`의 브라우저 60분 반복은 두 번째 실행까지 완료한 뒤 메모리 실패로 종료했다. [원시 결과](results/2026-09-06-composition-strip-long.json), [감사](results/2026-09-06-composition-strip-long-audit.json), [두 번째 독립 검증](results/2026-09-06-composition-strip-long-second-verification.json)을 보존했다. 세 번째 및 다른 장시간 조건은 미실행이다.
-
-| 반복 | 분석 | 출력·앱 파일 검증 | 독립 검증 | RSS 최대 | 자막 / 효과음 / 컷 p95 |
+| Browser / 60 min run | Analysis s | Export s | Independent oracle s | RSS GiB | Caption/effect/cut p95 ms |
 | --- | --- | --- | --- | --- | --- |
-| 1 | 36.743초 | 157.127초 | 124.084초 | 1.946GiB | 181.008 / 186.824 / 66.102ms |
-| 2 | 37.064초 | 157.697초 | 124.949초 | **2.045GiB, 실패** | 183.395 / 199.506 / 66.497ms |
+| 1 | 36.743 | 157.127 | 124.084 | 1.946 | 181.008/186.824/66.102 |
+| 2 | 37.064 | 157.697 | 124.949 | **2.045 FAIL** | 183.395/199.506/66.497 |
 
-두 실행의 모든 85,997프레임·1,000자막·64효과음·제외 효과음 2개·A/V 표식 6쌍과 전체 프로젝트를 이전 고정 정답과 비교했다. MP4/SRT 바이트와 세 샘플 프레임 해시도 같았다. 실제 MP4 SHA-256은 `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`이다. 원본과 효과음 원본 해시를 보존했다. 이번 실행에서 새 사람의 청취·시각 검토를 수행했다는 의미는 아니다.
+Both 85,997 frames/1,000 captions/64 effects/two excluded clips/six markers, full projects, SRT/MP4 bytes and three sample-frame hashes matched. MP4 SHA-256 `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`; source/asset preserved. No new human listening/visual review implied.
 
-자막 준비 진행률 0.3024에서 실제 취소했고 표시 0.900ms, 재시도 가능 상태 305.256ms였다. 기존 프로젝트·화면 출력·저장 MP4가 보존됐으며 같은 앱에서 두 번째 출력을 완료했다. 원시 RSS의 모든 프로세스 합계와 각 조작군 32개의 p95 계산을 재확인했다. 최대 RSS 표본 간격은 281.237ms였다.
+Cancel at caption-preparation 0.3024: visible 0.900/ready 305.256 ms; work preserved and second output completed. Audit every RSS sum and 32 samples/group; max interval 281.237 ms. Faster than 194.064/194.593 s and lower second RSS than 2.146, but still above 2 GiB. At export peak renderer 460.328→522.797 MiB, backend 216.828→240.156, FFmpeg 327.078→325.328; two peaks do not prove a leak. Stop third/other long conditions, retain improvement without claiming repeated-memory resolution.
 
-이전 같은 조건의 출력 194.064/194.593초보다 빨라졌고 두 번째 RSS도 2.146→2.045GiB로 낮아졌지만, 2GiB 목표 초과는 해소하지 못했다. 각 출력 단계의 동시 피크에서 주 렌더러는 460.328→522.797MiB, 백엔드는 216.828→240.156MiB, FFmpeg는 327.078→325.328MiB였다. 이 두 표본만으로 누수를 확정하지 않는다. 장시간 통과로 판정하거나 다른 반복을 확대하지 않고, 반복에 따른 앱 메모리 증가 원인을 별도로 조사한다.
+## Evidence and related records
+
+- [2026-09-06-composition-encoder-comparison.json](results/2026-09-06-composition-encoder-comparison.json)
+- [2026-09-06-caption-strip-rendering.json](results/2026-09-06-caption-strip-rendering.json)
+- [2026-09-06-composition-caption-strip.json](results/2026-09-06-composition-caption-strip.json)
+- [2026-09-06-composition-caption-strip-audit.json](results/2026-09-06-composition-caption-strip-audit.json)
+- [2026-09-06-composition-strip-smoke.json](results/2026-09-06-composition-strip-smoke.json)
+- [2026-09-06-composition-strip-smoke-audit.json](results/2026-09-06-composition-strip-smoke-audit.json)
+- [2026-09-06-composition-strip-long.json](results/2026-09-06-composition-strip-long.json)
+- [2026-09-06-composition-strip-long-audit.json](results/2026-09-06-composition-strip-long-audit.json)
+- [2026-09-06-composition-strip-long-second-verification.json](results/2026-09-06-composition-strip-long-second-verification.json)

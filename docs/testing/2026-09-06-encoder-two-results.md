@@ -1,96 +1,73 @@
-# 출력 인코더 동시 처리 2개 후보
+# Two encoder threads: composition performance
 
-2026-09-06. [계획](../plans/2026-09-06-encoder-concurrency-plan.md)에 따라 인코더 최대 스레드를 4개에서 2개로 변경했다. CRF·프리셋·출력 크기·프레임 시간축·자막·효과음은 유지한다. 직전 후보의 브라우저 60분 세 번째 RSS 2.008GiB 실패를 보존하며, 아래 짧은 진단을 장시간 성공으로 해석하지 않는다.
+2026-09-06. Reducing the encoder cap from four threads to two preserved the CRF, preset, output format, frame, caption, and effect settings. The earlier `3d572b4` candidate's third-run RSS failure of 2.008 GiB remains recorded.
 
-## 같은 60초 백엔드 비교
+## Backend comparison and short app checks
 
-| 인코더 스레드 | 앱 자체 검증 포함 출력 초 | Node와 자식 합산 최대 RSS MiB |
-| --- | --- | --- |
-| 4 | 2.938 | 391.828 |
-| 2 | 3.411 | 352.406 |
+A single 60-second comparison measured 2.938 seconds / 391.828 MiB with four threads and 3.411 seconds / 352.406 MiB with two: approximately 39.42 MiB less memory and 0.47 seconds more time. One pair does not establish a general performance difference. All 16 captions and effects, excluded clips, 1,448 frames and PTS, SRT, and six markers matched. Full frame MD5 and decoded float32 PCM comparisons found no differences.
 
-메모리는 약 39.42MiB 줄고 출력은 약 0.47초 늘었다. 각 한 번의 순차 실행이며 일반적인 개선율이나 장시간 성능 수치가 아니다. [4개 기록](results/2026-09-06-windowed-encoder-four.json), [2개 기록](results/2026-09-06-windowed-encoder-two.json), [전체 디코딩 비교](results/2026-09-06-windowed-encoder-comparison.json)를 보존했다.
+Compressed output SHA-256 differed: four threads produced `94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211`; two produced `c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402`.
 
-분석의 모든 필드, 16개 자막·16개 효과음과 제외 클립, 전체 1,448프레임·PTS·SRT·6개 A/V 표식의 독립 검증 값이 같았다. 추가로 두 출력의 전체 영상 `framemd5` 행과 float32 PCM 해시를 비교해 모두 같았다. 차이가 있는 프레임은 0개였다. 이 결과는 해당 합성 입력의 픽셀·오디오 동일성 근거이며 모든 실제 영상의 지각 품질 평가를 대신하지 않는다.
+All 80 unit tests, 38 integration tests, build, and Electron 44.2.0 arm64 packaging passed. The first package attempt failed on sandbox DNS; the permitted-network retry succeeded. This was not an approval rejection. The app remained unsigned.
 
-압축 MP4 바이트는 달랐다. 4개 스레드는 `94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211`, 2개는 `c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402`다. 이후 앱 결과는 현재 후보의 실제 해시를 검증하고 이전 버전과의 비교는 전체 디코딩 및 독립 정답으로 구분한다.
+Candidate `3e6db03` passed two 60-second runs per app:
 
-## 회귀와 패키징
-
-[회귀 기록](results/2026-09-06-encoder-two-regressions.json)의 단위 80개와 미디어·호환성·프레임 경계·자막·효과음 통합 38개가 모두 통과했다. 실제 CFR/VFR·시작 PTS 오프셋·선택 오디오 트랙·짧은 범위 미리보기·회전/SAR·세 자막 스타일·픽셀 영역·효과음 혼합 및 오류/취소를 포함한다. 세부 픽셀 조건을 테스트 개수에 중복 합산하지 않는다.
-
-타입/빌드와 Electron 44.2.0 arm64 패키징을 완료했다. 첫 패키징은 샌드박스의 `github.com` DNS 제한으로 종료됐으며 허용된 네트워크 환경의 재실행에서 완료했다. 제품 오류 또는 자동 승인 거절로 분류하지 않는다. 패키지는 서명·공증하지 않은 로컬 시험 버전이다.
-
-## 두 앱의 60초 합성·취소·재시도
-
-커밋 `3e6db03`에서 Chrome와 Mac 앱을 각각 두 번 실행해 4회 모두 완료했다. [실행 기록](results/2026-09-06-composition-encoder-two-smoke.json), [원시 표본 감사](results/2026-09-06-composition-encoder-two-smoke-audit.json), [전체 디코딩 비교와 실제 앱 출력의 연결](results/2026-09-06-composition-encoder-two-smoke-decoding.json)을 보존했다. Mac 패키지 안의 실제 서버·클라이언트 해시와 실행 소스도 대조했다.
-
-| 앱 | 가져오기 포함 분석 초, 1·2회 | 출력 초, 1·2회 | 최대 합산 RSS GiB, 1·2회 |
+| Surface | Analysis (s) | Export (s) | RSS (GiB) |
 | --- | --- | --- | --- |
 | Chrome | 1.063 / 1.065 | 3.745 / 3.730 | 1.515 / 1.595 |
 | Mac | 1.269 / 1.121 | 3.701 / 3.781 | 0.931 / 1.031 |
 
-네 개의 실제 저장 MP4가 위 백엔드 후보와 바이트까지 같았다. 따라서 해당 파일들은 전체 1,448프레임·float32 PCM 동일성 비교와 연결된다. 전체 SRT 바이트·독립 편집 정답·프로젝트와 원본 해시도 확인했다. 같은 압축 파일을 다시 디코딩한 것을 별도 반복으로 합산하지 않는다.
+All actual MP4 files matched the two-thread backend hash, linking them to its complete frame/PCM comparison without counting duplicate decodes as new checks. Each interaction group contained 32 actions and stayed below 200 ms p95. Maximum RSS sample interval was 282.88 ms. Caption-preparation cancellation became visible in 0.8 ms; readiness took 304.96 / 300.91 ms. Subsequent runs completed.
 
-각 조작군 32회 표본의 p95는 모두 200ms 이내였다. RSS 실제 최대 표본 간격은 약 282.88ms였다. 두 앱은 자막 준비 단계에서 취소를 표시하는 데 각각 0.8ms, 재시도 가능 상태까지 304.96/300.91ms가 걸렸다. 기존 성공 출력·원본·프로젝트를 보존하고 같은 앱의 두 번째 합성을 완료했다.
+## Long composition matrix
 
-## 브라우저 60분·1,000컷 반복
-
-같은 Chrome 앱에서 세 번 모두 분석·합성·저장·독립 검증·조작을 완료했다. [실행 기록](results/2026-09-06-composition-encoder-two-browser-3600.json)과 [원시 RSS·프로젝트·해시 감사](results/2026-09-06-composition-encoder-two-browser-3600-audit.json)를 보존했다. 세 번 모두 기존의 메모리·시간·조작 기준을 충족했다.
-
-| 반복 | 가져오기 포함 분석 초 | 앱 검증 포함 출력 초 | 독립 검증 초 | 합산 RSS GiB |
+| Surface / duration / run | Analysis (s) | Export (s) | Oracle (s) | RSS (GiB) |
 | --- | --- | --- | --- | --- |
-| 1 | 37.291 | 187.915 | 125.534 | 1.752 |
-| 2 | 37.074 | 187.852 | 125.211 | 1.890 |
-| 3 | 37.287 | 187.572 | 125.509 | 1.956 |
+| Chrome / 60 min / 1 | 37.291 | 187.915 | 125.534 | 1.752 |
+| Chrome / 60 min / 2 | 37.074 | 187.852 | 125.211 | 1.890 |
+| Chrome / 60 min / 3 | 37.287 | 187.572 | 125.509 | 1.956 |
+| Mac / 60 min / 1 | 37.270 | 192.669 | 126.211 | 1.161 |
+| Mac / 60 min / 2 | 36.596 | 190.543 | 131.930 | 1.097 |
+| Mac / 60 min / 3 | 36.552 | 192.669 | 127.613 | 1.099 |
+| Chrome / 10 min / 1 | 6.741 | 32.818 | — | 1.647 |
+| Chrome / 10 min / 2 | 6.515 | 32.823 | — | 1.707 |
+| Chrome / 10 min / 3 | 6.551 | 32.833 | — | 1.728 |
+| Mac / 10 min / 1 | 6.455 | 32.189 | — | 1.082 |
+| Mac / 10 min / 2 | 6.260 | 32.182 | — | 1.144 |
+| Mac / 10 min / 3 | 6.577 | 33.399 | — | 1.164 |
 
-최대 RSS 표본 간격은 363.44ms였다. 실제 표본의 각 프로세스 RSS 합과 최고점을 다시 계산했다. 세 번째 값은 2GiB보다 약 45.17MiB 낮으며, 반복 증가가 사라졌다는 근거는 아니다. 다른 입력이나 더 긴 연속 세션의 안정성으로 확대하지 않는다.
+All six 60-minute outputs contained 85,997 frames, 1,000 SRT cues, 64 effects plus two excluded effects, and six markers. They shared SHA-256 `a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e`. All 85,997 decoded YUV420p frame hashes, PTS, durations, and decoded PCM samples matched the earlier four-thread output; identical compressed files were decoded once for this equivalence comparison. Three Korean caption frames were viewed, which does not establish every glyph or human listening quality.
 
-이전 4개 스레드 후보의 같은 60분 출력은 156.985 / 158.026 / 160.405초였다. 이번 2개 후보는 약 187.6~187.9초로 느려졌다. 세 번의 출력 시간 중앙값은 약 29.83초 증가했으며, 메모리 목표를 충족하는 대신 발생한 처리 시간 증가도 그대로 기록한다. 실제 녹음이나 다른 장비의 일반적인 개선율로 해석하지 않는다.
+Earlier four-thread browser exports took 156.985 / 158.026 / 160.405 seconds; the new median was 29.83 seconds slower. The third browser run had only 45.17 MiB of RSS headroom, so the passing result does not eliminate concern about repeated growth. Maximum sampling intervals were 363.44 ms in Chrome and 316.39 ms on Mac. Highest action p95 was 120.17 / 60.28 ms. Cancellation feedback/readiness was 0.8 / 224.12 ms in Chrome and 0.8 / 205.88 ms on Mac, followed by completed retries.
 
-각 출력의 전체 85,997프레임·PTS, 1,000개 SRT 자막, 64개 효과음과 제외 2개, 6개 A/V 표식의 독립 검증 값이 이전 후보와 같았다. 세 개 MP4의 실제 SHA-256은 모두 `a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e`다. 자막 시작·중간·마지막의 실제 PNG 3개도 직접 열어 문구·번호·위치와 글자 잘림 여부를 확인했다. [시각 확인 기록](results/2026-09-06-composition-encoder-two-browser-3600-visual.json)은 전체 자막 글리프나 사람 청취 평가를 대신하지 않는다.
+All six 10-minute outputs contained 14,348 frames, 166 SRT cues, 64 effects plus two excluded effects, and six markers, with SHA-256 `cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1`. No four-thread 10-minute comparison is claimed. Maximum sample interval was 284.03 ms; highest action p95 was 117.91 ms in Chrome and 64.74 ms on Mac. Cancellation feedback was 0.8 ms and readiness 199.03 / 204.81 ms, followed by successful retries.
 
-자막·효과음·컷의 각 32회 조작은 모두 p95 200ms 이내였으며, 가장 큰 값은 약 120.17ms였다. 자막 준비 중 취소 표시는 0.8ms, 재시도 가능 상태까지 224.12ms였고 원본·프로젝트·기존 성공 출력을 보존한 뒤 두 번째 합성을 완료했다.
+The audit accepted a valid report and rejected five altered controls: lowered RSS, lowered p95, changed project, bad hash, and missing repetition. These six audit controls are not product runs.
 
-[전체 디코딩 비교](results/2026-09-06-composition-encoder-two-browser-3600-decoding.json)에서도 85,997개의 YUV420p 프레임 MD5·PTS·프레임 길이 행과 전체 float32 PCM이 이전 4개 스레드 출력과 같았다. 다른 프레임은 0개다. 세 실제 출력 파일의 해시를 다시 검사해 동일한 압축 파일 쌍은 한 번만 디코딩했다. 이 합성 입력에 대한 동일성 증거를 일반 영상 품질로 확대하지 않는다.
+All 12 long runs and four cancellation/retry conditions passed, separately from four short runs, with fixed candidate identity and maximum RSS of 1.956 GiB. Human Korean quality/CER/editing time, authenticated AI, cache-conditioned performance, and Mac OS-level network blocking remain separate. A local prerequisite probe found no Ollama on PATH and a refused connection at port 11434; that does not prove no installation exists elsewhere, and no model download or authenticated request was performed.
 
-후속 같은 빌드의 매트릭스 감사 도구는 [정상·오류 기록 6개 대조](results/2026-09-06-composition-audit-controls.json)로 확인했다. 정상 기록은 통과하고 낮춰 쓴 RSS/p95·프로젝트 변경·잘못된 출력 해시·누락한 반복은 모두 거부했다. 실행 원문과 각 종료 결과를 보존했으며 제품 테스트 수에 합산하지 않는다.
+## Evidence and related records
 
-## 두 앱의 10분 반복
-
-Chrome·Mac에서 각각 세 번, 총 6회가 모두 측정 기준을 통과했다. [실행 기록](results/2026-09-06-composition-encoder-two-both-600.json), [원시 표본·프로젝트 감사](results/2026-09-06-composition-encoder-two-both-600-audit.json), [두 앱 출력 전체 해시·독립 검증 값 비교](results/2026-09-06-composition-encoder-two-both-600-cross-surface.json)를 보존했다.
-
-| 앱·반복 | 가져오기 포함 분석 초 | 앱 검증 포함 출력 초 | 합산 RSS GiB |
-| --- | --- | --- | --- |
-| Chrome 1 | 6.741 | 32.818 | 1.647 |
-| Chrome 2 | 6.515 | 32.823 | 1.707 |
-| Chrome 3 | 6.551 | 32.833 | 1.728 |
-| Mac 1 | 6.455 | 32.189 | 1.082 |
-| Mac 2 | 6.260 | 32.182 | 1.144 |
-| Mac 3 | 6.577 | 33.399 | 1.164 |
-
-매번 전체 14,348프레임·PTS, 166개 SRT 자막, 64개 효과음·제외 2개, 6개 A/V 표식을 확인했다. 실제 MP4 여섯 개의 SHA-256은 모두 `cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1`이며 SRT 바이트와 모든 독립 검증 값도 두 앱에서 같았다. [세 자막 프레임 확인](results/2026-09-06-composition-encoder-two-both-600-visual.json)도 기록했다. 이전 4개 스레드 후보의 같은 10분 출력은 없어 그 버전과의 비교라고 표현하지 않는다.
-
-RSS 표본 간격은 최대 284.03ms였다. 자막·효과음·컷 각 32개 조작의 최대 p95는 Chrome 117.91ms, Mac 64.74ms였다. 자막 준비 중 취소 표시는 두 앱 모두 약 0.8ms, 재시도 가능 상태까지 199.03/204.81ms였고 원본·전체 프로젝트·기존 성공 출력을 보존했다. 같은 앱의 두 번째 합성도 완료했다.
-
-## Mac 60분과 전체 매트릭스 완료
-
-Mac의 60분 반복 세 번도 모두 기준을 통과했다. [실행 기록](results/2026-09-06-composition-encoder-two-desktop-3600.json)과 [브라우저 기준 출력·원시 표본 비교](results/2026-09-06-composition-encoder-two-desktop-3600-audit.json)를 보존했다.
-
-| 반복 | 가져오기 포함 분석 초 | 앱 검증 포함 출력 초 | 독립 검증 초 | 합산 RSS GiB |
-| --- | --- | --- | --- | --- |
-| 1 | 37.270 | 192.669 | 126.211 | 1.161 |
-| 2 | 36.596 | 190.543 | 131.930 | 1.097 |
-| 3 | 36.552 | 192.669 | 127.613 | 1.099 |
-
-세 실제 MP4의 해시는 전체 디코딩을 비교한 브라우저 출력과 같았다. 따라서 해당 바이트를 [85,997프레임·PTS·전체 오디오 비교 근거에 연결](results/2026-09-06-composition-encoder-two-desktop-3600-decoding.json)했다. 전체 SRT·독립 자막/효과음/시간축 값, 원본과 프로젝트도 같았다. 같은 파일을 다시 디코딩한 것을 추가 검증 횟수로 세지 않는다.
-
-Mac 60분의 최대 RSS 표본 간격은 316.39ms, 조작군 최대 p95는 60.28ms였다. 자막 준비 중 취소 표시 0.8ms·재시도 가능 상태 205.88ms를 확인했고 같은 앱의 두 번째 합성을 완료했다.
-
-[전체 12회 기록](results/2026-09-06-composition-encoder-two-matrix.json)에서 10분/60분 × 두 앱 × 3회와 취소·재시도 4조건을 확인했다. 모든 실행의 측정 기준을 충족했고 최대 RSS는 브라우저 60분의 1.956GiB였다. 사전 60초 4회를 이 12회에 합산하지 않는다. 각 실행의 제품·러너·패키지 소스 해시는 같았다.
-
-## 남은 검증
-
-이번 합성 장시간 매트릭스는 완료했다. 실제 한국어 발화/CER·시간 절감·인증 AI·파일 캐시 조건별 앱 실행·Mac OS 네트워크 차단은 별도 미검증 항목이다. 다음 실행은 [입력 파일 캐시 검증 계획](../plans/2026-09-06-cache-verification-plan.md)을 따른다.
-
-[로컬 AI 준비 상태 확인](results/2026-09-06-local-ai-prerequisites.json)에서는 현재 셸 PATH에 Ollama 명령이 없고 기본 주소 `127.0.0.1:11434`의 연결이 거부됐다. 다른 설치 위치나 포트가 없다고 단정하지 않는다. 모델 추론·다운로드·외부 전송·인증 요청은 수행하지 않았다.
+- [2026-09-06-encoder-concurrency-plan.md](../plans/2026-09-06-encoder-concurrency-plan.md)
+- [2026-09-06-windowed-encoder-four.json](results/2026-09-06-windowed-encoder-four.json)
+- [2026-09-06-windowed-encoder-two.json](results/2026-09-06-windowed-encoder-two.json)
+- [2026-09-06-windowed-encoder-comparison.json](results/2026-09-06-windowed-encoder-comparison.json)
+- [2026-09-06-encoder-two-regressions.json](results/2026-09-06-encoder-two-regressions.json)
+- [2026-09-06-composition-encoder-two-smoke.json](results/2026-09-06-composition-encoder-two-smoke.json)
+- [2026-09-06-composition-encoder-two-smoke-audit.json](results/2026-09-06-composition-encoder-two-smoke-audit.json)
+- [2026-09-06-composition-encoder-two-smoke-decoding.json](results/2026-09-06-composition-encoder-two-smoke-decoding.json)
+- [2026-09-06-composition-encoder-two-browser-3600.json](results/2026-09-06-composition-encoder-two-browser-3600.json)
+- [2026-09-06-composition-encoder-two-browser-3600-audit.json](results/2026-09-06-composition-encoder-two-browser-3600-audit.json)
+- [2026-09-06-composition-encoder-two-browser-3600-visual.json](results/2026-09-06-composition-encoder-two-browser-3600-visual.json)
+- [2026-09-06-composition-encoder-two-browser-3600-decoding.json](results/2026-09-06-composition-encoder-two-browser-3600-decoding.json)
+- [2026-09-06-composition-audit-controls.json](results/2026-09-06-composition-audit-controls.json)
+- [2026-09-06-composition-encoder-two-both-600.json](results/2026-09-06-composition-encoder-two-both-600.json)
+- [2026-09-06-composition-encoder-two-both-600-audit.json](results/2026-09-06-composition-encoder-two-both-600-audit.json)
+- [2026-09-06-composition-encoder-two-both-600-cross-surface.json](results/2026-09-06-composition-encoder-two-both-600-cross-surface.json)
+- [2026-09-06-composition-encoder-two-both-600-visual.json](results/2026-09-06-composition-encoder-two-both-600-visual.json)
+- [2026-09-06-composition-encoder-two-desktop-3600.json](results/2026-09-06-composition-encoder-two-desktop-3600.json)
+- [2026-09-06-composition-encoder-two-desktop-3600-audit.json](results/2026-09-06-composition-encoder-two-desktop-3600-audit.json)
+- [2026-09-06-composition-encoder-two-desktop-3600-decoding.json](results/2026-09-06-composition-encoder-two-desktop-3600-decoding.json)
+- [2026-09-06-composition-encoder-two-matrix.json](results/2026-09-06-composition-encoder-two-matrix.json)
+- [2026-09-06-cache-verification-plan.md](../plans/2026-09-06-cache-verification-plan.md)
+- [2026-09-06-local-ai-prerequisites.json](results/2026-09-06-local-ai-prerequisites.json)

@@ -1,12 +1,45 @@
+# Dependencies and build products
 node_modules/
 dist/
 release/
+coverage/
+*.tsbuildinfo
+
+# Local media, sessions, downloaded models, and generated test evidence
 .hypercut/
 test-output/
-.playwright-mcp/
 tests/fixtures/generated/
-*.log
-.DS_Store
+/reports/
+/exports/
+/media/
+*.hypercut.json
+
+# Local automation and editor state
+.codex/
+.agents/
+.claude/
+.playwright-mcp/
+playwright-report/
+test-results/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Credentials and environment overrides
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+
+# Logs, caches, and operating system files
+*.log
+.cache/
+__pycache__/
+*.py[cod]
+.DS_Store
+.AppleDouble
+._*
+Thumbs.db
+Desktop.ini

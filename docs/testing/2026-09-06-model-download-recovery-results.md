@@ -1,32 +1,25 @@
-# 로컬 전사 모델 다운로드 취소·복구 결과
+# Local transcription download cancellation and recovery
 
-2026-09-06. [검증 계획](../plans/2026-09-06-model-download-recovery-plan.md)의 다운로드 수명주기를 구현·시험했다. 실제 모델·설치 런타임·Mac 패키지를 다시 만들지 않고, 루프백 HTTP 서버의 131,089바이트 합성 자료와 시험용 파일·자식 프로세스를 사용했다.
+2026-09-06. Tested download lifecycle with a loopback server serving 131,089 synthetic bytes, temporary files, and real child processes. Did not rebuild or replace the installed model, runtime, or Mac package.
 
-## 발견한 문제와 변경
+Original `sha `/` download ` functions extracted from ` 6f8e5ec ` left one `.download ` file after SIGINT following actual writes; the completed target survived. Preserve original/extracted/driver hashes and reproduction. Extract the downloader to ` scripts/helpers/verified-download.mjs`, propagate AbortSignal through download/hash verification, and handle SIGINT/SIGTERM during downloads with stream/temp cleanup and exit codes 130/143. Retain fixed hash/size limits, write/sync/reread verification, then rename.
 
-커밋 `6f8e5ec`의 원래 `sha`·`download` 함수를 그대로 추출해 실행했다. 실제 바이트를 임시 파일에 쓴 뒤 SIGINT를 보내면 프로세스가 종료되고 `.download` 파일 하나가 남았다. 기존 정식 파일은 보존됐다. 추출한 함수·드라이버·원본의 해시는 [원시 기록](results/2026-09-06-model-download-recovery.json)에 있다.
+Post-rename cancellation preserves the new verified file; next run verifies/reuses with zero requests. SIGKILL cannot run cleanup: preserve its leftover temporary file and use a fresh one on retry.
 
-다운로드 함수를 `scripts/helpers/verified-download.mjs`로 분리하고 다운로드·기존 파일 해시 검사에 취소 신호를 전달했다. 준비 스크립트는 다운로드 동안 SIGINT/SIGTERM을 받아 스트림·이번 임시 파일을 정리한 뒤 취소 메시지와 130/143 종료 코드를 사용한다. 고정 해시, 크기 상한, 파일 쓰기·동기화·다시 읽기 검증 후 rename 순서는 유지한다.
+The final frozen-old-driver comparison covered 13 scenarios (12 new behavior plus one old reproduction), reported by Node as **14 PASS including the parent**, zero failures/cancels/skips. Ordinary execution without the old driver runs 12 scenarios and records old comparison NOT_RUN.
 
-검증된 파일 교체가 끝난 뒤의 취소는 완성 파일을 되돌리지 않는다. 다음 실행은 해시를 확인해 요청 없이 재사용한다. SIGKILL은 정리 코드가 실행되지 않으므로 남은 임시 파일을 보존하되, 재시도는 새 임시 파일에서 시작해 검증한다.
-
-## 실행과 결과
-
-`npm run test:download`는 모델을 받지 않는 로컬 통합 검사다. 매번 새 결과 폴더를 만들고 경로를 출력한다. 이미 있는 명시적 결과 폴더는 거부한다.
-
-이번 최종 실행은 동결한 이전 드라이버를 지정해 13개 사례를 검사했다. 12개는 변경 후 동작, 1개는 이전 실패의 재현이다. Node는 상위 테스트를 포함해 **14 PASS, 실패·취소·생략 0**으로 집계했다. 이전 드라이버를 지정하지 않는 일반 실행은 변경 후 12개 사례이며 이전 비교를 `NOT_RUN`으로 기록한다.
-
-| 검사 | 확인한 결과 |
+| Condition | Observed behavior |
 | --- | --- |
-| 최초 설치·정상 교체·재사용 | 실제 바이트·해시 일치, 재사용 요청 0회 |
-| 잘못된 해시·크기 초과·HTTP 503·응답 중단 | 기존 파일 보존, 이번 임시 파일 제거, 설치 성공으로 반환하지 않음 |
-| 시간 초과·요청 전 취소 | 기존 파일 보존, 스트림 정리, 사전 취소의 HTTP 요청 0회 |
-| SIGINT·SIGTERM | 실제 종료 코드 130/143, 연결 종료, 재시도 전에 임시 파일 0개, 재시도 해시 일치 |
-| SIGKILL | 이전 파일 보존, 남은 임시 파일을 재사용·삭제하지 않음, 새 요청 성공 |
-| 파일 교체 뒤 취소 | 검증된 새 파일 보존, 취소 종료, 다음 요청은 해시 재사용으로 HTTP 0회 |
+| Initial install/replacement/reuse | Matching bytes/hash; zero requests on reuse |
+| Wrong hash/oversize/503/interrupted body | Preserve target, remove own temporary file, no false success |
+| Timeout/pre-abort | Preserve target, clean streams; zero pre-abort requests |
+| SIGINT/SIGTERM | Exit 130/143, connection closed, no own temp before retry, retry hash matches |
+| SIGKILL | Preserve target and leftover; new request succeeds without adopting/deleting leftover |
+| Cancel after replacement | Preserve verified file, canceled exit, next run reuses without HTTP |
 
-첫 시험에서는 마지막 취소 사례의 **시험 드라이버**가 이벤트 루프를 유지하지 않는 Promise만 기다려 Node 종료 코드 13으로 끝났다. 제한 시간 타이머를 유지하도록 고친 뒤 최종 명령을 실행했다. 첫 실패 로그도 원시 기록에 보존했다.
+An initial test-driver Promise did not keep the event loop alive and exited 13; adding a bounded live timer fixed the harness. Preserve that failure. `npm run test:download` uses a fresh output directory and rejects existing explicit destinations. This covers T05 download conditions only, not real remote servers, CMake/process-tree install cancellation, clean-Mac setup, or atomicity of all setup. Product inference/edit/export code unchanged.
 
-## 검증 범위
+## Evidence and related records
 
-T05 중 다운로드 취소·손상·크기·연결 실패·재시도 조건에만 해당한다. 실제 외부 모델 서버, CMake·도구 설치 중 프로세스 트리 종료, 다른 Mac에서의 새 설치, 전체 설치의 원자성은 이번 시험으로 완료 처리하지 않는다. 앱의 무음 분석·전사 추론·내보내기 코드는 바꾸지 않았다.
+- [2026-09-06-model-download-recovery-plan.md](../plans/2026-09-06-model-download-recovery-plan.md)
+- [2026-09-06-model-download-recovery.json](results/2026-09-06-model-download-recovery.json)

@@ -1,16 +1,14 @@
-# 효과음 가져오기와 프로젝트 파일 읽기 경합
+# Effect import versus project-file reads
 
-같은 원본을 사용하는 프로젝트 A/B에 서로 다른 설정·컷·자막·용어·효과음을 준비한다. B의 실제 파일 읽기 반환을 보류한 상태에서 A의 효과음 추가나 재연결을 시작한다. 효과음 작업을 시작한 뒤에는 앞선 파일 읽기가 A의 작업 대상을 바꾸지 않아야 한다. 사용자가 나중에 B를 다시 선택하면 정상적으로 열려야 한다.
+Prepare projects A/B using the same source with different settings, cuts, captions, glossary, and effects. Hold B's file-read response, then start adding/reconnecting an effect in A. That newer action must invalidate the older read. Explicitly selecting B again must still work.
 
-| 조건 | 실행 순서 | 기대 결과 |
+| Case | Controlled order | Expected result |
 | --- | --- | --- |
-| READ_DURING_IMPORT | B 읽기 대기 → A에 C 음원 추가 시작 → B 읽기 완료 → C 가져오기 완료 | A의 기존 데이터와 C가 함께 보존. B의 설정과 A의 효과음이 섞이지 않음 |
-| READ_AFTER_IMPORT | B 읽기 대기 → C 추가 완료 → B 읽기 완료 | 완료한 효과음 편집을 유지 |
-| READ_DURING_RECONNECT | B 읽기 대기 → A 음원 재연결 시작 → B 읽기 완료 → 재연결 완료 | A의 프로젝트·음원 선택 대상 유지 |
-| CANCEL_THEN_OPEN | B 읽기 대기 → C 가져오기 시작·취소 → B 다시 선택 → 이전 읽기/가져오기 완료 | 마지막 선택 B 유지, 취소한 C를 추가하지 않음 |
+| READ_DURING_IMPORT | Hold B read; start adding C to A; release B; complete C | Preserve A plus C, without mixing B settings |
+| READ_AFTER_IMPORT | Hold B; finish C; release B | Preserve completed effect edit |
+| READ_DURING_RECONNECT | Hold B; start reconnecting A asset; release B; finish reconnect | Preserve A and selected asset identity |
+| CANCEL_THEN_OPEN | Hold B; start/cancel C import; select B again; release old responses | Preserve latest B; never add canceled C |
 
-Chrome와 Mac 패키지에서 각각 실행한다. Chrome는 브라우저 업로드 요청을 대기시키고 같은 선택 파일의 바이트를 multipart로 실제 서버에 전달한 뒤 그 실제 응답을 반환한다. 취소 분기는 앱의 취소 버튼을 누른다. 이 중계는 순서 제어용이며 원래 브라우저의 multipart 직렬화 검사를 대신하지 않는다. Mac은 네이티브 효과음 선택 응답을 대기시킨 뒤 생성 파일 또는 취소를 반환한다. 영상·음원 검사와 프로젝트 저장은 실제 제품 경로를 사용한다. 네이티브 선택 창 자체의 수동 검증은 아니다.
+Run in Chrome and packaged Mac. Chrome holds upload delivery, forwards the selected bytes as multipart to the actual server, and returns its real response; this relay controls ordering and does not validate browser multipart serialization itself. Mac holds the native selection response and supplies a generated file or cancellation. Media inspection and project writes use product paths; native dialog operation is not covered.
 
-중간 화면 상태와 최종 저장 프로젝트를 모두 남겨 혼합 여부를 확인한다. 추가 성공에는 실행 취소·다시 실행과 실제 미리보기 합성도 검사한다. 마지막에는 B를 다시 열고 전체 프로젝트 필드를 비교한다. 원본 세 음원과 영상은 해시로 보존을 확인한다.
-
-수정이 필요하면 효과음 가져오기 시작을 다른 파일/작업 시작과 동일한 작업 순서에 포함해 이전 프로젝트 읽기를 무효화한다. 취소·오류 후 재시도를 유지한다. 앱 내부의 비활성화된 동작을 강제로 호출하지 않는다.
+Preserve intermediate UI and final projects. Check undo/redo and real mixed preview after successful addition. Reopen B and compare every field; hash-check three source assets and the video. If needed, include effect import start in the same operation sequence that invalidates older project reads. Preserve retry after cancellation/errors and never force disabled actions.

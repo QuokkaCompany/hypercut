@@ -1,43 +1,39 @@
-# 긴 영상의 컷·자막·효과음 동시 합성 검증
+# Long-video composition with cuts, captions, and effects
 
-작성일: 2026-09-06. 상태: 인코더 동시 처리를 2개로 제한한 후보 `3e6db03`의 두 앱 60초 4회와 10분/60분 × 두 앱 × 3회, 장시간 12회가 모두 측정 기준을 통과했다. 최대 RSS는 브라우저 60분의 1.956GiB, Mac 60분 세 번은 1.161 / 1.097 / 1.099GiB였다. 출력 정답·프로젝트·조작·취소 후 재시도를 보존했고 이전 후보와 전체 85,997프레임·PTS·오디오도 같았다. [완료한 실행·감사 결과](../testing/2026-09-06-encoder-two-results.md). 이전 긴 목록 후보의 세 번째 RSS 2.008GiB 실패도 [기록](../testing/2026-09-06-windowed-lists-results.md)에 보존한다. 다음 [입력 파일 캐시 조건별 검증](2026-09-06-cache-verification-plan.md)과 실제 한국어 품질·인증 AI 등은 별도다. [전사·자막·효과음 계획](2026-09-05-caption-effects-validation-plan.md)의 C05/C09/C10·FX05와 기존 긴 영상 성능 기준을 함께 확인한다.
+2026-09-06. Two-thread encoder candidate `3e6db03` passed four short both-app runs and 12 long runs (10/60 minutes × both apps × three). Maximum browser RSS: 1.956 GiB; Mac 60-minute RSS: 1.161/1.097/1.099 GiB. Output/oracle/project/interactions/cancel-retry were preserved; all 85,997 frames, PTS, and audio matched the prior candidate. See [final audit](../testing/2026-09-06-encoder-two-results.md). Retain the [windowed-list third-run failure](../testing/2026-09-06-windowed-lists-results.md) at 2.008 GiB. Cache conditions and human/authenticated-AI evaluation remain separate.
 
-## 입력과 독립 정답
+This covers C05/C09/C10/FX05 in the [caption/effect plan](2026-09-05-caption-effects-validation-plan.md). Current implementation combines [encoder limits](2026-09-06-encoder-concurrency-plan.md) and [windowed lists](2026-09-06-windowed-lists-plan.md), retaining all logical data and independent project/SRT comparisons.
 
-현재 후보는 [인코더 동시 처리 제한](2026-09-06-encoder-concurrency-plan.md)이며, 아래 [긴 목록의 화면 요소 제한](2026-09-06-windowed-lists-plan.md)을 유지한다. 전체 컷·자막 데이터와 실제 조작·출력 정답을 유지하고, 현재 표시 가능한 일부 행만 DOM에 둔다. 러너의 전체 개수 확인은 논리 목록 개수와 기존 전체 프로젝트/SRT 비교를 사용한다. 같은 입력·시간·RSS·취소 기준으로 사전 검사 후 재측정했다.
+## Input and independent expectations
 
-이전 후보: 투명 자막 영역을 줄이는 커밋 `5002212`가 픽셀/미디어 회귀와 두 앱 60초 4회를 통과했다. 같은 입력·정답·탐색 러너의 브라우저 60분 첫 실행은 RSS 1.946GiB로 통과했지만 두 번째는 2.045GiB로 메모리 실패 후 종료했다. 출력은 각각 157.127/157.697초였고 두 출력·전체 프로젝트·조작 응답·취소 후 재시도는 통과했다. 세 번째 및 다른 장시간 조건은 미실행이며 이전 실패도 보존한다. [변경과 완료한 실행 증거](../testing/2026-09-06-caption-strip-results.md).
+Use fixed-hash simple 1080p30 H.264/AAC 48 kHz synthetic tone/flash media with 3.6-second periods and 1,000 cuts in 60 minutes. It is not human speech. Put distinct numbered Korean manual captions from period+0.8 to +2.2 seconds: 1,000 in 60 minutes, 166 in 10 minutes, deliberately not crossing amplitude cuts. This does not test transcription accuracy.
 
-후속 탐색 비교: 커밋 `5bb88a8`의 러너가 남은 전체 역할 탐색을 같은 버튼의 CSS 탐색으로 바꾸고 대상 이름·역할·활성 상태를 확인한다. 제품 번들과 패키지·출력 정답·합격 기준은 유지했다. 두 앱 60초 사전 4회 통과 뒤 `test-output/composition-scoped-long/browser-long/`에서 브라우저 60분을 반복했다. 첫 실행 1.976GiB는 통과했지만 두 번째 2.146GiB로 메모리 실패 후 종료했다. 두 출력·프로젝트·조작·취소 후 재시도는 확인했고, 세 번째 및 다른 장시간 조건은 미실행이다. [사전 검사와 비교 근거](../testing/2026-09-06-caption-selector-results.md).
+Use one 880 Hz/48 kHz PCM effect distinct from the 440 Hz source. Place 64 long-input clips across first/middle/last periods, or fewer for short fixtures, at period+1.6 seconds for 0.25 seconds with nonclipping amplitude. Include separately muted and deleted-start clips, without another effect overlapping the mute-check region. Stay within 128 clips. Calculate source/asset/edited timing independently of app mapping.
 
-- 기존 해시가 고정된 1080p/30fps H.264/AAC 48kHz 합성 영상을 재사용한다. 3.6초 주기의 톤·플래시로 구성되며 60분 입력에는 1,000개 무음 컷이 있다. 실제 한국어 발화 자료로 표현하지 않는다.
-- 각 완전한 주기에 원본 시각 `주기 시작 + 0.8초`부터 `+2.2초`까지 번호가 다른 한국어 수동 자막을 둔다. 60분은 1,000개, 10분은 166개다. 음량 컷과 교차하지 않도록 만든 정답이며, 자동 전사 정확도 검사는 포함하지 않는다.
-- 고정 880Hz·48kHz PCM 효과음 한 파일을 만든다. 장시간 자료에서는 기본 64개 클립을 첫·중간·마지막을 포함한 서로 다른 주기에 배치한다. 60초 사전 자료에서는 완전한 주기 수에 맞춰 수를 줄인다. 시작은 해당 주기 `+1.6초`, 길이는 0.25초로 두고 원본 440Hz와 구별해 검출한다. 합산 신호가 클리핑되지 않는 진폭을 사용한다.
-- 삭제되는 구간에 시작하는 클립과 음소거 클립도 별도로 포함해 출력 누출이 없는지 확인한다. 음소거 검사 구간에는 다른 효과음이 겹치지 않게 한다. 전체 클립 수는 현재 지원 한도 128개 이내다. 원본 시각·음원 샘플·편집값과 기대 출력 시각을 앱의 매핑 함수와 독립된 산술로 기록한다.
-- 자막은 노란 강조 스타일을 사용해 배경·흰 플래시와 구별한다. 프로젝트·SRT의 문구는 전체 비교하고, MP4에서는 전체 시각의 자막 존재/부재와 처음·중간·마지막 실제 문구 프레임을 검사한다. 일부 프레임 확인으로 모든 글리프의 시각적 정확성을 주장하지 않는다.
+Use yellow emphasis captions distinct from white flashes/background. Compare every project/SRT text entry, all caption presence/absence times, and actual wording frames at first/middle/last. Selected frames do not establish every glyph's visual accuracy.
 
-## 실제 앱에서 수행할 흐름
+## Actual app sequence
 
-1. 먼저 60초 자료로 두 앱의 짧은 동시 합성을 실행해 정답 생성·음원 재연결·출력 검출기를 검증한다. 이 결과는 장시간 반복 횟수에 합산하지 않는다.
-2. 원본 가져오기·분석 후 수동 자막·스타일·효과음이 있는 프로젝트를 연다. 동일 음원을 실제로 연결하고 전체 컷·자막·효과음 상태를 저장해 독립 정답과 비교한다.
-3. 실제 SRT와 자막·효과음 포함 MP4를 저장한다. 전 파일 디코딩, 전체 SRT 문구·시각, 자막 표시 시각, 효과음 시작·길이·음량·누출, 누적 A/V 표식을 검사한다. 원본과 효과음 원본 해시도 유지돼야 한다.
-4. 첫 성공 출력 뒤 새 합성을 시작하고 자막 준비 또는 영상 렌더 중 취소한다. 취소 직전 단계·진행률을 기록하고 작업 종료·원시 프로젝트 보존·기존 성공 출력 바이트 보존·다음 반복 완료를 확인한다. 취소가 실제로 일어난 단계를 정확히 보고한다.
-5. 저장한 결과의 검증을 마친 뒤 자막 문구/선택, 효과음 음량/음소거, 컷 복원/실행 취소를 각각 32회 조작한다. 변경된 상태·현재 결과 무효화·되돌린 전체 상태를 확인하고 응답 시간을 기록한다. 프로젝트의 원본 시각이 편집 시각으로 덮어써지면 실패다.
+1. Validate oracle, reconnect, and detectors with 60-second composition in both apps; do not count smoke runs as long repetitions.
+2. Import/analyze, open the manual-caption/style/effect project, reconnect the actual asset, and compare complete saved state to the oracle.
+3. Save SRT and composed MP4. Fully decode and check all SRT text/timing, caption timing, effect onset/duration/gain/leakage, accumulated A/V markers, and unchanged source/asset hashes.
+4. After a successful export, start another and cancel during actual caption preparation or video rendering. Record actual phase/progress, cleanup, unchanged full project and prior output bytes, and successful next repetition.
+5. After output verification, perform 32 caption select/edit, 32 effect gain/mute, and 32 cut restore/undo actions. Check changed state, invalidated outputs, full restoration, response time, and preserved source-time project values.
 
-## 측정 조건과 합격 기준
+## Measurement and acceptance
 
-10분/60분 × Chrome/Mac × 3회다. Chrome 60분 조건을 먼저 확인하고 실패 시 원인을 해결하기 전에 나머지 반복을 확대하지 않는다. 동일 앱에서 반복하며 입력·폰트·엔진·실제 실행 번들·패키지·시험 코드 해시, 전원·하드웨어와 캐시 상태를 기록한다. 다른 미디어 작업과 동시에 실행하지 않는다.
+Run 10/60 minutes × Chrome/Mac × three; start with Chrome 60 minutes and stop expanding on failure. Reuse the app within each condition, freeze inputs/fonts/engine/build/package/runner/hardware/power/cache, and avoid other media work.
 
-분석 시간은 기존 기준인 영상 길이의 20% 이내, 동시 합성은 출력 검증을 포함해 영상 길이 이내를 목표로 한다. 앱과 모든 작업 자식 프로세스의 합산 RSS는 2GiB 이하, 각 조작군 p95는 200ms 이하, 취소 표시는 300ms 이내·재시도 가능 상태는 5초 이내다. 전사 모델 추론은 이 실행에 포함하지 않으므로 전사용 4GiB 기준을 적용하지 않는다.
+Analysis ≤20% of input duration; composed export including app validation ≤100%; union app/child RSS ≤2 GiB; each action group's p95 ≤200 ms; visible cancel ≤300 ms; retry readiness ≤5 seconds. The 4 GiB transcription limit does not apply because inference is absent. Sample RSS every 250 ms across analysis, caption preparation, mixing, encoding, validation, saves, and UI; report actual sample intervals. Record selector mode and do not subtract estimated automation costs. External independent oracle processes are excluded; the app's own validation remains included.
 
-RSS를 250ms 간격으로 분석·자막 준비·효과음 혼합·영상 인코딩·검증·파일 저장·UI 조작 동안 측정하고 실제 표본 간격을 함께 보고한다. 선택자 모드는 결과에 명시하며 자동화 비용을 추정해서 빼지 않는다. 단위·통합·E2E 수와 성능 반복 수는 구분한다.
+Require full kept-frame count and every expected PTS. A/V and caption boundaries allow one local frame, SRT rounding 1 ms. For this 30 fps fixture, caption/effect timing tolerance is 1/30 second. Freeze amplitude tolerance at 0.006 before smoke tests. Detect 880 Hz with 20 ms Hann windows, 5 ms steps, and amplitude ≥0.012; measure interior gain at least 40 ms from boundaries. Zero muted/deleted leakage, source changes, lost saved state, or false success with omitted captions/effects.
 
-싱크·자막 매핑은 해당 위치 1프레임 이내, SRT는 1ms 반올림 이내여야 한다. 음소거/삭제 클립의 누출, 원본 변경, 저장 상태 손실, 자막/효과음이 빠진 거짓 성공은 0건이어야 한다. 음량 허용 오차는 60초 정답 사전 검사 전에 절대 진폭 0.006으로 고정했다. 880Hz 검출은 20ms Hann 창·5ms 간격·진폭 0.012 이상, 효과음 내부 진폭은 경계에서 40ms 떨어진 구간에서 측정한다. 효과음 시작·끝과 자막 존재의 허용 오차는 1/30초, SRT는 1ms다. 전체 보존 프레임 수와 각 프레임의 기대 PTS도 확인해 경계에 추가되거나 누락된 프레임을 거부한다.
+## Historical failures retained
 
-이 시험은 합성 신호의 배치·합성·자원 사용을 검증한다. 실제 한국어 CER, 자연스러운 컷 호흡·효과음 청취 품질, 사용자 작업 시간 절감, 인증된 AI 응답 품질, OS cold-cache와 Mac 오프라인 차단 검증은 별도로 남긴다.
+The first 60-second composition produced 1,463 frames instead of 1,448, also without captions. Fix decimal time comparisons and integer PTS conversion, then compare every kept frame/count/content/PTS for CFR, captioned CFR, and shifted-start VFR. [Oracle record](../testing/2026-09-06-composition-oracle-results.md) preserves reproduction and corrected results. Old long performance is pre-fix evidence only.
 
-## 사전 검사에서 발견한 결함
+[Both-app controls](../testing/2026-09-06-composition-app-results.md) ran twice per app, canceling caption preparation between successful outputs, with 96 actions/run. Caption-strip candidate `5002212` passed short/pixel/media checks, then browser long runs reached 1.946 and 2.045 GiB (second failed), with exports 157.127/157.697 s. Third/other long runs were not executed; outputs/projects/interactions/retry remained correct. See [strip evidence](../testing/2026-09-06-caption-strip-results.md).
 
-60초 동시 합성에서 1,448개가 예상되는 출력에 1,463개 프레임이 생겼다. 자막을 끈 대조 출력도 같았다. 초 단위 소수 경계 비교와 PTS 정수 변환을 수정하고, CFR·자막 포함 CFR·시작 시각이 이동된 VFR에서 모든 보존 프레임의 수·내용·시각을 비교해 통과했다. 기존 장시간 성능 기록은 수정 전 측정으로 보존하고 수정 후 결과를 별도로 수집한다. [재현·보정·수정 결과](../testing/2026-09-06-composition-oracle-results.md).
+Runner `5bb88a8` changed remaining role lookups to scoped CSS while checking role/name/enabled state and preserving product/package/oracle/criteria. Four short checks passed; `test-output/composition-scoped-long/browser-long/` reached 1.976 then 2.146 GiB, failing repetition two. Preserve [selector comparison](../testing/2026-09-06-caption-selector-results.md); lookup changes did not resolve long memory.
 
-두 앱 사전 흐름은 각각 2회로 실행해 성공 합성 뒤 자막 준비 중 취소와 두 번째 성공 합성을 확인했다. 각 실행의 자막/효과음/컷 조작은 32개씩 총 96개다. 독립 디코딩 검증기는 앱 프로세스 트리에 포함하지 않으며, 앱 자체의 결과 파일 검증은 출력 시간·RSS에 포함한다. [동시 합성 실행 기록](../testing/2026-09-06-composition-app-results.md).
+This validates synthetic placement/composition/resource use. Human Korean CER, natural pacing/effect listening, active editing-time savings, authenticated AI quality, whole-OS cold-cache, and native offline blocking remain separate.

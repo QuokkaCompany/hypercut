@@ -1,80 +1,50 @@
-# HyperCut 검증·테스트 계획 안내
+# Validation and test plan guide
 
-정리일: 2026-09-06. 사용자의 무음 자동 제거·선택형 AI 요구를 기존 상세 계획과 연결하는 문서다. 합격 목표를 정리한 것이며, 실제 테스트 통과나 제품 출시 승인을 의미하지 않는다.
+Updated 2026-09-06. This index connects product requirements to testable evidence. Plans are acceptance criteria, not execution results or release approval. See [current/historical results](../testing/README.md).
 
-## 먼저 확인할 두 문서
+Start with the [validation plan](2026-09-05-validation-plan.md) for speech preservation, usefulness, time savings, performance, and gates, and the [test plan](2026-09-05-test-plan.md) for fixtures, case IDs, actions, expectations, priorities, and evidence. Its [first execution batches](2026-09-05-test-plan.md#9-first-execution-batches) organize preparation and outputs into seven runnable groups.
 
-| 문서 | 답할 질문 | 주요 내용 |
-| --- | --- | --- |
-| [검증 계획](2026-09-05-validation-plan.md) | 이 도구가 실제 편집 문제를 해결하는가? | 발화 보존, 제거 품질, 시간 절감, 성능, 단계별 완료 조건 |
-| [테스트 계획](2026-09-05-test-plan.md) | 무엇을 어떻게 실행해 그 사실을 확인할 것인가? | 자료 명세, 사례 ID, 입력·행동·기대 결과, 우선순위, 실행 증거 |
+The initial workflow is local browser or Mac import → automatic cut draft → preview/restore → project save → MP4. Add platform/media-specific validation when broadening support. [Clips/TXT/multilingual work](2026-09-06-clips-multilingual-plan.md) and [results](../testing/2026-09-06-multilingual-results.md) extend that scope.
 
-실행 시에는 테스트 계획의 [첫 실행 묶음과 준비 조건](2026-09-05-test-plan.md#9-첫-실행-묶음과-준비-조건)을 사용한다. 경계 계산, 실제 출력, 두 앱의 전체 흐름, 장애 복구, 한국어 품질, 장시간 성능, 선택형 AI의 7개 묶음마다 준비물과 결과물을 정했다.
+## Product hypothesis
 
-첫 제품 범위는 Mac 데스크톱과 로컬 브라우저에서 파일 열기 → 자동 컷 초안 → 미리보기·복원 → 프로젝트 저장 → MP4 출력이다. 브라우저는 로컬 처리 서버를 사용한다. 플랫폼·지원 미디어를 늘릴 때에는 해당 환경의 테스트를 추가한다.
+Removing unnecessary pauses while preserving speech should reduce active editing time. Interpret threshold first as dBFS plus minimum duration and speech padding. Low amplitude is not absence of speech; validate numeric rules and human quality separately.
 
-추가 요청인 구간 클립·TXT 대본·다국어 음성 인식/번역은 [추가 계획](2026-09-06-clips-multilingual-plan.md)과 [실행 결과](../testing/2026-09-06-multilingual-results.md)에 별도로 기록한다.
-
-## 가장 먼저 검증할 제품 가설
-
-**불필요한 쉼을 자동으로 정리하면서 실제 말을 보존해, 사용자가 편집에 관여하는 시간을 줄일 수 있다.**
-
-사용자가 말한 threshold는 먼저 음량 기준인 dBFS로 정의한다. 최소 무음 길이와 말 앞뒤 여유 시간을 함께 조절한다. 음량이 낮다는 사실만으로 말이 없다고 판단할 수 없으므로, 음량 규칙의 정확성과 실제 발화 보존을 별도로 판정한다.
-
-| 접근 | 검증에서 확인할 이점과 한계 | 계획상 역할 |
-| --- | --- | --- |
-| 음량 임계값 | 경계의 정답을 정확히 만들 수 있음. 작은 발화와 배경 소음 조건은 별도 품질 확인 필요 | 기본 컷 계산의 기준선 |
-| 음량 임계값 + 로컬 말소리 감지(VAD) | 작은 발화를 보호하는지, 남기는 쉼과 처리 시간이 얼마나 늘어나는지 비교 가능 | 권장 비교 대상. 조정용 영상에서 평가할 모드를 정한 뒤 고정 |
-| 음성 전사(STT) + 언어 모델 | 자막·오타·문맥 기반 제안을 평가할 수 있으나 인식 오류와 처리 비용도 확인해야 함 | 후속 자막·AI 평가. 전사 실패를 발화 삭제의 근거로 삼지 않음 |
-
-이 표는 현재 기본 설정을 바꾸지 않는다. 기존 VAD는 선택형이며, 권장 설정의 결정은 실제 한국어 평가를 거친다. 임계값과 VAD의 감지 기준은 단위와 의미가 다르므로 같은 슬라이더나 정확도 수치로 설명하지 않는다.
-
-## 사용자 요구와 증거의 연결
-
-| 요구 | 검증 질문 | 연결할 테스트 | 필요한 증거 |
-| --- | --- | --- | --- |
-| 정한 기준의 무음 자동 제거 | V1 | D01~D13 | 임계값 경계·최소 지속 시간·여유·채널·프레임 정렬의 독립 정답 |
-| 말끝·작은 목소리 보존 | V2 | Q01~Q03, Q05 및 S01~S07 | 실제 한국어 라벨, 모든 컷 경계 청취, 복원 기록. VAD의 TTS 결과와 구분 |
-| 결과를 바로 사용할 수 있는 컷편집 | V3, V4 | D14~D15, M01~M06, U01~U05, E01~E06 | 실제 출력 전체 디코딩, A/V 표식, 저장 왕복, 취소·장애 후 재시도 |
-| 반복 편집 시간 절약 | V5 | Q04 | 같은 완료 품질의 수동 편집과 HyperCut 작업 시간 비교 |
-| 긴 영상에서도 사용 가능 | V6 | P01~P02 | 10분·60분·1,000컷, 두 앱의 처리 시간·합산 RSS·조작·취소 측정 |
-| AI 없이 기본 기능 사용 | V7 | U01 | 외부 네트워크 차단 상태의 파일 열기부터 출력까지 실제 실행 |
-| 로컬 LLM·ChatGPT·Claude 선택 연결 | V8 | A01~A08 | 선택한 연결만 호출, 제안 검토·적용, 실패 복구, 연결별 실제 인증·응답 |
-| 전사·오타 수정·자막 디자인·효과음 | 후속 기능별 질문 | T01~T07, C01~C10, FX01~FX05 | 독립 전사 정답, 교정 전후 의미, 실제 자막 프레임·효과음 오디오 |
-
-MVP 상세 계획에는 39개 사례, AI 연결에는 8개 사례가 있다. [말소리 보호 계획](2026-09-05-speech-protection-plan.md)의 7개와 [전사·자막·효과음 계획](2026-09-05-caption-effects-validation-plan.md)의 22개는 별도로 추적한다. 사례 수는 자동 테스트 함수 수나 통과 수가 아니다.
-
-ChatGPT·Claude의 연결 이름만으로 지원 완료를 판단하지 않는다. API, 로컬 서버, 제공되는 구독 연동은 서로 다른 연결 경로로 기록하고 실제 지원 여부·인증·작업 성공을 각각 확인한다. 선택하지 않은 유료 공급자로 자동 전환하지 않는다.
-
-ChatGPT가 직접 편집 제안을 전달하는 경로는 [MCP 연결 계획](2026-09-06-chatgpt-mcp-plan.md)에서 별도로 정의했다. 로컬 MCP 프로토콜과 두 앱의 제안 수신·선택 적용은 [실행 기록](../testing/2026-09-06-mcp-results.md)에 있다. 공식 Secure MCP Tunnel 조건은 확인했으나 실제 계정·터널·ChatGPT 모델을 통한 연결은 미검증이다.
-
-비용 절감도 검증 대상이다. 기본 컷 편집과 AI 연결 설정 저장에는 유료 모델 요청이 0회여야 한다. 선택형 AI 시험은 미리 정한 호출·사용량/비용 상한 안에서 수행하고 실제 시도와 청구 근거를 기록한다. 확인되지 않은 청구는 0원으로 처리하지 않는다. 구체적인 검사는 상세 검증 계획의 비용 제약과 테스트 계획의 U01·A01~A07에 연결했다.
-
-## 첫 합격 목표
-
-아래 수치는 기존 검증 계획의 목표다. 상세 계산·제외 조건·싱크 허용치는 해당 문서를 따른다.
-
-| 항목 | 통과 목표 |
+| Approach | Validation role and limits |
 | --- | --- |
-| 실제 발화 손상 | 평가 영상에서 잘린 단어·음절 0건 |
-| 제거 품질 | 제거 정밀도 ≥99%, 목표 쉼 제거율 ≥90% |
-| 복원 부담 | 품질 문제로 복원한 자동 컷 ≤5% |
-| 작업 시간 | 품질을 통과한 영상별 절감률 중앙값 ≥50% |
-| 원본·저장·출력 | 원본 변경, 저장된 편집 손실, 잘못된 성공 표시 0건 |
-| 무음 분석·출력 | 분석 ≤입력 길이의 20%, 출력 검증을 포함한 내보내기 ≤입력 길이 |
-| 자원·응답 | 앱과 자식 프로세스 합산 RSS ≤2 GiB, 대표 조작 p95 ≤200 ms |
-| 취소 | 취소 표시 ≤300 ms, 작업 종료·재시도 가능한 상태 ≤5초 |
+| Amplitude threshold | Exact boundary baseline; quiet speech/background noise require human evaluation |
+| Threshold plus local VAD | Compare speech protection, retained pauses, and extra processing; choose/freeze mode on tuning data |
+| STT plus language model | Evaluate captions/corrections/context proposals and recognition/cost limits; failed transcription never justifies deleting speech |
 
-작은 목소리가 잘렸다면 제거량이나 평균 시간 절감이 좋아도 품질은 실패다. 평균값으로 일부 실패를 숨기지 않는다. 분모가 없는 비율은 `N/A`, 실행하지 않은 시험은 `NOT_RUN`으로 기록한다. 전사 성능과 자막 작업 시간은 후속 계획의 별도 목표를 적용한다.
+VAD remains optional. Recommendations require real evaluation; dBFS and VAD probability are not interchangeable sliders or accuracy metrics.
 
-## 실행 순서와 산출물
+## Requirement-to-evidence map
 
-1. **정답 준비(G0):** 합성 자료 F01~F11의 명세·해시·독립 정답과 기준 장비를 고정한다. 실제 영상은 조정용 3개와 별도 평가용 6개 이상으로 나누고 사람이 먼저 라벨링한다. 자료 확보 여부도 기록한다.
-2. **핵심 계산·출력(G1):** 샘플 단위 임계값, 최소 길이, 여유 시간, 채널, 프레임 경계와 실제 MP4 싱크를 검사한다. 실패를 짧은 fixture로 재현해 수정할 수 있어야 한다.
-3. **앱 전체 흐름(G2):** 두 앱에서 편집·복원·저장·재연결·출력을 검사한다. 취소, 늦은 응답, 공간 부족, 저장 중 종료와 오프라인 조건을 포함한다.
-4. **실사용 판단(G3):** 고정한 설정으로 별도 한국어 평가 자료의 발화·쉼·복원 부담·작업 시간을 측정한다. 긴 영상은 조건별 3회, 조작은 30회 이상 측정하고 파일 캐시 조건도 구분한다.
-5. **AI와 후속 기능(G4 및 기능별 판정):** 모의 공급자로 계약·실패를 먼저 확인한 뒤 선택한 실제 연결로 검증한다. 전사·교정·디자인·효과음은 각 기능의 필수 사례를 따로 완료한다.
+| Requirement | Objective/cases | Required evidence |
+| --- | --- | --- |
+| Threshold silence removal | V1; D01–D13 | Independent sample/duration/padding/channel/frame oracle |
+| Quiet speech and endings preserved | V2; Q01–Q03/Q05, S01–S07 | Real labels, every cut boundary heard, restoration reasons; separate from TTS |
+| Usable edits and preserved work | V3/V4; D14–D15, M01–M06, U01–U05, E01–E06 | Full MP4 decode, A/V markers, save/reconnect, faults/retry |
+| Less repetitive work | V5; Q04 | Paired manual/automatic active time at equal quality |
+| Long recordings | V6; P01–P02 | 10/60 minutes, 1,000 cuts, both apps, time/union RSS/UI/cancel |
+| Core works without AI | V7; U01 | Actual offline import-to-export workflow |
+| Select local LLM/ChatGPT/Claude | V8; A01–A08 | Selected provider only, reviewed apply, recovery, separate actual auth/inference |
+| Transcription/correction/design/effects | T01–T07, C01–C10, FX01–FX05 | Independent transcripts, semantic comparison, actual frames and decoded effects |
 
-각 단계에서 [실행 기록 양식](../testing/test-run-template.md)에 커밋·설정·자료 버전, 사례별 상태, 원시 증거와 미해결 실패를 남긴다. 사람 평가 절차와 빈 CSV 양식은 [실제 한국어 평가 안내](../testing/manual-korean-evaluation.md)에 있다.
+There are 39 MVP cases, eight AI cases, seven [VAD cases](2026-09-05-speech-protection-plan.md), and 22 [T/C/FX cases](2026-09-05-caption-effects-validation-plan.md). Case counts are not automated function/pass counts.
 
-이 문서 정리는 새 시험 실행이 아니다. 기존 실행 근거와 남은 항목은 [검증 현황](../testing/README.md)에 보관하며, 실제 한국어 품질·시간 절감과 인증된 AI 품질은 해당 증거가 확보되기 전까지 통과로 표시하지 않는다.
+API, local server, and subscription integrations require separate evidence. [MCP planning](2026-09-06-chatgpt-mcp-plan.md) and [local results](../testing/2026-09-06-mcp-results.md) do not establish real ChatGPT account/tunnel/model success. Core editing and saving connection settings require zero paid requests. Predeclare real-AI call/usage/cost limits, record actual attempts/billing, and leave unknown charges unknown; no fallback to an unselected paid provider.
+
+## Initial acceptance targets
+
+Zero clipped words/syllables, source changes, lost saves, or false success. Removal precision ≥99%; eligible-pause removal ≥90%; quality-driven restored cuts ≤5%; median active-time savings ≥50% among quality-passing recordings, reporting failures separately. Analysis ≤20% of input duration, export including validation ≤duration, union RSS ≤2 GiB, representative UI p95 ≤200 ms, visible cancel ≤300 ms, retry ≤5 seconds. Use detailed definitions in the validation plan. Empty denominators are N/A; unexecuted tests are NOT_RUN. Transcription resource/time-savings targets are separate.
+
+## Execution order
+
+1. G0: Freeze fixtures/oracles/hashes/hardware. Separate three tuning recordings from at least six independently labeled evaluation recordings; record missing prerequisites.
+2. G1: Verify sample rules and actual frame-aligned MP4/sync, with short reproducible failures.
+3. G2: Both apps' edit/restore/save/reconnect/export and cancellation, stale response, disk full, interrupted save, and offline behavior.
+4. G3: Human speech/pause/restoration/time metrics with fixed settings; separately run three repetitions per long/cache condition and ≥30 interactions.
+5. G4 and feature gates: Mock contracts/failures first, actual selected AI separately; complete T/C/FX requirements independently.
+
+Use the [result template](../testing/test-run-template.md), [human Korean evaluation procedure](../testing/manual-korean-evaluation.md), and [implementation plan](2026-09-05-implementation-plan.md). No documentation update alone changes an execution status.

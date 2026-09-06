@@ -1,56 +1,49 @@
-# Mac 실제 저장·교체 확인 창
+# Actual Mac save and replacement dialogs
 
-실행일: 2026-09-05 America/New_York. `16ad89f`의 실제 Mac 패키지로 **5개 조건 모두 PASS**를 확인했다. [계획](../plans/2026-09-05-native-save-dialog-plan.md), [파일 해시·접근성 관측 근거](results/2026-09-05-native-save-dialog.json)를 연결한다.
+Executed 2026-09-05 America/New_York on packaged `16ad89f`: **five conditions PASS**. Generated 16-second source, old-settings project, and separate four-second MP4 only. After analysis: −41 dBFS, five cuts, output 9.066 s. Dedicated test profile/media folder; app closed afterward.
 
-## 실행 조건과 결과
+Only initial media selection was supplied then restored. Save-dialog functions/results were not substituted. Accessibility tools operated real macOS folder/name/Cancel/Replace controls, followed by actual write/fsync/rename.
 
-생성한 16초 원본, 이전 설정을 담은 프로젝트, 별도의 4초 MP4만 사용했다. 무음 분석 후 임계값은 -41dBFS, 컷은 5개, 편집 출력은 9.066초였다. 패키지는 별도 프로필과 미디어 폴더에서 실행했고 시험 종료 후 닫았다.
-
-초기 영상 선택만 생성 파일 경로로 지정한 뒤 선택 함수를 복원했다. **저장 창 함수와 반환값은 대체하지 않았다.** 실제 macOS 저장 창에서 시험 폴더와 기존 파일명을 지정하고, 표시된 Cancel/Replace를 접근성 도구로 선택했다. macOS의 확인 창과 앱이 반환받은 결과를 거쳐 실제 파일 쓰기·fsync·rename이 실행됐다.
-
-| 조건 | 관측한 결과 |
+| Condition | Result |
 | --- | --- |
-| 기존 프로젝트 교체 취소, 부모 저장 창도 취소 | 기존 파일 해시 동일, 미저장 표시 유지, 거짓 성공 없음, 재시도 가능 |
-| 기존 프로젝트 교체 승인 | 현재 -41dBFS·5개 컷·원본 식별자가 유효한 v7 파일로 저장, 미저장 표시 해제 |
-| 기존 MP4 교체 취소, 부모 저장 창도 취소 | 기존 MP4와 원본 해시 동일, 거짓 성공 없음, 재시도 가능 |
-| 기존 MP4 교체 승인 | 렌더링 결과와 저장 파일의 SHA-256 일치, 길이 9.066초, 전체 FFmpeg 디코딩 성공 |
-| 원본 `source.mp4` 경로의 OS 교체 승인 | 앱이 원본 경로를 거부, 원본 바이트 유지 |
+| Cancel project replacement and parent save dialog | Existing hash unchanged; dirty state/retry, no false success |
+| Approve project replacement | Valid current v7, −41 dBFS/five cuts/source identity; dirty cleared |
+| Cancel MP4 replacement and parent dialog | Existing MP4/source hashes unchanged; retry/no false success |
+| Approve MP4 replacement | Same SHA-256 as render, 9.066 s, full decode PASS |
+| Approve OS replacement at source.mp4 | App rejected original destination; source bytes preserved |
 
-모든 검사 후 원본 SHA-256은 `3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df`로 유지됐다. 페이지 오류와 렌더러에서 관측한 외부 요청은 0건이다. 이 네트워크 관측은 OS 전체 차단 시험을 뜻하지 않는다.
+Final source SHA-256: `3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df`. Zero page errors/observed renderer external requests, not OS-wide blocking. Viewed project/source confirmation screenshots; JSON preserves 12 final accessibility observations, request IDs, raw files and screenshot hashes. Large captures/media are local under `test-output/native-save-dialog/`.
 
-프로젝트 교체 확인과 원본 경로 교체 확인은 스크린샷도 직접 열어 확인했다. 12개 최종 관측의 접근성 문구·요청 식별자·원시 파일 및 스크린샷 해시를 결과 JSON에 보존했다. 스크린샷과 생성 미디어는 Git에서 제외한 `test-output/native-save-dialog/`에 있다.
+Three intermediate accessibility lookup failures were recorded, followed by fresh state reads and observed final controls. Original-protection error was already visible from an earlier attempt, so final retry did not prove a new alert transition; it proved actual source-name Replace and unchanged bytes. No product change. A later runner-only exit-recording fix marks interrupted sessions failed rather than running; syntax checked, not counted as another full run.
 
-접근성 도구에서 창 또는 항목을 찾지 못한 중간 시도 3건은 따로 기록했다. 실제 앱 상태를 다시 읽고 최종 확인 창과 버튼 선택을 관측한 뒤 판정했다. 원본 보호 오류는 앞선 시도에서 이미 표시됐으므로 최종 재시도를 새로운 알림 전환 검증으로 계산하지 않았다. 최종 시도는 실제 원본 이름의 OS Replace 선택과 이후 원본 바이트 보존을 확인한다.
+E04 native project/MP4 collisions and source protection passed these conditions. Browser download collisions/completion, power failure, other OS, all effect-source combinations, E06, human quality/time, and authenticated AI remain separate.
 
-## 판정 범위
+## Reproduction
 
-E04의 **Mac 기존 프로젝트/MP4 파일명 충돌과 원본 보호 조건**을 확인했다. 제품 코드는 변경하지 않았다. 브라우저 다운로드 관리자의 파일명 충돌·디스크 완료, 전원 차단, 다른 OS, 등록된 모든 효과음 경로 조합을 이 실행으로 검증한 것은 아니다. E06의 취소한 작업과 새 원본의 전체 경합, 실제 녹음 품질·작업 시간, 인증된 LLM 요청도 남아 있다.
-
-실행한 시험 코드 해시는 JSON의 `harnessAtExecutionSHA256`에 있다. 실행 후에는 입력 세션이 중간에 끝난 경우 결과가 `running`으로 남지 않고 `failed`가 되도록 종료 기록만 보완하고 구문을 확인했다. 이를 새로운 전체 실행으로 계산하지 않았다.
-
-## 재현 절차
-
-먼저 현재 Mac 패키지가 있어야 한다. 다음 명령은 완전 자동 시험이 아니라 **실제 저장 창 조작과 JSON 명령 입력을 기다리는 대화형 시험**이다. 기존 결과 폴더는 덮어쓰지 않는다.
+This is interactive and waits for actual OS actions plus line-delimited JSON commands. Use only the READY-reported `files` directory and a fresh output directory.
 
 ```sh
 npm run test:save:native -- --output=test-output/native-save-dialog-new
 ```
 
-READY가 알려주는 `files` 폴더만 저장 대상으로 사용한다. 각 줄을 입력하고 해당 OS 창 조작을 끝낸 뒤 다음 검사를 실행한다.
-
-| 입력할 JSON의 `command` 값 | OS 조작 또는 검사 |
+| JSON command | Action/check |
 | --- | --- |
-| `begin-project` | `existing.hypercut.json` 선택 → Save → 교체 Cancel → 저장 창 Cancel |
-| `check-project-cancelled` | 보존 검사 |
-| `begin-project` | 같은 파일 선택 → Save → Replace |
-| `check-project-replaced` | 현재 프로젝트 저장 검사 |
-| `prepare-export` | 실제 MP4 렌더링과 기준 바이트 확보 |
-| `begin-export` | `existing.mp4` 선택 → Save → 교체 Cancel → 저장 창 Cancel |
-| `check-export-cancelled` | 기존 MP4 보존 검사 |
-| `begin-export` | 같은 MP4 선택 → Save → Replace |
-| `check-export-replaced` | 바이트·길이·전체 디코딩 검사 |
-| `begin-export` | 생성한 `source.mp4` 선택 → Save → Replace |
-| `check-original-protected` | 앱 오류와 원본 보존 검사 |
-| `finish` | 5개 결과와 저장 함수 보존 검사, 시험 앱 종료 |
+| `begin-project` | Choose existing.hypercut.json → Save → Cancel replacement → Cancel save |
+| `check-project-cancelled` | Verify preservation |
+| `begin-project` | Same file → Save → Replace |
+| `check-project-replaced` | Verify current project |
+| `prepare-export` | Render actual MP4 and preserve reference bytes |
+| `begin-export` | existing.mp4 → Save → Cancel replacement → Cancel save |
+| `check-export-cancelled` | Verify preservation |
+| `begin-export` | Same MP4 → Save → Replace |
+| `check-export-replaced` | Verify bytes/duration/full decode |
+| `begin-export` | Generated source.mp4 → Save → Replace |
+| `check-original-protected` | Verify rejection and source |
+| `finish` | Check five results and unmodified save function; close app |
 
-입력 형식은 `{"command":"begin-project"}`다. 실제 OS 창을 관측한 기록은 별도로 남긴다. 컨트롤러의 파일 검사만으로 어떤 OS 버튼을 눌렀는지 입증할 수는 없다.
+Example input: `{"command":"begin-project"}`. Preserve independent OS observations; controller file checks alone cannot prove which OS button was selected.
+
+## Evidence and related records
+
+- [2026-09-05-native-save-dialog-plan.md](../plans/2026-09-05-native-save-dialog-plan.md)
+- [2026-09-05-native-save-dialog.json](results/2026-09-05-native-save-dialog.json)

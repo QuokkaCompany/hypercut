@@ -1,74 +1,43 @@
-# 자막 디자인·실제 MP4 합성 실행 기록
+# Caption design and actual MP4 rendering results
 
-이 문서는 디자인 합성 단계의 기록이다. 이후 추가한 AI 제안 비교·선택 적용은 [교정 실행 기록](2026-09-05-caption-correction-results.md)을 따른다.
+Executed 2026-09-05 after `b2c977c`; later AI correction is separate. Both apps support plain/box/emphasis styles, size/position/margins, caption inclusion, encoded full/range previews, and v4 undo/save. v1–v3 preserve old edits and migrate to captions disabled with default style. Changes invalidate previous outputs; unresolved partially cut cues block captioned rendering. Source playback uses ordinary VTT, whereas style samples/encoded previews use the renderer. SRT stores wording/timing only.
 
-실행일: 2026-09-05. 기준 커밋 `b2c977c` 이후 이 기록과 함께 추가한 변경을 검증했다. 기본 무음 편집·전사 기록과 구분하며 전체 제품·실제 한국어 녹음 품질 통과를 뜻하지 않는다.
+Environment: M4 Max/macOS arm64, Node 24.14.1, Electron 44.2.0, FFmpeg 8.1.1. Canvas 1.0.8 renders plain text to transparent PNG using bundled Noto Sans KR Regular/Bold, OFL 1.1, revision `f8d157532fbfaeda587e826d4cd5b21a49186f7c`. Child processes verify hashes/glyphs, disable system-font loading, and reject missing/corrupt/unsupported data without silent fallback. Word-first wrapping uses at most three lines, splitting an oversized word only when necessary, shrinking with visible actual size or rejecting text that cannot fit.
 
-## 구현 범위
+Round absolute transition times to microseconds before differences, concatenate PNG input and overlay with existing FFmpeg; no libass/global replacement. Lay out at orientation/SAR-correct display size, downscaling only previews. Cancel waits for child cleanup and deletes task directories, including server shutdown. Native canvas is unpacked from ASAR and fonts load from the package (about 937 MiB then); external FFmpeg remains required. Signing/notarization/other OS were unverified.
 
-브라우저와 Mac 앱의 자막 창에서 기본형·배경 박스·강조형을 선택하고 글자 크기·위치·여백을 조절한다. MP4 포함 스위치를 켜면 정확한 전체/범위 미리보기와 최종 내보내기에 같은 디자인을 합성한다. 원본 청취 플레이어는 기본 VTT 표시이고 디자인 표본 및 합성 미리보기는 실제 렌더러를 사용한다.
+| Check | Result |
+| --- | --- |
+| Unit | 46 PASS |
+| API | 12 PASS |
+| Media | 8 PASS |
+| Caption rendering integration | 6 PASS |
+| Build/package, caption E2E, silence E2E | PASS in both apps |
+| OS-blocked external network | Browser PASS with real VAD/Whisper/style/SRT/MP4; external probe EPERM |
 
-자막·스타일 변경은 실행 취소/다시 실행과 프로젝트 v4에 보존된다. 기존 v1/v2/v3는 컷과 해당 버전의 보호·전사 정보를 유지하며 자막 포함이 꺼진 기본 스타일로 읽는다. 컷·문구·시각·스타일·선택 트랙 변경은 이전 렌더 결과를 해제한다. 부분 삭제된 문장은 검토 전 자막 포함 출력을 완료하지 않는다.
+72 unique unit/API/media/rendering checks; E2E/build/offline separate. A wrap fix was followed by affected rendering/package/caption/offline reruns, without adding old transcription/performance counts.
 
-한 문장은 편집 시간축에서 한 번 표시한다. 범위 미리보기를 위한 화면 시간의 잘라내기는 전체 컷에 대한 문구 검토를 취소하지 않는다. SRT는 문구와 시각만 저장하며 디자인은 MP4 프레임에 반영된다.
+## Independent frames and app evidence
 
-## 렌더링과 환경
+640×360, 30 fps, six-second source, cut `[2.5,3.5)`, captions `[1,2.3)` and `[4.001,5)` yielded five seconds/150 decoded frames with captions `[1,2.3)` and `[3.001,4)`. Check every frame's white/yellow pixels/PTS including absence intervals for all three styles; source hashes unchanged.
 
-- macOS arm64, Apple M4 Max, Node 24.14.1, Electron 44.2.0, FFmpeg/ffprobe 8.1.1.
-- `@napi-rs/canvas` 1.0.8로 글자를 투명 PNG에 그린다. 문구는 일반 텍스트이며 HTML/ASS/셸 문법으로 해석하지 않는다.
-- Noto Sans KR Regular/Bold를 번들한다. SIL Open Font License 1.1, 소스 리비전 `f8d157532fbfaeda587e826d4cd5b21a49186f7c`. [명세와 해시](../../assets/fonts/manifest.json), [라이선스](../../assets/fonts/OFL.txt).
-- 별도 자식 프로세스에서 번들 폰트의 해시·문자 지원을 확인한다. 시스템 폰트 자동 로드를 끄고 폰트 바이트를 등록한다. 누락·손상·미지원 문자는 오류이며 다른 글꼴로 조용히 대체하지 않는다.
-- 단어를 우선 보존해 최대 3줄로 맞춘다. 한 단어가 한 줄보다 길 때만 글자 단위로 나눈다. 필요한 경우 크기를 줄이며 표본 화면에서 실제 크기를 알린다. 최솟값에서도 맞지 않으면 문구 수정이 필요하다.
-- PNG 변경 시각은 절대 마이크로초로 반올림한 뒤 차이를 계산한다. FFmpeg concat 입력과 `overlay`로 합성한다. `subtitles`/`ass` 필터가 없는 현재 FFmpeg에서도 동작하며 전역 FFmpeg 설치를 교체하지 않았다.
-- 표시 방향·픽셀 종횡비를 반영한 영상 크기에 그린 뒤 미리보기만 축소한다. 글자 줄바꿈은 미리보기와 최종 출력에서 같은 크기의 원본 캔버스를 기준으로 한다.
-- PNG 렌더 취소 시 자식 프로세스 종료를 기다리고 작업 디렉터리를 지운다. 서버 종료도 미리보기 자식 프로세스 정리를 기다린다. 기존 원본과 이미 저장한 결과는 변경하지 않는다.
-- Mac 앱은 약 937MiB. 네이티브 canvas 모듈은 ASAR 밖에 풀고 폰트는 앱 번들에서 읽는다. 실제 패키지에서 실행했다. FFmpeg/ffprobe는 로컬 설치가 필요하며 서명·공증·다른 OS는 미검증이다.
+Portrait, 90-degree rotation, and SAR 2:1 produced 360×640, 360×640, and 1280×360 displays, with glyph pixels inside 4% edge margins and selected top/bottom placement. Mixed 15/30 fps VFR and +5 s input PTS used actual timestamps without duplicate frames. Source preview `[2.1,5.1)` yielded two seconds with caption ranges `[0,0.2)`, `[0.901,1.9)`, without double subtraction.
 
-## 자동 검사
+Viewed PNG/MP4 frames covered Korean/English/numbers/newlines, literal markup-like text, and long portrait captions. Visual inspection found split English words and led to word-first wrapping. Fixture rotation/SAR generation and oracle VFR duplication were corrected without relaxing timing/safe-area/source criteria. Missing fonts, unsupported emoji, and excessive text failed explicitly. Canceling actual 1,000-caption preparation cleaned up within five seconds and retried without partial files; this is not full 1,000-caption performance evidence.
 
-| 실행 | 결과 | 범위 |
-| --- | --- | --- |
-| `npm test` | 46 PASS | 기존 42개 및 스타일·v4 이전 버전·절대 시각·검토/범위·글꼴 문자 계약 |
-| `npm run test:api` | 12 PASS | 기존 API 11개 및 인증·등록 미디어·스타일/문자 오류·실제 PNG 응답 |
-| `npm run test:media` | 8 PASS | 기존 무음 출력·원본 시각·선택 오디오·범위 회귀 |
-| `node --test tests/caption-rendering.integration.mjs` | 6 PASS | 3종 스타일·가로/세로/회전/SAR·VFR/PTS·범위·긴 문구·오류/취소/재시도 |
-| 프로덕션 빌드·Mac 패키징 | PASS | 타입 검사·UI 빌드·폰트와 네이티브 렌더러 포함 |
-| 자막 브라우저·Mac E2E | 두 환경 PASS | 실제 전사·수정·SRT·스타일·합성 MP4·v4 복원·undo/redo·이전 결과 해제 |
-| 기존 무음 편집 E2E | 두 환경 PASS | 불러오기·복원·타임라인·저장·MP4·원본 덮어쓰기 차단 |
-| OS 외부 네트워크 차단 | 브라우저 PASS | 외부 연결 탐색 EPERM, 실제 VAD/Whisper·자막 스타일·SRT·합성 MP4 |
+Both apps actually transcribed Korean TTS, manually corrected text/times, saved identical SRT, and showed 3,326 yellow caption pixels in composed preview. Saved MP4 fully decoded and frames were viewed. Style changes invalidated outputs; undo/redo/v4 reopen restored values. Zero UI errors/observed external requests. The 390 px layout had no horizontal overflow. Electron retained sandbox/context isolation, no node integration. Native path responses were substituted; Mac OS network isolation remained blocked by nested sandbox constraints.
 
-단위·API·미디어·합성 테스트 합계는 72개다. E2E·빌드·OS 차단은 별도다. 기존 전사 통합 4개나 과거 성능 검사를 이번 합계에 다시 넣지 않았다. 렌더러 줄바꿈을 다듬은 뒤 영향을 받는 합성 검사·패키지·자막 E2E·오프라인 경로를 다시 확인했다.
+## Outstanding scope
 
-## 독립 프레임 근거
+Human CER/timing/time savings, long caption time/union memory, all save/race/reconnect/disk-full stages, and Mac OS offline remained incomplete at this record. TTS included a Korean misrecognition; this was not speech-quality acceptance. AI correction/effects/authenticated providers/direct ChatGPT were later work. Logs and screenshots remain under `test-output/caption-style-*`, `caption-rendering-*`, and `captions-*`; large media is local.
 
-640×360, 30fps, 6초 배경 영상에서 원본 컷 `[2.5,3.5)`와 자막 `[1,2.3)`, `[4.001,5)`를 사용했다. 출력은 5초이며 자막은 `[1,2.3)`, `[3.001,4)`에 나타났다. 150개 프레임을 모두 디코딩해 흰색/노란색 글자 픽셀과 PTS를 비교했고 자막이 없어야 할 구간에도 검사했다. 3종 스타일 모두 통과했고 원본 SHA-256은 유지됐다.
+## Evidence and related records
 
-같은 기준으로 360×640 세로·90도 회전 정보·SAR 2:1 영상도 검사했다. 최종 표시 크기는 각각 360×640·360×640·1280×360이다. 글자 픽셀이 화면 가장자리 4% 안쪽에 있고 지정한 위/아래 위치에 나타나는지 확인했다.
-
-15/30fps가 섞인 VFR와 시작 PTS +5초에서는 출력 프레임을 복제하지 않고 각각의 PTS로 비교했다. `[2,3)` 컷 뒤에도 고정 자막 시각이 일치했다. 원본 `[2.1,5.1)` 범위 미리보기는 2초이며 자막 구간은 `[0,0.2)`, `[0.901,1.9)`였다. 전체 출력 시간과 범위 시간의 중복 차감은 없었다.
-
-한글·영문·숫자·명시적 줄바꿈·리터럴 `<b>{\N}`·긴 세로 자막의 PNG와 실제 MP4 프레임을 열어 확인했다. 최초 시각 검토에서 영어 단어가 나뉘는 현상을 발견해 단어 우선 줄바꿈으로 수정했다. 초기 테스트 자료의 세로 SAR·회전 메타데이터 생성과 VFR 검사용 디코더의 프레임 복제도 바로잡았다. 고정 자막 시각·안전 영역·원본 보존 기준을 완화하지 않았다.
-
-폰트 누락·지원하지 않는 이모지·너무 긴 문구는 실패로 처리됐다. 1,000개 자막 준비 중 실제 취소는 5초 이내 정리됐고 부분 파일 없이 재시도했다. 이 검사는 1,000개 자막 전체 렌더 성능의 통과 근거가 아니다.
-
-## 앱·파일 근거
-
-브라우저와 실제 Mac 패키지에서 한국어 TTS를 전사한 뒤 문구와 시각을 수동 교정했다. 두 앱 모두 같은 SRT를 저장하고 합성 미리보기에서 노란 자막 픽셀 3,326개를 확인했다. 실제 MP4 저장 뒤 전체 파일을 다시 디코딩하고 출력 프레임을 열었다. 스타일 변경은 기존 내보내기·정확한 미리보기를 해제했고 undo/redo 및 v4 재열기에서 값이 복원됐다. UI 오류와 관찰한 브라우저 외부 요청은 각각 0건이었다.
-
-390px 브라우저 창에서 자막·디자인 컨트롤을 스크롤해 사용하고 가로 넘침이 없음을 확인했다. Mac 앱의 `sandbox: true`, `contextIsolation: true`, `nodeIntegration: false`는 유지됐다. 네이티브 파일 선택·저장 대화상자 응답만 테스트 파일로 제어했다. Mac의 OS 네트워크 격리는 기존 중첩 샌드박스 제약으로 미실행이며 브라우저 결과로 대체하지 않는다.
-
-## 남은 검증
-
-실제 녹음 CER·자막 시각 정확도·사용자 작업 시간 절감과 10분/60분 자막 처리 시간·전체 프로세스 메모리 측정은 미실행이다. TTS 전사에는 ‘무음 → 부분’ 오류가 있었으며 이번 검사는 전사 품질 통과가 아니다. C03/C04의 모든 경합·재연결 조합, C09의 실제 디스크 가득 참·저장 경합 등 모든 렌더 단계, C10의 Mac OS 네트워크 차단도 완료되지 않았다.
-
-AI 교정 C07/C08, 효과음 FX01~FX05, 실제 인증된 공급자 요청과 ChatGPT MCP 통합은 후속 범위다. 전사·디자인·효과음 전체 지원 완료를 표시하지 않는다.
-
-## 원시 자료
-
-- [입력 해시·폰트·프레임/배치 결과](results/2026-09-05-caption-rendering.json)
-- [브라우저·Mac 자막 디자인 UI 결과](results/2026-09-05-caption-style-ui.json)
-- [브라우저 OS 오프라인 결과](results/2026-09-05-caption-style-offline.json)
-- 로컬 로그: `test-output/caption-style-{unit-all,api,media,build,package,e2e,regression-e2e,offline}.log`, `test-output/caption-rendering-integration.log`.
-- 실제 화면: `test-output/captions-{browser,desktop,style-mobile}.png`, `captions-export-{browser,desktop}.png`, `test-output/caption-rendering/*.png`.
-
-재현 명령과 이전 실행은 [검증 안내](README.md), 요구사항별 판단 기준은 [자막·효과음 계획](../plans/2026-09-05-caption-effects-validation-plan.md)을 따른다.
+- [2026-09-05-caption-correction-results.md](2026-09-05-caption-correction-results.md)
+- [manifest.json](../../assets/fonts/manifest.json)
+- [OFL.txt](../../assets/fonts/OFL.txt)
+- [2026-09-05-caption-rendering.json](results/2026-09-05-caption-rendering.json)
+- [2026-09-05-caption-style-ui.json](results/2026-09-05-caption-style-ui.json)
+- [2026-09-05-caption-style-offline.json](results/2026-09-05-caption-style-offline.json)
+- [README.md](README.md)
+- [2026-09-05-caption-effects-validation-plan.md](../plans/2026-09-05-caption-effects-validation-plan.md)

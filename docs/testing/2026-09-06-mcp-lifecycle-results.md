@@ -1,33 +1,14 @@
-# MCP의 늦은 적용 확인 응답과 새 요청 보존
+# Late MCP application checks and new-request preservation
 
-2026-09-06. [L01~L06 계획](../plans/2026-09-06-mcp-lifecycle-plan.md)에 따라 기존 `e3c5ab5`에서 오류를 재현하고 수정했다. [실행 근거와 해시](results/2026-09-06-mcp-lifecycle-verification.json)에 수정 전 실패, 최종 실행, 실제 파일의 해시를 보관했다.
+2026-09-06. Reproduced on `e3c5ab5` under L01–L06. While a pre-apply status read waited, changing instructions and starting a new share could let the old read's error clear/show state in the new screen. Application itself was blocked, but error handling checked only whether the component remained mounted.
 
-## 발견한 문제와 변경
+Show an apply-check error only when the same share object and request context remain current. Preserve existing apply guards and current-error/retry behavior. First runner failed by reading a project before new media finished importing; second passed L01–L03 then reproduced L04 stale error. Keep those failures distinct.
 
-설정 적용 전 공유 상태를 조회하는 동안 사용자가 요청문을 바꾸고 새 공유를 시작할 수 있다. 이전 조회가 그 뒤 완료되면 기존 코드는 편집 대상 변경을 탐지해 적용을 막지만, 예외 처리에서는 컴포넌트가 열려 있는지만 확인했다. 그 결과 이전 오류를 새 공유 화면에 표시하고 새 작업의 진행 상태를 해제할 수 있었다.
+Final browser/Mac six cases each: **12 PASS**, including delayed creation/status/apply checks, media/project/provider changes, and current 503/review-completion retry. Twelve held responses were delivered; maximum creation hold 232.47 ms, within five seconds. Distinct sources and−40/−52 dB settings remained; final full project matched B except save timestamp. Eleven relevant source/media/timeline/HTML/JS/CSS files matched the native package.
 
-실제 서버 조회 응답을 보류한 두 번째 실행에서 브라우저의 L01~L03은 통과하고 L04의 ‘새 요청에 이전 오류가 없어야 한다’ 검사가 실패했다. 처음 실행은 새 영상 가져오기를 기다리기 전에 프로젝트를 읽은 시험 코드 문제였다. 두 실패 기록을 구분해 보존한다.
+Existing MCP settings/caption/effects flows in both apps: six PASS using actual stdio children, revoke failure/retry, duplicate proposals, partial apply/undo, and acknowledgment retry without repeated edits. Saved/reopened projects and actual MP4 full decode/effect timing/gain passed. Both MP4 SHA-256 `3058c3dd820040ae9b44a1295a340cd17a793871b1c2950ca5d12efc917dda03`; applied effect RMS≈0.07080272, unselected addition RMS 0. Zero JS errors/observed external requests/separate provider calls, not OS network-block proof.
 
-`MCPShare`의 적용 확인 오류는 같은 공유 객체와 같은 요청 문맥이 여전히 현재 대상일 때만 표시하도록 바꿨다. 편집 적용 조건과 현재 요청의 실패·재시도 동작은 유지한다.
-
-## 수정 후 확인
-
-| 검증 | 결과와 근거 |
-| --- | --- |
-| 브라우저·Mac의 지연/실패 조건 | 각 6개, 총 12개 통과. 늦은 생성·조회·적용 확인, 원본/프로젝트·공급자 변경, 현재 요청의 503 오류와 검토 완료 재시도 |
-| 보류 응답의 실제 전달 | 12개 보류 지점의 응답을 전달했다. 생성 응답의 최대 보류는 약 232.47ms로 앱의 5초 제한 안이었다 |
-| 편집 보존 | 서로 다른 합성 원본과 -40/-52dB 설정 사용. 마지막 실제 저장 프로젝트는 저장 시각을 제외한 전체 필드가 두 번째 원본의 기대 프로젝트와 일치 |
-| 패키지 일치 | 관련 소스·미디어·시간축·HTML/JS/CSS 11개 파일이 Mac 패키지 내부와 일치 |
-| 기존 MCP 전체 흐름 | 두 앱 × 설정·자막·효과음, 6개 흐름 통과. 실제 stdio 자식 프로세스, 공유 해제 실패/재시도, 중복 제안, 부분 적용, 실행 취소, 결과 전달 실패/재시도 포함 |
-| 실제 결과물 | 두 앱의 프로젝트 저장·재열기와 MP4 전체 디코딩, 효과음의 출력 시각·음량 확인. 두 MP4의 SHA-256은 `3058c3dd820040ae9b44a1295a340cd17a793871b1c2950ca5d12efc917dda03` |
-
-기존 흐름에서 적용한 효과음 구간의 RMS는 두 앱 모두 약 0.07080272, 선택하지 않은 추가 효과음 구간은 0이었다. JavaScript 오류, 관측된 외부 페이지 요청, 별도 AI 공급자 요청은 없었다. 실제 OS 네트워크 차단의 증거는 아니다.
-
-## 범위와 다음 검증
-
-이 시험은 합성 자료와 로컬 MCP 클라이언트를 사용했다. 실제 ChatGPT·Claude 계정, 터널, 모델 제안 품질은 검사하지 않았다. Mac 파일 창의 반환 경로는 시험이 지정했으며 실제 OS 대화상자 검사를 대신하지 않는다.
-
-실제 한국어 발화 보존·작업 시간, 새 Mac에서의 설치, 서명·공증, 이 후보의 장시간 성능은 별도로 남아 있다. 이번 변경으로 UI 번들과 패키지가 바뀌었으므로 이전 후보의 성능 기록을 최종 후보의 결과로 옮기지 않는다. 다음에는 이 제품과 패키지를 고정한 상태로 기본 무음 경로의 캐시 조건별 성능을 측정한다.
+Synthetic media/local clients only; real ChatGPT/Claude accounts, tunnels, model quality unverified. Native destinations supplied by runner. Human speech/time, clean-Mac install, signing/notarization, and new-candidate long performance remain separate; changed UI/package requires fresh performance identity.
 
 ```sh
 npm run package:desktop
@@ -35,4 +16,9 @@ node scripts/mcp-lifecycle-e2e.mjs --desktop
 node scripts/mcp-e2e.mjs --desktop
 ```
 
-두 UI 러너는 매번 새 결과 폴더를 사용한다. 첫 번째는 실행한 러너 사본도 보관하며, 기존 실패 기록을 덮어쓰지 않는다.
+Use fresh result directories; lifecycle runner preserves its executed source and old failures.
+
+## Evidence and related records
+
+- [2026-09-06-mcp-lifecycle-plan.md](../plans/2026-09-06-mcp-lifecycle-plan.md)
+- [2026-09-06-mcp-lifecycle-verification.json](results/2026-09-06-mcp-lifecycle-verification.json)

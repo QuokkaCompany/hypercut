@@ -1,71 +1,71 @@
-# 자막 화면의 자동화 탐색 비용 비교
+# Caption-screen selector overhead and lifecycle comparisons
 
-2026-09-06. 정식 60분 합성의 두 번째 반복에서 RSS 2.140GiB를 관측한 뒤 실행한 진단이다. 제품 기능이나 정식 성능 검사의 통과 결과가 아니다.
+2026-09-06. Diagnostics followed a second long-composition RSS failure at 2.140 GiB. They are not product-function or formal-performance passes.
 
-동일한 60분 합성 원본을 실제 분석하고 1,000컷·1,000자막 프로젝트를 연다. 역할 기반 탐색과 CSS 탐색은 각각 새 테스트 Chrome에서 같은 활성 SRT 저장 버튼을 32회씩 세 그룹 조회한다. 클릭·편집·출력은 실행하지 않는다. 제품 소스·실행 번들·입력·프로젝트·진단 스크립트의 해시는 두 조건이 같으며 실행 당시 스크립트도 보존했다.
+Actual analysis of the same 60-minute source, 1,000 cuts/1,000 captions; fresh Chrome per role/CSS condition, three groups of 32 queries for the same active SRT button, no clicks/edits/exports. Product/build/input/project/runner hashes matched.
 
-| 항목 | 역할 탐색 | CSS 탐색 |
+| Measure | Role | CSS |
 | --- | --- | --- |
-| 그룹별 조회 중앙값 | 37.853 / 35.791 / 34.983ms | 4.710 / 4.482 / 4.276ms |
-| 브라우저 TaskDuration 증가 | 3.580초 | 0.345초 |
-| DevToolsCommandDuration 증가 | 3.435초 | 0.291초 |
-| 브라우저 embedder heap 전→후 | 38.371→177.720MiB | 38.070→38.589MiB |
-| 서버 RSS 전→후 | 162.016→162.016MiB | 203.359→203.359MiB |
-| 앱 트리 RSS 피크 | 1.669GiB | 1.613GiB |
-| RSS 표본 수 / 관측 구간 | 16개 / 3.733초 | 3개 / 0.488초 |
+| Group median lookup ms | 37.853/35.791/34.983 | 4.710/4.482/4.276 |
+| TaskDuration increase s | 3.580 | 0.345 |
+| DevToolsCommandDuration s | 3.435 | 0.291 |
+| Embedder heap MiB before→after | 38.371→177.720 | 38.070→38.589 |
+| Server RSS MiB | 162.016→162.016 | 203.359→203.359 |
+| App RSS peak GiB | 1.669 | 1.613 |
+| Samples/observed seconds | 16/3.733 | 3/0.488 |
 
-모든 조회는 동일한 문구·활성 상태·부모 요소를 확인했다. 두 조건 모두 실제 DOM 16,052개, 자막 1,000개, 컷 1,000개를 유지했고 종료 후 저장한 프로젝트 전체가 입력과 일치했다. 페이지 오류·RSS 조회 오류는 없었다. 원시 표본에 일시적인 전사/미디어 프로세스는 없었으며 서버와 이 테스트 Chrome의 자식만 포함됐다.
+Same name/enabled/parent checked each query; 16,052 DOM nodes, 1,000 cuts/captions, and complete saved project preserved. No page/RSS errors or transient media/inference children. One run each, different starting RSS/durations and only three CSS samples prevent interpreting peak differences as long-memory savings or user-click response. Server heap read through test-parent private IPC, no HTTP endpoint/forced GC/cache purge/product changes.
 
-역할 탐색에서 관측된 추가 작업·힙 할당은 정식 러너의 탐색 방식을 비교할 근거다. 다만 각각 한 번의 진단이며 서버 RSS 시작값부터 다르고 조회 시간도 다르다. CSS의 RSS 표본은 3개뿐이다. 이 피크 차이를 장시간 사용의 절감량으로 해석하거나 기존 2.140GiB에서 빼지 않는다. 조회 시간은 사용자 클릭 후 화면 응답 시간도 아니다.
+## Formal runner comparison
 
-- [역할 탐색 원시 결과](results/2026-09-06-caption-selector-role.json) · [RSS 원시 표본](results/2026-09-06-caption-selector-role-resources.json)
-- [CSS 탐색 원시 결과](results/2026-09-06-caption-selector-css.json) · [RSS 원시 표본](results/2026-09-06-caption-selector-css-resources.json)
-- [해시·프로젝트·전체 RSS 합계 감사](results/2026-09-06-caption-selector-comparison-audit.json)
-- [후속 정식 비교 계획](../plans/2026-09-06-composition-memory-plan.md)
+Change remaining control lookups to scoped CSS with tag/role/exact-name/enabled checks, retaining 96 real actions/run, downloads/projects/media/criteria/all processes. Product/package unchanged; preserve runner/server copies and hashes.
 
-서버 메모리 조회는 테스트 부모의 비공개 IPC이며 HTTP 경로를 추가하지 않는다. 강제 GC·브라우저 기능 해제·캐시 삭제를 사용하지 않았다. 이 진단에서 제품 코드와 정식 합성 러너는 변경하지 않았다.
+Four 60-second runs passed exit 0 with identical 1,448 frames/16 captions/16 effects/six markers, projects and MP4/SRT bytes. Cancel actual caption preparation, preserve prior work, complete second output.
 
-## 정식 러너의 짧은 합성 비교
-
-진단 후 정식 러너의 SRT·MP4 저장, 내보내기, 취소 버튼 탐색을 CSS로 바꾸고 선택한 요소의 기본 버튼 태그·역할·정확한 이름·활성 상태를 검사했다. 기본 말소리 보호 스위치도 같은 CSS 대상으로 확인한다. 반복 UI 96개·다운로드·프로젝트·실제 미디어 검증과 모든 합격 기준은 유지했다. 제품 번들·패키지는 진단 전과 동일하다. 실행 스크립트와 테스트 서버의 사본·해시, 제어 요소 탐색 모드를 보고서에 추가했다.
-
-[두 앱 60초 4회](results/2026-09-06-composition-scoped-smoke.json)가 종료 코드 0으로 완료됐다. [감사](results/2026-09-06-composition-scoped-smoke-audit.json)에서 전체 1,448프레임·16자막·16효과음·6 A/V 표식, 전체 프로젝트와 MP4/SRT 바이트가 이전 후보와 같음을 확인했다. 두 앱 모두 실제 자막 준비 중 취소·기존 출력/프로젝트 보존·두 번째 출력 완료를 통과했다.
-
-| 조건 | RSS 최대 | 조작군별 최대 p95 | 출력 시간 범위 |
+| App ×2 | RSS GiB | Max action p95 ms | Export seconds |
 | --- | --- | --- | --- |
-| Chrome 60초 × 2 | 1.689GiB | 100.994ms | 3.714~3.728초 |
-| Mac 60초 × 2 | 1.127GiB | 60.132ms | 3.705~3.784초 |
+| Chrome | 1.689 | 100.994 | 3.714–3.728 |
+| Mac | 1.127 | 60.132 | 3.705–3.784 |
 
-취소 표시는 Chrome 0.900ms·Mac 0.700ms, 재시도 가능 상태는 205.538ms·206.671ms였다. 최대 실제 RSS 표본 간격은 279.838ms였다. 이 결과는 장시간 메모리 실패가 해결됐다는 증거가 아니며, 다음 단계는 같은 앱의 브라우저 60분 반복이다.
+Visible/ready cancel: Chrome 0.900/205.538 ms, Mac 0.700/206.671 ms; max sample interval 279.838 ms.
 
-## 같은 앱의 60분 반복 결과
+Long browser runner `5bb88a8` stopped after repetition 2 failed:
 
-커밋 `5bb88a8`에서 실행한 [브라우저 60분 결과](results/2026-09-06-composition-scoped-long.json)는 두 번째 반복의 메모리 실패로 종료됐다. [전체 감사](results/2026-09-06-composition-scoped-long-audit.json)에서 실제 소스·번들·패키지, 모든 프로젝트, MP4/SRT 바이트와 모든 RSS 표본 합계를 확인했다.
-
-| 반복 | 분석 / 출력 / 독립 검증 | RSS 피크 | 자막 / 효과음 / 컷 p95 | 판정 |
+| Run | Analysis/export/oracle s | RSS GiB | Caption/effect/cut p95 ms | Verdict |
 | --- | --- | --- | --- | --- |
-| 1 | 36.792 / 194.064 / 124.318초 | 1.976GiB | 149.457 / 196.637 / 66.438ms | 해당 반복 통과 |
-| 2 | 37.089 / 194.593 / 125.328초 | 2.146GiB | 187.957 / 193.545 / 66.445ms | 메모리 실패 |
+| 1 | 36.792/194.064/124.318 | 1.976 | 149.457/196.637/66.438 | PASS for run |
+| 2 | 37.089/194.593/125.328 | 2.146 | 187.957/193.545/66.445 | Memory FAIL |
 
-두 출력 모두 85,997프레임·1,000자막·64효과음·6 A/V 표식의 전체 독립 정답과 일치했다. [두 번째 검증 상세](results/2026-09-06-composition-scoped-long-second-verification.json)도 보존했다. MP4 SHA-256은 둘 다 `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`로 이전 결과와 같다. 최대 실제 RSS 표본 간격은 279.512ms였다.
+Both 85,997 frames/1,000 captions/64 effects/six markers and complete projects/oracles passed. MP4 hash `3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a`, same as prior; max sample 279.512 ms. Cancel at caption-preparation 0.30015: 0.900/312.792 ms, preserve work and second output completes retry. Third/other long conditions NOT_RUN. Encoding-peak renderer 395.234→522.078 MiB/server 222.734→255.406 MiB; later decode validation was not peak. Lookup correction did not solve memory; do not subtract diagnostics from RSS.
 
-첫 성공 뒤 자막 준비 진행률 0.30015에서 취소해 표시 0.900ms·재시도 가능 상태 312.792ms였다. 프로젝트·화면 출력·저장한 MP4를 보존했고 두 번째 출력이 완료돼 재시도도 확인했다. 세 번째 및 다른 장시간 조건은 미실행이다.
+## Video lifetime
 
-각 출력의 합산 피크 순간에 같은 렌더러는 395.234→522.078MiB, 서버는 222.734→255.406MiB였다. 두 피크 모두 영상 인코딩 중이며, 그 뒤의 출력 디코딩 검사는 피크 발생 단계가 아니었다. 탐색 보정은 이 반복 메모리 실패를 해결하지 못했다. 역할 조회 96회의 비용 차이를 실제 합성 메모리에서 빼지 않는다. 다음 [자원 수명 진단](../plans/2026-09-06-composition-memory-plan.md)으로 원인을 분리한다.
+Six open→seek second cue at source 4.4 s→close/reopen cycles per fresh Chrome condition, ordinary versus test-only pause/remove-src/load before actual close; no product changes.
 
-## 영상 자원 수명 비교
-
-같은 진단 스크립트의 별도 모드에서 자막 창을 열고 두 번째 자막의 원본 4.4초로 탐색한 뒤 닫고 재열기를 6회 반복했다. 기본 동작과 닫기 직전 해당 video만 명시적으로 pause/src 제거/load하는 조건을 각각 새 테스트 Chrome에서 실행했다. 제품 코드는 변경하지 않았다.
-
-| 항목 | 기본 동작 | 닫기 직전 명시 해제 |
+| Measure | Ordinary | Explicit release |
 | --- | --- | --- |
-| 앱 트리 RSS 피크 | 1.737GiB | 1.746GiB |
-| 렌더러 RSS 합계 전→후 | 648.188→816.469MiB | 648.922→772.328MiB |
-| embedder heap 피크 | 107.754MiB | 108.245MiB |
-| RSS 표본 수 / 관측 구간 | 24개 / 5.801초 | 25개 / 5.932초 |
+| Peak app RSS GiB | 1.737 | 1.746 |
+| Renderer RSS MiB before→after | 648.188→816.469 | 648.922→772.328 |
+| Embedder peak MiB | 107.754 | 108.245 |
+| Samples/seconds | 24/5.801 | 25/5.932 |
 
-두 조건 모두 재열기 시 1,000개 VTT 자막과 첫 문구를 확인했고, 모든 탐색이 4.4초·3600초 원본과 일치했다. 열린 상태의 실제 DOM은 16,052개, 닫힌 상태는 11,950개였으며 전체 프로젝트를 보존했다. 최종 RSS만으로 누수 여부나 절감률을 결론 내리지 않는다. 피크 개선의 근거가 부족해 명시 해제를 제품 메모리 수정으로 적용하지 않았다. 다음 인코더 비교는 [메모리 계획](../plans/2026-09-06-composition-memory-plan.md)을 따른다.
+Both preserve reopened 1,000 VTT cues/first text, 4.4 s seeks/3600 s source, and complete project. DOM16, 052 open/11,950 closed. Final RSS differences do not prove leak/savings; insufficient peak benefit to apply explicit release. Proceed with separately planned encoder/resource investigation.
 
-- [기본 동작 결과](results/2026-09-06-caption-lifecycle-normal.json) · [원시 RSS](results/2026-09-06-caption-lifecycle-normal-resources.json)
-- [명시 해제 결과](results/2026-09-06-caption-lifecycle-release.json) · [원시 RSS](results/2026-09-06-caption-lifecycle-release-resources.json)
-- [동일 소스·프로젝트·전체 RSS 감사](results/2026-09-06-caption-lifecycle-comparison-audit.json)
+## Evidence and related records
+
+- [2026-09-06-caption-selector-role.json](results/2026-09-06-caption-selector-role.json)
+- [2026-09-06-caption-selector-role-resources.json](results/2026-09-06-caption-selector-role-resources.json)
+- [2026-09-06-caption-selector-css.json](results/2026-09-06-caption-selector-css.json)
+- [2026-09-06-caption-selector-css-resources.json](results/2026-09-06-caption-selector-css-resources.json)
+- [2026-09-06-caption-selector-comparison-audit.json](results/2026-09-06-caption-selector-comparison-audit.json)
+- [2026-09-06-composition-memory-plan.md](../plans/2026-09-06-composition-memory-plan.md)
+- [2026-09-06-composition-scoped-smoke.json](results/2026-09-06-composition-scoped-smoke.json)
+- [2026-09-06-composition-scoped-smoke-audit.json](results/2026-09-06-composition-scoped-smoke-audit.json)
+- [2026-09-06-composition-scoped-long.json](results/2026-09-06-composition-scoped-long.json)
+- [2026-09-06-composition-scoped-long-audit.json](results/2026-09-06-composition-scoped-long-audit.json)
+- [2026-09-06-composition-scoped-long-second-verification.json](results/2026-09-06-composition-scoped-long-second-verification.json)
+- [2026-09-06-caption-lifecycle-normal.json](results/2026-09-06-caption-lifecycle-normal.json)
+- [2026-09-06-caption-lifecycle-normal-resources.json](results/2026-09-06-caption-lifecycle-normal-resources.json)
+- [2026-09-06-caption-lifecycle-release.json](results/2026-09-06-caption-lifecycle-release.json)
+- [2026-09-06-caption-lifecycle-release-resources.json](results/2026-09-06-caption-lifecycle-release-resources.json)
+- [2026-09-06-caption-lifecycle-comparison-audit.json](results/2026-09-06-caption-lifecycle-comparison-audit.json)

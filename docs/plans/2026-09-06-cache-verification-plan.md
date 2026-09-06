@@ -1,78 +1,53 @@
-# 첫 실행과 미디어 캐시 검증 계획
+# First-run and input-file cache validation
 
-2026-09-06. [기본 검증 계획](2026-09-05-validation-plan.md)의 ‘시작이 차가운 실행과 캐시가 있는 실행을 구분한다’는 조건을 구체화한다. 인코더 동시 처리 2개 후보의 장시간 매트릭스 12회가 모두 측정 기준을 통과해 아래 앱 통합 검증으로 진행한다. 이전 후보의 메모리 실패 기록은 유지한다.
+2026-09-06. Refines the [validation plan](2026-09-05-validation-plan.md) after the two-thread encoder candidate passed its 12-run matrix. Retain earlier memory failures.
 
-## 구분할 상태
-
-| 상태 | 필요한 증거 | 이 상태만으로 알 수 없는 것 |
+| State | Required observation | Does not establish |
 | --- | --- | --- |
-| 새 앱 세션 | 새 시험 프로필·프로세스, 이전 작업 없음 | 입력 파일이나 실행 파일의 OS 캐시 여부 |
-| 입력 파일의 캐시 없음 | 파일을 처음 읽기 직전 해당 파일 전체 페이지의 `mincore` 상주 비트가 0 | 실행 파일·라이브러리·파일 메타데이터·저장장치 내부 캐시 |
-| 입력 파일의 캐시 있음 | 같은 파일을 읽은 뒤 실제 상주 페이지 수와 재실행 시점 기록 | 앞으로도 모든 페이지가 계속 상주한다는 보장 |
-| OS 전체 cold-cache | 시험 전 환경 전체에 대한 별도 준비·관측 증거 | 위 두 파일 조건으로 대체하지 않음 |
+| New app session | New test profile/process with no old jobs | OS input/executable cache state |
+| Nonresident input file | All file pages have zero `mincore` residency immediately before first read | Executable/library/metadata/device cache state |
+| Resident input file | Count pages after reading and immediately before reuse | Permanent future residency |
+| Whole-OS cold cache | Separate preparation and observation | Cannot be inferred from file-level conditions |
 
-새 프로세스를 띄운 사실만으로 ‘캐시 없는 실행’이라고 쓰지 않는다. 보고서에는 실제로 확인한 상태를 적고, 전체 OS cold-cache는 미검증으로 유지한다.
+Never call a new process cold-cache without cache evidence.
 
-## 파일 단위 사전 대조
+## File controls
 
-[scripts/helpers/file-cache-probe.c](../../scripts/helpers/file-cache-probe.c)는 이번 시험 소유의 새 32MiB 파일만 만든다. 기존 파일이 있으면 `O_EXCL`로 거부한다. 페이지 경계에 맞춘 버퍼로 순차 기록할 때 해당 파일 디스크립터에 `F_NOCACHE`를 설정하고, 기록 완료 후 다시 연 파일을 읽지 않은 채 `mmap`과 `mincore`로 상주 여부를 관찰한다. 매핑을 직접 읽지 않는다. 같은 관측을 다시 수행한 뒤 일반 `pread`로 전체 내용을 읽으면서 모든 바이트를 생성 규칙과 비교한다. 마지막에 상주 상태를 다시 측정한다.
-
-[사전 실행 기록](../testing/results/2026-09-06-file-cache-probe.json)의 결과는 16KiB 페이지 2,048개 중 읽기 전 0개, 다시 관측해도 0개, 일반 읽기 뒤 2,048개였다. 컴파일은 경고를 오류로 처리했고 종료 코드 0이었다. 해시는 캐시를 데운 읽기가 끝난 뒤 계산했다. 이 실행에는 미디어 편집이나 앱 실행이 없다.
-
-이 방법은 파일 디스크립터의 캐시 설정과 페이지 관측을 사용한다. API 설명은 Apple의 [파일 시스템 성능 가이드](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/FileSystem/Articles/FilePerformance.html)와 [mincore 설명](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/mincore.2.html)을 참고했다. 이 보관 문서의 설명만으로 현재 OS 동작을 가정하지 않고, 위 로컬 실행에서 비상주·상주 대조를 확인했다.
-
-재현 시 새로운 파일 경로를 사용한다. 성공·실패 여부와 관계없이 기존 파일을 덮어쓰거나 전역 캐시·네트워크·다른 앱을 조작하지 않는다.
+[`file-cache-probe.c`](../../scripts/helpers/file-cache-probe.c) creates only a new test-owned 32 MiB file with `O_EXCL`, uses page-aligned `F_NOCACHE` writes, and observes `mmap`/`mincore` without reading mapped data. Observe twice, then verify every byte with ordinary `pread`, and observe again. [Recorded probe](../testing/results/2026-09-06-file-cache-probe.json): 2,048 ×16 KiB pages; 0 resident before, 0 on repeat inspection, all 2,048 after reading. Warnings-as-errors compilation and execution passed; hashing occurred after warming. No app/media run was involved.
 
 ```sh
 clang -Wall -Wextra -Werror -O2 scripts/helpers/file-cache-probe.c -o /tmp/hypercut-file-cache-probe
 /tmp/hypercut-file-cache-probe /tmp/hypercut-file-cache-control.bin
 ```
 
-## 앱 측정에 적용할 순서
+Use a fresh destination. Never overwrite files or change global caches/network/other apps. Sources: [Apple filesystem guide](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/FileSystem/Articles/FilePerformance.html), [mincore](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/mincore.2.html). Current behavior is established by the local controls, not assumed from archived docs.
 
-### 임의 길이 파일 복사 대조 완료
+[`file-cache.c`](../../scripts/helpers/file-cache.c) adds `copy`, `inspect`, and `warm`, opens sources read-only, creates destinations exclusively, and rejects existing paths, symlinks, empty files, directories, and FIFOs. Success exit alone is insufficient; inspect actual `residentPages`.
 
-새 [파일 단위 도구](../../scripts/helpers/file-cache.c)는 `copy`·`inspect`·`warm`을 제공한다. 새 목적 파일만 `O_EXCL`로 만들며 원본은 읽기 전용으로 연다. 기존 파일·심볼릭 링크·빈 파일·디렉터리·FIFO를 거부하고 파일별 상주 페이지를 기록한다. 읽기 전 `inspect`는 매핑의 데이터를 접근하지 않는다. 도구의 성공 종료만으로 캐시 없음으로 판정하지 않고 실제 `residentPages`를 확인한다.
+The first padded/truncated `F_NOCACHE` implementation left one resident final page for non-page-aligned lengths despite identical data; only exactly 16 KiB was nonresident. Preserve [failed control](../testing/results/2026-09-06-file-cache-copy-before.json). The accepted version uses per-destination `F_NOCACHE_EXT` without padding/truncation, supported by local SDK and Apple [header](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/fcntl.h)/[implementation](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_descrip.c); unsupported SDK/OS must fail rather than silently substitute.
 
-첫 후보는 `F_NOCACHE`로 페이지 정렬 크기를 쓰고 원래 길이로 줄였다. [대조 기록](../testing/results/2026-09-06-file-cache-copy-before.json)에서 정확히 16KiB인 파일은 비상주였지만 1바이트·16KiB 전후·32MiB+37바이트 파일에는 마지막 페이지 1개가 남았다. 데이터는 같았어도 캐시 없는 조건은 실패였다.
-
-현재 도구는 패딩·크기 축소 없이 `F_NOCACHE_EXT`를 해당 목적 파일 디스크립터에 적용한다. 로컬 SDK와 Apple의 [공식 헤더](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/fcntl.h), [시스템 호출 구현](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_descrip.c)에서 파일 쓰기 정렬 제한을 완화하는 용도와 처리 경로를 확인했다. 현재 OS에서의 동작은 문서로 추정하지 않고 아래 실행으로 확인했다. 지원 SDK/OS가 없으면 실패를 보고하며 조용히 다른 방식으로 대체하지 않는다.
-
-[최종 대조](../testing/results/2026-09-06-file-cache-copy-controls.json)는 macOS 26.5.2 arm64, Apple clang 21에서 완료했다. 1 / 16,383 / 16,384 / 16,385 / 33,554,469바이트 모두 복사 후와 다시 관측했을 때 상주 페이지 0개였다. 일반 읽기 뒤에는 각각 1 / 1 / 1 / 2 / 2,049개 전부 상주했다. 그 뒤 원본·사본 해시와 길이가 같은지 확인했다. 다른 내용으로 기존 목적 파일을 덮으려는 요청과 별도 5개 거부 조건에서 기존 바이트가 보존됐다. 이는 합성 바이트 파일의 도구 검사이며 실제 앱 실행 횟수에 합산하지 않는다.
+[Final controls](../testing/results/2026-09-06-file-cache-copy-controls.json), macOS 26.5.2 arm64/Apple clang 21: lengths 1/16,383/16,384/16,385/33,554,469 bytes all had zero pages after copying and repeated inspection; ordinary reads made all 1/1/1/2/2,049 pages resident. Then compare source/copy hashes and lengths. Existing-destination replacement and five rejection conditions preserved bytes. These are tool controls, not app runs.
 
 ```sh
 python3 scripts/file-cache-controls.py test-output/FRESH_CACHE_CONTROL_DIRECTORY
 ```
 
-러너는 기존 결과 폴더를 거부하고 새 폴더에 컴파일한 도구·실행 소스·원시 관측을 보존한다. 전역 캐시, 네트워크, 사용자 미디어나 다른 앱은 변경하지 않는다.
+The runner refuses existing result directories and preserves compiled tool, source, and raw observations.
 
-### 실제 앱 측정
+## App integration
 
-장시간 반복 메모리 문제를 해결하고 현재 최종 후보의 짧은 회귀를 통과한 뒤 적용한다.
+Prevalidate the synthetic source/oracle and hash separately from human data. Prepare a new byte-identical file through uncached writes, not APFS cloning. Observe every page immediately before selection without hashing/probing/thumbnailing the copy first. Cold requires zero residency; warm requires all pages after ordinary reading. A mismatch fails that condition; do not silently retry under a new name or relabel it.
 
-1. 기존 합성 원본의 정답과 해시는 사전에 검증한다. 실제 한국어 품질 평가 자료와 섞지 않는다.
-2. 위 도구로 같은 내용의 새 시험 파일을 비캐시 순차 쓰기로 준비한다. APFS 복제·기존 파일 수정은 사용하지 않는다. 아래 선택형 캐시 옵션으로 실제 앱 러너에 연결했다.
-3. 앱이 파일을 처음 읽기 직전 전체 페이지의 상주 수를 기록한다. 0이 아니면 캐시 없는 조건은 성립하지 않은 것으로 남긴다. 사전 해시·미디어 탐색·미리보기로 이 파일을 읽지 않는다.
-4. 실제 앱 파일 선택부터 가져오기와 분석 완료까지의 전체 시간을 기록한다. 가져오기·디코딩·파형·프레임 시간표 준비를 포함하며, 분석 함수 시간만으로 기본 계획의 20% 목표를 판정하지 않는다. 세부 구간 시간은 추가로 기록한다.
-5. 같은 합성 정답·MP4/SRT·프로젝트·취소·자식 프로세스 포함 RSS 기준을 유지한다. 종료 후 입력과 출력 해시를 확인한다.
-6. 캐시가 있는 대조도 상주 페이지 수를 기록하고 같은 행동을 수행한다. 각 조건은 3회 원시값·중앙값·최댓값으로 보고하며 3회로 p95를 주장하지 않는다. 기존 정식 결과와 별도 묶음으로 남긴다.
+Measure normal file selection through complete import/analysis including upload, decoding, waveform, and frame indexing against the 20% target. File preparation/inspection time is reported separately. Preserve normal import even though internal uploaded/session copies may become cached. This tests the selected source's cache, not every internal decoding cache.
 
-파일 준비·상주 확인의 경과 시간, 새 프로세스 여부, 전원·OS·소스·도구·폰트 해시를 함께 기록한다. 파일 선택 자동화가 입력을 먼저 읽는 경우 해당 준비 비용과 캐시 상태를 포함해 측정 경계를 수정하고, 실제 첫 읽기 이전 상태를 확인할 수 없으면 캐시 없음으로 판정하지 않는다.
+`composition-benchmark.mjs` accepts optional `--input-cache=cold|warm`; omitted preserves the previous path. [`file-cache.mjs`](../../scripts/helpers/file-cache.mjs) compiles the C helper into each result directory and records compiler/source/binary hashes. Do not edit an active runner. Prepare a fresh same-name/same-byte copy per repetition; log inspection start/end and selection time. Inspect residency after analysis before hashing, then check source/copy identity again after work. Preserve failed observations.
 
-### 러너 연결 설계
+Keep independent MP4/SRT/project/cancel checks, union child-process RSS, and all original targets. Record new-process state, power/OS/product/tools/fonts, preparation costs, and observation-to-selection gap. If selection automation reads first, adjust the boundary and cannot claim cold without pre-first-read evidence. Three runs per app/cache condition yield raw values, median, and max, not p95. Residency is a point-in-time observation, not a guarantee of future OS behavior.
 
-- 기존 `composition-benchmark.mjs`에 선택형 `--input-cache=cold|warm`을 추가한다. 미지정 시 기존 측정 경로를 유지한다. 원본·컷·자막·효과음·출력 정답과 RSS/시간/조작/취소 기준은 바꾸지 않는다.
-- 별도 `scripts/helpers/file-cache.mjs`에서 검증된 C 도구를 해당 결과 폴더에 컴파일하고 소스·바이너리 해시와 컴파일러를 기록한다. 현재 실행 중인 러너는 종료 전 수정하지 않는다.
-- 반복마다 같은 원본 바이트와 파일명을 가진 새 파일을 만들고 파일 선택 직전 `inspect`로 다시 관측한다. cold는 상주 0개, warm은 일반 읽기를 거친 뒤 전체 페이지 상주가 확인되어야 한다. 조건이 맞지 않으면 실패를 기록하며 다른 이름으로 바꿔 재시도하거나 자동으로 다른 조건으로 분류하지 않는다.
-- 준비 및 마지막 상주 관측은 분석 시간 밖에서 별도로 기록한다. 기존 파일 선택부터 가져오기·분석 완료까지의 측정 경계는 유지한다. 상주 확인 호출의 시작/완료와 파일 선택 호출 시점을 기록해 관측과 조작 사이의 간격을 확인한다.
-- 이 조건은 사용자가 선택하는 원본 파일의 캐시다. 브라우저 업로드나 앱 가져오기로 생성되는 내부 작업 사본의 디코딩 캐시가 없다고 주장하지 않는다. 이를 만들기 위해 정상 업로드·가져오기를 생략하지 않는다.
-- 분석 완료 후 사본의 상주 상태를 먼저 기록하고 원본과의 SHA-256 일치를 확인한다. 선택 전 사본 해시·미디어 탐색·썸네일 읽기는 금지한다. 각 단계 관측과 실패 시점을 보존한다.
-- 도구 연결의 정상/잘못된 캐시 관측·기존 파일 보존을 짧은 대조로 확인하고, 실제 60초 두 앱에서 cold와 warm의 전체 합성·취소·재시도를 각각 2회 실행한다. 이 사전 검사가 통과하면 10분/60분 × 두 앱 × cold/warm × 3회로 진행한다. cold와 warm은 각각 새 앱에서 시작하고 같은 앱 안에서 3회 반복한다. 긴 영상 작업은 순차 실행한다.
+Validate normal/invalid observations and file preservation in short controls, then 60-second cold/warm composition/cancel/retry twice in each app. Only then run 10/60 minutes × both apps × cold/warm × three sequential repetitions, with a new app per condition and reuse within its three runs.
 
-상주 관측은 그 시점의 증거이며 이후 OS가 페이지 상태를 바꾸지 않는다는 보장이 아니다. 두 조건 모두 파일 메타데이터·실행 파일·OS 전체·저장장치 캐시까지 제어했다고 표현하지 않는다. 입력 사본의 준비 비용은 사용자 편집 비용이 아닌 시험 준비 비용으로 별도 공개한다.
+## Recorded progress and remaining scope
 
-[연결 도구의 실제 파일 검사](../testing/results/2026-09-06-file-cache-controller.json)는 9 PASS였다. cold/warm 관측, 선택 전 잘못된 읽기, 기존 경로 보존, 선택 전 해시 검증 차단, 분석과 전체 작업 후 입력 변경, 잘못된 관측 값을 포함한다. [실제 앱 사전 검사](../testing/2026-09-06-input-cache-results.md)에서 기본 경로 60초 4회와 cold/warm 두 앱 8회를 완료했다. 모든 선택 직전 상주 수가 각 조건과 일치했으며 출력·저장·취소·재시도를 보존했다.
+[Controller checks](../testing/results/2026-09-06-file-cache-controller.json): nine passes, including cold/warm, premature reads/hash rejection, destination preservation, changed input after analysis/work, and malformed observations. [App controls](../testing/2026-09-06-input-cache-results.md): four ordinary 60-second runs and eight cold/warm runs preserved output/save/cancel/retry and correct preselection residency. Browser 60-minute cold and warm three-run conditions also completed.
 
-## 미완료 범위
-
-실제 앱의 60초 입력 파일 캐시 대조와 [브라우저 60분 cold/warm 각 3회](../testing/2026-09-06-input-cache-results.md)를 완료했다. 합성 경로의 10분/60분 조건별 24회 중 나머지 18회와 OS 전체 cold-cache는 아직 수행하지 않았다. 기본 무음 모드는 [별도 재검증](2026-09-06-thousand-cut-performance-plan.md)을 따른다. 실제 한국어 발화·CER·작업 시간 절감, Mac OS 네트워크 차단, 인증된 AI 연결도 별도 검증으로 남아 있다. 합성 자료의 성공은 이 항목들의 통과 증거가 아니다.
+Of the 24 long composition conditions, 18 remain unexecuted at this record's date. Whole-OS cold-cache, human Korean quality/CER/editing-time savings, native OS network blocking, and authenticated AI remain separate. Threshold-only work follows its [own plan](2026-09-06-thousand-cut-performance-plan.md); synthetic success does not satisfy those other gates.

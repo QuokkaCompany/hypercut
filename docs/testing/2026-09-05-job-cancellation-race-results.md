@@ -1,54 +1,26 @@
-# 취소 응답과 다음 프로젝트의 경합
+# Cancellation responses versus the next project
 
-실행일: 2026-09-05 America/New_York. 기준 커밋 `a3d5b26`에서 문제를 재현하고 이번 수정으로 Chrome와 Mac 패키지를 다시 빌드해 확인했다. [계획](../plans/2026-09-05-job-cancellation-race-plan.md), [수정 전 4회](results/2026-09-05-job-cancellation-before.json), [수정 후 14회](results/2026-09-05-job-cancellation-after.json), [관련 회귀](results/2026-09-05-job-cancellation-regressions.json)를 연결한다. 앱 소스·시험 코드·패키지 해시는 각 실행 기록에 있다.
+Executed 2026-09-05 America/New_York. Four pre-fix cases on `a3d5b26` showed an obsolete cancellation HTTP error in the current project after either opening B/starting preview or editing A. This was stale error display, not observed loss of cuts/files.
 
-## 재현한 문제와 수정
+Bind cancellation failure handling to both the initiating job object and operation sequence. Ignore finished/replaced jobs while retaining visible retryable failures for the current job.
 
-작업 취소를 누르면 UI는 완료 응답을 받더라도 결과를 적용하지 않는다. 작업 표시가 먼저 정리되면 새 영상을 열거나 기존 프로젝트를 편집할 수 있다. 이때 취소 HTTP 요청의 실패 응답만 늦게 도착하면, 이미 끝난 작업의 오류가 현재 프로젝트의 오류 상태에 들어왔다.
+Seven conditions × Chrome/Mac = **14 PASS**: pre-POST cancel; delayed real analysis; delayed actual MP4 completion; delayed old cancel success; delayed old cancel failure during B; old failure after later same-project edits; current failure and retry. B retained its source identity, one manual cut, −42 dBFS, dirty flag, new progress/result path, and no old MP4 save control. Its actual preview then rendered with B's result ID.
 
-새 원본 B의 미리보기를 준비 중인 경우와 원본 A의 설정을 계속 편집한 경우를 두 앱에서 재현했다. **수정 전 4회 모두 같은 오류로 실패**했다. 컷이나 파일이 소실된 사례로 표현하지 않는다. 실제 재현된 문제는 이전 작업의 취소 오류를 현재 작업의 오류처럼 표시하는 동작이었다.
+Every final saved field except timestamp matched, including captions/style/glossary/cuts/settings and empty effect lists. Both source hashes remained; zero page errors/observed external requests. Additional verification: 75 units, type/build/package, core both-app flow, browser delayed analysis/AI recovery, eight project-I/O races, and both-app real Whisper/caption/SRT/style MP4: 13 UI runs across four regression flows, not added to unit or plan-case counts.
 
-취소 실패 처리 시 요청을 시작한 작업 객체와 작업 순서가 여전히 현재 값인지 확인하도록 수정했다. 종료되거나 교체된 작업의 오류는 현재 편집에 적용하지 않는다. 아직 현재 작업인 경우에는 실패를 표시하고 다시 취소할 수 있게 유지한다.
+Real server jobs supplied completion payloads; only delivery order and 503 faults were controlled. Open new media only after controls became enabled. `fulfill-resolved` after AbortController cancellation does not prove body consumption; late cancellation JSON reading was observed separately. Pre-canceled jobs were directly confirmed `cancelled` with no result. Current retry tests held UI completion after server work finished, not a fresh process-termination benchmark.
 
-## 실행 결과
-
-| 조건 | Chrome | Mac |
-| --- | --- | --- |
-| 서버에 POST가 도착하기 전 취소, B 작업 중 이전 POST 도착 | PASS | PASS |
-| 실제 분석 완료 응답을 대기시킨 뒤 취소·B 열기·이전 응답 해제 | PASS | PASS |
-| 실제 MP4 출력 완료 응답을 같은 순서로 해제 | PASS | PASS |
-| B 작업 중 이전 취소 성공 응답 도착 | PASS | PASS |
-| B 작업 중 이전 취소 실패 응답 도착 | PASS | PASS |
-| 같은 프로젝트를 추가 편집한 뒤 이전 취소 실패 응답 도착 | PASS | PASS |
-| 현재 작업의 취소 실패 안내와 취소 재시도 | PASS | PASS |
-
-수정 후 **7개 조건 × 2개 앱 = 14회 PASS**다. 새 프로젝트 조건에서는 서로 다른 원본 식별자, B의 1개 수동 컷·-42dBFS·미저장 표시, 새 작업의 진행 상태와 미리보기 경로가 유지됐다. 이전 MP4의 저장 버튼은 나타나지 않았다. 이후 B의 미리보기를 실제로 렌더링하고 그 결과 ID와 B 작업의 연결을 확인했다.
-
-모든 조건에서 마지막 프로젝트를 실제 저장하고 저장 시각을 제외한 전체 필드를 정답과 비교했다. 자막·스타일·용어·컷·설정·효과음 데이터도 비교 대상이며, 이번 입력의 효과음 데이터는 빈 목록이다. 두 원본의 해시가 유지됐고 페이지 오류·관측한 외부 브라우저 요청은 0건이었다.
-
-| 관련 검증 | 결과 |
-| --- | --- |
-| 단위 테스트 | 75 PASS |
-| 타입 검사·브라우저 빌드·Mac 패키징 | PASS |
-| 기본 편집·복원·프로젝트·미리보기·MP4 | Chrome/Mac PASS |
-| 기존 분석·AI 지연 응답 및 실패 후 로컬 출력 | Chrome PASS |
-| 프로젝트 파일 읽기·Mac 저장 경합 | 기존 8조건 PASS |
-| 실제 Whisper 전사·자막 수정·SRT·스타일 MP4 | Chrome/Mac PASS |
-
-관련 회귀는 4개 흐름의 **13회 실행**이다. 단위 테스트 개수와 UI 실행 횟수를 합쳐 계획 사례 수처럼 표현하지 않는다.
-
-## 제어한 범위와 남은 조건
-
-실제 서버가 만든 분석·출력 결과를 사용하고 HTTP 전달 시점만 대기시켰다. 취소 실패 503만 제어된 오류 응답이다. 새 영상 열기는 UI가 다시 활성화된 뒤 실행했으며 비활성화된 조작을 강제로 호출하지 않았다.
-
-취소 뒤 해제한 POST/조회 응답의 `fulfill-resolved`는 시험 도구가 응답 전달 요청을 끝냈다는 뜻이다. 이미 AbortController가 취소한 브라우저 요청에서 앱이 그 응답 본문을 소비했다는 뜻은 아니다. 반면 늦은 취소 응답은 실제 JSON 읽기 완료를 관측한 뒤 현재 UI를 비교했다. 사전 취소 조건에서는 서버 작업이 `cancelled`이고 결과가 없는지도 직접 조회했다.
-
-현재 취소 실패·재시도 조건은 서버 처리가 끝났지만 UI가 완료 응답을 아직 받지 못한 상태를 제어한다. 실제 FFmpeg/Whisper 프로세스 중단 여부는 앞선 별도 취소 검증을 따른다. 이번 실행으로 새 프로세스 중단 성능을 주장하지 않는다.
-
-E06의 기본 분석·출력·새 미리보기와 취소 응답 경합을 확인했다. 전사·SRT 저장·부분 복원·효과음 편집창 각각과 새 원본을 조합한 경합은 별도 범위로 남긴다. 실제 한국어 녹음 품질·편집 시간, 인증된 LLM 요청, Mac OS 전체 네트워크 차단과 최종 후보의 긴 성능 평가도 미완료다. 앞서 완료한 Mac 실제 OS 교체 확인은 해당 기록의 패키지 증거로 유지하며, 이번 파일 선택·저장 창 반환값은 시험이 지정했다.
+This covers named analysis/export/new-preview races, not every transcription/SRT/partial-restore/effect-editor combination or all E06. Native paths were substituted; actual OS prompts have separate evidence. Human Korean/time, authenticated LLM, native network blocking, and final long performance remained outstanding.
 
 ```sh
-npm run test:jobs:races -- --output=test-output/새-시험-이름
+npm run test:jobs:races -- --output=test-output/FRESH_RUN_NAME
 ```
 
-현재 브라우저 번들과 Mac 패키지가 필요하다. 기존 실행 결과는 덮어쓰지 않는다. `--scenarios=CANCEL_LATE_ERROR,CANCEL_AFTER_EDIT`로 수정 전 재현과 같은 두 조건만 선택할 수 있다.
+Use current browser/Mac builds. For original reproductions append `--scenarios=CANCEL_LATE_ERROR,CANCEL_AFTER_EDIT`. Preserve prior result directories.
+
+## Evidence and related records
+
+- [2026-09-05-job-cancellation-race-plan.md](../plans/2026-09-05-job-cancellation-race-plan.md)
+- [2026-09-05-job-cancellation-before.json](results/2026-09-05-job-cancellation-before.json)
+- [2026-09-05-job-cancellation-after.json](results/2026-09-05-job-cancellation-after.json)
+- [2026-09-05-job-cancellation-regressions.json](results/2026-09-05-job-cancellation-regressions.json)

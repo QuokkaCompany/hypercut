@@ -75,5 +75,17 @@
     "playwright": "^1.63.0",
     "typescript": "^7.0.2",
     "vite": "^8.2.2"
+  },
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quokkalabs/hypercut.git"
+  },
+  "homepage": "https://github.com/quokkalabs/hypercut#readme",
+  "bugs": {
+    "url": "https://github.com/quokkalabs/hypercut/issues"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }
