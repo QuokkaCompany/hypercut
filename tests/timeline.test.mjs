@@ -58,7 +58,7 @@ test('D12: full silence gives an empty edit, and zero cuts keeps all video', () 
 test('D14: saved project preserves disabled cuts and refuses corrupt identifiers', () => {
   const project = makeProject({ name: '테스트.mp4', fingerprint: 'a'.repeat(64), duration: 20 }, DEFAULT_SETTINGS, 1, [{ id: 'a', start: 1, end: 2, enabled: false }]);
   assert.equal(validateProject(JSON.parse(JSON.stringify(project))).cuts[0].enabled, false);
-  assert.throws(() => validateProject({ ...project, version: 8 }));
+  assert.throws(() => validateProject({ ...project, version: 9 }));
   assert.throws(() => validateProject({ ...project, cuts: [...project.cuts, ...project.cuts] }));
   assert.throws(() => validateProject({ ...project, cuts: [{ id: 'a', start: 1, end: 21, enabled: true }] }));
   assert.throws(() => validateProject({ ...project, cuts: [{ id: 'a', start: '1', end: 2, enabled: true }] }));

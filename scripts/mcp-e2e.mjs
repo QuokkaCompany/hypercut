@@ -30,7 +30,7 @@ try {
     const errors = [], external = [], aiCalls = [], capabilityValues = [];
     page.on('pageerror', e => errors.push(e.message)); page.on('request', req => {
       if (!/^(http:\/\/127\.0\.0\.1:|blob:|data:)/.test(req.url())) external.push(req.url());
-      if (/\/api\/ai\/(proposal|correction|effects)$/.test(req.url())) aiCalls.push(req.url());
+      if (/\/api\/ai\/(proposal|correction|translation|effects)$/.test(req.url())) aiCalls.push(req.url());
     });
     page.on('dialog', dialog => dialog.accept());
     await page.locator('input[type=file]').nth(1).setInputFiles(projectPath);
@@ -108,6 +108,15 @@ try {
     assert.equal(await page.getByRole('textbox', { name: '자막 문구', exact: true }).inputValue(), corrected);
     await button(page, '자막 실행 취소').click(); assert.equal(await page.getByRole('textbox', { name: '자막 문구', exact: true }).inputValue(), original);
     await button(page, '자막 다시 실행').click(); assert.equal(await page.getByRole('textbox', { name: '자막 문구', exact: true }).inputValue(), corrected);
+    await page.getByLabel('번역할 언어', { exact: true }).selectOption('ja');
+    await button(page, '현재부터 2개 AI 번역').click(); panel = page.getByRole('dialog', { name: 'AI 자막 번역', exact: true });
+    const translation = await shareTask(panel, 'translation'); assert.equal(translation.input.targetLanguage, 'ja');
+    await translation.send({ requestId: translation.input.requestId, changes: translation.input.cues.map((cue, i) => ({ id: cue.id, before: cue.text, after: i === 0 ? '字幕です。' : '音を消しません。', reason: '고정 테스트 번역' })) });
+    await panel.getByRole('checkbox', { name: '번역 제안 1 적용 선택', exact: true }).check();
+    await panel.getByRole('checkbox', { name: '번역 제안 2 적용 선택', exact: true }).check();
+    await button(panel, '선택한 2개 번역 적용').click(); await panel.waitFor({ state: 'hidden' }); await translation.receipt(['a', 'b']);
+    assert.equal(await page.getByRole('textbox', { name: '자막 문구', exact: true }).inputValue(), '字幕です。');
+    await button(page, '자막 실행 취소').click(); assert.equal(await page.getByRole('textbox', { name: '자막 문구', exact: true }).inputValue(), corrected);
     await button(page, '자막 창 닫기').click(); await button(page, '효과음 편집').click();
     const editor = page.getByRole('dialog', { name: '효과음 편집', exact: true });
     if (surface === 'desktop') { await desktop.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [file] }); }, tone.file); await button(editor, 'beep.wav 재연결').click(); }
@@ -153,7 +162,7 @@ try {
     const updatedRMS = rms(3.1, 3.3); assert.ok(Math.abs(updatedRMS - .2 / Math.sqrt(2) * 10 ** (-6 / 20)) < .002);
     assert.equal(rms(4.1, 4.3), 0);
     assert.deepEqual(errors, []); assert.deepEqual(external, []); assert.deepEqual(aiCalls, []);
-    report.runs.push({ surface, status: 'PASS', tasks: ['settings', 'correction', 'effects'], actualMCPChild: true, staleShareRevoked: true, revocationFailureAndRetry: true, duplicateProposalIdempotent: true, queuedDoesNotApply: true, receiptFailureDoesNotReapply: true, onlySelectedChangesApplied: true, negationNeedsReview: true, captionAndEffectUndoRedo: true, fullProjectRoundTrip: true, actualMP4Decoded: true, updatedEffectRMS: updatedRMS, unselectedEffectRMS: 0, errors, externalPageRequests: external, aiProviderRequests: aiCalls });
+    report.runs.push({ surface, status: 'PASS', tasks: ['settings', 'correction', 'translation', 'effects'], actualMCPChild: true, staleShareRevoked: true, revocationFailureAndRetry: true, duplicateProposalIdempotent: true, queuedDoesNotApply: true, receiptFailureDoesNotReapply: true, onlySelectedChangesApplied: true, negationNeedsReview: true, captionAndEffectUndoRedo: true, fullProjectRoundTrip: true, actualMP4Decoded: true, updatedEffectRMS: updatedRMS, unselectedEffectRMS: 0, errors, externalPageRequests: external, aiProviderRequests: aiCalls });
     console.log(JSON.stringify(report.runs.at(-1)));
   }
   server = await startServer({ port: 0, dataDir: path.join(output, 'web') }); browser = await chromium.launch({ channel: 'chrome', headless: true });

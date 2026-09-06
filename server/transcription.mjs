@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { capture } from './process.mjs';
 import { transcriptionAudio } from './media.mjs';
 import { MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS, validateTranscript } from '../shared/captions.mjs';
+import { isCaptionLanguage, isTranscriptionLanguage } from '../shared/languages.mjs';
 
 export const TRANSCRIPTION_MODEL = Object.freeze({ name: 'Whisper small (multilingual)', file: 'ggml-small.bin', size: 487601967, sha256: '1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b', engine: 'whisper.cpp 1.9.3', revision: '371b5a7561823ab2bb32142d2751e35e7534727b' });
 export function transcriptionRuntime() {
@@ -13,7 +14,7 @@ export function transcriptionRuntime() {
 }
 export function validateTranscriptionSettings(value, media, trackIndex) {
   const track = media.audioTracks.find(track => track.index === trackIndex);
-  if (!track || !Number.isInteger(value?.channel) || value.channel < 0 || value.channel >= track.channels || value.channel > 7 || !['ko', 'en', 'auto'].includes(value.language)) throw new Error('전사할 언어와 오디오 채널을 선택해 주세요.');
+  if (!track || !Number.isInteger(value?.channel) || value.channel < 0 || value.channel >= track.channels || value.channel > 7 || !isTranscriptionLanguage(value.language)) throw new Error('전사할 언어와 오디오 채널을 선택해 주세요.');
   return { channel: value.channel, language: value.language };
 }
 export async function transcriptionStatus(runtime = transcriptionRuntime(), { signal } = {}) {
@@ -63,7 +64,7 @@ export function parseTranscription(value, media, trackIndex, settings) {
     if (start >= media.duration || (crossesEnd && (originalEnd - start > MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS || start < media.duration - MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS || originalEnd > media.duration + MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS))) throw new Error('전사 시각이 원본 길이와 일치하지 않습니다.');
     return [{ id: randomUUID(), start, end: Math.min(media.duration, originalEnd), text, ...(crossesEnd ? { timingWarning: { kind: 'source-end', originalEnd } } : {}) }];
   });
-  return validateTranscript({ trackIndex, ...settings, model: `${TRANSCRIPTION_MODEL.engine} / ${TRANSCRIPTION_MODEL.name} / ${TRANSCRIPTION_MODEL.sha256}`, cues }, media.duration);
+  return validateTranscript({ trackIndex, ...settings, ...(settings.language === 'auto' && isCaptionLanguage(value.result?.language) ? { detectedLanguage: value.result.language } : {}), model: `${TRANSCRIPTION_MODEL.engine} / ${TRANSCRIPTION_MODEL.name} / ${TRANSCRIPTION_MODEL.sha256}`, cues }, media.duration);
 }
 export async function transcribeMedia(media, trackIndex, input, directory, { signal, progress, runtime = transcriptionRuntime() } = {}) {
   const settings = validateTranscriptionSettings(input, media, trackIndex);

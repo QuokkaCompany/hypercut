@@ -109,10 +109,11 @@ test('E01: accurate preview cancellation settles before acknowledging and permit
   const completed = await terminal(next.id); assert.equal(completed.status, 'completed'); assert.equal(completed.result.duration, 16);
 });
 
-test('M06: preview range is validated, returned in source time, and cannot shorten an export', async () => {
+test('M06: preview range is validated, returned in source time, and explicit range exports create clips', async () => {
   const body = { type: 'preview', mediaId: media.id, trackIndex: 1, cuts: [{ start: 3, end: 5, enabled: true }] };
   for (const range of [null, { start: -1, end: 4 }, { start: 4, end: 3 }, { start: 3, end: 17 }]) assert.equal((await call('/jobs', { ...body, range })).status, 400);
-  assert.equal((await call('/jobs', { ...body, type: 'export', range: { start: 2, end: 6 } })).status, 400);
+  const clip = await (await call('/jobs', { ...body, type: 'export', range: { start: 2, end: 6 } })).json();
+  const saved = await terminal(clip.id); assert.equal(saved.status, 'completed'); assert.equal(saved.result.duration, 2); assert.match(saved.result.name, /clip\.mp4$/);
   const started = await (await call('/jobs', { ...body, range: { start: 2, end: 6 } })).json();
   const completed = await terminal(started.id);
   assert.equal(completed.status, 'completed'); assert.equal(completed.result.duration, 2);

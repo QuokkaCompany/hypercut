@@ -42,9 +42,11 @@ test('FX01/FX02: actual MP4 has fixed beep/flash sync, gain, duration, mute and 
   reports.push({ case: 'FX01-FX02', outputSeconds: output.duration, timing, loudRMS: loud, quietRMS: quiet, gainRatio: quiet / loud, audioMix: output.audioMix, flashAndBeepSeconds: 2, restoredDeletedAnchor: 3, status: 'PASS' });
 });
 test('FX01: range preview keeps an earlier effect tail and uses the full edited clock', async () => {
-  const output = await exportMedia(media, cuts, 1, dir, { preview: true, range: { start: 4.5, end: 6 }, effects: effects([clip('tail', 1.5, { duration: 2 })]), effectAssets: registry });
+  for (const preview of [true, false]) {
+  const output = await exportMedia(media, cuts, 1, dir, { preview, range: { start: 4.5, end: 6 }, effects: effects([clip('tail', 1.5, { duration: 2 })]), effectAssets: registry });
   const samples = await pcm(output.path); assert.equal(output.duration, 1.5); assert.ok(rms(samples, .1, .9) > .13); assert.ok(rms(samples, 1.1, 1.4) < .00005);
-  reports.push({ case: 'FX01-preview-tail', originalAnchor: 1.5, previewSourceStart: 4.5, audiblePreviewSeconds: [0, 1], status: 'PASS' });
+  reports.push({ case: preview ? 'FX01-preview-tail' : 'FX01-clip-tail', originalAnchor: 1.5, previewSourceStart: 4.5, audiblePreviewSeconds: [0, 1], status: 'PASS' });
+  }
 });
 test('FX01/FX02: VFR with source PTS +5 and a 44.1kHz effect keeps expected output placement', async () => {
   const vfr = path.join(dir, 'vfr.mp4'), shifted = path.join(dir, 'offset.mp4');

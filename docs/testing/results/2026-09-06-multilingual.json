@@ -1,0 +1,696 @@
+{
+  "date": "2026-09-06T19:23:04.149Z",
+  "baseCommit": "adf0624",
+  "scope": "Multilingual caption/translation, TXT and clips; not a complete release or long-video performance gate",
+  "platform": {
+    "os": "darwin",
+    "release": "25.5.0",
+    "arch": "arm64",
+    "node": "v24.14.1"
+  },
+  "sourceHashes": {
+    "shared/languages.mjs": "2167d84393eb4ed179944123ffcc4bf163359c710637fb94f642e80669caeb9d",
+    "shared/caption-translation.mjs": "34241f3f54255da2760522dc0043275079ac2dde4862575b2e9e218c99b6784c",
+    "shared/captions.mjs": "6baa54e9ab2962b1393fdce0b0fc230d82ce7b43c0628509c37ee52b35e67a78",
+    "shared/timeline.mjs": "a61d18e88e7449fda90b9158982146332f4fc413da32bc415276cf64d30fa0b5",
+    "server/ai.mjs": "2331813d0d360586a81a8333b98b8377185cd94cf2738eaa9ea6695047df61f0",
+    "server/app.mjs": "4e6a66b82efa22e6a6f296a92e9416914791d8e62b88744fbb7fe1a976019ccf",
+    "server/media.mjs": "a7f887ccc84eded2a94f41e3cc950802f2160efdacde8336445ad89315ddb757",
+    "server/transcription.mjs": "8816d648d2fc79898f8037d96ced2841abdab2c4ef12c9c8d32f874c92b1f88b",
+    "server/caption-render-worker.mjs": "8f9e88b0c5dc86007408d41c7601f2ac7656fa1fe0343ab4bdcd3480f1e3e74f",
+    "server/mcp-bridge.mjs": "0a259c512a1fd2db13539b39a13a1b3d40477d4134eeba48c17a7b2fa47fc63b",
+    "server/mcp-shares.mjs": "0edb26b6f1f02b841a612a86fe307d8d6f80311152b5fb2bcdabbf160e624634",
+    "desktop/main.mjs": "9eebe8d207482bd20177e769f2ba2296969f3b8e6387b1a7596972e98a21dd0d",
+    "src/App.tsx": "d25f26da4afc2e25f4fe8164dfbdd7f1d6df4f30d10a983d08edb84fdfe4a29c",
+    "src/Captions.tsx": "251a5f3dc7de6de6fbf3d1ccf7b9276ae4068d04d5859aa579e1d5f49b6f4d4f",
+    "src/CaptionList.tsx": "4549519b5fbf569bfcd8aa2ae9818394a6c0f07bc676aa61c873552440988a56",
+    "src/CaptionStyle.tsx": "b687671f466044e00ee54082976f40202a086be04dcdd11cb8e3d205cc803643",
+    "src/RangePreview.tsx": "510b3527b91473349058d78d233be45696af19149d77be7b77a8fde735d88487",
+    "src/AIAssistant.tsx": "406e7984bc5de185e805b3be35d7c8b97d031b20b95a9ad8e1b7eb3c5224c27a",
+    "src/CorrectionReview.tsx": "fb32b115de8f25a79c8a59709ffc338958658efc5d6fd664f67bcf55a9031484",
+    "src/MCPShare.tsx": "190096388fa8da85735ce71c63bc44db63e8306c7c49d89304027c97cebd15d7",
+    "src/types.ts": "b63d614bf31b6ea4490ba66a87922c9d934eabf177b0f7da7cc293c793317550",
+    "src/captions.css": "6e5a0dd3264da53f3c725d0ab423178573adc1aa1bbf2aac565ace8a86e00ae8",
+    "assets/fonts/manifest.json": "14d89814faf02b66594f84f7ee3b61773c5d247477085874b89cb002e5123f1e",
+    "assets/fonts/NotoSansCJKkr-Regular.otf": "6bcb2a0703aa137e874fc2dffa85f6c21ba9a67fa329e81b8c801663af7e992a",
+    "assets/fonts/NotoSansCJKkr-Bold.otf": "26d0c6748500a0444844280b308f5b62c7ae92ac6c6ac88148e502dd211eb52a",
+    "dist/index.html": "0cf6ebf11266dc4953969950b6a96a4aba6032b9c18b8f5df3c43f16bd396575",
+    "dist/assets/index--YwWsW0i.js": "d292ea71a88f1bd45d49b289b492d714e51b8a92c8bce84ee1e9683f75ec23aa",
+    "dist/assets/index-Up7YjOj5.css": "a7a63737cd70c2a287276c01a68472a2ba648fd56d6fa62c0dbfb83488a4bc12"
+  },
+  "packagedRuntimeVerified": true,
+  "packagedMetadataVerified": "Matches except private/scripts/devDependencies removed by packager",
+  "packageSHA256": "f324d063ee3a3d7b703626dfc091bd78012d4f1eb47b3f16508e6946c04be485",
+  "fontManifest": {
+    "family": "Noto Sans KR",
+    "license": "SIL Open Font License 1.1",
+    "revision": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+    "source": "https://github.com/notofonts/noto-cjk/tree/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/SubsetOTF/KR",
+    "files": [
+      {
+        "file": "NotoSansKR-Regular.otf",
+        "alias": "HyperCut Regular",
+        "sha256": "69975a0ac8472717870aefeab0a4d52739308d90856b9955313b2ad5e0148d68",
+        "bytes": 4644748
+      },
+      {
+        "file": "NotoSansKR-Bold.otf",
+        "alias": "HyperCut Bold",
+        "sha256": "5a6ceb287ed2fc6cfc6213144ebea68cbd94b20fc9eb873d8486493bf02d9bda",
+        "bytes": 4816044
+      },
+      {
+        "file": "NotoSansCJKkr-Regular.otf",
+        "alias": "HyperCut Regular Multilingual",
+        "sha256": "6bcb2a0703aa137e874fc2dffa85f6c21ba9a67fa329e81b8c801663af7e992a",
+        "bytes": 16433112,
+        "source": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/OTF/Korean/NotoSansCJKkr-Regular.otf"
+      },
+      {
+        "file": "NotoSansCJKkr-Bold.otf",
+        "alias": "HyperCut Bold Multilingual",
+        "sha256": "26d0c6748500a0444844280b308f5b62c7ae92ac6c6ac88148e502dd211eb52a",
+        "bytes": 16997996,
+        "source": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/OTF/Korean/NotoSansCJKkr-Bold.otf"
+      }
+    ]
+  },
+  "unit": {
+    "passed": 97
+  },
+  "ui": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "inference": "Manual fixed JSON only; no model or human-quality evaluation",
+      "originalPreserved": true,
+      "sourceEditInvalidatesTranslation": true,
+      "translationEditPreservesSource": true,
+      "undoRedo": true,
+      "projectV8RoundTrip": true,
+      "languageOptions": 11,
+      "utf8TXTandSRT": true,
+      "sentenceClipSeconds": 5,
+      "arbitraryClipSeconds": 1.266,
+      "originalDimensions": true,
+      "actualMP4Decode": true,
+      "saveDialog": "Actual browser downloads",
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "inference": "Manual fixed JSON only; no model or human-quality evaluation",
+      "originalPreserved": true,
+      "sourceEditInvalidatesTranslation": true,
+      "translationEditPreservesSource": true,
+      "undoRedo": true,
+      "projectV8RoundTrip": true,
+      "languageOptions": 11,
+      "utf8TXTandSRT": true,
+      "sentenceClipSeconds": 5,
+      "arbitraryClipSeconds": 1.266,
+      "originalDimensions": true,
+      "actualMP4Decode": true,
+      "saveDialog": "Controlled destination through native save IPC, not OS dialog interaction",
+      "externalRequests": 0
+    }
+  ],
+  "uiArtifactRoot": "test-output/multilingual-ui-1788722328828",
+  "artifactHashes": {
+    "test-output/multilingual-ui-1788722328828/browser-clip.mp4": "a85d738e9dfabf945ae388e320f9493d8d8cd1f5d2fcebe16a24f4bef611aa0e",
+    "test-output/multilingual-ui-1788722328828/browser-arbitrary.mp4": "f63659ea3b9cf810e37ba03d0e0202e988e18ec0bc417dcdaf3e9ceb5c2bb31f",
+    "test-output/multilingual-ui-1788722328828/browser-full-zh.txt": "0eadfc8602370a749cf06e9e7860449312225a59738307cead86d5a926548786",
+    "test-output/multilingual-ui-1788722328828/browser-edited-zh.txt": "ebf3800a3a8221759219a0be71a6bb0cfc0a62eb332a750f0602fd51a8ed0356",
+    "test-output/multilingual-ui-1788722328828/browser-zh.srt": "8ba2a23e624a8cc7c02dc58e3c3d93aa103d2b494ae7ecd242f2a6839ad6b3cc",
+    "test-output/multilingual-ui-1788722328828/browser.hypercut.json": "8a37610b22a76af0c28709bc83c3ad901ca09bb8dee2693cd83d77cab854df1a",
+    "test-output/multilingual-ui-1788722328828/desktop-clip.mp4": "a85d738e9dfabf945ae388e320f9493d8d8cd1f5d2fcebe16a24f4bef611aa0e",
+    "test-output/multilingual-ui-1788722328828/desktop-arbitrary.mp4": "f63659ea3b9cf810e37ba03d0e0202e988e18ec0bc417dcdaf3e9ceb5c2bb31f",
+    "test-output/multilingual-ui-1788722328828/desktop-full-zh.txt": "0eadfc8602370a749cf06e9e7860449312225a59738307cead86d5a926548786",
+    "test-output/multilingual-ui-1788722328828/desktop-edited-zh.txt": "ebf3800a3a8221759219a0be71a6bb0cfc0a62eb332a750f0602fd51a8ed0356",
+    "test-output/multilingual-ui-1788722328828/desktop-zh.srt": "8ba2a23e624a8cc7c02dc58e3c3d93aa103d2b494ae7ecd242f2a6839ad6b3cc",
+    "test-output/multilingual-ui-1788722328828/desktop.hypercut.json": "8d3eee0494a4ed746d8c6d7ee46aa578809373aafaf48da1bd0577a03fc54cc2"
+  },
+  "actualTranscription": {
+    "scope": "Actual installed Whisper small on generated TTS, not human recording accuracy",
+    "model": {
+      "name": "Whisper small (multilingual)",
+      "file": "ggml-small.bin",
+      "size": 487601967,
+      "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "engine": "whisper.cpp 1.9.3",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+    },
+    "runs": [
+      {
+        "language": "en",
+        "voice": "Eddy (English (US))",
+        "sourceText": "We can create subtitles automatically. Keep the original video unchanged.",
+        "sourceSHA256": "cb344f091ce19c65627b16b853b4088c84bdba1a8eea2a9bad6834ee0f04019f",
+        "seconds": 1.319440167,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "en",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "a37aa1c5-833e-4841-99fc-bc039d495aa5",
+              "start": 0,
+              "end": 3,
+              "text": "we can create subtitles automatically."
+            },
+            {
+              "id": "ae5cccec-67f6-4f6e-bacb-04948c5ac0ea",
+              "start": 3,
+              "end": 5.8,
+              "text": "Keep the original video unchanged."
+            }
+          ]
+        },
+        "status": "PASS"
+      },
+      {
+        "language": "ja",
+        "voice": "Eddy (Japanese (Japan))",
+        "sourceText": "動画の字幕を自動で作成します。元の動画は変更しません。",
+        "sourceSHA256": "0eb190ed11bbcb64ddb8023fbc3afde64ee741b6b1286c6c9929365fb19538d0",
+        "seconds": 1.1028602499999998,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ja",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "06c5c1c5-1dec-4b84-8c2e-e209d1006111",
+              "start": 0,
+              "end": 3.2,
+              "text": "動画の字幕を自動で作成します。"
+            },
+            {
+              "id": "3891c45b-06f0-4a6f-b14c-bccd3effb118",
+              "start": 3.2,
+              "end": 5.2,
+              "text": "元の動画は変更しません。"
+            }
+          ]
+        },
+        "status": "PASS"
+      },
+      {
+        "language": "auto",
+        "voice": "Eddy (Japanese (Japan))",
+        "sourceText": "動画の字幕を自動で作成します。元の動画は変更しません。",
+        "sourceSHA256": "0eb190ed11bbcb64ddb8023fbc3afde64ee741b6b1286c6c9929365fb19538d0",
+        "seconds": 1.5778199169999998,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "auto",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "3fc70d97-b669-40de-83f2-d9be76ab50d6",
+              "start": 0,
+              "end": 3.2,
+              "text": "動画の字幕を自動で作成します。"
+            },
+            {
+              "id": "52660e68-8dee-4ef7-85ca-147a3d5f4b06",
+              "start": 3.2,
+              "end": 5.2,
+              "text": "元の動画は変更しません。"
+            }
+          ],
+          "detectedLanguage": "ja"
+        },
+        "status": "PASS"
+      },
+      {
+        "language": "zh",
+        "voice": "Eddy (Chinese (China mainland))",
+        "sourceText": "我们可以自动生成中文字幕。请保留原始视频。",
+        "sourceSHA256": "0fefe03849a057587e2957134d46696002963b2df97621df8693b1c23010768b",
+        "seconds": 1.0603974589999998,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "zh",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "e9350971-f66e-4c46-8ae4-3ac49b46be37",
+              "start": 0,
+              "end": 4.933333,
+              "text": "我们可以最终生存中文字幕。请保留原始视频。",
+              "timingWarning": {
+                "kind": "source-end",
+                "originalEnd": 5
+              }
+            }
+          ]
+        },
+        "status": "PASS"
+      }
+    ]
+  },
+  "glyphSamples": [
+    {
+      "language": "ko",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 451.3850012207031,
+          "y": 587.88,
+          "width": 377.22999755859377,
+          "height": 74.52
+        }
+      },
+      "bytes": 13208
+    },
+    {
+      "language": "ko",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 450.5250006103515,
+          "y": 587.88,
+          "width": 378.9499987792969,
+          "height": 74.52
+        }
+      },
+      "bytes": 13090
+    },
+    {
+      "language": "en",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 430.86499694824215,
+          "y": 587.88,
+          "width": 418.27000610351564,
+          "height": 74.52
+        }
+      },
+      "bytes": 15543
+    },
+    {
+      "language": "en",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 419.5799932861328,
+          "y": 587.88,
+          "width": 440.8400134277344,
+          "height": 74.52
+        }
+      },
+      "bytes": 16749
+    },
+    {
+      "language": "ja",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 385.7300024414062,
+          "y": 587.88,
+          "width": 508.5399951171875,
+          "height": 74.52
+        }
+      },
+      "bytes": 22942
+    },
+    {
+      "language": "ja",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 385.7300024414062,
+          "y": 587.88,
+          "width": 508.5399951171875,
+          "height": 74.52
+        }
+      },
+      "bytes": 22822
+    },
+    {
+      "language": "zh",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 481.280005493164,
+          "y": 587.88,
+          "width": 317.4399890136719,
+          "height": 74.52
+        }
+      },
+      "bytes": 14449
+    },
+    {
+      "language": "zh",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 481.280005493164,
+          "y": 587.88,
+          "width": 317.4399890136719,
+          "height": 74.52
+        }
+      },
+      "bytes": 14094
+    },
+    {
+      "language": "es",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 408.5799932861328,
+          "y": 587.88,
+          "width": 462.8400134277344,
+          "height": 74.52
+        }
+      },
+      "bytes": 15621
+    },
+    {
+      "language": "es",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 396.7099981689453,
+          "y": 587.88,
+          "width": 486.5800036621094,
+          "height": 74.52
+        }
+      },
+      "bytes": 17044
+    },
+    {
+      "language": "fr",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 343.4300146484375,
+          "y": 587.88,
+          "width": 593.139970703125,
+          "height": 74.52
+        }
+      },
+      "bytes": 18830
+    },
+    {
+      "language": "fr",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 326.279990234375,
+          "y": 587.88,
+          "width": 627.44001953125,
+          "height": 74.52
+        }
+      },
+      "bytes": 21604
+    },
+    {
+      "language": "de",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 363.11998657226565,
+          "y": 587.88,
+          "width": 553.7600268554687,
+          "height": 74.52
+        }
+      },
+      "bytes": 17924
+    },
+    {
+      "language": "de",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 346.00499633789065,
+          "y": 587.88,
+          "width": 587.9900073242187,
+          "height": 74.52
+        }
+      },
+      "bytes": 19491
+    },
+    {
+      "language": "pt",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 362.800009765625,
+          "y": 587.88,
+          "width": 554.39998046875,
+          "height": 74.52
+        }
+      },
+      "bytes": 18976
+    },
+    {
+      "language": "pt",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 348.09499267578127,
+          "y": 587.88,
+          "width": 583.8100146484375,
+          "height": 74.52
+        }
+      },
+      "bytes": 20492
+    },
+    {
+      "language": "it",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 379.4000006103516,
+          "y": 587.88,
+          "width": 521.1999987792968,
+          "height": 74.52
+        }
+      },
+      "bytes": 16912
+    },
+    {
+      "language": "it",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 363.75499633789065,
+          "y": 587.88,
+          "width": 552.4900073242187,
+          "height": 74.52
+        }
+      },
+      "bytes": 18976
+    },
+    {
+      "language": "ru",
+      "preset": "clean",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 329.99999145507815,
+          "y": 587.88,
+          "width": 620.0000170898437,
+          "height": 74.52
+        }
+      },
+      "bytes": 19938
+    },
+    {
+      "language": "ru",
+      "preset": "emphasis",
+      "layout": {
+        "lines": 1,
+        "sizePercent": 4.5,
+        "bounds": {
+          "x": 313.48500732421877,
+          "y": 587.88,
+          "width": 653.0299853515625,
+          "height": 74.52
+        }
+      },
+      "bytes": 20854
+    }
+  ],
+  "mcp": {
+    "scopeNote": "MCP runtime/UI verified before font loading optimization; final renderer is verified separately",
+    "status": "completed",
+    "date": "2026-09-06T19:15:53.834Z",
+    "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+    "sourceHashes": {
+      "src/MCPShare.tsx": "190096388fa8da85735ce71c63bc44db63e8306c7c49d89304027c97cebd15d7",
+      "src/AIAssistant.tsx": "406e7984bc5de185e805b3be35d7c8b97d031b20b95a9ad8e1b7eb3c5224c27a",
+      "server/app.mjs": "4e6a66b82efa22e6a6f296a92e9416914791d8e62b88744fbb7fe1a976019ccf",
+      "server/mcp-shares.mjs": "0edb26b6f1f02b841a612a86fe307d8d6f80311152b5fb2bcdabbf160e624634",
+      "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+      "server/mcp-bridge.mjs": "0a259c512a1fd2db13539b39a13a1b3d40477d4134eeba48c17a7b2fa47fc63b",
+      "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+      "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+      "scripts/mcp-e2e.mjs": "225584551e965bb4e04c1d5c86be415a9056196a845c7df68fa4d45c64ed2d19",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "88c0400c9a15fbe36254b2fac25327b3e6b24bd57b3965ea96bab2d9d0669774"
+    },
+    "runs": [
+      {
+        "surface": "browser",
+        "status": "PASS",
+        "tasks": [
+          "settings",
+          "correction",
+          "translation",
+          "effects"
+        ],
+        "actualMCPChild": true,
+        "staleShareRevoked": true,
+        "revocationFailureAndRetry": true,
+        "duplicateProposalIdempotent": true,
+        "queuedDoesNotApply": true,
+        "receiptFailureDoesNotReapply": true,
+        "onlySelectedChangesApplied": true,
+        "negationNeedsReview": true,
+        "captionAndEffectUndoRedo": true,
+        "fullProjectRoundTrip": true,
+        "actualMP4Decoded": true,
+        "updatedEffectRMS": 0.07080272124317472,
+        "unselectedEffectRMS": 0,
+        "errors": [],
+        "externalPageRequests": [],
+        "aiProviderRequests": []
+      },
+      {
+        "surface": "desktop",
+        "status": "PASS",
+        "tasks": [
+          "settings",
+          "correction",
+          "translation",
+          "effects"
+        ],
+        "actualMCPChild": true,
+        "staleShareRevoked": true,
+        "revocationFailureAndRetry": true,
+        "duplicateProposalIdempotent": true,
+        "queuedDoesNotApply": true,
+        "receiptFailureDoesNotReapply": true,
+        "onlySelectedChangesApplied": true,
+        "negationNeedsReview": true,
+        "captionAndEffectUndoRedo": true,
+        "fullProjectRoundTrip": true,
+        "actualMP4Decoded": true,
+        "updatedEffectRMS": 0.07080272124317472,
+        "unselectedEffectRMS": 0,
+        "errors": [],
+        "externalPageRequests": [],
+        "aiProviderRequests": []
+      }
+    ]
+  },
+  "correctionRegression": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+      "numericChangeRejected": true,
+      "negationReview": true,
+      "onlySelectedApplied": true,
+      "timingPreserved": true,
+      "undoRedo": true,
+      "oldRequestRejected": true,
+      "cancelAndRetry": true,
+      "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+      "projectSaved": true,
+      "styledMP4SavedAndDecoded": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+      "numericChangeRejected": true,
+      "negationReview": true,
+      "onlySelectedApplied": true,
+      "timingPreserved": true,
+      "undoRedo": true,
+      "oldRequestRejected": true,
+      "cancelAndRetry": true,
+      "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+      "projectSaved": true,
+      "styledMP4SavedAndDecoded": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "logs": {
+    "unit": {
+      "sha256": "5d2dc74cf09532d1d8e2a94f679251748e24b3cbfad94211f7527b87a9128f1e",
+      "text": "\n> hypercut@0.1.0 test\n> node --test tests/*.test.mjs\n\n✔ A03: accepts only complete settings proposals, rejects executable payloads and bounds (1.006917ms)\n✔ A06: prompt contains only explicit instruction/settings, strips extra context (0.109916ms)\n✔ A06: local connection rejects remote URLs, credentials and redirects; provider is explicit (0.188625ms)\n✔ A02/A06: ollama request contract and JSON extraction (mock, no authenticated call) (19.714709ms)\n✔ A02/A06: openai request contract and JSON extraction (mock, no authenticated call) (0.262375ms)\n✔ A02/A06: anthropic request contract and JSON extraction (mock, no authenticated call) (0.181083ms)\n✔ A04: status errors are distinct and provider bodies cannot leak secrets (1.374583ms)\n✔ A04: abort and timeout settle without fallback; incomplete output is rejected (15.005167ms)\n✔ benchmark RSS counts two app trees once, excludes the driver and rejects lost roots (0.931334ms)\n✔ benchmark summaries do not claim p95 from three runs and preserve raw values (0.168083ms)\n✔ C07/C08: prompts contain only selected text, request ID and explicit instruction/glossary (0.725333ms)\n✔ C07: proposal rejects wrong request, unknown/duplicate IDs, changed numbers and timing payloads (0.677459ms)\n✔ C07: explicit selection applies once, preserves times and rejects changed snapshots (0.365542ms)\n✔ C08: ollama correction contract uses only selected model and text (mock) (17.473208ms)\n✔ C08: openai correction contract uses only selected model and text (mock) (0.706583ms)\n✔ C08: anthropic correction contract uses only selected model and text (mock) (0.473459ms)\n✔ C08: invalid request makes no provider call and a failed correction never falls back (1.077375ms)\n✔ C04: v4 stores style and v1/v2/v3 migrate without enabling caption burn-in (5.737041ms)\n✔ C01/C05: PNG events use absolute microseconds and hide captions in every gap (2.133958ms)\n✔ C02/M06: range preview clips display timing without revoking full-cut review (0.386167ms)\n✔ C06: bundled font covers Korean/Latin/literal punctuation and detects absent emoji (50.841709ms)\n✔ C01: source captions map to independently specified edited timestamps and restore reversibly (0.627167ms)\n✔ C02: partially cut captions require text-specific review and never duplicate a sentence (0.321416ms)\n✔ C04: v1/v2 migration clears unavailable captions and v3 preserves text and cut reviews (5.958208ms)\n✔ C05: SRT keeps Unicode, escapes markup, rounds ms and refuses empty output (0.102958ms)\n✔ T03/T06: engine output and channel contracts reject corrupt or out-of-range data (0.35175ms)\n✔ A06: CLI configuration discards keys and child environment excludes auth/provider overrides (0.777334ms)\n✔ A02/A06: CLI proposal uses selected model, stdin and no tools; receipt strips private metadata (58.692583ms)\n✔ A01/A07: missing or incompatible CLI and non-subscription auth cannot issue a model request (6.293291ms)\n✔ A03/A04: malformed, incomplete and out-of-range CLI output is rejected without raw diagnostics (3.72725ms)\n✔ composition fixture has distinct long-video cues, distributed effects and excluded controls (1.812ms)\n✔ independent SRT checker rejects missing, wrong-text and shifted cues (0.538458ms)\n✔ streaming spectral oracle distinguishes the expected effect from the source tone (33.079417ms)\n✔ spectral oracle rejects absent, shifted, shortened, wrong-gain, extra and truncated audio (15.539084ms)\n✔ caption oracle checks every frame and rejects missing, shifted, extra and dropped frames (0.489209ms)\n✔ FX04: only selected aliases, descriptions, clip values and optional captions reach the prompt (1.551459ms)\n✔ FX04: add/update/remove selection is atomic, preserves unselected clips and refuses stale/repeated apply (0.898541ms)\n✔ FX04: reject unknown assets/targets, duplicate target, wrong nonce/before, invalid numbers and action shapes (0.445291ms)\n✔ FX04: bounded selection, caption privacy and output review retain deleted anchors and truncate tails (0.265584ms)\n✔ FX04: ollama schema/model/request contract (mock) (14.308458ms)\n✔ FX04: openai schema/model/request contract (mock) (0.889292ms)\n✔ FX04: anthropic schema/model/request contract (mock) (1.066667ms)\n✔ FX04: invalid selection has no model call, provider failure never falls back (1.002ms)\n✔ source anchors map independently, deleted starts stay absent and restoration reappears (2.414917ms)\n✔ range preview retains ongoing tails with a trimmed asset offset, and honors half-open start boundaries (0.920959ms)\n✔ reject corrupt identities, duplicates, nonfinite/range values and missing assets; strip runtime paths (0.3875ms)\n✔ v5 saves effects and legacy v1-v4 migrate to empty effects without changing captions/cuts (4.066292ms)\n✔ project glossary round trip preserves exact terms and existing editing data (1.202042ms)\n✔ v1 through v5 migrate with an empty glossary even when unknown glossary data exists (0.550625ms)\n✔ invalid current-project glossaries fail without modifying the source project or calling a model (0.862917ms)\n✔ only explicit request glossary is transmitted; temporary blank/override leaves project intact (0.180583ms)\n✔ shared snapshot is immutable and strips unselected metadata (1.591333ms)\n✔ separate capabilities cannot read or submit to another share (0.398875ms)\n✔ settings proposal queues once; only app acknowledgement records actual application (0.417ms)\n✔ invalid or stale proposals do not occupy the review slot (0.1815ms)\n✔ caption scope rejects different source text, unshared cues and changed numbers (0.432917ms)\n✔ effect sharing retains aliases only and validates selected assets (1.210834ms)\n✔ model polling cannot renew a lease; app polling cannot extend absolute expiry (0.198292ms)\n✔ revoke, application close, payload size and share count are bounded (2.66625ms)\n✔ 10 transcription languages and auto validate; unknown codes and channels reject (1.530375ms)\n✔ translation preserves source text and timing, round trips v8 and all v1-v7 imports (4.230416ms)\n✔ missing and stale translations cannot be acknowledged into exports; original remains recoverable (0.690875ms)\n✔ TXT distinguishes all source sentences and reviewed edited sentences with UTF-8 literal text (0.293834ms)\n✔ translation rejects incomplete, duplicate, stale, extra or malformed responses; identical translated text is valid (0.640875ms)\n✔ ollama translation sends only selected text/target/model (mock) (16.625166ms)\n✔ openai translation sends only selected text/target/model (mock) (0.35575ms)\n✔ anthropic translation sends only selected text/target/model (mock) (0.195208ms)\n✔ MCP translation carries target language and queues review without applying or exposing media (0.660333ms)\n✔ D01: threshold equality, both polarities, and above threshold (3.443084ms)\n✔ D02: minimum length minus one, equal, plus one sample (1.352917ms)\n✔ D03: above threshold sample breaks continuous silence (0.258ms)\n✔ D05 regression: a final fractional audio sample is still the media end (0.49875ms)\n✔ D08: one active channel and opposite-phase stereo remain active (0.20125ms)\n✔ D13: threshold monotonicity and reproducibility (0.208542ms)\n✔ PCM streaming survives arbitrary byte and stereo frame boundaries (1.4615ms)\n✔ S01: protection subtracts independent ranges and cannot increase removals (0.891166ms)\n✔ S02: inclusive probability threshold preserves short speech in either channel and merges short gaps (0.172708ms)\n✔ S05: old projects migrate with protection off; new projects preserve explicit settings (1.08425ms)\n✔ M06: preview windows keep export cuts, restored decisions and source-to-preview mapping (0.850292ms)\n✔ M06: preview edges expand to frames without leaking short excluded tails (0.255167ms)\n✔ D04: padding uses the trailing margin at silence start and leading margin at its end (0.209417ms)\n✔ D05: leading and trailing silence have only the adjacent speech margin (0.14125ms)\n✔ D06: negative, short and exact 100 ms cuts (0.093667ms)\n✔ D07: canonical intervals clip, sort, merge, reject corrupt values (0.57275ms)\n✔ D10: inward snapping uses actual VFR timestamps (0.071958ms)\n✔ D11: timeline mapping covers disjoint retained source ranges (0.071625ms)\n✔ D12: full silence gives an empty edit, and zero cuts keeps all video (0.083ms)\n✔ D14: saved project preserves disabled cuts and refuses corrupt identifiers (1.0895ms)\n✔ settings reject missing, out of range and string values (0.089083ms)\n✔ large video expressions have bounded nesting depth (1.986625ms)\n✔ U03: restoring part of a fully removed clip expands to whole frames (0.200791ms)\n✔ U03: partial restoration also preserves sub-100ms leftovers and existing restored edits (0.069ms)\n✔ U03: restoration refuses invalid ranges and preserves unrelated cuts (0.085333ms)\n✔ real Whisper tail excerpt retains every caption and flags only the clipped 240ms ending (1.351791ms)\n✔ end import still rejects impossible clocks, fully outside segments and overlaps (0.245083ms)\n✔ source VTT remains visible for review but only explicit review permits SRT and rendering (0.611209ms)\n✔ v7 preserves end-review state and v1-v6 keep existing cut review and glossary semantics (0.973208ms)\nℹ tests 97\nℹ suites 0\nℹ pass 97\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 178.281375\n"
+    },
+    "initialIntegration": {
+      "sha256": "c0df0617693caefb473fc1dc735512687f2743a7bef784d0493398a9156be314",
+      "text": "✔ API: rejects unauthenticated writes, cross-site requests and DNS rebinding hosts (467.540541ms)\n✔ U04: browser upload preserves Unicode name and source fingerprint (51.917916ms)\n✔ API: rejects invalid settings, unknown audio and malformed export cuts (8.36225ms)\n✔ C05/C09 API: style images require registered media and valid plain text, and recover after a glyph error (309.835875ms)\n✔ E01/E06: cancel active analysis, settle, and run another without stale completion (258.904792ms)\n✔ E01: cancelled render produces no successful export and can retry (734.80025ms)\n✔ E01/E06: cancellation arriving before job creation prevents a late start (3.2495ms)\n✔ E01: accurate preview cancellation settles before acknowledging and permits retry (521.687875ms)\n✖ M06: preview range is validated, returned in source time, and explicit range exports create clips (261.637458ms)\n✔ C05/C06: all three caption styles render at exact edited frames and remain inside the safe area (2089.416167ms)\n✔ C06: native portrait, rotation metadata and non-square pixels produce matching caption canvases (2030.079042ms)\n✔ C01/C05: VFR and a nonzero source PTS retain caption timing after a cut (599.768625ms)\n✔ M06/C05: range preview crops captions without changing the full export clock (407.810375ms)\n✔ C06: long Korean, Latin and explicit newlines fit up to three lines with visible resizing (289.402333ms)\n✔ C05/C06: cropped sequences reconstruct every original RGBA pixel across styles, positions and line heights (4435.177584ms)\n✔ M06/C05: a range with no visible captions stays pixel-identical to the same caption-free preview (395.709417ms)\n✔ C09: missing font, unsupported glyphs, excess text and cancellation fail without a false final file (827.962208ms)\n✔ FX01/FX02: actual MP4 has fixed beep/flash sync, gain, duration, mute and cut restoration (650.584083ms)\n✔ FX01: range preview keeps an earlier effect tail and uses the full edited clock (438.910917ms)\n✔ FX01/FX02: VFR with source PTS +5 and a 44.1kHz effect keeps expected output placement (379.497875ms)\n✔ FX02: sample-level stereo mix preserves trim/gain/overlap and bounds memory to blocks (68.727542ms)\n✔ FX02/FX03: clipping, missing/changed asset reject without final files; explicit mute can exclude a missing asset (289.920208ms)\n✔ FX02: encoded overload is rejected by independently decoding the finished audio (104.364916ms)\n✔ FX05: mixing cancellation settles under 5s, cleans work, preserves prior output and retries with captions (582.83675ms)\n✔ FX03: authenticated browser audio upload hides paths, rejects video and renders a registered asset (369.364792ms)\n✔ FX03: local audio formats decode; disguised remote playlists are rejected before any network request (1395.344375ms)\n✔ MCP HTTP boundary keeps editor authority separate from the share capability (92.334125ms)\n✔ oversized and malformed share bodies are rejected without echoing the body (35.955083ms)\n✔ real MCP stdio child: settings context, proposal, retry and application receipt (189.375167ms)\n✔ real MCP stdio child: correction context, proposal, retry and application receipt (148.984541ms)\n✔ real MCP stdio child: translation context, proposal, retry and application receipt (149.999833ms)\n✔ real MCP stdio child: effects context, proposal, retry and application receipt (154.629333ms)\n✔ adapter configuration refuses remote URLs, alternate hosts, credentials and path injection (0.542667ms)\n✔ restarting the MCP child reuses a live share without duplicating or losing a pending proposal (246.432916ms)\n{\"analysisCuts\":[{\"start\":0,\"end\":0.9,\"id\":\"silence-0-0.000000\",\"enabled\":true,\"reason\":\"silence\"},{\"start\":3.1666666666666665,\"end\":4.9,\"id\":\"silence-1-3.166667\",\"enabled\":true,\"reason\":\"silence\"},{\"start\":8.166666666666666,\"end\":9.9,\"id\":\"silence-2-8.166667\",\"enabled\":true,\"reason\":\"silence\"},{\"start\":12.166666666666666,\"end\":13.9,\"id\":\"silence-3-12.166667\",\"enabled\":true,\"reason\":\"silence\"},{\"start\":15.166666666666666,\"end\":16,\"id\":\"silence-4-15.166667\",\"enabled\":true,\"reason\":\"silence\"}],\"outputDuration\":12,\"frames\":360,\"audioSamples\":576000,\"sourceUnchanged\":true}\n✔ G1: actual decode, sample analysis, frame-aligned cut and verified MP4 export (1695.85125ms)\n{\"variant\":\"cfr\",\"previewFlashes\":[0.6,2.6],\"previewBeeps\":[0.6000625,2.6000625],\"previewSeconds\":3.6,\"sourceRange\":{\"start\":2.4,\"end\":7}}\n{\"variant\":\"cfr\",\"previewFlashes\":[0.6,2.6],\"previewBeeps\":[0.6000625,2.6000625],\"previewSeconds\":3.6,\"sourceRange\":{\"start\":2.4,\"end\":7}}\n{\"variant\":\"cfr\",\"flashes\":[0.5,1.8,3.8,6.4,7.9],\"beeps\":[0.5000625,1.8000625,3.8000625,6.4000625,7.9000625],\"outputDuration\":8.4,\"syncToleranceSeconds\":0.005}\n✔ M02/M03: independent flash/beep sync after multiple cuts (cfr) (799.773667ms)\n{\"variant\":\"vfr\",\"previewFlashes\":[0.6,2.6],\"previewBeeps\":[0.6000625,2.6000625],\"previewSeconds\":3.6,\"sourceRange\":{\"start\":2.4,\"end\":7}}\n{\"variant\":\"vfr\",\"previewFlashes\":[0.6,2.6],\"previewBeeps\":[0.6000625,2.6000625],\"previewSeconds\":3.6,\"sourceRange\":{\"start\":2.4,\"end\":7}}\n{\"variant\":\"vfr\",\"flashes\":[0.533333,1.8,3.8,6.4,7.9],\"beeps\":[0.5000625,1.8000625,3.8000625,6.4000625,7.9000625],\"outputDuration\":8.4,\"syncToleranceSeconds\":0.005}\n✔ M02/M03: independent flash/beep sync after multiple cuts (vfr) (663.584916ms)\n{\"variant\":\"offset\",\"previewFlashes\":[0.6,2.6],\"previewBeeps\":[0.5993958333333333,2.5993958333333333],\"previewSeconds\":3.6,\"sourceRange\":{\"start\":2.4000000000000004,\"end\":7}}\n{\"variant\":\"offset\",\"previewFlashes\":[0.6,2.6],\"previewBeeps\":[0.5993958333333333,2.5993958333333333],\"previewSeconds\":3.6,\"sourceRange\":{\"start\":2.4000000000000004,\"end\":7}}\n{\"variant\":\"offset\",\"flashes\":[0.5,1.8,3.8,6.4,7.9],\"beeps\":[0.4993958333333333,1.7993958333333333,3.7993958333333335,6.399395833333333,7.899395833333333],\"outputDuration\":8.4,\"syncToleranceSeconds\":0.005}\n✔ M02/M03: independent flash/beep sync after multiple cuts (offset) (804.913333ms)\n✔ M06: a sub-frame preview is one whole frame, removed-only ranges fail, full export stays full (1548.761625ms)\n✔ M06: a preview after the audio track ends retains silent video and a complete audio track (181.68075ms)\n✔ D09/M05: selected audio track controls analysis, source playback and export (309.831208ms)\n✔ D12: a one-frame input remains exportable when nothing is removed (140.117417ms)\n✔ translation API cancels before start, rejects late completion and retries on the selected provider (mock) (104.8325ms)\n✔ actual disposable Claude CLI translation process gets target/schema only, without media (446.261541ms)\n✔ all ten language samples render actual glyphs with both font weights and safe bounds (3154.273541ms)\n✖ authenticated TXT exports preserve selected language and distinguish full/edited source; clips reject partial sentences (1204.981208ms)\nℹ tests 46\nℹ suites 0\nℹ pass 44\nℹ fail 2\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 11332.747875\n\n✖ failing tests:\n\ntest at tests/api.integration.mjs:112:1\n✖ M06: preview range is validated, returned in source time, and explicit range exports create clips (261.637458ms)\n  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /clip\\.mp4$/. Input:\n  \n  \"원본 ' $(name)-hypercut.mp4\"\n  \n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/api.integration.mjs:116:130)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: \"원본 ' $(name)-hypercut.mp4\",\n    expected: /clip\\.mp4$/,\n    operator: 'match',\n    diff: 'simple'\n  }\n\ntest at tests/multilingual.integration.mjs:62:1\n✖ authenticated TXT exports preserve selected language and distinguish full/edited source; clips reject partial sentences (1204.981208ms)\n  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /clip\\.mp4$/. Input:\n  \n  'source-hypercut.mp4'\n  \n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/multilingual.integration.mjs:79:82)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'source-hypercut.mp4',\n    expected: /clip\\.mp4$/,\n    operator: 'match',\n    diff: 'simple'\n  }\n"
+    },
+    "apiRerun": {
+      "sha256": "44c367c317199a66d146e8074ba9cd09f91324b6c619d00c8a4f82a811671ab8",
+      "text": "✔ API: rejects unauthenticated writes, cross-site requests and DNS rebinding hosts (371.3675ms)\n✔ U04: browser upload preserves Unicode name and source fingerprint (44.013209ms)\n✔ API: rejects invalid settings, unknown audio and malformed export cuts (7.894417ms)\n✔ C05/C09 API: style images require registered media and valid plain text, and recover after a glyph error (405.854916ms)\n✔ E01/E06: cancel active analysis, settle, and run another without stale completion (257.663292ms)\n✔ E01: cancelled render produces no successful export and can retry (680.641ms)\n✔ E01/E06: cancellation arriving before job creation prevents a late start (2.93525ms)\n✔ E01: accurate preview cancellation settles before acknowledging and permits retry (467.191125ms)\n✔ M06: preview range is validated, returned in source time, and explicit range exports create clips (365.6515ms)\n✔ translation API cancels before start, rejects late completion and retries on the selected provider (mock) (64.2855ms)\n✔ actual disposable Claude CLI translation process gets target/schema only, without media (378.382583ms)\n✔ all ten language samples render actual glyphs with both font weights and safe bounds (2923.248375ms)\n✔ authenticated TXT exports preserve selected language and distinguish full/edited source; clips reject partial sentences (1104.573666ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 4574.929417\n"
+    },
+    "finalRendererAndCorrection": {
+      "sha256": "3f3d2e69b2054b3bcd158cf083dfd7081e66dbcd1483e7e697a1a783453e42ef",
+      "text": "✔ C08: pre-start cancellation, duplicate delivery and an old cancellation cannot execute or stop a different request (70.334542ms)\n✔ C08: correction shares the single active request and discards late replies after disconnect (31.77275ms)\n✔ C07/C08: actual disposable Claude CLI process receives correction schema/text and no files or tools (651.584333ms)\n✔ C08: actual CLI correction cancellation settles and permits a subsequent request (392.130708ms)\n✔ C05/C06: all three caption styles render at exact edited frames and remain inside the safe area (2015.302ms)\n✔ C06: native portrait, rotation metadata and non-square pixels produce matching caption canvases (1747.465875ms)\n✔ C01/C05: VFR and a nonzero source PTS retain caption timing after a cut (554.551417ms)\n✔ M06/C05: range preview crops captions without changing the full export clock (370.855042ms)\n✔ C06: long Korean, Latin and explicit newlines fit up to three lines with visible resizing (268.8215ms)\n✔ C05/C06: cropped sequences reconstruct every original RGBA pixel across styles, positions and line heights (4359.712833ms)\n✔ M06/C05: a range with no visible captions stays pixel-identical to the same caption-free preview (371.164541ms)\n✔ C09: missing font, unsupported glyphs, excess text and cancellation fail without a false final file (803.194375ms)\n✔ translation API cancels before start, rejects late completion and retries on the selected provider (mock) (74.196125ms)\n✔ actual disposable Claude CLI translation process gets target/schema only, without media (438.771708ms)\n✔ all ten language samples render actual glyphs with both font weights and safe bounds (2861.8765ms)\n✔ authenticated TXT exports preserve selected language and distinguish full/edited source; clips reject partial sentences (1164.563792ms)\n✔ multilingual fallback is loaded only when the selected text needs it (215.807458ms)\nℹ tests 17\nℹ suites 0\nℹ pass 17\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 10750.182833\n"
+    },
+    "package": {
+      "sha256": "2d9b07b45ed9570d8fbfb8aad8121ba0196ea3178cd98d11218e230cde90c6cc",
+      "text": "\n> hypercut@0.1.0 package:desktop\n> npm run build && node scripts/package-desktop.mjs\n\n\n> hypercut@0.1.0 build\n> tsc --noEmit && vite build\n\nvite v8.2.2 building client environment for production...\ntransforming...\n✓ 1868 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.52 kB │ gzip:   0.36 kB\ndist/assets/index-Up7YjOj5.css   40.73 kB │ gzip:   9.32 kB\ndist/assets/index--YwWsW0i.js   363.14 kB │ gzip: 110.73 kB │ map: 1,310.83 kB\n\n✓ built in 143ms\nPackaging app for platform darwin arm64 using electron v44.2.0\nrelease/HyperCut-darwin-arm64\n"
+    }
+  },
+  "notVerified": [
+    "Authenticated real AI translation quality/cost",
+    "Human recording accuracy in ten languages",
+    "Post-change long-video performance matrix",
+    "New Mac installation/signing/notarization"
+  ]
+}

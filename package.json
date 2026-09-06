@@ -47,7 +47,10 @@
     "test:benchmark:selection": "node --test tests/benchmark-selection.integration.mjs",
     "test:project:io": "node scripts/project-io-race-e2e.mjs",
     "test:jobs:races": "node scripts/job-cancellation-race-e2e.mjs",
-    "test:mcp": "node --test tests/mcp-shares.test.mjs tests/mcp.integration.mjs"
+    "test:mcp": "node --test tests/mcp-shares.test.mjs tests/mcp.integration.mjs",
+    "test:multilingual": "node --test tests/multilingual.test.mjs tests/multilingual.integration.mjs",
+    "test:multilingual:e2e": "node scripts/multilingual-e2e.mjs --desktop",
+    "test:multilingual:transcription": "node scripts/multilingual-transcription.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.0.0",

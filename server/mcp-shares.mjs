@@ -1,3 +1,4 @@
+import { TRANSLATION_SCHEMA, translationPrompt, validateTranslationRequest, validateTranslationProposal } from '../shared/caption-translation.mjs';
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import { PROPOSAL_SCHEMA, proposalPrompt, validateProposal } from '../shared/ai.mjs';
 import { CORRECTION_SCHEMA, correctionPrompt, validateCorrectionRequest, validateCorrectionProposal } from '../shared/caption-correction.mjs';
@@ -25,6 +26,10 @@ function prepare(input) {
     const prompt = proposalPrompt(instruction, settings);
     return { task, request: { instruction, settings: validateSettings(settings) }, prompt, schema: PROPOSAL_SCHEMA };
   }
+  if (task === 'translation') {
+    const request = validateTranslationRequest(value.request);
+    return { task, request, prompt: translationPrompt(request), schema: TRANSLATION_SCHEMA };
+  }
   if (task === 'correction') {
     const request = validateCorrectionRequest(value.request);
     return { task, request, prompt: correctionPrompt(request), schema: CORRECTION_SCHEMA };
@@ -35,7 +40,7 @@ function prepare(input) {
   }
   fail('지원하지 않는 공유 작업입니다.');
 }
-const validate = (share, proposal) => share.task === 'settings' ? validateProposal(proposal) : share.task === 'correction' ? validateCorrectionProposal(proposal, share.request) : validateEffectProposal(proposal, share.request);
+const validate = (share, proposal) => share.task === 'settings' ? validateProposal(proposal) : share.task === 'translation' ? validateTranslationProposal(proposal, share.request) : share.task === 'correction' ? validateCorrectionProposal(proposal, share.request) : validateEffectProposal(proposal, share.request);
 
 // App-authenticated callers own the lifecycle. The separate capability can only
 // read this immutable snapshot and queue one proposal; it cannot apply edits.

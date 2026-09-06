@@ -15,6 +15,20 @@
       "alias": "HyperCut Bold",
       "sha256": "5a6ceb287ed2fc6cfc6213144ebea68cbd94b20fc9eb873d8486493bf02d9bda",
       "bytes": 4816044
+    },
+    {
+      "file": "NotoSansCJKkr-Regular.otf",
+      "alias": "HyperCut Regular Multilingual",
+      "sha256": "6bcb2a0703aa137e874fc2dffa85f6c21ba9a67fa329e81b8c801663af7e992a",
+      "bytes": 16433112,
+      "source": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/OTF/Korean/NotoSansCJKkr-Regular.otf"
+    },
+    {
+      "file": "NotoSansCJKkr-Bold.otf",
+      "alias": "HyperCut Bold Multilingual",
+      "sha256": "26d0c6748500a0444844280b308f5b62c7ae92ac6c6ac88148e502dd211eb52a",
+      "bytes": 16997996,
+      "source": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/OTF/Korean/NotoSansCJKkr-Bold.otf"
     }
   ]
 }

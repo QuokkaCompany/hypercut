@@ -8,15 +8,16 @@ export interface Output { id: string; name: string; duration: number; size: numb
 export interface EffectAsset { id: string; fingerprint: string; name: string; duration: number }
 export interface EffectClip { id: string; assetId: string; start: number; offset: number; duration: number; gainDb: number; muted: boolean }
 export interface Effects { assets: EffectAsset[]; clips: EffectClip[] }
-export interface TranscriptionSettings { channel: number; language: 'ko' | 'en' | 'auto' }
+export type CaptionLanguage = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'fr' | 'de' | 'pt' | 'it' | 'ru';
+export interface TranscriptionSettings { channel: number; language: CaptionLanguage | 'auto' }
 export interface CaptionStyle { enabled: boolean; preset: 'clean' | 'box' | 'emphasis'; sizePercent: number; position: 'top' | 'bottom'; marginPercent: number }
-export interface CaptionCue { id: string; start: number; end: number; text: string; timingWarning?: { kind: 'source-end'; originalEnd: number }; reviewedFor?: string }
-export interface Transcript extends TranscriptionSettings { trackIndex: number; model: string; cues: CaptionCue[] }
+export interface CaptionCue { id: string; start: number; end: number; text: string; translations?: Partial<Record<CaptionLanguage, { text: string; sourceText: string }>>; timingWarning?: { kind: 'source-end'; originalEnd: number }; reviewedFor?: string }
+export interface Transcript extends TranscriptionSettings { trackIndex: number; model: string; cues: CaptionCue[]; detectedLanguage?: CaptionLanguage; outputLanguage?: CaptionLanguage }
 export interface Job { id: string; type: string; status: 'running' | 'completed' | 'failed' | 'cancelled'; progress: number; stage: string; error?: string; result?: Analysis | Output | Transcript }
 declare global {
   interface Window { hypercut?: { pickVideo: () => Promise<Media | null>; pickEffect: () => Promise<EffectAsset | null>; saveExport: (id: string) => Promise<boolean>; saveProject: (project: unknown) => Promise<boolean>; openBrowser: () => Promise<void>; platform: string } }
 }
-export interface CorrectionRequest { requestId: string; instruction: string; glossary: string; cues: { id: string; text: string }[] }
+export interface CorrectionRequest { targetLanguage?: CaptionLanguage; requestId: string; instruction: string; glossary: string; cues: { id: string; text: string }[] }
 export interface CorrectionProposal { requestId: string; changes: { id: string; before: string; after: string; reason: string }[] }
 export interface EffectAIContext { duration: number; kept: { start: number; end: number }[]; assets: { id: string; duration: number; description: string }[]; clips: EffectClip[]; cues: { id: string; text: string; start: number; end: number }[] }
 export interface EffectAIRequest extends EffectAIContext { requestId: string; instruction: string }

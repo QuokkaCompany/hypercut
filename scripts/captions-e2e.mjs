@@ -79,7 +79,7 @@ try {
       await desktop.evaluate(({ dialog }, file) => { dialog.showSaveDialog = async () => ({ canceled: false, filePath: file }); }, projectPath);
       await page.getByRole('button', { name: '프로젝트 저장', exact: true }).first().click(); await page.waitForFunction(() => !document.querySelector('.unsaved-dot'));
     } else { const download = page.waitForEvent('download'); await page.getByRole('button', { name: '프로젝트 저장', exact: true }).first().click(); await (await download).saveAs(projectPath); }
-    const project = JSON.parse(await readFile(projectPath, 'utf8')); assert.equal(project.version, 7); assert.equal(project.transcript.cues[0].text, corrected); assert.equal(project.transcript.cues[0].start, 1.1); assert.equal(project.transcript.cues.length, 2); assert.equal(project.cuts.length, 5);
+    const project = JSON.parse(await readFile(projectPath, 'utf8')); assert.equal(project.version, 8); assert.equal(project.transcript.cues[0].text, corrected); assert.equal(project.transcript.cues[0].start, 1.1); assert.equal(project.transcript.cues.length, 2); assert.equal(project.cuts.length, 5);
     assert.deepEqual(project.captionStyle, { enabled: true, preset: 'emphasis', sizePercent: 5.5, position: 'top', marginPercent: 12 });
     await page.getByRole('button', { name: '전사와 자막', exact: true }).click();
     await page.getByRole('button', { name: '이 자막 삭제', exact: true }).click(); assert.equal(await page.locator('.caption-row').count(), 1);

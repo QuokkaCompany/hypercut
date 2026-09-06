@@ -79,7 +79,8 @@ for (const variant of ['cfr', 'vfr', 'offset']) test(`M02/M03: independent flash
     assert.ok(Math.abs(result.duration - 8.4) < 1 / 30 + 0.001);
     // Fixed source interval, deliberately after an earlier cut: preview time
     // starts at zero without inheriting the full export's accumulated offset.
-    const preview = await exportMedia(media, cuts, media.audioTracks[0].index, directory, { preview: true, range: { start: 2.4, end: 7 } });
+    for (const previewMode of [true, false]) {
+    const preview = await exportMedia(media, cuts, media.audioTracks[0].index, directory, { preview: previewMode, range: { start: 2.4, end: 7 } });
     assert.deepEqual(preview.kept.map(x => [Number(x.start.toFixed(6)), Number(x.end.toFixed(6))]), [[2.4, 4.2], [5.2, 7]]);
     assert.ok(Math.abs(preview.duration - 3.6) < 0.034); assert.equal(preview.audioSamples, 172800);
     const previewFlashes = await flashOnsets(preview.path), previewBeeps = await beepOnsets(preview.path, path.join(directory, 'preview.f32'));
@@ -90,6 +91,7 @@ for (const variant of ['cfr', 'vfr', 'offset']) test(`M02/M03: independent flash
       assert.ok(Math.abs(previewBeeps[i] - expected) < 0.005, `${variant} preview beep ${previewBeeps[i]}`);
     }
     console.log(JSON.stringify({ variant, previewFlashes, previewBeeps, previewSeconds: preview.duration, sourceRange: preview.sourceRange }));
+    }
     if (variant === 'offset') {
       const playback = await playbackFile(media, media.audioTracks[0].index, directory);
       const info = await inspectMedia(playback);
@@ -108,7 +110,7 @@ test('M06: a sub-frame preview is one whole frame, removed-only ranges fail, ful
     const count = JSON.parse(await capture('ffprobe', ['-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames', '-of', 'json', preview.path]));
     assert.equal(Number(count.streams[0].nb_read_frames), 1);
     await assert.rejects(exportMedia(media, [{ start: 2, end: 5, enabled: true }], 1, directory, { preview: true, range: { start: 3, end: 4 } }), /남아 있는 구간/);
-    await assert.rejects(exportMedia(media, [], 1, directory, { range: { start: 3, end: 4 } }), /미리보기에서만/);
+    const clip = await exportMedia(media, [], 1, directory, { range: { start: 3, end: 4 } }); assert.equal(clip.duration, 1); assert.deepEqual(clip.sourceRange, { start: 3, end: 4 });
     assert.equal((await exportMedia(media, [], 1, directory)).duration, 16);
     assert.equal((await inspectMedia(source)).fingerprint, media.fingerprint);
   } finally { await rm(directory, { recursive: true, force: true }); }

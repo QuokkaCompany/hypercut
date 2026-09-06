@@ -1,3 +1,4 @@
+import { validateTranslationRequest, validateTranslationProposal } from '../shared/caption-translation.mjs';
 import { useEffect, useRef, useState } from 'react';
 import { Copy, Link, Unplug } from 'lucide-react';
 import { validateProposal } from '../shared/ai.mjs';
@@ -9,7 +10,7 @@ import { EffectProposalReview } from './EffectProposalReview';
 import type { Settings, CorrectionRequest, CorrectionProposal, EffectAIContext, EffectAIRequest, EffectAIProposal } from './types';
 
 type SettingProposal = { settings: Settings; explanation: string };
-type Task = { task: 'settings'; request: { instruction: string; settings: Settings } } | { task: 'correction'; request: CorrectionRequest } | { task: 'effects'; request: EffectAIRequest };
+type Task = { task: 'settings'; request: { instruction: string; settings: Settings } } | { task: 'correction' | 'translation'; request: CorrectionRequest } | { task: 'effects'; request: EffectAIRequest };
 type Receipt = { shareId: string; contextVersion: string; proposalId: string | null; status: string; expiresAt: number; proposal?: unknown };
 type Share = Receipt & { connection: { command: string; args: string[]; env: Record<string, string> } };
 type Active = { share: Share; input: Task; key: string; generation: number };
@@ -18,7 +19,7 @@ type Resolution = { item: Active; body: { contextVersion: string; proposalId: st
 type Props = {
   contextKey: string; instruction: string; glossary: string; settings: Settings; disabled: boolean; onClose: () => void;
   onApply?: (settings: Settings) => void;
-  captionTask?: { cues: CorrectionRequest['cues']; onApply: (input: CorrectionRequest, proposal: CorrectionProposal, ids: string[]) => void };
+  captionTask?: { targetLanguage?: CorrectionRequest['targetLanguage']; cues: CorrectionRequest['cues']; onApply: (input: CorrectionRequest, proposal: CorrectionProposal, ids: string[]) => void };
   effectsTask?: { context: EffectAIContext; onApply: (input: EffectAIRequest, proposal: EffectAIProposal, ids: string[]) => void };
 };
 const labels: Record<keyof Settings, string> = { thresholdDb: '음량 기준 (dBFS)', minSilenceMs: '최소 무음 (ms)', preRollMs: '말하기 전 (ms)', postRollMs: '말하기 후 (ms)' };
@@ -61,7 +62,7 @@ export function MCPShare(props: Props) {
         if (stopped || active.current !== item || item.key !== latest.current.key) return;
         if (state.contextVersion !== item.share.contextVersion) throw new Error('공유 대상이 변경되었습니다. 다시 공유해 주세요.');
         if (state.status === 'proposed' && state.proposalId) {
-          const proposal = item.input.task === 'settings' ? validateProposal(state.proposal) : item.input.task === 'correction' ? validateCorrectionProposal(state.proposal, item.input.request) : validateEffectProposal(state.proposal, item.input.request);
+          const proposal = item.input.task === 'settings' ? validateProposal(state.proposal) : item.input.task === 'correction' || item.input.task === 'translation' ? (item.input.task === 'translation' ? validateTranslationProposal : validateCorrectionProposal)(state.proposal, item.input.request) : validateEffectProposal(state.proposal, item.input.request);
           setReview(previous => previous?.proposalId === state.proposalId ? previous : { proposalId: state.proposalId!, proposal });
           setNotice('AI 제안을 받았습니다. 비교한 뒤 필요한 항목만 적용하세요.');
         }
@@ -77,7 +78,7 @@ export function MCPShare(props: Props) {
     void release().catch(() => {}); setShare(null); setReview(null); setError(''); setNotice(''); setWorking(true);
     const current = generation.current, currentKey = key;
     try {
-      const input: Task = props.effectsTask ? { task: 'effects', request: validateEffectRequest({ ...props.effectsTask.context, requestId: crypto.randomUUID(), instruction: props.instruction }) as EffectAIRequest } : props.captionTask ? { task: 'correction', request: validateCorrectionRequest({ requestId: crypto.randomUUID(), instruction: props.instruction, glossary: props.glossary, cues: props.captionTask.cues }) as CorrectionRequest } : { task: 'settings', request: { settings: props.settings, instruction: props.instruction } };
+      const input: Task = props.effectsTask ? { task: 'effects', request: validateEffectRequest({ ...props.effectsTask.context, requestId: crypto.randomUUID(), instruction: props.instruction }) as EffectAIRequest } : props.captionTask ? { task: props.captionTask.targetLanguage ? 'translation' : 'correction', request: (props.captionTask.targetLanguage ? validateTranslationRequest : validateCorrectionRequest)({ targetLanguage: props.captionTask.targetLanguage, requestId: crypto.randomUUID(), instruction: props.instruction, glossary: props.glossary, cues: props.captionTask.cues }) as CorrectionRequest } : { task: 'settings', request: { settings: props.settings, instruction: props.instruction } };
       const created = await request<Share>('/ai/shares', input, undefined, AbortSignal.timeout(5000));
       if (!mounted.current || generation.current !== current || latest.current.key !== currentKey) { void request(`/ai/shares/${created.shareId}`, undefined, 'DELETE').catch(() => {}); return; }
       active.current = { share: created, input, key: currentKey, generation: current }; setShare(created); setNotice('공유 중 · 외부 AI의 제안을 기다립니다.');
@@ -108,8 +109,8 @@ export function MCPShare(props: Props) {
       try {
         if (outcome === 'applied') {
           if (item.input.task === 'settings') props.onApply?.(validateProposal(review.proposal).settings);
-          else if (item.input.task === 'correction') props.captionTask!.onApply(item.input.request, validateCorrectionProposal(review.proposal, item.input.request), ids);
-          else props.effectsTask!.onApply(item.input.request, validateEffectProposal(review.proposal, item.input.request) as EffectAIProposal, ids);
+          else if (item.input.task === 'correction' || item.input.task === 'translation') props.captionTask!.onApply(item.input.request, (item.input.task === 'translation' ? validateTranslationProposal : validateCorrectionProposal)(review.proposal, item.input.request), ids);
+          else if (item.input.task === 'effects') props.effectsTask!.onApply(item.input.request, validateEffectProposal(review.proposal, item.input.request) as EffectAIProposal, ids);
         }
       } catch (e) { finishing.current = null; active.current = item; throw e; }
       setReview(null);
@@ -128,7 +129,7 @@ export function MCPShare(props: Props) {
     {notice && <p className="ai-notice" role="status">{notice}</p>}{error && <div className="ai-error" role="alert">{error}</div>}
     {pendingReceipt && <button className="button secondary" disabled={working} onClick={() => finishing.current && void sendReceipt(finishing.current)}>검토 결과 전달 다시 시도</button>}
     {review && active.current?.input.task === 'settings' && <div className="ai-proposal"><strong>적용할 설정을 확인해 주세요</strong><p>{(review.proposal as SettingProposal).explanation}</p><table><thead><tr><th>설정</th><th>현재</th><th>제안</th></tr></thead><tbody>{(Object.keys(labels) as (keyof Settings)[]).map(k => <tr key={k}><td>{labels[k]}</td><td>{props.settings[k]}</td><td>{(review.proposal as SettingProposal).settings[k]}</td></tr>)}</tbody></table><button className="button primary" disabled={working || props.disabled} onClick={() => void finish('applied', ['settings'])}>설정 적용</button><small>무음을 다시 분석하면 컷에 반영됩니다.</small></div>}
-    {review && active.current?.input.task === 'correction' && <CorrectionReview key={review.proposalId} proposal={review.proposal as CorrectionProposal} disabled={working || props.disabled} onApply={ids => void finish('applied', ids)} />}
+    {review && (active.current?.input.task === 'correction' || active.current?.input.task === 'translation') && <CorrectionReview translation={active.current?.input.task === 'translation'} key={review.proposalId} proposal={review.proposal as CorrectionProposal} disabled={working || props.disabled} onApply={ids => void finish('applied', ids)} />}
     {review && active.current?.input.task === 'effects' && <EffectProposalReview key={review.proposalId} proposal={review.proposal as EffectAIProposal} input={active.current.input.request} disabled={working || props.disabled} onApply={ids => void finish('applied', ids)} />}
     {review && <button className="button secondary" disabled={working} onClick={() => void finish('rejected', [])}>제안을 적용하지 않기</button>}
   </div>;

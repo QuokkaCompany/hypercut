@@ -11,7 +11,7 @@ import { createCuts, intervalDuration, renderPlan, videoExpressions, validateSet
 import { validateSpeechProtection } from '../shared/speech-settings.mjs';
 import { protectSpeech } from '../shared/speech.mjs';
 import { createSpeechDetector, VAD_MODEL } from './vad.mjs';
-import { validateTranscript, toSRT } from '../shared/captions.mjs';
+import { validateTranscript, toSRT, toTranscriptText, mapCaptions } from '../shared/captions.mjs';
 import { validateCaptionStyle } from '../shared/caption-style.mjs';
 import { captionCues, renderCaptionImages } from './caption-rendering.mjs';
 import { validateEffects, mapEffects } from '../shared/effects.mjs';
@@ -183,22 +183,23 @@ async function writeEditedAudio(media, track, kept, destination, signal, progres
   } catch (error) { child.kill(); output.destroy(); throw error; }
 }
 
-export async function exportCaptions(media, cuts, trackIndex, input, directory, { signal, progress } = {}) {
+export async function exportCaptions(media, cuts, trackIndex, input, directory, { signal, progress, textMode } = {}) {
   getTrack(media, trackIndex);
   const transcript = validateTranscript(input, media.duration);
   if (!transcript || transcript.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙과 자막의 전사 트랙이 다릅니다.');
   const frames = await getFrames(media, signal, progress);
   const { kept } = renderPlan(cuts, media.duration, frames);
-  const text = toSRT(transcript, kept);
+  if (textMode !== undefined && !['source', 'edited'].includes(textMode)) throw new Error('대본 출력 범위가 올바르지 않습니다.');
+  const text = textMode ? toTranscriptText(transcript, kept, { source: textMode === 'source' }) : toSRT(transcript, kept);
+  const extension = textMode ? 'txt' : 'srt';
   signal?.throwIfAborted();
-  const id = randomUUID(), destination = path.join(directory, `${id}.srt`);
+  const id = randomUUID(), destination = path.join(directory, `${id}.${extension}`);
   try { await writeFile(destination, text, { flag: 'wx', signal }); }
   catch (error) { await rm(destination, { force: true }); throw error; }
-  return { id, path: destination, name: media.name.replace(/\.[^.]+$/, '') + '-edited.srt', size: Buffer.byteLength(text), mime: 'application/x-subrip', duration: intervalDuration(kept), kept, verified: true };
+  return { id, path: destination, name: media.name.replace(/\.[^.]+$/, '') + `-${textMode || 'edited'}${transcript.outputLanguage ? '-' + transcript.outputLanguage : ''}.${extension}`, size: Buffer.byteLength(text), mime: textMode ? 'text/plain; charset=utf-8' : 'application/x-subrip', duration: intervalDuration(kept), kept, verified: true };
 }
 
 export async function exportMedia(media, cuts, trackIndex, directory, { signal, progress, preview = false, range, transcript, captionStyle: styleInput, effects: effectsInput, effectAssets } = {}) {
-  if (range !== undefined && !preview) throw new Error('범위 지정은 미리보기에서만 사용할 수 있습니다.');
   const track = getTrack(media, trackIndex);
   const frames = await getFrames(media, signal, progress);
   const { removals, kept, sourceRange } = renderPlan(cuts, media.duration, frames, range);
@@ -207,6 +208,11 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
   const fullKept = renderPlan(cuts, media.duration, frames).kept;
   const windowStart = sourceRange ? fullKept.reduce((sum, span) => sum + Math.max(0, Math.min(span.end, sourceRange.start) - span.start), 0) : 0;
   const mappedEffects = mapEffects(effects, fullKept, sourceRange ? { start: windowStart, end: windowStart + intervalDuration(kept) } : undefined);
+  if (sourceRange && !preview && captionStyle.enabled) {
+    const validated = validateTranscript(transcript, media.duration);
+    const full = new Map(mapCaptions(validated, fullKept).map(c => [c.id, c.reviewKey]));
+    if (mapCaptions(validated, kept).some(c => !c.removed && c.reviewKey !== full.get(c.id))) throw new Error('클립 경계가 자막 중간을 자릅니다. 자막 시작·끝에 맞춰 범위를 넓히거나 자막 포함을 꺼 주세요.');
+  }
   const subtitles = captionStyle.enabled ? captionCues(transcript, media, trackIndex, renderPlan(cuts, media.duration, frames).kept, kept) : [];
   const expectedDuration = intervalDuration(kept);
   if (!kept.length || expectedDuration <= 0) throw new Error(sourceRange ? '이 범위에는 남아 있는 구간이 없습니다. 범위를 넓히거나 필요한 컷을 복원해 주세요.' : '모든 구간이 제거되었습니다. 내보내려면 일부 구간을 복원해 주세요.');
@@ -224,7 +230,7 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     let captionRender;
     if (captionStyle.enabled) {
       progress?.({ stage: '자막 디자인 준비', progress: 0.3 });
-      captionRender = await renderCaptionImages({ mode: 'sequence', directory: work, width: Math.ceil(media.width / 2) * 2, height: Math.ceil(media.height / 2) * 2, style: captionStyle, cues: subtitles, duration: expectedDuration }, { signal, progress: value => progress?.({ stage: '자막 디자인 합성 준비', progress: .3 + value * .15 }) });
+      captionRender = await renderCaptionImages({ mode: 'sequence', language: transcript?.outputLanguage || transcript?.detectedLanguage || (transcript?.language === 'auto' ? undefined : transcript?.language), directory: work, width: Math.ceil(media.width / 2) * 2, height: Math.ceil(media.height / 2) * 2, style: captionStyle, cues: subtitles, duration: expectedDuration }, { signal, progress: value => progress?.({ stage: '자막 디자인 합성 준비', progress: .3 + value * .15 }) });
     }
     const { select, offset } = videoExpressions(removals);
     const scale = preview ? ',scale=w=960:h=540:force_original_aspect_ratio=decrease:force_divisible_by=2' : ',pad=ceil(iw/2)*2:ceil(ih/2)*2';
@@ -258,6 +264,6 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     if (signal?.aborted) throw new DOMException('작업이 취소되었습니다.', 'AbortError');
     const destination = path.join(directory, `${id}.mp4`);
     await rename(temporaryOutput, destination);
-    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, audioMix, kept, captionStyle, burnedCaptions: captionRender?.cueCount || 0, ...(sourceRange ? { sourceRange } : {}), verified: true };
+    return { id, path: destination, name: `${path.parse(media.name).name}${preview ? '-preview' : sourceRange ? '-clip' : '-hypercut'}.mp4`, duration: outputDuration, expectedDuration, size: (await stat(destination)).size, audioSamples, audioMix, kept, captionStyle, burnedCaptions: captionRender?.cueCount || 0, ...(sourceRange ? { sourceRange } : {}), verified: true };
   } finally { await rm(work, { recursive: true, force: true }); }
 }

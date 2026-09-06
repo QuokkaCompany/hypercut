@@ -77,7 +77,7 @@ try {
     await button('연결 해제').click(); await page.unroute('**/api/ai/correction'); await button('AI 창 닫기').click(); assert.equal(await terms.inputValue(), glossary);
     await button('이 자막 AI 교정').click(); assert.equal(await requestTerms.inputValue(), glossary); await button('AI 창 닫기').click(); await button('자막 창 닫기').click();
     const savedPath = path.join(directory, `${surface}.json`), saved = await save(savedPath);
-    assert.equal(saved.version, 7); assert.equal(saved.glossary, glossary); assert.deepEqual(saved.transcript, transcript);
+    assert.equal(saved.version, 8); assert.equal(saved.glossary, glossary); assert.deepEqual(saved.transcript, transcript);
     for (const field of ['cuts', 'settings', 'speechProtection', 'captionStyle', 'effects']) assert.deepEqual(saved[field], validateProject(legacy)[field]);
     // Reload from bytes, then verify malformed v6 cannot replace the active project.
     await open(initialPath); await captions(); assert.equal(await terms.inputValue(), ''); await button('자막 창 닫기').click();

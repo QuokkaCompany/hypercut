@@ -54,12 +54,12 @@ test('oversized and malformed share bodies are rejected without echoing the body
   assert.equal((await call('/ai/shares', input())).status, 200);
 });
 
-for (const task of ['settings', 'correction', 'effects']) test(`real MCP stdio child: ${task} context, proposal, retry and application receipt`, async t => {
+for (const task of ['settings', 'correction', 'translation', 'effects']) test(`real MCP stdio child: ${task} context, proposal, retry and application receipt`, async t => {
   const { call } = await fixture(t);
   const { input: effects, proposal: effectProposal } = effectProposalFixture();
-  const caption = { requestId: randomUUID(), instruction: '오타 교정', glossary: '', cues: [{ id: 'c1', text: '자막 입니디.' }] };
+  const caption = { ...(task === 'translation' ? { targetLanguage: 'ja' } : {}), requestId: randomUUID(), instruction: '오타 교정', glossary: '', cues: [{ id: 'c1', text: '자막 입니디.' }] };
   const shared = task === 'settings' ? input() : { task, request: task === 'effects' ? effects : caption };
-  const expected = task === 'settings' ? proposal() : task === 'effects' ? effectProposal : { requestId: caption.requestId, changes: [{ id: 'c1', before: caption.cues[0].text, after: '자막입니다.', reason: '오타 수정' }] };
+  const expected = task === 'settings' ? proposal() : task === 'effects' ? effectProposal : { requestId: caption.requestId, changes: [{ id: 'c1', before: caption.cues[0].text, after: task === 'translation' ? '字幕です。' : '자막입니다.', reason: '오타 수정' }] };
   const s = await (await call('/ai/shares', shared)).json();
   const transport = new StdioClientTransport({ ...s.connection, stderr: 'pipe' });
   const client = new Client({ name: 'hypercut-protocol-verification', version: '1.0.0' });

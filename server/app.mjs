@@ -1,3 +1,4 @@
+import { isCaptionLanguage } from '../shared/languages.mjs';
 import express from 'express';
 import multer from 'multer';
 import { randomUUID, randomBytes } from 'node:crypto';
@@ -93,7 +94,9 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const { mediaId, text, captionStyle } = req.body, item = findMedia(mediaId);
     if (typeof text !== 'string' || !text.trim() || text.length > 2000) throw new Error('미리 볼 자막 문구를 확인해 주세요.');
     const controller = new AbortController(), onClose = () => { if (!res.writableEnded) controller.abort(); };
-    const task = renderCaptionImages({ mode: 'sample', text, style: validateCaptionStyle(captionStyle), width: Math.ceil(item.width / 2) * 2, height: Math.ceil(item.height / 2) * 2 }, { signal: AbortSignal.any([controller.signal, playbackController.signal]) });
+    const language = req.body.language;
+    if (language !== undefined && !isCaptionLanguage(language)) throw new Error('자막 언어가 올바르지 않습니다.');
+    const task = renderCaptionImages({ mode: 'sample', language, text, style: validateCaptionStyle(captionStyle), width: Math.ceil(item.width / 2) * 2, height: Math.ceil(item.height / 2) * 2 }, { signal: AbortSignal.any([controller.signal, playbackController.signal]) });
     captionPreviews.add(task);
     res.on('close', onClose);
     try { res.json(await task); }
@@ -105,7 +108,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const source = await playbackFile(item, trackIndex, directory, { signal: playbackController.signal });
     res.type('video/mp4'); res.sendFile(source, { dotfiles: 'allow' });
   }));
-  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection, transcription, transcript, captionStyle, effects) {
+  function startJob(type, item, settings, trackIndex, cuts, requestedId, range, speechProtection, transcription, transcript, captionStyle, effects, textMode) {
     const id = requestedId || randomUUID();
     if (jobs.size > 100) for (const [key, job] of jobs) { if (job.status !== 'running') jobs.delete(key); if (jobs.size <= 50) break; }
     if (jobs.has(id)) throw new Error('이미 처리한 작업 ID입니다. 새 작업으로 다시 요청해 주세요.');
@@ -117,20 +120,20 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
     const controller = new AbortController();
     const job = { id, type, mediaId: item.id, status: 'running', progress: 0, stage: '작업 준비', controller, createdAt: Date.now() };
     jobs.set(id, job);
-    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: type === 'preview' ? range : undefined, speechProtection, transcript, captionStyle, effects, effectAssets };
+    const options = { signal: controller.signal, progress: value => { if (job.status === 'running') Object.assign(job, value); }, preview: type === 'preview', range: ['preview', 'export'].includes(type) ? range : undefined, textMode: type === 'transcript' ? textMode : undefined, speechProtection, transcript, captionStyle, effects, effectAssets };
     job.task = Promise.resolve().then(async () => {
-      const result = type === 'transcribe' ? await transcribeMedia(item, trackIndex, transcription, directory, options) : type === 'captions' ? await exportCaptions(item, cuts, trackIndex, transcript, directory, options) : type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
+      const result = type === 'transcribe' ? await transcribeMedia(item, trackIndex, transcription, directory, options) : ['captions', 'transcript'].includes(type) ? await exportCaptions(item, cuts, trackIndex, transcript, directory, options) : type === 'analyze' ? await analyzeMedia(item, settings, trackIndex, options) : type === 'restore' ? await restoreMediaRange(item, cuts, range, options) : await exportMedia(item, cuts, trackIndex, directory, options);
       if (controller.signal.aborted) { if (result.path) await rm(result.path, { force: true }); job.status = 'cancelled'; return; }
-      if (['export', 'preview', 'captions'].includes(type)) { exports.set(result.id, result); const { path: omitted, ...safe } = result; job.result = safe; }
+      if (['export', 'preview', 'captions', 'transcript'].includes(type)) { exports.set(result.id, result); const { path: omitted, ...safe } = result; job.result = safe; }
       else job.result = result;
       job.status = 'completed'; job.progress = 1; job.stage = '완료';
     }).catch(error => { job.status = controller.signal.aborted ? 'cancelled' : 'failed'; job.error = error.message; }).finally(() => { job.finishedAt = Date.now(); });
     return { id, type, status: job.status };
   }
   app.post('/api/jobs', asyncRoute(async (req, res) => {
-    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript, captionStyle, effects } = req.body;
+    const { type, mediaId, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript, captionStyle, effects, textMode } = req.body;
     if (requestId !== undefined && !isRequestId(requestId)) throw new Error('작업 ID가 올바르지 않습니다.');
-    if (!['analyze', 'export', 'preview', 'restore', 'transcribe', 'captions'].includes(type)) throw new Error('지원하지 않는 작업입니다.');
+    if (!['analyze', 'export', 'preview', 'restore', 'transcribe', 'captions', 'transcript'].includes(type)) throw new Error('지원하지 않는 작업입니다.');
     const item = findMedia(mediaId);
     if (!Number.isInteger(trackIndex) || !item.audioTracks.some(x => x.index === trackIndex)) throw new Error('오디오 트랙을 선택해 주세요.');
     if (type === 'analyze') { validateSettings(settings); validateSpeechProtection(speechProtection); }
@@ -139,7 +142,8 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
       if (!Array.isArray(cuts) || cuts.length > 50000) throw new Error('편집 구간이 올바르지 않습니다.');
       for (const x of cuts) if (typeof x.enabled !== 'boolean' || !Number.isFinite(x.start) || !Number.isFinite(x.end) || x.start < 0 || x.end > item.duration || x.end <= x.start) throw new Error('편집 구간이 영상 범위를 벗어났습니다.');
     }
-    if (type === 'captions') {
+    if (type === 'transcript' && !['source', 'edited'].includes(textMode)) throw new Error('대본 출력 범위를 선택해 주세요.');
+    if (['captions', 'transcript'].includes(type)) {
       const data = validateTranscript(transcript, item.duration);
       if (!data || data.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙과 자막의 전사 트랙이 다릅니다.');
     }
@@ -149,9 +153,9 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
       if (style.enabled) { const data = validateTranscript(transcript, item.duration); if (!data || data.trackIndex !== trackIndex) throw new Error('현재 오디오 트랙의 자막을 확인해 주세요.'); }
     }
     if (type === 'restore' && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('복원 범위가 올바르지 않습니다.');
-    if (range !== undefined && !['restore', 'preview'].includes(type)) throw new Error('이 작업은 범위 지정을 지원하지 않습니다.');
-    if (type === 'preview' && range !== undefined && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('미리보기 범위가 올바르지 않습니다.');
-    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript, captionStyle, effects));
+    if (range !== undefined && !['restore', 'preview', 'export'].includes(type)) throw new Error('이 작업은 범위 지정을 지원하지 않습니다.');
+    if (['preview', 'export'].includes(type) && range !== undefined && (!Number.isFinite(range?.start) || !Number.isFinite(range?.end) || range.start < 0 || range.end > item.duration || range.start >= range.end)) throw new Error('영상 범위가 올바르지 않습니다.');
+    res.status(202).json(startJob(type, item, settings, trackIndex, cuts, requestId, range, speechProtection, transcription, transcript, captionStyle, effects, textMode));
   }));
   app.get('/api/jobs/:id', (req, res) => {
     const job = jobs.get(req.params.id);

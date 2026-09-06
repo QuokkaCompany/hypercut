@@ -68,7 +68,7 @@ try {
       } else if (command === 'check-project-replaced') {
         await page.getByText(savedProjectNotice, { exact: true }).waitFor();
         const project = validateProject(JSON.parse(await readFile(projectFile, 'utf8')));
-        assert.notEqual(await hash(projectFile), report.projectBeforeSHA256); assert.equal(project.version, 7); assert.equal(project.settings.thresholdDb, -41); assert.equal(project.media.fingerprint, media.fingerprint); assert.equal(project.cuts.length, 5); assert.equal(project.glossary, '');
+        assert.notEqual(await hash(projectFile), report.projectBeforeSHA256); assert.equal(project.version, 8); assert.equal(project.settings.thresholdDb, -41); assert.equal(project.media.fingerprint, media.fingerprint); assert.equal(project.cuts.length, 5); assert.equal(project.glossary, '');
         assert.equal(await page.locator('.unsaved-dot').count(), 0);
         await record('project-replace', { currentProjectSaved: true, savedSHA256: await hash(projectFile), projectVersion: project.version });
         phase = 'project-replaced'; console.log(JSON.stringify(await state()));

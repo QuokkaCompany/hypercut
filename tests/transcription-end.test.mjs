@@ -43,9 +43,9 @@ test('source VTT remains visible for review but only explicit review permits SRT
 test('v7 preserves end-review state and v1-v6 keep existing cut review and glossary semantics', () => {
   const transcript = parsed(), last = transcript.cues.at(-1); last.reviewedFor = mapCaptions(transcript, kept).at(-1).reviewKey;
   const project = makeProject(media, DEFAULT_SETTINGS, 1, [], undefined, transcript, undefined, undefined, '용어');
-  assert.equal(project.version, 7); const restored = validateProject(JSON.parse(JSON.stringify(project)));
+  assert.equal(project.version, 8); const restored = validateProject(JSON.parse(JSON.stringify(project)));
   assert.deepEqual(restored.transcript, transcript); assert.equal(mapCaptions(restored.transcript, kept).at(-1).needsReview, false);
-  for (const version of [1, 2, 3, 4, 5, 6]) { const legacy = validateProject({ ...project, version }); assert.equal(legacy.version, 7); assert.equal(legacy.glossary, version < 6 ? '' : '용어'); }
+  for (const version of [1, 2, 3, 4, 5, 6]) { const legacy = validateProject({ ...project, version }); assert.equal(legacy.version, 8); assert.equal(legacy.glossary, version < 6 ? '' : '용어'); }
   const oldCue = { id: 'old', start: 1, end: 4, text: '기존 문구', reviewedFor: JSON.stringify([1, 4, '기존 문구', [[1, 2], [3, 4]]]) };
   assert.equal(mapCaptions({ ...transcript, cues: [oldCue] }, [{ start: 0, end: 2 }, { start: 3, end: 10 }])[0].needsReview, false);
 });

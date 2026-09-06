@@ -17,3 +17,9 @@
 /* Keep the complete caption image inside its fixed-height grid track. */
 .caption-design-preview{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr)}
 .caption-design-preview img{min-height:0;min-width:0}
+
+.caption-language-tools, .caption-clip-tools, .caption-text-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 18px 0; padding: 14px; border: 1px solid #353c36; border-radius: 10px; }
+.caption-language-tools label, .caption-clip-tools label { display: grid; gap: 6px; min-width: 150px; flex: 1; }
+.caption-language-tools select, .caption-clip-tools select { max-width: 100%; min-width: 0; padding: 8px; color: inherit; background: #1c231e; border: 1px solid #465348; border-radius: 6px; }
+.caption-language-tools p, .caption-clip-tools p, .caption-text-actions p { width: 100%; margin: 0; }
+.caption-clip-tools strong { width: 100%; }

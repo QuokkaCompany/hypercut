@@ -10,22 +10,31 @@ process.once('message', async input => {
     const { createCanvas, GlobalFonts } = await import('@napi-rs/canvas');
     const fontDirectory = input.fontDirectory || fileURLToPath(new URL('../assets/fonts/', import.meta.url));
     const manifest = JSON.parse(await readFile(new URL('../assets/fonts/manifest.json', import.meta.url), 'utf8'));
-    let supported;
+    const style = validateCaptionStyle(input.style), { width, height } = input;
+    const selectedFont = style.preset === 'clean' ? 'HyperCut Regular' : 'HyperCut Bold';
+    const texts = input.mode === 'sample' ? [input.text] : input.cues.map(cue => cue.text);
+    const coverage = new Map();
     for (const font of manifest.files) {
+      if (font.alias.endsWith(' Multilingual')) {
+        if (font.alias !== `${selectedFont} Multilingual`) continue;
+        const primary = coverage.get(selectedFont);
+        if (texts.every(text => [...text.normalize('NFC')].every(c => c === '\n' || c === '\t' || primary(c.codePointAt(0))))) continue;
+      }
       let bytes;
       try { bytes = await readFile(path.join(fontDirectory, font.file)); } catch { throw new Error('자막 글꼴 파일이 없습니다. 글꼴을 포함한 앱을 다시 설치해 주세요.'); }
       if (createHash('sha256').update(bytes).digest('hex') !== font.sha256) throw new Error('자막 글꼴이 손상됐습니다. 글꼴을 포함한 앱을 다시 설치해 주세요.');
       if (!GlobalFonts.register(bytes, font.alias)) throw new Error('자막 글꼴을 사용할 수 없습니다.');
-      supported ||= fontHasCodePoint(bytes);
+      coverage.set(font.alias, fontHasCodePoint(bytes));
     }
-    const style = validateCaptionStyle(input.style), { width, height } = input;
     if (!Number.isInteger(width) || !Number.isInteger(height) || width < 2 || height < 2 || width * height > 36 * 1024 ** 2) throw new Error('자막을 합성할 영상 크기가 지원 범위를 벗어났습니다.');
     let canvas = createCanvas(width, height), context = canvas.getContext('2d');
-    const graphemes = new Intl.Segmenter('ko', { granularity: 'grapheme' });
-    const words = new Intl.Segmenter('ko', { granularity: 'word' });
-    const font = style.preset === 'clean' ? 'HyperCut Regular' : 'HyperCut Bold';
+    const graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    const words = new Intl.Segmenter(input.language || 'ko', { granularity: 'word' });
+    const font = selectedFont;
+    const supported = codePoint => coverage.get(font)(codePoint) || (coverage.get(`${font} Multilingual`)?.(codePoint) || false);
+    const fontStack = `"${font}", "${font} Multilingual"`;
     function linesFor(text, size) {
-      context.font = `${size}px "${font}"`;
+      context.font = `${size}px ${fontStack}`;
       const maxWidth = width * .9 - size, lines = [];
       for (const paragraph of text.split('\n')) {
         let line = '';
@@ -65,7 +74,7 @@ process.once('message', async input => {
     async function paint(measured) {
       const { size, lines, lineHeight, padding, boxWidth, boxHeight, top } = measured;
       context.clearRect(0, 0, width, height);
-      context.font = `${size}px "${font}"`;
+      context.font = `${size}px ${fontStack}`;
       if (style.preset === 'box') { context.fillStyle = '#111111dd'; context.beginPath(); context.roundRect((width - boxWidth) / 2, top, boxWidth, boxHeight, size * .2); context.fill(); }
       context.textAlign = 'center'; context.textBaseline = 'alphabetic'; context.lineJoin = 'round'; context.lineWidth = Math.max(.5, size * .075); context.strokeStyle = '#000000ee'; context.fillStyle = style.preset === 'emphasis' ? '#ffe16b' : '#ffffff';
       for (let i = 0; i < lines.length; i++) { const y = top + padding + lineHeight * (i + .75); if (style.preset !== 'box') context.strokeText(lines[i], width / 2, y); context.fillText(lines[i], width / 2, y); }

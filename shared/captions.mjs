@@ -1,8 +1,11 @@
+import { isCaptionLanguage, isTranscriptionLanguage } from './languages.mjs';
 export const MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS = 30;
 
 export function validateTranscript(value, duration) {
   if (value == null) return null;
-  if (!Number.isFinite(duration) || duration <= 0 || !Number.isInteger(value.trackIndex) || value.trackIndex < 0 || !Number.isInteger(value.channel) || value.channel < 0 || value.channel > 7 || !['ko', 'en', 'auto'].includes(value.language)) throw new Error('전사 설정이 올바르지 않습니다.');
+  if (!Number.isFinite(duration) || duration <= 0 || !Number.isInteger(value.trackIndex) || value.trackIndex < 0 || !Number.isInteger(value.channel) || value.channel < 0 || value.channel > 7 || !isTranscriptionLanguage(value.language)) throw new Error('전사 설정이 올바르지 않습니다.');
+  if (value.outputLanguage !== undefined && !isCaptionLanguage(value.outputLanguage)) throw new Error('출력할 자막 언어가 올바르지 않습니다.');
+  if (value.detectedLanguage !== undefined && !isCaptionLanguage(value.detectedLanguage)) throw new Error('감지된 전사 언어가 올바르지 않습니다.');
   if (!Array.isArray(value.cues) || value.cues.length > 10000) throw new Error('자막 구간 수가 올바르지 않습니다.');
   const ids = new Set(); let length = 0;
   const cues = value.cues.map(cue => {
@@ -14,12 +17,34 @@ export function validateTranscript(value, duration) {
     const warning = cue.timingWarning;
     if (warning !== undefined && (!warning || typeof warning !== 'object' || Array.isArray(warning) || Object.keys(warning).length !== 2 || warning.kind !== 'source-end' || !Number.isFinite(warning.originalEnd) || warning.originalEnd <= duration || warning.originalEnd > duration + MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS)) throw new Error('자막 끝 경계 검토 정보가 올바르지 않습니다.');
     if (cue.reviewedFor !== undefined && (typeof cue.reviewedFor !== 'string' || cue.reviewedFor.length > 65536)) throw new Error('자막 검토 정보가 올바르지 않습니다.');
-    return { id: cue.id, start: cue.start, end: cue.end, text, ...(warning ? { timingWarning: { kind: 'source-end', originalEnd: warning.originalEnd } } : {}), ...(cue.reviewedFor ? { reviewedFor: cue.reviewedFor } : {}) };
+    let translations;
+    if (cue.translations !== undefined) {
+      if (!cue.translations || typeof cue.translations !== 'object' || Array.isArray(cue.translations)) throw new Error('자막 번역 정보가 올바르지 않습니다.');
+      translations = {};
+      for (const [language, entry] of Object.entries(cue.translations)) {
+        if (!isCaptionLanguage(language) || !entry || typeof entry !== 'object' || Array.isArray(entry) || Object.keys(entry).length !== 2 || !Object.hasOwn(entry, 'text') || !Object.hasOwn(entry, 'sourceText')) throw new Error('자막 번역 정보가 올바르지 않습니다.');
+        for (const key of ['text', 'sourceText']) if (typeof entry[key] !== 'string' || !entry[key].trim() || entry[key].length > 2000 || /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(entry[key])) throw new Error('번역 문구를 확인해 주세요.');
+        const translated = entry.text.replace(/\r\n?/g, '\n').replace(/\n\s*\n/g, '\n').trim();
+        translations[language] = { text: translated, sourceText: entry.sourceText };
+        length += translated.length + entry.sourceText.length;
+      }
+    }
+    return { id: cue.id, start: cue.start, end: cue.end, text, ...(translations ? { translations } : {}), ...(warning ? { timingWarning: { kind: 'source-end', originalEnd: warning.originalEnd } } : {}), ...(cue.reviewedFor ? { reviewedFor: cue.reviewedFor } : {}) };
   }).sort((a, b) => a.start - b.start || a.end - b.end);
   if (length > 2 * 1024 ** 2) throw new Error('자막 문구가 너무 많습니다.');
   for (let i = 1; i < cues.length; i++) if (cues[i].start < cues[i - 1].end - 1e-6) throw new Error('자막 구간이 겹칩니다. 시작과 끝 시각을 조절해 주세요.');
   const model = typeof value.model === 'string' && value.model.length <= 200 ? value.model : 'manual';
-  return { trackIndex: value.trackIndex, channel: value.channel, language: value.language, model, cues };
+  return { trackIndex: value.trackIndex, channel: value.channel, language: value.language, model, cues, ...(value.detectedLanguage ? { detectedLanguage: value.detectedLanguage } : {}), ...(value.outputLanguage ? { outputLanguage: value.outputLanguage } : {}) };
+}
+
+export function captionContent(cue, language) {
+  if (!language) return { text: cue.text, translationMissing: false };
+  const translated = cue.translations?.[language];
+  return { text: translated?.text || cue.text, translationMissing: !translated || translated.sourceText !== cue.text };
+}
+
+export function editCaptionContent(cue, language, text) {
+  return language ? { ...cue, translations: { ...cue.translations, [language]: { text, sourceText: cue.text } }, reviewedFor: undefined } : { ...cue, text, reviewedFor: undefined };
 }
 
 // Caption content never determines cuts. Review is tied to exact text, source
@@ -29,6 +54,7 @@ export function mapCaptions(transcript, kept) {
   const offsets = []; let total = 0;
   for (const range of kept) { offsets.push(total); total += range.end - range.start; }
   return transcript.cues.map(cue => {
+    const content = captionContent(cue, transcript.outputLanguage);
     const parts = []; let start, end, retained = 0;
     let low = 0, high = kept.length;
     while (low < high) { const mid = (low + high) >>> 1; if (kept[mid].end <= cue.start) low = mid + 1; else high = mid; }
@@ -38,8 +64,8 @@ export function mapCaptions(transcript, kept) {
     }
     const removed = parts.length === 0;
     const changed = !removed && Math.abs(retained - (cue.end - cue.start)) > 1e-6;
-    const reviewKey = JSON.stringify([cue.start, cue.end, cue.text, parts, ...(cue.timingWarning ? [cue.timingWarning] : [])]);
-    return { ...cue, outputStart: start, outputEnd: end, removed, needsReview: !removed && (changed || !!cue.timingWarning) && cue.reviewedFor !== reviewKey, reviewKey };
+    const reviewKey = JSON.stringify([cue.start, cue.end, content.text, parts, ...(cue.timingWarning ? [cue.timingWarning] : []), ...(transcript.outputLanguage ? [transcript.outputLanguage, cue.text] : [])]);
+    return { ...cue, ...content, outputStart: start, outputEnd: end, removed, needsReview: !removed && (content.translationMissing || ((changed || !!cue.timingWarning) && cue.reviewedFor !== reviewKey)), reviewKey };
   });
 }
 
@@ -57,6 +83,15 @@ export function toSRT(transcript, kept) {
     const text = cue.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return `${i + 1}\n${stamp(cue.outputStart)} --> ${stamp(cue.outputEnd)}\n${text}\n`;
   }).join('\n');
+}
+
+export function toTranscriptText(transcript, kept, { source = false } = {}) {
+  if (!transcript?.cues.length) throw new Error('내보낼 대본이 없습니다. 먼저 전사해 주세요.');
+  const cues = source ? transcript.cues.map(cue => ({ ...cue, ...captionContent(cue, transcript.outputLanguage) })) : mapCaptions(transcript, kept).filter(cue => !cue.removed);
+  if (cues.some(cue => cue.translationMissing)) throw new Error('선택한 언어의 번역이 없거나 원문이 바뀌었습니다. 번역을 확인해 주세요.');
+  if (!source && cues.some(cue => cue.needsReview)) throw new Error('대본에 포함할 자막의 문구와 경계를 먼저 검토해 주세요.');
+  if (!cues.length) throw new Error('편집본에 남은 대본이 없습니다.');
+  return cues.map(cue => cue.text).join('\n\n') + '\n';
 }
 
 /** Source-clock listening preview, including visibly unreviewed cues. Never used for exports. */

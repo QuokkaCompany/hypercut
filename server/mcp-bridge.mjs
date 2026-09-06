@@ -11,7 +11,7 @@ export function bridgeConfiguration(env) {
 }
 
 const receiptShape = {
-  shareId: z.uuidv4(), contextVersion: z.uuidv4(), task: z.enum(['settings', 'correction', 'effects']),
+  shareId: z.uuidv4(), contextVersion: z.uuidv4(), task: z.enum(['settings', 'correction', 'translation', 'effects']),
   status: z.enum(['waiting', 'proposed', 'applied', 'rejected']), expiresAt: z.number(), leaseExpiresAt: z.number(),
   proposalId: z.uuidv4().nullable(), resolution: z.strictObject({ outcome: z.enum(['applied', 'rejected']), selectedIds: z.array(z.string()) }).nullable(),
 };

@@ -61,6 +61,7 @@ export default function App() {
   function openCaptions() { video.current?.pause(); setCaptionsOpen(true); }
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [timelineZoom, setTimelineZoom] = useState(1);
+  const [clipRange, setClipRange] = useState<{ start: number; end: number } | null>(null);
   const [previewRangeOpen, setPreviewRangeOpen] = useState(false), [rangePreview, setRangePreview] = useState<Output | null>(null);
   const video = useRef<HTMLVideoElement>(null), fileInput = useRef<HTMLInputElement>(null), projectInput = useRef<HTMLInputElement>(null);
   const operation = useRef(0), importController = useRef<AbortController | null>(null), pendingProject = useRef<ReturnType<typeof validateProject> | null>(null);
@@ -107,7 +108,7 @@ export default function App() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
-      if (dialog || aiOpen || captionsOpen || effectsOpen || restoreOpen || previewRangeOpen || rangePreview || target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+      if (dialog || aiOpen || captionsOpen || effectsOpen || restoreOpen || clipRange || previewRangeOpen || rangePreview || target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
       if (event.code === 'Space' && target.tagName === 'BUTTON') return;
       if ((event.metaKey || event.ctrlKey) && event.code === 'KeyO' && !busy) { event.preventDefault(); void chooseVideo(); }
       if ((event.metaKey || event.ctrlKey) && event.code === 'KeyS' && !busy) { event.preventDefault(); saveProject(); }
@@ -130,6 +131,7 @@ export default function App() {
     captionHistory.load({ transcript: project?.transcript as Transcript | null ?? null, style: (project?.captionStyle || { ...DEFAULT_CAPTION_STYLE }) as CaptionStyle, glossary: project?.glossary ?? '' });
     effectsHistory.load((project?.effects || { assets: [], clips: [] }) as Effects);
     setAnalysis(previous => media?.fingerprint === next.fingerprint ? previous : null);
+    setClipRange(null); setPreviewRangeOpen(false); setRangePreview(null);
     setMedia(next); setTime(0); setRendered(null); setOutput(null); setSelected(null); setTimelineZoom(1); setMode('edited'); setPlaying(false);
     if (project) {
       setSettings(project.settings as Settings); setTrackIndex(project.trackIndex); dispatch({ type: 'load', cuts: project.cuts });
@@ -161,24 +163,24 @@ export default function App() {
     const id = ++operation.current;
     try { const next = await request<Media>('/demo', {}); if (id === operation.current) { installMedia(next); setNotice('실제 음성이 아닌 합성 신호로 만든 16초 검증 샘플입니다.'); } } catch (e) { if (id === operation.current) setError((e as Error).message); } finally { if (id === operation.current) setBusy(null); }
   }
-  async function run(type: 'analyze' | 'preview' | 'export' | 'restore' | 'transcribe' | 'captions', range?: { start: number; end: number }, transcription?: TranscriptionSettings) {
+  async function run(type: 'analyze' | 'preview' | 'export' | 'restore' | 'transcribe' | 'captions' | 'transcript', range?: { start: number; end: number }, transcription?: TranscriptionSettings, textMode?: 'source' | 'edited') {
     if (!media || busy) return;
     video.current?.pause(); setBusy(type); setError(''); setJob(null);
     const id = ++operation.current;
     const active = { id: crypto.randomUUID(), controller: new AbortController(), cancelled: false }; activeJob.current = active;
     setJob({ id: active.id, type, status: 'running', progress: 0, stage: '작업 준비' });
     try {
-      const started = await request<Job>('/jobs', { type, mediaId: media.id, settings, speechProtection, trackIndex, cuts, requestId: active.id, range, transcription, transcript, captionStyle, effects }, undefined, active.controller.signal);
+      const started = await request<Job>('/jobs', { type, mediaId: media.id, settings, speechProtection, trackIndex, cuts, requestId: active.id, range, transcription, transcript, captionStyle, effects, textMode }, undefined, active.controller.signal);
       const completed = await waitJob(started.id, next => { if (operation.current === id) setJob(active.cancelled ? { ...next, stage: '취소 중' } : next); }, active.controller.signal);
       if (operation.current !== id) return;
       if (active.cancelled) { setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); return; }
       if (completed.status === 'failed') throw new Error(completed.error);
       if (completed.status === 'cancelled') { setNotice('작업을 취소했습니다. 기존 편집은 유지됩니다.'); return; }
       if (type === 'transcribe') { changeTranscript(completed.result as Transcript); setNotice('전사가 완료됐습니다. 문구와 시각을 확인해 주세요.'); }
-      else if (type === 'captions') {
+      else if (type === 'captions' || type === 'transcript') {
         const result = completed.result as Output;
-        if (window.hypercut) { if (await window.hypercut.saveExport(result.id)) setNotice('편집한 자막을 저장했습니다.'); }
-        else { const anchor = document.createElement('a'); anchor.href = outputURL(result.id, true); anchor.download = result.name; anchor.click(); setNotice('편집한 SRT 자막을 저장했습니다.'); }
+        if (window.hypercut) { if (await window.hypercut.saveExport(result.id)) setNotice(type === 'transcript' ? '대본 TXT를 저장했습니다.' : '편집한 자막을 저장했습니다.'); }
+        else { const anchor = document.createElement('a'); anchor.href = outputURL(result.id, true); anchor.download = result.name; anchor.click(); setNotice(type === 'transcript' ? '대본 TXT 다운로드를 시작했습니다.' : '편집한 SRT 자막 다운로드를 시작했습니다.'); }
       }
       else if (type === 'analyze') {
         const result = completed.result as Analysis; setAnalysis(result); dispatch({ type: 'edit', cuts: result.cuts }); setUnsaved(true); setSelected(result.cuts[0]?.id ?? null);
@@ -243,7 +245,7 @@ export default function App() {
     } catch (e) { if (id === operation.current) setError((e as Error).message); }
   }
   async function downloadOutput() {
-    if (!output) return;
+    if (!output || busy) return;
     if (window.hypercut) { try { if (await window.hypercut.saveExport(output.id)) setNotice('편집한 영상을 저장했습니다.'); } catch (e) { setError((e as Error).message); } }
     else { const anchor = document.createElement('a'); anchor.href = outputURL(output.id, true); anchor.download = output.name; anchor.click(); }
   }
@@ -256,7 +258,7 @@ export default function App() {
     <header className="app-header">
       <a className="brand" href="#" onClick={e => e.preventDefault()} aria-label="HyperCut"><span className="brand-mark">H</span><strong>hypercut<span>.</span></strong><span className="beta">PREVIEW</span></a>
       <div className="project-title"><span className="divider" /><span>{media?.name.replace(/\.[^.]+$/, '') || '새 프로젝트'}</span>{unsaved && <i title="저장하지 않은 편집" className="unsaved-dot" />}<ChevronDown size={13} /></div>
-      <div className="header-actions"><span className={`local-status ${engineError ? 'error-status' : ''}`}><i />{engineError ? '엔진 확인 필요' : '내 컴퓨터에서 처리'}</span><button className="button ghost compact" aria-label="프로젝트 저장" onClick={saveProject} disabled={!media || !!busy || saving}><Save size={15} />{saving ? '저장 중…' : '프로젝트 저장'}</button><button className="button primary" onClick={() => run('export')} disabled={!media || !kept.length || !!busy || !media.audioTracks.length}><ArrowUpFromLine size={16} />내보내기</button></div>
+      <div className="header-actions"><span className={`local-status ${engineError ? 'error-status' : ''}`}><i />{engineError ? '엔진 확인 필요' : '내 컴퓨터에서 처리'}</span><button className="button ghost compact" aria-label="프로젝트 저장" onClick={saveProject} disabled={!media || !!busy || saving}><Save size={15} />{saving ? '저장 중…' : '프로젝트 저장'}</button><button className="button secondary" disabled={!media || !!busy || !media.audioTracks.length} onClick={() => { video.current?.pause(); setClipRange({ start: Math.min(time, Math.max(0, media!.duration - .001)), end: media!.duration }); }}>클립 만들기</button><button className="button primary" onClick={() => run('export')} disabled={!media || !kept.length || !!busy || !media.audioTracks.length}><ArrowUpFromLine size={16} />내보내기</button></div>
     </header>
     <div className="editor-shell">
       <nav className="tool-rail" aria-label="앱 메뉴"><button className="rail-button active" title="영상 편집" aria-label="영상 편집"><Scissors size={21} /><span>편집</span></button><button className="rail-button" title="AI 편집 도우미" aria-label="AI 편집 도우미" onClick={() => setAIOpen(true)} disabled={!ready || !!busy}><Sparkles size={20} /><span>AI</span></button><button className="rail-button" aria-label="전사와 자막" title="전사와 자막" disabled={!media || !!busy || !media.audioTracks.length} onClick={openCaptions}><Captions size={20} /><span>자막</span></button><button className="rail-button" aria-label="효과음 편집" title="효과음 편집" disabled={!media || !!busy || !media.audioTracks.length} onClick={openEffects}><Music2 size={20} /><span>효과음</span></button><div className="rail-bottom"><button className="rail-button" onClick={() => setDialog('engine')} title="로컬 엔진" aria-label="로컬 엔진"><Settings2 size={19} /></button><button className="rail-button" onClick={() => setDialog('help')} title="사용 방법" aria-label="사용 방법"><CircleHelp size={19} /></button><span className="avatar">H</span></div></nav>
@@ -298,16 +300,17 @@ export default function App() {
         <p className="analysis-note">AI 계정 없이, 내 컴퓨터에서 분석합니다.</p>
         {media && !kept.length && <div className="stale-notice" role="status">모든 구간이 제거되어 내보낼 수 없습니다. 필요한 구간을 복원해 주세요.</div>}
         <div className="result-summary"><div className="section-label">편집 요약 <Clock3 size={13} /></div><div><span>원본 길이</span><strong>{formatTime(media?.duration || 0, true)}</strong></div><div><span>제거할 시간</span><strong className="lime">− {formatTime(removedDuration, true)} {percent > 0 && <small>{percent}%</small>}</strong></div><div className="result-total"><span>편집 후 길이</span><strong>{formatTime(editedDuration, true)}</strong></div>{cuts.length > 0 && <p>{activeCuts}개 구간 제거 · {cuts.length - activeCuts}개 복원</p>}</div>
-        {output && <div className="export-ready"><div><Check size={17} /><strong>내보내기 완료</strong></div><p>{formatTime(output.duration)} · {formatSize(output.size)} · 파일 검증 완료{output.captionStyle?.enabled ? ` · 자막 ${output.burnedCaptions}개 포함` : ' · 자막 없음'}{output.audioMix?.mixedClips ? ` · 효과음 ${output.audioMix.mixedClips}개 · 최종 피크 ${(output.audioMix.encodedPeakDb ?? output.audioMix.peakDb)?.toFixed(1) ?? '−∞'} dBFS` : ''}</p><button className="button primary" onClick={downloadOutput}><Download size={15} />편집한 MP4 저장</button></div>}
+        {output && <div className="export-ready"><div><Check size={17} /><strong>{output.sourceRange ? "클립 내보내기 완료" : "내보내기 완료"}</strong></div><p>{output.sourceRange && <>원본 {formatTime(output.sourceRange.start, true)}–{formatTime(output.sourceRange.end, true)} · </>}{formatTime(output.duration)} · {formatSize(output.size)} · 파일 검증 완료{output.captionStyle?.enabled ? ` · 자막 ${output.burnedCaptions}개 포함` : ' · 자막 없음'}{output.audioMix?.mixedClips ? ` · 효과음 ${output.audioMix.mixedClips}개 · 최종 피크 ${(output.audioMix.encodedPeakDb ?? output.audioMix.peakDb)?.toFixed(1) ?? '−∞'} dBFS` : ''}</p><button className="button primary" disabled={!!busy} onClick={downloadOutput}><Download size={15} />{output.sourceRange ? "클립 MP4 저장" : "편집한 MP4 저장"}</button></div>}
       </div></aside>
     </div>
     <footer className="status-bar"><span><HardDrive size={12} />{window.hypercut ? '데스크톱 앱' : '브라우저 앱'}<i />로컬 편집</span><span>{media ? `${media.width} × ${media.height} · ${media.fps.toFixed(2)} fps` : 'H.264 · MP4 / MOV'}<span className="footer-shortcut">Space 재생 · ← → 이동 · ⌘ Z 실행 취소</span></span></footer>
     {(error || engineError) && <div className="error-toast" role="alert"><CircleHelp size={18} /><div><strong>확인이 필요합니다</strong><p>{error || engineError}</p></div><button className="icon-button" aria-label="오류 닫기" onClick={() => { setError(''); if (engineError) setDialog('engine'); }}><X size={17} /></button></div>}
     {notice && <div className="notice-toast" role="status"><Check size={16} />{notice}<button className="icon-button" aria-label="알림 닫기" onClick={() => setNotice('')}><X size={14} /></button></div>}
     {restoreOpen && media && <RestoreDialog duration={media.duration} start={currentCut?.start ?? 0} end={currentCut?.end ?? media.duration} onClose={() => setRestoreOpen(false)} onRestore={(start, end) => { setRestoreOpen(false); void run("restore", { start, end }); }} />}
+    {clipRange && media && <PreviewRangeDialog clip duration={media.duration} start={clipRange.start} end={clipRange.end} onClose={() => setClipRange(null)} onPreview={range => { setClipRange(null); void run('export', range); }} />}
     {previewRangeOpen && media && currentCut && <PreviewRangeDialog duration={media.duration} start={Math.max(0, currentCut.start - 2)} end={Math.min(media.duration, currentCut.end + 2)} onClose={() => setPreviewRangeOpen(false)} onPreview={range => { setPreviewRangeOpen(false); void run('preview', range); }} />}
     {rangePreview && <RangePreviewPlayer output={rangePreview} onClose={() => setRangePreview(null)} />}
-    {captionsOpen && media && <CaptionEditor glossary={glossary} onGlossaryChange={changeGlossary} media={media} trackIndex={trackIndex} transcript={transcript} captionStyle={captionStyle} onStyleChange={changeCaptionStyle} onRenderPreview={() => { setCaptionsOpen(false); void run('preview'); }} kept={kept} busy={!!busy} job={job} canUndo={captionHistory.canUndo} canRedo={captionHistory.canRedo} onChange={changeTranscript} onUndo={() => { captionHistory.undo(); setUnsaved(true); }} onRedo={() => { captionHistory.redo(); setUnsaved(true); }} onTranscribe={value => { void run('transcribe', undefined, value); }} onExport={() => { void run('captions'); }} onCancel={cancel} onClose={() => setCaptionsOpen(false)} />}
+    {captionsOpen && media && <CaptionEditor glossary={glossary} onGlossaryChange={changeGlossary} media={media} trackIndex={trackIndex} transcript={transcript} captionStyle={captionStyle} onStyleChange={changeCaptionStyle} onRenderPreview={() => { setCaptionsOpen(false); void run('preview'); }} kept={kept} busy={!!busy} job={job} canUndo={captionHistory.canUndo} canRedo={captionHistory.canRedo} onChange={changeTranscript} onUndo={() => { captionHistory.undo(); setUnsaved(true); }} onRedo={() => { captionHistory.redo(); setUnsaved(true); }} onTranscribe={value => { void run('transcribe', undefined, value); }} onExport={() => { void run('captions'); }} onExportText={source => { void run('transcript', undefined, undefined, source ? 'source' : 'edited'); }} onCreateClip={range => { setCaptionsOpen(false); setClipRange(range); }} onCancel={cancel} onClose={() => setCaptionsOpen(false)} />}
     {effectsOpen && media && <EffectsEditor value={effects} contextId={`${media.id}:${trackIndex}`} cues={transcript?.trackIndex === trackIndex ? transcript.cues : []} duration={media.duration} time={time} kept={kept} connected={connectedEffects} onConnect={asset => setConnectedEffects(previous => new Set([...previous, asset.id]))} onImportBusy={setEffectImportBusy} canUndo={effectsHistory.canUndo} canRedo={effectsHistory.canRedo} onChange={changeEffects} onUndo={() => { effectsHistory.undo(); setUnsaved(true); }} onRedo={() => { effectsHistory.redo(); setUnsaved(true); }} onClose={() => setEffectsOpen(false)} onPreview={() => { setEffectsOpen(false); void run('preview'); }} />}
     {aiOpen && <AIAssistant settings={settings} contextId={media?.id || "empty"} disabled={!!busy} onClose={() => setAIOpen(false)} onApply={next => { setSettings(next); setUnsaved(!!media); setNotice("AI 제안을 설정에 반영했습니다. 무음을 다시 분석해 주세요."); }} />}
     {dialog && <div className="modal-backdrop" onClick={() => setDialog(null)}><section className="modal" role="dialog" aria-modal="true" aria-label={dialog === 'help' ? '사용 방법' : '로컬 엔진'} onClick={e => e.stopPropagation()}><div className="panel-heading"><h2>{dialog === 'help' ? '몇 번의 클릭으로, 더 가벼운 편집' : '내 컴퓨터의 편집 엔진'}</h2><button className="icon-button" aria-label="창 닫기" onClick={() => setDialog(null)}><X size={18} /></button></div>{dialog === 'help' ? <><p><b>01.</b> H.264 MP4·MOV 영상을 불러옵니다.</p><p><b>02.</b> 음량과 최소 무음 길이를 설정하고 분석합니다.</p><p><b>03.</b> 컷을 들어보고 필요한 구간을 복원합니다.</p><p><b>04.</b> 정확한 미리보기로 확인한 뒤 MP4를 내보냅니다.</p><div className="modal-note">프로젝트 파일에는 편집 정보만 저장됩니다. 다음에 열 때 같은 원본 영상이 필요합니다. 음량 분석은 음악과 사람의 목소리를 구별하지 않으므로 마이크 트랙을 선택해 주세요.</div></> : <><p>{engineError || '영상 분석과 렌더링이 이 컴퓨터에서 실행됩니다.'}</p><div className="modal-note">현재 H.264 SDR 영상과 선택한 오디오 트랙 한 개를 지원합니다. 내보내기는 원본 파일을 변경하지 않습니다.</div>{engineError && <p>macOS에서는 FFmpeg 설치 후 앱을 다시 실행해 주세요.<code>brew install ffmpeg</code></p>}{window.hypercut && <button className="button secondary" onClick={() => window.hypercut?.openBrowser()}><Monitor size={16} />브라우저에서도 열기</button>}</>}</section></div>}
