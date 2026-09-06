@@ -10,7 +10,7 @@ import { rssSampler, summarize } from './helpers/performance.mjs';
 import { sha256 } from './helpers/transcription-performance-fixture.mjs';
 import { capture } from '../server/process.mjs';
 import { DEFAULT_SETTINGS, validateProject } from '../shared/timeline.mjs';
-import { thresholdFixture, verifyThresholdSync } from './helpers/threshold-performance-fixture.mjs';
+import { thresholdFixture, verifyThresholdSync, verifyThresholdFrames } from './helpers/threshold-performance-fixture.mjs';
 
 const exec = promisify(execFile);
 const option = (name, fallback) => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
@@ -98,9 +98,10 @@ async function exercise(surface,input) {
       phase='ui';sampler=rssSampler(active.roots);await sampler.start();const ui=await measureUI(page),uiMemory=await resources('ui');
       phase='independent-output-verification';
       const sync=await verifyThresholdSync(input,exported,cuts,output);
+      const frames=await verifyThresholdFrames(input,exported,cuts);
       const outputSHA256=await sha256(exported);
       const stored=await saveProject(page,path.join(output,`${surface}-${Math.round(input.media.duration)}-${iteration}-project.json`));assert.deepEqual(cutContent(stored.cuts),referenceCuts);assert.deepEqual(stored.speechProtection,{enabled:false,threshold:.5});
-      const peakRSSBytes=Math.max(analyzeMemory.peakBytes,exportMemory.peakBytes,saveMemory.peakBytes,uiMemory.peakBytes),result={surface,inputSeconds:input.media.duration,iteration,cache:iteration===1?'fresh app process; OS cache not purged':'same app after previous iteration; OS cache not purged',viewport:await page.evaluate(()=>({width:innerWidth,height:innerHeight})),importSeconds,analyzeSeconds,exportSeconds,saveSeconds,peakRSSBytes,resources:{analysis:analyzeMemory,export:exportMemory,save:saveMemory,ui:uiMemory},cuts:cuts.length,analysisPeak:Math.max(...analysis.peaks),decodedSamples:analysis.decodedSamples,outputSeconds:exportJob.result.duration,expectedOutputSeconds:expectedDuration,fullDecodeVerified:exportJob.result.verified,outputFile:path.relative(process.cwd(),exported),outputSHA256,sync,ui,goals:{analysis:analyzeSeconds<=input.media.duration*.2,export:exportSeconds<=input.media.duration,memory:peakRSSBytes<=2*1024**3,ui:Object.values(ui.byFamily).every(value=>value.p95!==null&&value.p95<=200)},pageErrors:[...errors],externalRequests:external.length};
+      const peakRSSBytes=Math.max(analyzeMemory.peakBytes,exportMemory.peakBytes,saveMemory.peakBytes,uiMemory.peakBytes),result={surface,inputSeconds:input.media.duration,iteration,cache:iteration===1?'fresh app process; OS cache not purged':'same app after previous iteration; OS cache not purged',viewport:await page.evaluate(()=>({width:innerWidth,height:innerHeight})),importSeconds,analyzeSeconds,exportSeconds,saveSeconds,peakRSSBytes,resources:{analysis:analyzeMemory,export:exportMemory,save:saveMemory,ui:uiMemory},cuts:cuts.length,analysisPeak:Math.max(...analysis.peaks),decodedSamples:analysis.decodedSamples,outputSeconds:exportJob.result.duration,expectedOutputSeconds:expectedDuration,fullDecodeVerified:exportJob.result.verified,outputFile:path.relative(process.cwd(),exported),outputSHA256,sync,frames,ui,goals:{analysis:analyzeSeconds<=input.media.duration*.2,export:exportSeconds<=input.media.duration,memory:peakRSSBytes<=2*1024**3,ui:Object.values(ui.byFamily).every(value=>value.p95!==null&&value.p95<=200)},pageErrors:[...errors],externalRequests:external.length};
       report.runs.push(result);if(iteration===2&&cancelResult)cancelResult.retryCompletedIteration=2;await flush();console.log(JSON.stringify({surface,inputSeconds:result.inputSeconds,iteration,analyzeSeconds,exportSeconds,peakRSSBytes,cuts:result.cuts,ui:ui.byFamily,goals:result.goals}));assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
       if(iteration===1&&iterations>1){
         phase='cancel';

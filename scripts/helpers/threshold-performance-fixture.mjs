@@ -67,3 +67,26 @@ export async function verifyThresholdSync(input, outputFile, cuts, directory) {
   const firstToLastDrift=pairs.at(-1).extraAVError-pairs[0].extraAVError;assert.ok(Math.abs(firstToLastDrift)<=tolerance);
   return {status:'PASS',scope:'Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.',toleranceSeconds:tolerance,firstToLastDrift,pairs,windows};
 }
+
+// Fixed 30fps synthetic source only. Count and map every retained frame using
+// interval arithmetic, independently of the application's FFmpeg expressions.
+export async function verifyThresholdFrames(input, outputFile, cuts) {
+  assert.equal(input.media.fps, 30);
+  const removals = cuts.filter(cut => cut.enabled).sort((a, b) => a.start - b.start);
+  const probe = JSON.parse(await capture('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_streams', '-show_frames', '-show_entries', 'stream=time_base:frame=best_effort_timestamp', '-of', 'json', outputFile]));
+  const [n, d] = probe.streams[0].time_base.split('/').map(Number), tick = n / d;
+  let index = 0, cutIndex = 0, removed = 0, maxClockError = 0;
+  for (let frame = 0; frame < Math.round(input.media.duration * 30); frame++) {
+    const time = frame / 30;
+    while (cutIndex < removals.length && time >= removals[cutIndex].end - 1e-8) {
+      removed += removals[cutIndex].end - removals[cutIndex].start; cutIndex++;
+    }
+    if (cutIndex < removals.length && time >= removals[cutIndex].start - 1e-8) continue;
+    assert.ok(index < probe.frames.length, `Missing output frame ${index}`);
+    const error = Math.abs(Number(probe.frames[index].best_effort_timestamp) * tick - (time - removed));
+    assert.ok(error <= tick * 1.5 + 1e-8, `Output frame ${index} clock: ${error}`);
+    maxClockError = Math.max(maxClockError, error); index++;
+  }
+  assert.equal(probe.frames.length, index, 'Unexpected output frames');
+  return { status: 'PASS', frames: index, maxClockError, toleranceSeconds: tick * 1.5 + 1e-8, scope: 'Every retained synthetic 30fps frame count and PTS; not full pixel identity.' };
+}

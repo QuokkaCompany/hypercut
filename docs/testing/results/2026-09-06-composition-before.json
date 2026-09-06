@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-06T06:43:22.548Z",
+  "status": "failed",
+  "scope": "60-second real backend composition of 16 cuts, 16 manually authored Korean captions and 16 audible effects plus muted/removed controls. This is engine/oracle verification, not app UI performance, real speech accuracy or human audio quality.",
+  "sourceHashes": {
+    "server/media.mjs": "663dc2a9a59fea22fefe88b42738a11a9d897261e4ee3d3d57f1a009ee300c22",
+    "server/effects.mjs": "972611657a16780bc47f386c579d9c589ca3287ad730103a9b899094efae7d5b",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "73a6215294dc384c7500abd6e8fbca5d10dc10b410dbb711f7d6151f38e0aa55",
+    "scripts/helpers/composition-oracle.mjs": "46c22c4463e070c3c97de9d05d235df18c83db9dfa03ff7b2523b1b1c1193c17",
+    "scripts/helpers/composition-performance-fixture.mjs": "4d7bc3816c54a7918d40b60c7eef5eedb985c92efa983c6cfe12965cb4da7aa1",
+    "tests/composition-smoke.integration.mjs": "92f213bc30fe302934e198b5d08099778846846075f9958929f9acf05e98181e"
+  },
+  "error": "AssertionError [ERR_ASSERTION]: Full 30fps video frame count\n\n1463 !== 1448\n\n    at CompositionCaptionOracle.finish (file:///Users/dante/Desktop/github/hyper_cut/scripts/helpers/composition-oracle.mjs:118:12)\n    at verifyCompositionVideo (file:///Users/dante/Desktop/github/hyper_cut/scripts/helpers/composition-performance-fixture.mjs:64:25)\n    at async TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/composition-smoke.integration.mjs:31:27)\n    at async Test.run (node:internal/test_runner/test:1125:7)\n    at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)"
+}

@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-06T06:54:47.879Z",
+  "archive": "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar",
+  "sha256": "5bd133076a39b478dc5b29953e405b903199cec3a3fbd76599f406e3b1c88a50",
+  "files": [
+    {
+      "file": "server/media.mjs",
+      "local": "064f6a984bd8b823ae3abed45fd59c65895f3bdf9bbd7e8e6494c65abe38099e",
+      "packaged": "064f6a984bd8b823ae3abed45fd59c65895f3bdf9bbd7e8e6494c65abe38099e"
+    },
+    {
+      "file": "shared/timeline.mjs",
+      "local": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+      "packaged": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c"
+    }
+  ]
+}

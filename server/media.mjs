@@ -229,7 +229,7 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     const { select, offset } = videoExpressions(removals);
     const scale = preview ? ',scale=w=960:h=540:force_original_aspect_ratio=decrease:force_divisible_by=2' : ',pad=ceil(iw/2)*2:ceil(ih/2)*2';
     const trim = sourceRange ? `,trim=start=${sourceRange.start}:end=${sourceRange.end}` : '';
-    const base = `[0:${media.videoIndex}]setpts=PTS-(${media.origin})/TB${trim},select='${select}',setpts='PTS-(${offset})/TB'`;
+    const base = `[0:${media.videoIndex}]setpts=PTS-round((${media.origin})/TB)${trim},select='${select}',setpts='PTS-round((${offset})/TB)'`;
     // Draw on the original pixel canvas, then scale the composed image for
     // preview. Layout and line breaks are identical in preview and export.
     const graph = captionStyle.enabled ? `${base},scale=${media.width}:${media.height},setsar=1,pad=ceil(iw/2)*2:ceil(ih/2)*2[base];[base][2:v]overlay=eof_action=repeat:repeatlast=1:alpha=straight${scale}[v]` : `${base}${scale}[v]`;

@@ -1,0 +1,115 @@
+{
+  "date": "2026-09-06T06:41:04.028Z",
+  "status": "failed",
+  "scope": "Independent oracle calibration with generated H.264/AAC files. Yellow rectangles calibrate caption presence, not Korean glyph quality. Invalid timing, gain, missing/extra content and dropped frames must be rejected.",
+  "sourceHashes": {
+    "scripts/helpers/composition-oracle.mjs": "46c22c4463e070c3c97de9d05d235df18c83db9dfa03ff7b2523b1b1c1193c17",
+    "scripts/helpers/composition-performance-fixture.mjs": "4d7bc3816c54a7918d40b60c7eef5eedb985c92efa983c6cfe12965cb4da7aa1",
+    "tests/composition-oracle.integration.mjs": "a6c0f3aa74a97e3dfc27dbaf2b6ae6ffe8ae9d404f0a024c9f85f4a576e05076"
+  },
+  "runs": [
+    {
+      "name": "valid AAC",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/valid.mp4",
+      "sha256": "020557d13eaf4c15305f903ff1488b1b3b99dd345491c3efcaa1812b1c4970fe",
+      "status": "PASS",
+      "evidence": {
+        "frames": 144384,
+        "peak": 0.17460621893405914,
+        "toleranceSeconds": 0.03333333333333333,
+        "amplitudeTolerance": 0.006,
+        "events": [
+          {
+            "id": "audible",
+            "start": 1,
+            "end": 1.25,
+            "amplitude": 0.05,
+            "first": 1,
+            "last": 1.25,
+            "centers": 35,
+            "minAmplitude": 0.04986211801614609,
+            "maxAmplitude": 0.050142202601877676
+          }
+        ]
+      }
+    },
+    {
+      "name": "valid H264",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/valid.mp4",
+      "sha256": "020557d13eaf4c15305f903ff1488b1b3b99dd345491c3efcaa1812b1c4970fe",
+      "status": "PASS",
+      "evidence": {
+        "frames": 90,
+        "lastTime": 2.966667,
+        "visibleFrames": [
+          42
+        ],
+        "boundaryFrames": 0,
+        "toleranceSeconds": 0.03333333333333333,
+        "encodedDuration": 3,
+        "width": 320,
+        "height": 180,
+        "sampleWidth": 160,
+        "sampleHeight": 30,
+        "framesForVisualReview": [],
+        "scope": "Every output frame checked for yellow-caption presence and timing. Exact text is checked in SRT; exported sample frames require visual review. This does not OCR every glyph."
+      }
+    },
+    {
+      "name": "missing-effect",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/missing-effect.mp4",
+      "sha256": "602e0e659ace2fc632a5bdebe5dbdea3809206a0fe172585d0f039688a172f7e",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Effect gain audible at 1.040s: 0.00004"
+    },
+    {
+      "name": "shifted-effect",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/shifted-effect.mp4",
+      "sha256": "61fc84f7fac6edec7a9e638e520c951961f15cb81317e87119273d0b6bba61da",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Effect gain audible at 1.040s: 0.00004"
+    },
+    {
+      "name": "wrong-gain",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/wrong-gain.mp4",
+      "sha256": "2f009722459ca00c783a5477672849484d29c65412a4c3d97f0776271a706ed6",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Effect gain audible at 1.040s: 0.02496"
+    },
+    {
+      "name": "extra-effect",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/extra-effect.mp4",
+      "sha256": "1c5c472720ceab375eb274b301566ccadb75699db81e11a050a404f71a8ae376",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Unexpected effect at 2.000s: 0.02490"
+    },
+    {
+      "name": "missing-caption",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/missing-caption.mp4",
+      "sha256": "184be761e0d9053e2270b5601b3f8fca7252443423a8bd0f1a5c14c1137c0278",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Caption presence at 0.866667s: 0 yellow pixels"
+    },
+    {
+      "name": "shifted-caption",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/shifted-caption.mp4",
+      "sha256": "bc362b9ffa0103e1dc317534256e5e049d1e282ace5a5510ee624472c77bded6",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Caption presence at 0.866667s: 0 yellow pixels"
+    },
+    {
+      "name": "extra-caption",
+      "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-oracle-lTNJK6/extra-caption.mp4",
+      "sha256": "a564fef1bc33430eaf1598bffe864e42001f83538910ceea76adfc914263aea3",
+      "status": "PASS",
+      "expectedRejection": true,
+      "error": "Caption presence at 0.100000s: 1560 yellow pixels"
+    }
+  ]
+}

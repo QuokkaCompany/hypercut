@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-06T06:54:32.049Z",
+  "sourceHash": "8d98fc7c46c0bfde0d883a29207968a295582bc0cb0f7c036d4e7a448d40a466",
+  "before": {
+    "file": "test-output/composition-engine-94unIH/9794340c-b07d-48c5-a56a-824b26fd2ede.mp4",
+    "rejected": true,
+    "reason": "Output frame 84 clock: 0.03332222222222203"
+  },
+  "after": {
+    "file": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-engine-ZBLHyN/0b6baa62-4296-45ba-83b2-a2d2687cef8a.mp4",
+    "result": {
+      "status": "PASS",
+      "frames": 1448,
+      "maxClockError": 7.105427357601002e-15,
+      "toleranceSeconds": 0.00001667666666666667,
+      "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+    }
+  }
+}

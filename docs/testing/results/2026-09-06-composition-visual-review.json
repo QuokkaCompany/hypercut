@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-06T06:52:58.973926+00:00",
+  "status": "PASS",
+  "method": "Viewed the three exported full-resolution PNGs with view_image. Separate manual visual evidence; the automated report visualReview remains NOT_RUN.",
+  "frames": [
+    {
+      "cueIndex": 0,
+      "text": "합성 검증 0001",
+      "time": 1.5,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-engine-ZBLHyN/caption-1.png",
+      "sha256": "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62"
+    },
+    {
+      "cueIndex": 8,
+      "text": "합성 검증 0009",
+      "time": 24.433333333333334,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-engine-ZBLHyN/caption-9.png",
+      "sha256": "38f638a03a07a61b48c6c42ef75a3ec8db807d764d7616df8fadeff453b9ac1e"
+    },
+    {
+      "cueIndex": 15,
+      "text": "합성 검증 0016",
+      "time": 44.5,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-engine-ZBLHyN/caption-16.png",
+      "sha256": "80fd8d174c1c04dc26aec9ce719a763b376a248b2a7ffcf6998bfcbb719e748c"
+    }
+  ],
+  "finding": "All three show the expected Korean text and numbers 0001, 0009, 0016 in yellow with a dark outline near the bottom center, with no visible clipping or missing glyphs.",
+  "scope": "Three sampled caption images only; not every glyph, real footage readability or human audio review."
+}

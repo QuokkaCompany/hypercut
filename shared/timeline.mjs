@@ -126,14 +126,16 @@ export function editedToSource(time, kept) {
 function piecewise(points, values, variable, lo = 0, hi = values.length - 1) {
   if (lo === hi) return String(values[lo]);
   const mid = (lo + hi) >>> 1;
-  return `if(lt(${variable},${points[mid].toFixed(9)}),${piecewise(points, values, variable, lo, mid)},${piecewise(points, values, variable, mid + 1, hi)})`;
+  return `if(lt(${variable},round(${points[mid]}/TB)),${piecewise(points, values, variable, lo, mid)},${piecewise(points, values, variable, mid + 1, hi)})`;
 }
 
 export function videoExpressions(removals) {
   const points = [], selectValues = [1], offsets = [0];
   let total = 0;
   for (const x of removals) { points.push(x.start, x.end); selectValues.push(0, 1); offsets.push(total, total + x.end - x.start); total += x.end - x.start; }
-  return { select: piecewise(points, selectValues, 't'), offset: piecewise(points, offsets.map(x => Number(x.toFixed(9))), 'T') };
+  // Cuts are snapped to source timestamps. Compare integer ticks so serializing
+  // a repeating fraction such as 83/30 cannot retain the first removed frame.
+  return { select: piecewise(points, selectValues, 'pts'), offset: piecewise(points, offsets, 'PTS') };
 }
 
 /** @param {any} transcript */
