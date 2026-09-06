@@ -10,6 +10,8 @@ import { sha256 } from './helpers/transcription-performance-fixture.mjs';
 
 // Diagnostic only: preserve the formal benchmark and do not force collection.
 const output = path.resolve(process.argv.find(value => value.startsWith('--output='))?.slice(9) || 'test-output/editor-memory-diagnostic');
+const locatorMode = process.argv.find(value => value.startsWith('--locator='))?.slice(10) || 'role';
+assert.ok(['role', 'css'].includes(locatorMode));
 assert.ok(output.startsWith(path.resolve('test-output') + path.sep));
 await mkdir(output, { recursive: true });
 const reportFile = path.join(output, 'results.json');
@@ -17,7 +19,7 @@ assert.equal(await stat(reportFile).catch(error => { if (error.code === 'ENOENT'
 const baseline = JSON.parse(await readFile('test-output/threshold-current-v2/results.json', 'utf8'));
 const input = baseline.fixtures.find(value => Math.abs(value.media.duration - 3600) < .001);
 assert.ok(input); assert.equal(await sha256(input.source), input.media.fingerprint);
-const report = { date: new Date().toISOString(), status: 'running', scope: 'Chrome UI allocation diagnostic: one 60-minute import and analysis, then three cycles of 32 restore/undo, 32 setting and 32 transport actions. No repeated import/export, no forced GC, no heap snapshot, no formal performance gate claim. CDP metrics and Playwright selectors add instrumentation cost.', sourceHashes: {}, sourceFingerprint: input.media.fingerprint, snapshots: [], actions: 0, pageErrors: [], externalRequests: [] };
+const report = { date: new Date().toISOString(), status: 'running', locatorMode, scope: 'Chrome UI allocation diagnostic: one 60-minute import and analysis, then three cycles of 32 restore/undo, 32 setting and 32 transport actions. No repeated import/export, no forced GC, no heap snapshot, no formal performance gate claim. CDP metrics and Playwright selectors add instrumentation cost. Locator modes retain the same native Playwright click/fill and state checks.', sourceHashes: {}, sourceFingerprint: input.media.fingerprint, snapshots: [], actions: 0, pageErrors: [], externalRequests: [] };
 for (const file of ['src/App.tsx', 'src/CutList.tsx', 'src/Timeline.tsx', 'scripts/editor-memory-diagnostic.mjs', 'dist/index.html']) report.sourceHashes[file] = await sha256(file);
 const flush = () => writeFile(reportFile, JSON.stringify(report, null, 2) + '\n');
 await flush();
@@ -34,7 +36,7 @@ try {
   await page.goto(ready.url);
   const cdp = await page.context().newCDPSession(page);
   await cdp.send('Performance.enable');
-  const button = name => page.getByRole('button', { name, exact: true });
+  const button = name => locatorMode === 'role' ? page.getByRole('button', { name, exact: true }) : page.locator(name === '원본' ? '.mode-switch button:first-child' : `button[aria-label="${name}"]`);
   const paints = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   const started = performance.now();
   sampler = rssSampler([backend.pid, chrome.process().pid]); await sampler.start();
@@ -58,7 +60,7 @@ try {
     for (const family of ['restore', 'settings', 'transport']) {
       if (family === 'transport') { await button('원본').click(); await page.locator('video').evaluate(video => { video.currentTime = 0; }); await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2); }
       for (let i = 0; i < 32; i++) {
-        const target = family === 'restore' ? button(i % 2 ? '실행 취소' : '무음 1 복원') : family === 'settings' ? page.getByRole('spinbutton', { name: '음량 임계값', exact: true }) : button(i % 2 ? '일시 정지' : '재생');
+        const target = family === 'restore' ? button(i % 2 ? '실행 취소' : '무음 1 복원') : family === 'settings' ? (locatorMode === 'role' ? page.getByRole('spinbutton', { name: '음량 임계값', exact: true }) : page.locator('input[type=number][aria-label="음량 임계값"]')) : button(i % 2 ? '일시 정지' : '재생');
         await target.scrollIntoViewIfNeeded();
         if (family === 'settings') await target.fill(i % 2 ? '-40' : '-39'); else await target.click();
         if (family === 'restore') await page.waitForFunction(count => document.querySelectorAll('.restored-row').length === count, i % 2 ? 0 : 1);

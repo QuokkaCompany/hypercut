@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-06T06:16:07.556733+00:00",
+  "scope": "Matched application, diagnostic script and source media; role and CSS native Playwright actions. One matched pair and a prior role run, not a population performance estimate.",
+  "runs": [
+    {
+      "path": "test-output/editor-memory-diagnostic-css-v1",
+      "mode": "css",
+      "actions": 288,
+      "peakRSSBytes": 1640857600,
+      "peakGiB": 1.528167724609375,
+      "finalRendererMiB": 396.46875,
+      "uiTaskSeconds": 3.8242050000000005,
+      "uiElapsedSeconds": 25.842421042,
+      "finalDOM": {
+        "nodes": 11962,
+        "cuts": 1000,
+        "restored": 0,
+        "videoPaused": true
+      },
+      "finalHeap": {
+        "JSHeapUsedSize": 25960676,
+        "JSHeapTotalSize": 53510144
+      },
+      "maxSampleGapMs": 275.9218749999999,
+      "rawResourcesSHA256": "f206c8ecbdced757ca382c41b2c2e2dff6405dc4068396d27e65cf16ef79f5c5",
+      "samples": 272
+    },
+    {
+      "path": "test-output/editor-memory-diagnostic-role-v2",
+      "mode": "role",
+      "actions": 288,
+      "peakRSSBytes": 1802731520,
+      "peakGiB": 1.678924560546875,
+      "finalRendererMiB": 541.234375,
+      "uiTaskSeconds": 28.13453,
+      "uiElapsedSeconds": 45.457753667,
+      "finalDOM": {
+        "nodes": 11962,
+        "cuts": 1000,
+        "restored": 0,
+        "videoPaused": true
+      },
+      "finalHeap": {
+        "JSHeapUsedSize": 20785172,
+        "JSHeapTotalSize": 81805312
+      },
+      "maxSampleGapMs": 278.030834,
+      "rawResourcesSHA256": "ce5c1bb066f3e895773866cf7ec193217d8a440141de923e321edf7f6be80a7a",
+      "samples": 348
+    }
+  ],
+  "sameSourceHashes": {
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/CutList.tsx": "82a0973b561055425e258fc6cc6db0a1c020efc83568c179a555a7068c686668",
+    "src/Timeline.tsx": "0692555beb41d71e0803afcd4bd38fd20b6e5ed9db8c204f31c3f1e751104743",
+    "scripts/editor-memory-diagnostic.mjs": "5578e9903a8ea886a46637a93ad37a998b84cdabde51af9498c2dc5b5076b7cd",
+    "dist/index.html": "31b697496e464ca4cda30ed204c195c09db2f507ab08c53b983369c5bdea1bdb"
+  },
+  "sameSourceFingerprint": "5c16a6a3bac8633926ded013322578e268da323303d570dfc68bf5c17f16b786"
+}

@@ -159,3 +159,5 @@ E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니
 `node scripts/threshold-benchmark.mjs --output=test-output/새-시험-이름`은 기본 음량 임계값 모드의 10분·60분(1,000컷)을 두 앱에서 각 3회 측정하고 저장한 파일의 처음·중간·끝 싱크를 확인합니다. [최종 기록](docs/testing/2026-09-06-thousand-cut-performance-results.md)은 12회 완료 중 브라우저 60분 세 번째의 메모리 목표 초과를 포함하며 전체 성능 통과가 아닙니다.
 
 [편집 화면 메모리 개선 기록](docs/testing/2026-09-06-editor-render-memory-results.md)에 후보별 기능·성능 결과를 구분했습니다. 두 후보 모두 60분 세 번째 반복에서 메모리 목표를 넘었습니다. 컷·저장·출력 동일성은 확인했으며 반복 메모리 문제는 미해결입니다.
+
+[자동화 탐색 비용 비교](docs/testing/2026-09-06-selector-overhead-results.md)에서 앱 변경 없이 CSS 탐색 조건의 9회가 통과했습니다(최대 1.980GiB). Mac 60분 3회는 진행 중이며, 기존 역할 기반 실패를 통과로 바꾸거나 제품 수정으로 집계하지 않습니다.

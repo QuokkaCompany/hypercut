@@ -15,12 +15,14 @@ import { thresholdFixture, verifyThresholdSync } from './helpers/threshold-perfo
 const exec = promisify(execFile);
 const option = (name, fallback) => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const durations = option('durations', '600,3600').split(',').map(Number), iterations = Number(option('iterations', '3')), surfaces = option('surfaces', 'browser,desktop').split(',');
+const uiLocator = option('ui-locator', 'role');
+assert.ok(['role', 'css'].includes(uiLocator));
 assert.ok(durations.every(value => [60,600,3600].includes(value)) && [1,3].includes(iterations) && surfaces.every(value => ['browser','desktop'].includes(value)));
 const output = path.resolve(option('output', 'test-output/threshold-performance'));
 assert.ok(output.startsWith(path.resolve('test-output') + path.sep)); await mkdir(output, { recursive: true });
 const reportPath = path.join(output, 'results.json');
 if (await stat(reportPath).catch(error => { if (error.code === 'ENOENT') return null; throw error; })) throw new Error('Results exist; choose a new --output.');
-const report = { date: new Date().toISOString(), code: (await exec('git',['rev-parse','HEAD'])).stdout.trim(), status: 'running', platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset',['-g','batt'])).stdout.trim(), ffmpeg: (await capture('ffmpeg',['-version'])).split('\n')[0], requested: {durations, iterations, surfaces}, settings: DEFAULT_SETTINGS, speechProtection: {enabled:false,threshold:.5}, scope: 'Repeated tone/flash fixture; threshold-only real app import/analyze/export, 60 minutes includes 1000 cuts. Whole app tree RSS at 250ms, driver excluded. UI timings include Playwright overhead and two animation frames. No OS cache purge, no human quality or cold-cache claim. Native file paths controlled by test.', sourceHashes:{}, fixtures:[], runs:[], cancellations:[], failures:[] };
+const report = { date: new Date().toISOString(), code: (await exec('git',['rev-parse','HEAD'])).stdout.trim(), status: 'running', platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset',['-g','batt'])).stdout.trim(), ffmpeg: (await capture('ffmpeg',['-version'])).split('\n')[0], requested: {durations, iterations, surfaces, uiLocator}, settings: DEFAULT_SETTINGS, speechProtection: {enabled:false,threshold:.5}, scope: 'Repeated tone/flash fixture; threshold-only real app import/analyze/export, 60 minutes includes 1000 cuts. Whole app tree RSS at 250ms, driver excluded. UI timings include Playwright overhead and two animation frames. Repeated UI targets use the recorded role or CSS selector mode; native click/fill and state assertions are unchanged. No OS cache purge, no human quality or cold-cache claim. Native file paths controlled by test.', sourceHashes:{}, fixtures:[], runs:[], cancellations:[], failures:[] };
 for (const file of ['src/App.tsx','server/media.mjs','shared/timeline.mjs','scripts/threshold-benchmark.mjs','scripts/helpers/threshold-performance-fixture.mjs','scripts/helpers/performance.mjs','tests/threshold-sync.integration.mjs','package-lock.json','release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar']) report.sourceHashes[file] = await sha256(file);
 const flush = () => writeFile(reportPath, JSON.stringify(report,null,2)+'\n'); await flush();
 const button = (page,name) => page.getByRole('button',{name,exact:true});
@@ -49,7 +51,8 @@ async function measureUI(page) {
   for (const family of ['restore','settings','transport']) {
     if (family==='transport') {await button(page,'원본').click();await page.locator('video').evaluate(video=>{video.currentTime=0;});await page.waitForFunction(()=>document.querySelector('video')?.readyState>=2);}
     for(let i=0;i<32;i++) {
-      const target=family==='restore'?button(page,i%2?'실행 취소':'무음 1 복원'):family==='settings'?page.getByRole('spinbutton',{name:'음량 임계값',exact:true}):button(page,i%2?'일시 정지':'재생');
+      const name=family==='restore'?(i%2?'실행 취소':'무음 1 복원'):(i%2?'일시 정지':'재생');
+      const target=family==='settings'?(uiLocator==='css'?page.locator('input[type=number][aria-label="음량 임계값"]'):page.getByRole('spinbutton',{name:'음량 임계값',exact:true})):(uiLocator==='css'?page.locator(`button[aria-label="${name}"]`):button(page,name));
       await target.scrollIntoViewIfNeeded(); const start=performance.now();
       if(family==='settings') await target.fill(i%2?'-40':'-39'); else await target.click();
       if(family==='restore') await page.waitForFunction(count=>document.querySelectorAll('.restored-row').length===count,i%2?0:1);

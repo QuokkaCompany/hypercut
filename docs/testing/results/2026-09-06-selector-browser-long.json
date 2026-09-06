@@ -1,0 +1,2644 @@
+{
+  "date": "2026-09-06T06:14:58.065Z",
+  "code": "a06c2b03244ad0322e22d2d4a944c94e838283e3",
+  "status": "completed",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "cpuCount": 14,
+  "memoryBytes": 38654705664,
+  "node": "v24.14.1",
+  "power": "Now drawing from 'AC Power'",
+  "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "requested": {
+    "durations": [
+      3600
+    ],
+    "iterations": 3,
+    "surfaces": [
+      "browser"
+    ],
+    "uiLocator": "css"
+  },
+  "settings": {
+    "thresholdDb": -40,
+    "minSilenceMs": 500,
+    "preRollMs": 100,
+    "postRollMs": 150
+  },
+  "speechProtection": {
+    "enabled": false,
+    "threshold": 0.5
+  },
+  "scope": "Repeated tone/flash fixture; threshold-only real app import/analyze/export, 60 minutes includes 1000 cuts. Whole app tree RSS at 250ms, driver excluded. UI timings include Playwright overhead and two animation frames. Repeated UI targets use the recorded role or CSS selector mode; native click/fill and state assertions are unchanged. No OS cache purge, no human quality or cold-cache claim. Native file paths controlled by test.",
+  "sourceHashes": {
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "server/media.mjs": "663dc2a9a59fea22fefe88b42738a11a9d897261e4ee3d3d57f1a009ee300c22",
+    "shared/timeline.mjs": "be14efa8feec94c4b93db2a0c0149005663fd24a2555ac549d5c5d1932271c29",
+    "scripts/threshold-benchmark.mjs": "7fe4b9a142f9e8252ec4d6674d168c151b4b9aeb1651a05a5368ac45403b8361",
+    "scripts/helpers/threshold-performance-fixture.mjs": "06bb2f4304ba4a3a006eafd1ffafd925516ce43d9507ef1a2986ecca0fe52ad3",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "tests/threshold-sync.integration.mjs": "3b17dfc11005735e5aa268917d58d88c5915479c43a1af3039d2d72e053e5663",
+    "package-lock.json": "d5fe6beaad8a68c9cfb98a596d4d54f8d307c9aec24ec6517fc5d301afe1e65a",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "985e4f2f2adf0a24be5349beda62cd28a6008045331553e4209797a3feada093"
+  },
+  "fixtures": [
+    {
+      "kind": "Repeated synthetic 440Hz tone and 400ms-delayed flash; not human speech",
+      "cycleSeconds": 3.6,
+      "toneSeconds": 2.6,
+      "flashSeconds": 0.4,
+      "expectedCuts": 1000,
+      "reusedBaseline": true,
+      "media": {
+        "id": "b85d01d1-ea8c-4ea4-a1b7-4eeb35c813b9",
+        "name": "3600s.mp4",
+        "duration": 3600,
+        "fingerprint": "5c16a6a3bac8633926ded013322578e268da323303d570dfc68bf5c17f16b786",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 71258047,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "test-output/threshold-performance-fixtures/3600s.mp4",
+      "sourcePreserved": true
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 1,
+      "cache": "fresh app process; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "importSeconds": 1.6745029590000002,
+      "analyzeSeconds": 37.022931667,
+      "exportSeconds": 142.17244574999998,
+      "saveSeconds": 1.2505446250000096,
+      "peakRSSBytes": 1981087744,
+      "resources": {
+        "analysis": {
+          "file": "browser-3600-1-analysis-resources.json",
+          "peakBytes": 1496989696,
+          "samples": 149,
+          "errors": []
+        },
+        "export": {
+          "file": "browser-3600-1-export-resources.json",
+          "peakBytes": 1981087744,
+          "samples": 568,
+          "errors": []
+        },
+        "save": {
+          "file": "browser-3600-1-save-resources.json",
+          "peakBytes": 1557331968,
+          "samples": 7,
+          "errors": []
+        },
+        "ui": {
+          "file": "browser-3600-1-ui-resources.json",
+          "peakBytes": 1630306304,
+          "samples": 36,
+          "errors": []
+        }
+      },
+      "cuts": 1000,
+      "analysisPeak": 0.1811503767967224,
+      "decodedSamples": 172800000,
+      "outputSeconds": 2866.566667,
+      "expectedOutputSeconds": 2866.56666666664,
+      "fullDecodeVerified": true,
+      "outputFile": "test-output/threshold-selector-comparison/browser-long/browser-3600-1-output.mp4",
+      "outputSHA256": "dacdc29b931d3cad991bc173f0a5f2feb513df735b855e87724161acf3324586",
+      "sync": {
+        "status": "PASS",
+        "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+        "toleranceSeconds": 0.03333333333333333,
+        "firstToLastDrift": -4.547473508864641e-13,
+        "pairs": [
+          {
+            "name": "start",
+            "cycle": 1,
+            "precedingCuts": 1,
+            "sourceTone": 3.6001875,
+            "sourceFlash": 4,
+            "expectedOutputTone": 2.8668541666666667,
+            "expectedOutputFlash": 3.2666666666666666,
+            "outputTone": 2.8668541666666667,
+            "outputFlash": 3.2666666666666666,
+            "toneError": 0,
+            "flashError": 0,
+            "extraAVError": 0
+          },
+          {
+            "name": "start",
+            "cycle": 2,
+            "precedingCuts": 2,
+            "sourceTone": 7.2001875,
+            "sourceFlash": 7.6,
+            "expectedOutputTone": 5.733520833333333,
+            "expectedOutputFlash": 6.133333333333333,
+            "outputTone": 5.733520833333333,
+            "outputFlash": 6.1332666666666675,
+            "toneError": 0,
+            "flashError": -0.00006666666666532706,
+            "extraAVError": -0.00006666666666532706
+          },
+          {
+            "name": "middle",
+            "cycle": 500,
+            "precedingCuts": 500,
+            "sourceTone": 1800.0001875,
+            "sourceFlash": 1800.4,
+            "expectedOutputTone": 1433.333520833331,
+            "expectedOutputFlash": 1433.733333333331,
+            "outputTone": 1433.3335208333333,
+            "outputFlash": 1433.733267,
+            "toneError": 2.2737367544323206e-12,
+            "flashError": -0.00006633333100580785,
+            "extraAVError": -0.0000663333332795446
+          },
+          {
+            "name": "middle",
+            "cycle": 501,
+            "precedingCuts": 501,
+            "sourceTone": 1803.6001875,
+            "sourceFlash": 1804,
+            "expectedOutputTone": 1436.2001874999978,
+            "expectedOutputFlash": 1436.5999999999979,
+            "outputTone": 1436.2001875,
+            "outputFlash": 1436.6,
+            "toneError": 2.2737367544323206e-12,
+            "flashError": 2.0463630789890885e-12,
+            "extraAVError": -2.2737367544323206e-13
+          },
+          {
+            "name": "end",
+            "cycle": 998,
+            "precedingCuts": 998,
+            "sourceTone": 3592.8001875,
+            "sourceFlash": 3593.2,
+            "expectedOutputTone": 2860.9335208333064,
+            "expectedOutputFlash": 2861.333333333306,
+            "outputTone": 2860.933520833333,
+            "outputFlash": 2861.333267,
+            "toneError": 2.6830093702301383e-11,
+            "flashError": -0.00006633330622207723,
+            "extraAVError": -0.00006633333305217093
+          },
+          {
+            "name": "end",
+            "cycle": 999,
+            "precedingCuts": 999,
+            "sourceTone": 3596.4001875,
+            "sourceFlash": 3596.8,
+            "expectedOutputTone": 2863.800187499973,
+            "expectedOutputFlash": 2864.1999999999734,
+            "outputTone": 2863.8001875,
+            "outputFlash": 2864.2,
+            "toneError": 2.6830093702301383e-11,
+            "flashError": 2.637534635141492e-11,
+            "extraAVError": -4.547473508864641e-13
+          }
+        ],
+        "windows": [
+          {
+            "name": "start",
+            "source": {
+              "seek": 3.3000000000000003,
+              "seconds": 7.2,
+              "flashes": [
+                4,
+                7.6
+              ],
+              "tones": [
+                3.6001875,
+                7.2001875
+              ]
+            },
+            "output": {
+              "seek": 2.566666666666667,
+              "seconds": 7.2,
+              "flashes": [
+                3.2666666666666666,
+                6.1332666666666675,
+                8.999999666666668
+              ],
+              "tones": [
+                2.566666666666667,
+                2.8668541666666667,
+                5.733520833333333,
+                8.6001875
+              ]
+            }
+          },
+          {
+            "name": "middle",
+            "source": {
+              "seek": 1799.7,
+              "seconds": 7.2,
+              "flashes": [
+                1800.4,
+                1804
+              ],
+              "tones": [
+                1800.0001875,
+                1803.6001875
+              ]
+            },
+            "output": {
+              "seek": 1433,
+              "seconds": 7.2,
+              "flashes": [
+                1433.733267,
+                1436.6,
+                1439.466667
+              ],
+              "tones": [
+                1433,
+                1433.3335208333333,
+                1436.2001875,
+                1439.0668541666666
+              ]
+            }
+          },
+          {
+            "name": "end",
+            "source": {
+              "seek": 3592.5,
+              "seconds": 7.2,
+              "flashes": [
+                3593.2,
+                3596.8
+              ],
+              "tones": [
+                3592.8001875,
+                3596.4001875
+              ]
+            },
+            "output": {
+              "seek": 2860.6,
+              "seconds": 7.2,
+              "flashes": [
+                2861.333267,
+                2864.2
+              ],
+              "tones": [
+                2860.6,
+                2860.933520833333,
+                2863.8001875
+              ]
+            }
+          }
+        ]
+      },
+      "ui": {
+        "samples": [
+          {
+            "family": "restore",
+            "index": 0,
+            "action": "restore",
+            "ms": 66.64020900000469
+          },
+          {
+            "family": "restore",
+            "index": 1,
+            "action": "undo",
+            "ms": 64.83533299999544
+          },
+          {
+            "family": "restore",
+            "index": 2,
+            "action": "restore",
+            "ms": 65.19266699999571
+          },
+          {
+            "family": "restore",
+            "index": 3,
+            "action": "undo",
+            "ms": 65.51833299998543
+          },
+          {
+            "family": "restore",
+            "index": 4,
+            "action": "restore",
+            "ms": 65.67116600001464
+          },
+          {
+            "family": "restore",
+            "index": 5,
+            "action": "undo",
+            "ms": 64.78783399998792
+          },
+          {
+            "family": "restore",
+            "index": 6,
+            "action": "restore",
+            "ms": 65.693666999985
+          },
+          {
+            "family": "restore",
+            "index": 7,
+            "action": "undo",
+            "ms": 65.80462500001886
+          },
+          {
+            "family": "restore",
+            "index": 8,
+            "action": "restore",
+            "ms": 65.69970900000772
+          },
+          {
+            "family": "restore",
+            "index": 9,
+            "action": "undo",
+            "ms": 65.21220799998264
+          },
+          {
+            "family": "restore",
+            "index": 10,
+            "action": "restore",
+            "ms": 65.6158750000177
+          },
+          {
+            "family": "restore",
+            "index": 11,
+            "action": "undo",
+            "ms": 65.39983400001074
+          },
+          {
+            "family": "restore",
+            "index": 12,
+            "action": "restore",
+            "ms": 65.62308399999165
+          },
+          {
+            "family": "restore",
+            "index": 13,
+            "action": "undo",
+            "ms": 64.85995899999398
+          },
+          {
+            "family": "restore",
+            "index": 14,
+            "action": "restore",
+            "ms": 65.5449999999837
+          },
+          {
+            "family": "restore",
+            "index": 15,
+            "action": "undo",
+            "ms": 65.51745800001663
+          },
+          {
+            "family": "restore",
+            "index": 16,
+            "action": "restore",
+            "ms": 65.39883399999235
+          },
+          {
+            "family": "restore",
+            "index": 17,
+            "action": "undo",
+            "ms": 64.78441600000951
+          },
+          {
+            "family": "restore",
+            "index": 18,
+            "action": "restore",
+            "ms": 65.65925000002608
+          },
+          {
+            "family": "restore",
+            "index": 19,
+            "action": "undo",
+            "ms": 65.5779170000169
+          },
+          {
+            "family": "restore",
+            "index": 20,
+            "action": "restore",
+            "ms": 65.60095900000306
+          },
+          {
+            "family": "restore",
+            "index": 21,
+            "action": "undo",
+            "ms": 64.56470799999079
+          },
+          {
+            "family": "restore",
+            "index": 22,
+            "action": "restore",
+            "ms": 65.59091600001557
+          },
+          {
+            "family": "restore",
+            "index": 23,
+            "action": "undo",
+            "ms": 65.44616699998733
+          },
+          {
+            "family": "restore",
+            "index": 24,
+            "action": "restore",
+            "ms": 65.69433299999218
+          },
+          {
+            "family": "restore",
+            "index": 25,
+            "action": "undo",
+            "ms": 64.64433399998234
+          },
+          {
+            "family": "restore",
+            "index": 26,
+            "action": "restore",
+            "ms": 65.46333300002152
+          },
+          {
+            "family": "restore",
+            "index": 27,
+            "action": "undo",
+            "ms": 65.3789580000157
+          },
+          {
+            "family": "restore",
+            "index": 28,
+            "action": "restore",
+            "ms": 64.5439170000027
+          },
+          {
+            "family": "restore",
+            "index": 29,
+            "action": "undo",
+            "ms": 64.62575000000652
+          },
+          {
+            "family": "restore",
+            "index": 30,
+            "action": "restore",
+            "ms": 65.62974999999278
+          },
+          {
+            "family": "restore",
+            "index": 31,
+            "action": "undo",
+            "ms": 65.54254200001014
+          },
+          {
+            "family": "settings",
+            "index": 0,
+            "action": "setting",
+            "ms": 31.489082999993116
+          },
+          {
+            "family": "settings",
+            "index": 1,
+            "action": "setting",
+            "ms": 32.0149579999852
+          },
+          {
+            "family": "settings",
+            "index": 2,
+            "action": "setting",
+            "ms": 32.79058400000213
+          },
+          {
+            "family": "settings",
+            "index": 3,
+            "action": "setting",
+            "ms": 31.253874999994878
+          },
+          {
+            "family": "settings",
+            "index": 4,
+            "action": "setting",
+            "ms": 32.27987499997835
+          },
+          {
+            "family": "settings",
+            "index": 5,
+            "action": "setting",
+            "ms": 32.780750000005355
+          },
+          {
+            "family": "settings",
+            "index": 6,
+            "action": "setting",
+            "ms": 33.07233299998916
+          },
+          {
+            "family": "settings",
+            "index": 7,
+            "action": "setting",
+            "ms": 33.34183300001314
+          },
+          {
+            "family": "settings",
+            "index": 8,
+            "action": "setting",
+            "ms": 32.712750000006054
+          },
+          {
+            "family": "settings",
+            "index": 9,
+            "action": "setting",
+            "ms": 32.716041999985464
+          },
+          {
+            "family": "settings",
+            "index": 10,
+            "action": "setting",
+            "ms": 32.91733299999032
+          },
+          {
+            "family": "settings",
+            "index": 11,
+            "action": "setting",
+            "ms": 33.54274999999325
+          },
+          {
+            "family": "settings",
+            "index": 12,
+            "action": "setting",
+            "ms": 33.27324999999837
+          },
+          {
+            "family": "settings",
+            "index": 13,
+            "action": "setting",
+            "ms": 33.22883300000103
+          },
+          {
+            "family": "settings",
+            "index": 14,
+            "action": "setting",
+            "ms": 32.29112500001793
+          },
+          {
+            "family": "settings",
+            "index": 15,
+            "action": "setting",
+            "ms": 33.21954199997708
+          },
+          {
+            "family": "settings",
+            "index": 16,
+            "action": "setting",
+            "ms": 32.5413750000007
+          },
+          {
+            "family": "settings",
+            "index": 17,
+            "action": "setting",
+            "ms": 33.43691600000602
+          },
+          {
+            "family": "settings",
+            "index": 18,
+            "action": "setting",
+            "ms": 32.09345799998846
+          },
+          {
+            "family": "settings",
+            "index": 19,
+            "action": "setting",
+            "ms": 33.109375
+          },
+          {
+            "family": "settings",
+            "index": 20,
+            "action": "setting",
+            "ms": 32.609375
+          },
+          {
+            "family": "settings",
+            "index": 21,
+            "action": "setting",
+            "ms": 33.32554200000595
+          },
+          {
+            "family": "settings",
+            "index": 22,
+            "action": "setting",
+            "ms": 33.28216699999757
+          },
+          {
+            "family": "settings",
+            "index": 23,
+            "action": "setting",
+            "ms": 32.8179999999993
+          },
+          {
+            "family": "settings",
+            "index": 24,
+            "action": "setting",
+            "ms": 33.134458000015
+          },
+          {
+            "family": "settings",
+            "index": 25,
+            "action": "setting",
+            "ms": 32.22429199999897
+          },
+          {
+            "family": "settings",
+            "index": 26,
+            "action": "setting",
+            "ms": 32.476874999993015
+          },
+          {
+            "family": "settings",
+            "index": 27,
+            "action": "setting",
+            "ms": 33.236166000016965
+          },
+          {
+            "family": "settings",
+            "index": 28,
+            "action": "setting",
+            "ms": 32.3315419999999
+          },
+          {
+            "family": "settings",
+            "index": 29,
+            "action": "setting",
+            "ms": 33.475749999983236
+          },
+          {
+            "family": "settings",
+            "index": 30,
+            "action": "setting",
+            "ms": 32.669250000006286
+          },
+          {
+            "family": "settings",
+            "index": 31,
+            "action": "setting",
+            "ms": 33.09545900000376
+          },
+          {
+            "family": "transport",
+            "index": 0,
+            "action": "play",
+            "ms": 82.24270800000522
+          },
+          {
+            "family": "transport",
+            "index": 1,
+            "action": "pause",
+            "ms": 64.90037499999744
+          },
+          {
+            "family": "transport",
+            "index": 2,
+            "action": "play",
+            "ms": 65.26095799999894
+          },
+          {
+            "family": "transport",
+            "index": 3,
+            "action": "pause",
+            "ms": 66.11512499998207
+          },
+          {
+            "family": "transport",
+            "index": 4,
+            "action": "play",
+            "ms": 66.0152919999964
+          },
+          {
+            "family": "transport",
+            "index": 5,
+            "action": "pause",
+            "ms": 65.87112500000512
+          },
+          {
+            "family": "transport",
+            "index": 6,
+            "action": "play",
+            "ms": 66.09654200001387
+          },
+          {
+            "family": "transport",
+            "index": 7,
+            "action": "pause",
+            "ms": 66.71891699999105
+          },
+          {
+            "family": "transport",
+            "index": 8,
+            "action": "play",
+            "ms": 66.56033300000126
+          },
+          {
+            "family": "transport",
+            "index": 9,
+            "action": "pause",
+            "ms": 65.72754200000782
+          },
+          {
+            "family": "transport",
+            "index": 10,
+            "action": "play",
+            "ms": 66.04187499999534
+          },
+          {
+            "family": "transport",
+            "index": 11,
+            "action": "pause",
+            "ms": 66.74166600001627
+          },
+          {
+            "family": "transport",
+            "index": 12,
+            "action": "play",
+            "ms": 66.57158299998264
+          },
+          {
+            "family": "transport",
+            "index": 13,
+            "action": "pause",
+            "ms": 65.86391600000206
+          },
+          {
+            "family": "transport",
+            "index": 14,
+            "action": "play",
+            "ms": 65.97312499998952
+          },
+          {
+            "family": "transport",
+            "index": 15,
+            "action": "pause",
+            "ms": 66.486791000003
+          },
+          {
+            "family": "transport",
+            "index": 16,
+            "action": "play",
+            "ms": 66.00750000000698
+          },
+          {
+            "family": "transport",
+            "index": 17,
+            "action": "pause",
+            "ms": 65.5449999999837
+          },
+          {
+            "family": "transport",
+            "index": 18,
+            "action": "play",
+            "ms": 66.21616699997685
+          },
+          {
+            "family": "transport",
+            "index": 19,
+            "action": "pause",
+            "ms": 66.81670799999847
+          },
+          {
+            "family": "transport",
+            "index": 20,
+            "action": "play",
+            "ms": 66.23991699999897
+          },
+          {
+            "family": "transport",
+            "index": 21,
+            "action": "pause",
+            "ms": 65.79591600000276
+          },
+          {
+            "family": "transport",
+            "index": 22,
+            "action": "play",
+            "ms": 66.08104200000525
+          },
+          {
+            "family": "transport",
+            "index": 23,
+            "action": "pause",
+            "ms": 66.25729199999478
+          },
+          {
+            "family": "transport",
+            "index": 24,
+            "action": "play",
+            "ms": 66.57662499998696
+          },
+          {
+            "family": "transport",
+            "index": 25,
+            "action": "pause",
+            "ms": 66.32099999999627
+          },
+          {
+            "family": "transport",
+            "index": 26,
+            "action": "play",
+            "ms": 66.0445840000175
+          },
+          {
+            "family": "transport",
+            "index": 27,
+            "action": "pause",
+            "ms": 66.48420800000895
+          },
+          {
+            "family": "transport",
+            "index": 28,
+            "action": "play",
+            "ms": 66.7019169999985
+          },
+          {
+            "family": "transport",
+            "index": 29,
+            "action": "pause",
+            "ms": 66.55862500000512
+          },
+          {
+            "family": "transport",
+            "index": 30,
+            "action": "play",
+            "ms": 66.45408300001873
+          },
+          {
+            "family": "transport",
+            "index": 31,
+            "action": "pause",
+            "ms": 66.08287499999278
+          }
+        ],
+        "byFamily": {
+          "restore": {
+            "count": 32,
+            "median": 65.51789550000103,
+            "max": 66.64020900000469,
+            "p95": 65.80462500001886
+          },
+          "settings": {
+            "count": 32,
+            "median": 32.804292000000714,
+            "max": 33.54274999999325,
+            "p95": 33.475749999983236
+          },
+          "transport": {
+            "count": 32,
+            "median": 66.16564599997946,
+            "max": 82.24270800000522,
+            "p95": 66.81670799999847
+          }
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 2,
+      "cache": "same app after previous iteration; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "importSeconds": 1.4777959580000024,
+      "analyzeSeconds": 37.192922583000005,
+      "exportSeconds": 141.479087917,
+      "saveSeconds": 1.2747483340000034,
+      "peakRSSBytes": 2071134208,
+      "resources": {
+        "analysis": {
+          "file": "browser-3600-2-analysis-resources.json",
+          "peakBytes": 1709867008,
+          "samples": 150,
+          "errors": []
+        },
+        "export": {
+          "file": "browser-3600-2-export-resources.json",
+          "peakBytes": 2071134208,
+          "samples": 564,
+          "errors": []
+        },
+        "save": {
+          "file": "browser-3600-2-save-resources.json",
+          "peakBytes": 1630863360,
+          "samples": 7,
+          "errors": []
+        },
+        "ui": {
+          "file": "browser-3600-2-ui-resources.json",
+          "peakBytes": 1670250496,
+          "samples": 36,
+          "errors": []
+        }
+      },
+      "cuts": 1000,
+      "analysisPeak": 0.1811503767967224,
+      "decodedSamples": 172800000,
+      "outputSeconds": 2866.566667,
+      "expectedOutputSeconds": 2866.56666666664,
+      "fullDecodeVerified": true,
+      "outputFile": "test-output/threshold-selector-comparison/browser-long/browser-3600-2-output.mp4",
+      "outputSHA256": "dacdc29b931d3cad991bc173f0a5f2feb513df735b855e87724161acf3324586",
+      "sync": {
+        "status": "PASS",
+        "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+        "toleranceSeconds": 0.03333333333333333,
+        "firstToLastDrift": -4.547473508864641e-13,
+        "pairs": [
+          {
+            "name": "start",
+            "cycle": 1,
+            "precedingCuts": 1,
+            "sourceTone": 3.6001875,
+            "sourceFlash": 4,
+            "expectedOutputTone": 2.8668541666666667,
+            "expectedOutputFlash": 3.2666666666666666,
+            "outputTone": 2.8668541666666667,
+            "outputFlash": 3.2666666666666666,
+            "toneError": 0,
+            "flashError": 0,
+            "extraAVError": 0
+          },
+          {
+            "name": "start",
+            "cycle": 2,
+            "precedingCuts": 2,
+            "sourceTone": 7.2001875,
+            "sourceFlash": 7.6,
+            "expectedOutputTone": 5.733520833333333,
+            "expectedOutputFlash": 6.133333333333333,
+            "outputTone": 5.733520833333333,
+            "outputFlash": 6.1332666666666675,
+            "toneError": 0,
+            "flashError": -0.00006666666666532706,
+            "extraAVError": -0.00006666666666532706
+          },
+          {
+            "name": "middle",
+            "cycle": 500,
+            "precedingCuts": 500,
+            "sourceTone": 1800.0001875,
+            "sourceFlash": 1800.4,
+            "expectedOutputTone": 1433.333520833331,
+            "expectedOutputFlash": 1433.733333333331,
+            "outputTone": 1433.3335208333333,
+            "outputFlash": 1433.733267,
+            "toneError": 2.2737367544323206e-12,
+            "flashError": -0.00006633333100580785,
+            "extraAVError": -0.0000663333332795446
+          },
+          {
+            "name": "middle",
+            "cycle": 501,
+            "precedingCuts": 501,
+            "sourceTone": 1803.6001875,
+            "sourceFlash": 1804,
+            "expectedOutputTone": 1436.2001874999978,
+            "expectedOutputFlash": 1436.5999999999979,
+            "outputTone": 1436.2001875,
+            "outputFlash": 1436.6,
+            "toneError": 2.2737367544323206e-12,
+            "flashError": 2.0463630789890885e-12,
+            "extraAVError": -2.2737367544323206e-13
+          },
+          {
+            "name": "end",
+            "cycle": 998,
+            "precedingCuts": 998,
+            "sourceTone": 3592.8001875,
+            "sourceFlash": 3593.2,
+            "expectedOutputTone": 2860.9335208333064,
+            "expectedOutputFlash": 2861.333333333306,
+            "outputTone": 2860.933520833333,
+            "outputFlash": 2861.333267,
+            "toneError": 2.6830093702301383e-11,
+            "flashError": -0.00006633330622207723,
+            "extraAVError": -0.00006633333305217093
+          },
+          {
+            "name": "end",
+            "cycle": 999,
+            "precedingCuts": 999,
+            "sourceTone": 3596.4001875,
+            "sourceFlash": 3596.8,
+            "expectedOutputTone": 2863.800187499973,
+            "expectedOutputFlash": 2864.1999999999734,
+            "outputTone": 2863.8001875,
+            "outputFlash": 2864.2,
+            "toneError": 2.6830093702301383e-11,
+            "flashError": 2.637534635141492e-11,
+            "extraAVError": -4.547473508864641e-13
+          }
+        ],
+        "windows": [
+          {
+            "name": "start",
+            "source": {
+              "seek": 3.3000000000000003,
+              "seconds": 7.2,
+              "flashes": [
+                4,
+                7.6
+              ],
+              "tones": [
+                3.6001875,
+                7.2001875
+              ]
+            },
+            "output": {
+              "seek": 2.566666666666667,
+              "seconds": 7.2,
+              "flashes": [
+                3.2666666666666666,
+                6.1332666666666675,
+                8.999999666666668
+              ],
+              "tones": [
+                2.566666666666667,
+                2.8668541666666667,
+                5.733520833333333,
+                8.6001875
+              ]
+            }
+          },
+          {
+            "name": "middle",
+            "source": {
+              "seek": 1799.7,
+              "seconds": 7.2,
+              "flashes": [
+                1800.4,
+                1804
+              ],
+              "tones": [
+                1800.0001875,
+                1803.6001875
+              ]
+            },
+            "output": {
+              "seek": 1433,
+              "seconds": 7.2,
+              "flashes": [
+                1433.733267,
+                1436.6,
+                1439.466667
+              ],
+              "tones": [
+                1433,
+                1433.3335208333333,
+                1436.2001875,
+                1439.0668541666666
+              ]
+            }
+          },
+          {
+            "name": "end",
+            "source": {
+              "seek": 3592.5,
+              "seconds": 7.2,
+              "flashes": [
+                3593.2,
+                3596.8
+              ],
+              "tones": [
+                3592.8001875,
+                3596.4001875
+              ]
+            },
+            "output": {
+              "seek": 2860.6,
+              "seconds": 7.2,
+              "flashes": [
+                2861.333267,
+                2864.2
+              ],
+              "tones": [
+                2860.6,
+                2860.933520833333,
+                2863.8001875
+              ]
+            }
+          }
+        ]
+      },
+      "ui": {
+        "samples": [
+          {
+            "family": "restore",
+            "index": 0,
+            "action": "restore",
+            "ms": 66.3665420000325
+          },
+          {
+            "family": "restore",
+            "index": 1,
+            "action": "undo",
+            "ms": 63.8265830000164
+          },
+          {
+            "family": "restore",
+            "index": 2,
+            "action": "restore",
+            "ms": 64.2210409999825
+          },
+          {
+            "family": "restore",
+            "index": 3,
+            "action": "undo",
+            "ms": 63.02895800000988
+          },
+          {
+            "family": "restore",
+            "index": 4,
+            "action": "restore",
+            "ms": 64.88820799998939
+          },
+          {
+            "family": "restore",
+            "index": 5,
+            "action": "undo",
+            "ms": 63.65841700002784
+          },
+          {
+            "family": "restore",
+            "index": 6,
+            "action": "restore",
+            "ms": 65.04666699998779
+          },
+          {
+            "family": "restore",
+            "index": 7,
+            "action": "undo",
+            "ms": 66.19187499996042
+          },
+          {
+            "family": "restore",
+            "index": 8,
+            "action": "restore",
+            "ms": 64.24408299999777
+          },
+          {
+            "family": "restore",
+            "index": 9,
+            "action": "undo",
+            "ms": 64.47245800000383
+          },
+          {
+            "family": "restore",
+            "index": 10,
+            "action": "restore",
+            "ms": 65.53458300000057
+          },
+          {
+            "family": "restore",
+            "index": 11,
+            "action": "undo",
+            "ms": 63.66479099995922
+          },
+          {
+            "family": "restore",
+            "index": 12,
+            "action": "restore",
+            "ms": 64.9371669999673
+          },
+          {
+            "family": "restore",
+            "index": 13,
+            "action": "undo",
+            "ms": 64.89991699997336
+          },
+          {
+            "family": "restore",
+            "index": 14,
+            "action": "restore",
+            "ms": 63.85975000000326
+          },
+          {
+            "family": "restore",
+            "index": 15,
+            "action": "undo",
+            "ms": 65.37804099998903
+          },
+          {
+            "family": "restore",
+            "index": 16,
+            "action": "restore",
+            "ms": 63.586624999996275
+          },
+          {
+            "family": "restore",
+            "index": 17,
+            "action": "undo",
+            "ms": 65.07591700000921
+          },
+          {
+            "family": "restore",
+            "index": 18,
+            "action": "restore",
+            "ms": 64.94837499997811
+          },
+          {
+            "family": "restore",
+            "index": 19,
+            "action": "undo",
+            "ms": 64.2518750000163
+          },
+          {
+            "family": "restore",
+            "index": 20,
+            "action": "restore",
+            "ms": 65.31341699999757
+          },
+          {
+            "family": "restore",
+            "index": 21,
+            "action": "undo",
+            "ms": 65.06329099996947
+          },
+          {
+            "family": "restore",
+            "index": 22,
+            "action": "restore",
+            "ms": 64.95162499998696
+          },
+          {
+            "family": "restore",
+            "index": 23,
+            "action": "undo",
+            "ms": 64.21254099998623
+          },
+          {
+            "family": "restore",
+            "index": 24,
+            "action": "restore",
+            "ms": 64.2852079999866
+          },
+          {
+            "family": "restore",
+            "index": 25,
+            "action": "undo",
+            "ms": 64.5753749999567
+          },
+          {
+            "family": "restore",
+            "index": 26,
+            "action": "restore",
+            "ms": 66.3940419999999
+          },
+          {
+            "family": "restore",
+            "index": 27,
+            "action": "undo",
+            "ms": 65.59066599997459
+          },
+          {
+            "family": "restore",
+            "index": 28,
+            "action": "restore",
+            "ms": 64.02962500002468
+          },
+          {
+            "family": "restore",
+            "index": 29,
+            "action": "undo",
+            "ms": 63.5137499999837
+          },
+          {
+            "family": "restore",
+            "index": 30,
+            "action": "restore",
+            "ms": 65.33525000000373
+          },
+          {
+            "family": "restore",
+            "index": 31,
+            "action": "undo",
+            "ms": 63.35470799996983
+          },
+          {
+            "family": "settings",
+            "index": 0,
+            "action": "setting",
+            "ms": 32.185584000020754
+          },
+          {
+            "family": "settings",
+            "index": 1,
+            "action": "setting",
+            "ms": 31.268875000008848
+          },
+          {
+            "family": "settings",
+            "index": 2,
+            "action": "setting",
+            "ms": 33.41404100001091
+          },
+          {
+            "family": "settings",
+            "index": 3,
+            "action": "setting",
+            "ms": 33.161207999975886
+          },
+          {
+            "family": "settings",
+            "index": 4,
+            "action": "setting",
+            "ms": 32.15866700001061
+          },
+          {
+            "family": "settings",
+            "index": 5,
+            "action": "setting",
+            "ms": 32.228415999969
+          },
+          {
+            "family": "settings",
+            "index": 6,
+            "action": "setting",
+            "ms": 31.997083999973256
+          },
+          {
+            "family": "settings",
+            "index": 7,
+            "action": "setting",
+            "ms": 34.8075410000165
+          },
+          {
+            "family": "settings",
+            "index": 8,
+            "action": "setting",
+            "ms": 33.386083999997936
+          },
+          {
+            "family": "settings",
+            "index": 9,
+            "action": "setting",
+            "ms": 31.96708299999591
+          },
+          {
+            "family": "settings",
+            "index": 10,
+            "action": "setting",
+            "ms": 32.81341599998996
+          },
+          {
+            "family": "settings",
+            "index": 11,
+            "action": "setting",
+            "ms": 32.11566599999787
+          },
+          {
+            "family": "settings",
+            "index": 12,
+            "action": "setting",
+            "ms": 32.19608399999561
+          },
+          {
+            "family": "settings",
+            "index": 13,
+            "action": "setting",
+            "ms": 33.7635420000297
+          },
+          {
+            "family": "settings",
+            "index": 14,
+            "action": "setting",
+            "ms": 33.11091700004181
+          },
+          {
+            "family": "settings",
+            "index": 15,
+            "action": "setting",
+            "ms": 32.15141599997878
+          },
+          {
+            "family": "settings",
+            "index": 16,
+            "action": "setting",
+            "ms": 31.773250000027474
+          },
+          {
+            "family": "settings",
+            "index": 17,
+            "action": "setting",
+            "ms": 32.17837499995949
+          },
+          {
+            "family": "settings",
+            "index": 18,
+            "action": "setting",
+            "ms": 33.18987499998184
+          },
+          {
+            "family": "settings",
+            "index": 19,
+            "action": "setting",
+            "ms": 33.59537500003353
+          },
+          {
+            "family": "settings",
+            "index": 20,
+            "action": "setting",
+            "ms": 32.47541700000875
+          },
+          {
+            "family": "settings",
+            "index": 21,
+            "action": "setting",
+            "ms": 32.09587499999907
+          },
+          {
+            "family": "settings",
+            "index": 22,
+            "action": "setting",
+            "ms": 31.432749999978114
+          },
+          {
+            "family": "settings",
+            "index": 23,
+            "action": "setting",
+            "ms": 31.9558749999851
+          },
+          {
+            "family": "settings",
+            "index": 24,
+            "action": "setting",
+            "ms": 33.75012500002049
+          },
+          {
+            "family": "settings",
+            "index": 25,
+            "action": "setting",
+            "ms": 34.00562499999069
+          },
+          {
+            "family": "settings",
+            "index": 26,
+            "action": "setting",
+            "ms": 33.039250000030734
+          },
+          {
+            "family": "settings",
+            "index": 27,
+            "action": "setting",
+            "ms": 32.39449999999488
+          },
+          {
+            "family": "settings",
+            "index": 28,
+            "action": "setting",
+            "ms": 32.251541000034194
+          },
+          {
+            "family": "settings",
+            "index": 29,
+            "action": "setting",
+            "ms": 31.440540999989025
+          },
+          {
+            "family": "settings",
+            "index": 30,
+            "action": "setting",
+            "ms": 32.23954199999571
+          },
+          {
+            "family": "settings",
+            "index": 31,
+            "action": "setting",
+            "ms": 31.625166999991052
+          },
+          {
+            "family": "transport",
+            "index": 0,
+            "action": "play",
+            "ms": 80.37825000000885
+          },
+          {
+            "family": "transport",
+            "index": 1,
+            "action": "pause",
+            "ms": 63.932542000024114
+          },
+          {
+            "family": "transport",
+            "index": 2,
+            "action": "play",
+            "ms": 66.4423330000136
+          },
+          {
+            "family": "transport",
+            "index": 3,
+            "action": "pause",
+            "ms": 66.70441700000083
+          },
+          {
+            "family": "transport",
+            "index": 4,
+            "action": "play",
+            "ms": 66.38604200002737
+          },
+          {
+            "family": "transport",
+            "index": 5,
+            "action": "pause",
+            "ms": 66.19837500003632
+          },
+          {
+            "family": "transport",
+            "index": 6,
+            "action": "play",
+            "ms": 67.86499999999069
+          },
+          {
+            "family": "transport",
+            "index": 7,
+            "action": "pause",
+            "ms": 66.25666700000875
+          },
+          {
+            "family": "transport",
+            "index": 8,
+            "action": "play",
+            "ms": 64.60283300001174
+          },
+          {
+            "family": "transport",
+            "index": 9,
+            "action": "pause",
+            "ms": 65.03904200001853
+          },
+          {
+            "family": "transport",
+            "index": 10,
+            "action": "play",
+            "ms": 65.21016600000439
+          },
+          {
+            "family": "transport",
+            "index": 11,
+            "action": "pause",
+            "ms": 65.51104199996917
+          },
+          {
+            "family": "transport",
+            "index": 12,
+            "action": "play",
+            "ms": 64.8231669999659
+          },
+          {
+            "family": "transport",
+            "index": 13,
+            "action": "pause",
+            "ms": 65.34904199995799
+          },
+          {
+            "family": "transport",
+            "index": 14,
+            "action": "play",
+            "ms": 66.03012499999022
+          },
+          {
+            "family": "transport",
+            "index": 15,
+            "action": "pause",
+            "ms": 64.32495799998287
+          },
+          {
+            "family": "transport",
+            "index": 16,
+            "action": "play",
+            "ms": 64.80816700001014
+          },
+          {
+            "family": "transport",
+            "index": 17,
+            "action": "pause",
+            "ms": 66.04008300002897
+          },
+          {
+            "family": "transport",
+            "index": 18,
+            "action": "play",
+            "ms": 67.57366700004786
+          },
+          {
+            "family": "transport",
+            "index": 19,
+            "action": "pause",
+            "ms": 66.47075000003679
+          },
+          {
+            "family": "transport",
+            "index": 20,
+            "action": "play",
+            "ms": 65.18845799996052
+          },
+          {
+            "family": "transport",
+            "index": 21,
+            "action": "pause",
+            "ms": 65.80362500000047
+          },
+          {
+            "family": "transport",
+            "index": 22,
+            "action": "play",
+            "ms": 65.52716699999291
+          },
+          {
+            "family": "transport",
+            "index": 23,
+            "action": "pause",
+            "ms": 68.23433300002944
+          },
+          {
+            "family": "transport",
+            "index": 24,
+            "action": "play",
+            "ms": 67.00537500000792
+          },
+          {
+            "family": "transport",
+            "index": 25,
+            "action": "pause",
+            "ms": 66.25166599999648
+          },
+          {
+            "family": "transport",
+            "index": 26,
+            "action": "play",
+            "ms": 64.75129200000083
+          },
+          {
+            "family": "transport",
+            "index": 27,
+            "action": "pause",
+            "ms": 65.88591599999927
+          },
+          {
+            "family": "transport",
+            "index": 28,
+            "action": "play",
+            "ms": 65.31349999998929
+          },
+          {
+            "family": "transport",
+            "index": 29,
+            "action": "pause",
+            "ms": 64.4607079999987
+          },
+          {
+            "family": "transport",
+            "index": 30,
+            "action": "play",
+            "ms": 66.06349999998929
+          },
+          {
+            "family": "transport",
+            "index": 31,
+            "action": "pause",
+            "ms": 65.16404200001853
+          }
+        ],
+        "byFamily": {
+          "restore": {
+            "count": 32,
+            "median": 64.73179149997304,
+            "max": 66.3940419999999,
+            "p95": 66.3665420000325
+          },
+          "settings": {
+            "count": 32,
+            "median": 32.233978999982355,
+            "max": 34.8075410000165,
+            "p95": 34.00562499999069
+          },
+          "transport": {
+            "count": 32,
+            "median": 65.84477049999987,
+            "max": 80.37825000000885,
+            "p95": 68.23433300002944
+          }
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 3,
+      "cache": "same app after previous iteration; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "importSeconds": 1.5254142499999725,
+      "analyzeSeconds": 37.45147424999997,
+      "exportSeconds": 141.34742145900003,
+      "saveSeconds": 1.2440058749999152,
+      "peakRSSBytes": 2126053376,
+      "resources": {
+        "analysis": {
+          "file": "browser-3600-3-analysis-resources.json",
+          "peakBytes": 1723973632,
+          "samples": 151,
+          "errors": []
+        },
+        "export": {
+          "file": "browser-3600-3-export-resources.json",
+          "peakBytes": 2126053376,
+          "samples": 564,
+          "errors": []
+        },
+        "save": {
+          "file": "browser-3600-3-save-resources.json",
+          "peakBytes": 1711161344,
+          "samples": 6,
+          "errors": []
+        },
+        "ui": {
+          "file": "browser-3600-3-ui-resources.json",
+          "peakBytes": 1759641600,
+          "samples": 36,
+          "errors": []
+        }
+      },
+      "cuts": 1000,
+      "analysisPeak": 0.1811503767967224,
+      "decodedSamples": 172800000,
+      "outputSeconds": 2866.566667,
+      "expectedOutputSeconds": 2866.56666666664,
+      "fullDecodeVerified": true,
+      "outputFile": "test-output/threshold-selector-comparison/browser-long/browser-3600-3-output.mp4",
+      "outputSHA256": "dacdc29b931d3cad991bc173f0a5f2feb513df735b855e87724161acf3324586",
+      "sync": {
+        "status": "PASS",
+        "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+        "toleranceSeconds": 0.03333333333333333,
+        "firstToLastDrift": -4.547473508864641e-13,
+        "pairs": [
+          {
+            "name": "start",
+            "cycle": 1,
+            "precedingCuts": 1,
+            "sourceTone": 3.6001875,
+            "sourceFlash": 4,
+            "expectedOutputTone": 2.8668541666666667,
+            "expectedOutputFlash": 3.2666666666666666,
+            "outputTone": 2.8668541666666667,
+            "outputFlash": 3.2666666666666666,
+            "toneError": 0,
+            "flashError": 0,
+            "extraAVError": 0
+          },
+          {
+            "name": "start",
+            "cycle": 2,
+            "precedingCuts": 2,
+            "sourceTone": 7.2001875,
+            "sourceFlash": 7.6,
+            "expectedOutputTone": 5.733520833333333,
+            "expectedOutputFlash": 6.133333333333333,
+            "outputTone": 5.733520833333333,
+            "outputFlash": 6.1332666666666675,
+            "toneError": 0,
+            "flashError": -0.00006666666666532706,
+            "extraAVError": -0.00006666666666532706
+          },
+          {
+            "name": "middle",
+            "cycle": 500,
+            "precedingCuts": 500,
+            "sourceTone": 1800.0001875,
+            "sourceFlash": 1800.4,
+            "expectedOutputTone": 1433.333520833331,
+            "expectedOutputFlash": 1433.733333333331,
+            "outputTone": 1433.3335208333333,
+            "outputFlash": 1433.733267,
+            "toneError": 2.2737367544323206e-12,
+            "flashError": -0.00006633333100580785,
+            "extraAVError": -0.0000663333332795446
+          },
+          {
+            "name": "middle",
+            "cycle": 501,
+            "precedingCuts": 501,
+            "sourceTone": 1803.6001875,
+            "sourceFlash": 1804,
+            "expectedOutputTone": 1436.2001874999978,
+            "expectedOutputFlash": 1436.5999999999979,
+            "outputTone": 1436.2001875,
+            "outputFlash": 1436.6,
+            "toneError": 2.2737367544323206e-12,
+            "flashError": 2.0463630789890885e-12,
+            "extraAVError": -2.2737367544323206e-13
+          },
+          {
+            "name": "end",
+            "cycle": 998,
+            "precedingCuts": 998,
+            "sourceTone": 3592.8001875,
+            "sourceFlash": 3593.2,
+            "expectedOutputTone": 2860.9335208333064,
+            "expectedOutputFlash": 2861.333333333306,
+            "outputTone": 2860.933520833333,
+            "outputFlash": 2861.333267,
+            "toneError": 2.6830093702301383e-11,
+            "flashError": -0.00006633330622207723,
+            "extraAVError": -0.00006633333305217093
+          },
+          {
+            "name": "end",
+            "cycle": 999,
+            "precedingCuts": 999,
+            "sourceTone": 3596.4001875,
+            "sourceFlash": 3596.8,
+            "expectedOutputTone": 2863.800187499973,
+            "expectedOutputFlash": 2864.1999999999734,
+            "outputTone": 2863.8001875,
+            "outputFlash": 2864.2,
+            "toneError": 2.6830093702301383e-11,
+            "flashError": 2.637534635141492e-11,
+            "extraAVError": -4.547473508864641e-13
+          }
+        ],
+        "windows": [
+          {
+            "name": "start",
+            "source": {
+              "seek": 3.3000000000000003,
+              "seconds": 7.2,
+              "flashes": [
+                4,
+                7.6
+              ],
+              "tones": [
+                3.6001875,
+                7.2001875
+              ]
+            },
+            "output": {
+              "seek": 2.566666666666667,
+              "seconds": 7.2,
+              "flashes": [
+                3.2666666666666666,
+                6.1332666666666675,
+                8.999999666666668
+              ],
+              "tones": [
+                2.566666666666667,
+                2.8668541666666667,
+                5.733520833333333,
+                8.6001875
+              ]
+            }
+          },
+          {
+            "name": "middle",
+            "source": {
+              "seek": 1799.7,
+              "seconds": 7.2,
+              "flashes": [
+                1800.4,
+                1804
+              ],
+              "tones": [
+                1800.0001875,
+                1803.6001875
+              ]
+            },
+            "output": {
+              "seek": 1433,
+              "seconds": 7.2,
+              "flashes": [
+                1433.733267,
+                1436.6,
+                1439.466667
+              ],
+              "tones": [
+                1433,
+                1433.3335208333333,
+                1436.2001875,
+                1439.0668541666666
+              ]
+            }
+          },
+          {
+            "name": "end",
+            "source": {
+              "seek": 3592.5,
+              "seconds": 7.2,
+              "flashes": [
+                3593.2,
+                3596.8
+              ],
+              "tones": [
+                3592.8001875,
+                3596.4001875
+              ]
+            },
+            "output": {
+              "seek": 2860.6,
+              "seconds": 7.2,
+              "flashes": [
+                2861.333267,
+                2864.2
+              ],
+              "tones": [
+                2860.6,
+                2860.933520833333,
+                2863.8001875
+              ]
+            }
+          }
+        ]
+      },
+      "ui": {
+        "samples": [
+          {
+            "family": "restore",
+            "index": 0,
+            "action": "restore",
+            "ms": 67.9371669999091
+          },
+          {
+            "family": "restore",
+            "index": 1,
+            "action": "undo",
+            "ms": 64.84241700009443
+          },
+          {
+            "family": "restore",
+            "index": 2,
+            "action": "restore",
+            "ms": 64.60420800000429
+          },
+          {
+            "family": "restore",
+            "index": 3,
+            "action": "undo",
+            "ms": 64.8957090000622
+          },
+          {
+            "family": "restore",
+            "index": 4,
+            "action": "restore",
+            "ms": 65.01820900000166
+          },
+          {
+            "family": "restore",
+            "index": 5,
+            "action": "undo",
+            "ms": 64.30712500005029
+          },
+          {
+            "family": "restore",
+            "index": 6,
+            "action": "restore",
+            "ms": 64.48629199992865
+          },
+          {
+            "family": "restore",
+            "index": 7,
+            "action": "undo",
+            "ms": 64.67687500000466
+          },
+          {
+            "family": "restore",
+            "index": 8,
+            "action": "restore",
+            "ms": 64.35558299999684
+          },
+          {
+            "family": "restore",
+            "index": 9,
+            "action": "undo",
+            "ms": 64.57600000000093
+          },
+          {
+            "family": "restore",
+            "index": 10,
+            "action": "restore",
+            "ms": 65.18316699995194
+          },
+          {
+            "family": "restore",
+            "index": 11,
+            "action": "undo",
+            "ms": 64.71179100009613
+          },
+          {
+            "family": "restore",
+            "index": 12,
+            "action": "restore",
+            "ms": 65.69529200007673
+          },
+          {
+            "family": "restore",
+            "index": 13,
+            "action": "undo",
+            "ms": 64.37616700003855
+          },
+          {
+            "family": "restore",
+            "index": 14,
+            "action": "restore",
+            "ms": 64.97999999998137
+          },
+          {
+            "family": "restore",
+            "index": 15,
+            "action": "undo",
+            "ms": 64.78049999999348
+          },
+          {
+            "family": "restore",
+            "index": 16,
+            "action": "restore",
+            "ms": 64.33837499993388
+          },
+          {
+            "family": "restore",
+            "index": 17,
+            "action": "undo",
+            "ms": 64.80833300005179
+          },
+          {
+            "family": "restore",
+            "index": 18,
+            "action": "restore",
+            "ms": 64.94799999997485
+          },
+          {
+            "family": "restore",
+            "index": 19,
+            "action": "undo",
+            "ms": 64.67454200005159
+          },
+          {
+            "family": "restore",
+            "index": 20,
+            "action": "restore",
+            "ms": 64.53604100004304
+          },
+          {
+            "family": "restore",
+            "index": 21,
+            "action": "undo",
+            "ms": 64.34687500004657
+          },
+          {
+            "family": "restore",
+            "index": 22,
+            "action": "restore",
+            "ms": 65.35787499998696
+          },
+          {
+            "family": "restore",
+            "index": 23,
+            "action": "undo",
+            "ms": 65.30220799997915
+          },
+          {
+            "family": "restore",
+            "index": 24,
+            "action": "restore",
+            "ms": 65.07924999995157
+          },
+          {
+            "family": "restore",
+            "index": 25,
+            "action": "undo",
+            "ms": 64.30520899989642
+          },
+          {
+            "family": "restore",
+            "index": 26,
+            "action": "restore",
+            "ms": 65.14312500006054
+          },
+          {
+            "family": "restore",
+            "index": 27,
+            "action": "undo",
+            "ms": 64.78041600005236
+          },
+          {
+            "family": "restore",
+            "index": 28,
+            "action": "restore",
+            "ms": 64.43733300000895
+          },
+          {
+            "family": "restore",
+            "index": 29,
+            "action": "undo",
+            "ms": 64.18199999991339
+          },
+          {
+            "family": "restore",
+            "index": 30,
+            "action": "restore",
+            "ms": 65.40625
+          },
+          {
+            "family": "restore",
+            "index": 31,
+            "action": "undo",
+            "ms": 65.22612499992829
+          },
+          {
+            "family": "settings",
+            "index": 0,
+            "action": "setting",
+            "ms": 32.66300000005867
+          },
+          {
+            "family": "settings",
+            "index": 1,
+            "action": "setting",
+            "ms": 32.28312499995809
+          },
+          {
+            "family": "settings",
+            "index": 2,
+            "action": "setting",
+            "ms": 32.81383299990557
+          },
+          {
+            "family": "settings",
+            "index": 3,
+            "action": "setting",
+            "ms": 33.864417000091635
+          },
+          {
+            "family": "settings",
+            "index": 4,
+            "action": "setting",
+            "ms": 33.570042000035755
+          },
+          {
+            "family": "settings",
+            "index": 5,
+            "action": "setting",
+            "ms": 32.31570799998008
+          },
+          {
+            "family": "settings",
+            "index": 6,
+            "action": "setting",
+            "ms": 33.85241699998733
+          },
+          {
+            "family": "settings",
+            "index": 7,
+            "action": "setting",
+            "ms": 33.333792000077665
+          },
+          {
+            "family": "settings",
+            "index": 8,
+            "action": "setting",
+            "ms": 32.33970899996348
+          },
+          {
+            "family": "settings",
+            "index": 9,
+            "action": "setting",
+            "ms": 33.76058399991598
+          },
+          {
+            "family": "settings",
+            "index": 10,
+            "action": "setting",
+            "ms": 32.930707999970764
+          },
+          {
+            "family": "settings",
+            "index": 11,
+            "action": "setting",
+            "ms": 33.27654099999927
+          },
+          {
+            "family": "settings",
+            "index": 12,
+            "action": "setting",
+            "ms": 33.13229199999478
+          },
+          {
+            "family": "settings",
+            "index": 13,
+            "action": "setting",
+            "ms": 33.348375000059605
+          },
+          {
+            "family": "settings",
+            "index": 14,
+            "action": "setting",
+            "ms": 32.01245799998287
+          },
+          {
+            "family": "settings",
+            "index": 15,
+            "action": "setting",
+            "ms": 32.607916999957524
+          },
+          {
+            "family": "settings",
+            "index": 16,
+            "action": "setting",
+            "ms": 32.65145799994934
+          },
+          {
+            "family": "settings",
+            "index": 17,
+            "action": "setting",
+            "ms": 33.51770900003612
+          },
+          {
+            "family": "settings",
+            "index": 18,
+            "action": "setting",
+            "ms": 33.069207999971695
+          },
+          {
+            "family": "settings",
+            "index": 19,
+            "action": "setting",
+            "ms": 33.221458000014536
+          },
+          {
+            "family": "settings",
+            "index": 20,
+            "action": "setting",
+            "ms": 32.76829200005159
+          },
+          {
+            "family": "settings",
+            "index": 21,
+            "action": "setting",
+            "ms": 33.85258300008718
+          },
+          {
+            "family": "settings",
+            "index": 22,
+            "action": "setting",
+            "ms": 32.318290999974124
+          },
+          {
+            "family": "settings",
+            "index": 23,
+            "action": "setting",
+            "ms": 33.3707089999225
+          },
+          {
+            "family": "settings",
+            "index": 24,
+            "action": "setting",
+            "ms": 33.68270800006576
+          },
+          {
+            "family": "settings",
+            "index": 25,
+            "action": "setting",
+            "ms": 33.04308299999684
+          },
+          {
+            "family": "settings",
+            "index": 26,
+            "action": "setting",
+            "ms": 32.54945799999405
+          },
+          {
+            "family": "settings",
+            "index": 27,
+            "action": "setting",
+            "ms": 33.81287499994505
+          },
+          {
+            "family": "settings",
+            "index": 28,
+            "action": "setting",
+            "ms": 32.88658299995586
+          },
+          {
+            "family": "settings",
+            "index": 29,
+            "action": "setting",
+            "ms": 33.17649999994319
+          },
+          {
+            "family": "settings",
+            "index": 30,
+            "action": "setting",
+            "ms": 33.45916700002272
+          },
+          {
+            "family": "settings",
+            "index": 31,
+            "action": "setting",
+            "ms": 32.956875000032596
+          },
+          {
+            "family": "transport",
+            "index": 0,
+            "action": "play",
+            "ms": 65.6212499999674
+          },
+          {
+            "family": "transport",
+            "index": 1,
+            "action": "pause",
+            "ms": 65.91220899997279
+          },
+          {
+            "family": "transport",
+            "index": 2,
+            "action": "play",
+            "ms": 65.32970800006296
+          },
+          {
+            "family": "transport",
+            "index": 3,
+            "action": "pause",
+            "ms": 66.69879199995194
+          },
+          {
+            "family": "transport",
+            "index": 4,
+            "action": "play",
+            "ms": 66.27687499998137
+          },
+          {
+            "family": "transport",
+            "index": 5,
+            "action": "pause",
+            "ms": 66.23787499999162
+          },
+          {
+            "family": "transport",
+            "index": 6,
+            "action": "play",
+            "ms": 66.40695799991954
+          },
+          {
+            "family": "transport",
+            "index": 7,
+            "action": "pause",
+            "ms": 66.89558400004171
+          },
+          {
+            "family": "transport",
+            "index": 8,
+            "action": "play",
+            "ms": 66.30383400002029
+          },
+          {
+            "family": "transport",
+            "index": 9,
+            "action": "pause",
+            "ms": 66.13683299999684
+          },
+          {
+            "family": "transport",
+            "index": 10,
+            "action": "play",
+            "ms": 66.77966699993704
+          },
+          {
+            "family": "transport",
+            "index": 11,
+            "action": "pause",
+            "ms": 66.93833300005645
+          },
+          {
+            "family": "transport",
+            "index": 12,
+            "action": "play",
+            "ms": 65.86408299999312
+          },
+          {
+            "family": "transport",
+            "index": 13,
+            "action": "pause",
+            "ms": 66.19841599999927
+          },
+          {
+            "family": "transport",
+            "index": 14,
+            "action": "play",
+            "ms": 66.74824999994598
+          },
+          {
+            "family": "transport",
+            "index": 15,
+            "action": "pause",
+            "ms": 66.43041599995922
+          },
+          {
+            "family": "transport",
+            "index": 16,
+            "action": "play",
+            "ms": 66.7201659999555
+          },
+          {
+            "family": "transport",
+            "index": 17,
+            "action": "pause",
+            "ms": 66.17108400003053
+          },
+          {
+            "family": "transport",
+            "index": 18,
+            "action": "play",
+            "ms": 66.26366699999198
+          },
+          {
+            "family": "transport",
+            "index": 19,
+            "action": "pause",
+            "ms": 66.67770799994469
+          },
+          {
+            "family": "transport",
+            "index": 20,
+            "action": "play",
+            "ms": 67.10329100000672
+          },
+          {
+            "family": "transport",
+            "index": 21,
+            "action": "pause",
+            "ms": 67.04924999992363
+          },
+          {
+            "family": "transport",
+            "index": 22,
+            "action": "play",
+            "ms": 66.30595900001936
+          },
+          {
+            "family": "transport",
+            "index": 23,
+            "action": "pause",
+            "ms": 67.23812499991618
+          },
+          {
+            "family": "transport",
+            "index": 24,
+            "action": "play",
+            "ms": 67.03675000008661
+          },
+          {
+            "family": "transport",
+            "index": 25,
+            "action": "pause",
+            "ms": 66.8614580000285
+          },
+          {
+            "family": "transport",
+            "index": 26,
+            "action": "play",
+            "ms": 66.23074999998789
+          },
+          {
+            "family": "transport",
+            "index": 27,
+            "action": "pause",
+            "ms": 66.66754199995194
+          },
+          {
+            "family": "transport",
+            "index": 28,
+            "action": "play",
+            "ms": 66.97112500004005
+          },
+          {
+            "family": "transport",
+            "index": 29,
+            "action": "pause",
+            "ms": 66.3943750000326
+          },
+          {
+            "family": "transport",
+            "index": 30,
+            "action": "play",
+            "ms": 66.25333300000057
+          },
+          {
+            "family": "transport",
+            "index": 31,
+            "action": "pause",
+            "ms": 66.82020800001919
+          }
+        ],
+        "byFamily": {
+          "restore": {
+            "count": 32,
+            "median": 64.78045800002292,
+            "max": 67.9371669999091,
+            "p95": 65.69529200007673
+          },
+          "settings": {
+            "count": 32,
+            "median": 33.100749999983236,
+            "max": 33.864417000091635,
+            "p95": 33.85258300008718
+          },
+          "transport": {
+            "count": 32,
+            "median": 66.41868699993938,
+            "max": 67.23812499991618,
+            "p95": 67.10329100000672
+          }
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "음량과 무음 구간 분석",
+        "progress": 0.15000474074074074
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 318.11699999999837,
+      "displayMs": 1.100000023841858,
+      "projectPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "failures": [],
+  "summary": [
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "analyzeSeconds": {
+        "count": 3,
+        "median": 37.192922583000005,
+        "max": 37.45147424999997,
+        "p95": null
+      },
+      "exportSeconds": {
+        "count": 3,
+        "median": 141.479087917,
+        "max": 142.17244574999998,
+        "p95": null
+      },
+      "peakRSSBytes": {
+        "count": 3,
+        "median": 2071134208,
+        "max": 2126053376,
+        "p95": null
+      },
+      "allMeasuredGoalsPass": true
+    }
+  ],
+  "measuredGoalsPass": true
+}
