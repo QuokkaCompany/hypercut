@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-06T09:30:46.947901+00:00",
+  "status": "PROBE_CONTROL_PASS",
+  "scope": "32 MiB synthetic file only. A new file with uncached aligned sequential writes, followed by two mincore checks without touching the mapping and a cached read positive control. Not an application cold-start or full OS cold-cache benchmark.",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "pageBytes": 16384,
+  "fileBytes": 33554432,
+  "source": "scripts/helpers/file-cache-probe.c",
+  "sourceSHA256": "efa17172e3e5b5b156bdb2db34e317c0411fd61a60790eb0a38de4aefec7ff73",
+  "binarySHA256": "c649fee5162dbbbadf93495650af51b3f91d2f226600a4a902e9ff8a51b27bda",
+  "fixtureSHA256AfterWarmRead": "74e1e510b51ff57044a0adc2a8faa127e6f3130ca06a3a3cfef34d68a1c4c5e3",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
+  "command": [
+    "clang -Wall -Wextra -Werror -O2 test-output/media-cache-probe/probe.c -o test-output/media-cache-probe/probe",
+    "./test-output/media-cache-probe/probe test-output/media-cache-probe/fixture.bin"
+  ],
+  "observations": [
+    {
+      "phase": "after_uncached_write",
+      "pages": 2048,
+      "residentPages": 0,
+      "pageBytes": 16384
+    },
+    {
+      "phase": "repeat_without_read",
+      "pages": 2048,
+      "residentPages": 0,
+      "pageBytes": 16384
+    },
+    {
+      "phase": "after_cached_read",
+      "pages": 2048,
+      "residentPages": 2048,
+      "pageBytes": 16384
+    }
+  ],
+  "dataVerification": "Every byte matched its deterministic construction during the cached read.",
+  "limitations": [
+    "No application was launched in this probe.",
+    "OS metadata, executable/library pages and storage device caches were not cleared.",
+    "The 60-minute repeat memory gate still fails; do not expand the formal matrix yet."
+  ],
+  "sourceCopy": "test-output/media-cache-probe/probe.c (byte-identical to tracked helper)",
+  "existingFileControl": {
+    "exitCode": 1,
+    "message": "open new file: File exists",
+    "bytesPreserved": true,
+    "sha256": "74e1e510b51ff57044a0adc2a8faa127e6f3130ca06a3a3cfef34d68a1c4c5e3"
+  }
+}

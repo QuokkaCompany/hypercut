@@ -1,0 +1,239 @@
+{
+  "date": "2026-09-06T09:27:48.890025+00:00",
+  "status": "AUDITED_SECOND_RUN_MEMORY_FAILURE",
+  "code": "50022126ecddd066503f2c43728b207c5e953802",
+  "scope": "Two full 60-minute browser runs. Entire project, actual file hashes, independent correctness and raw simultaneous RSS sums audited. Second memory goal fails; third run and remaining long conditions not run. No new human quality claim.",
+  "runs": [
+    {
+      "iteration": 1,
+      "analyzeSeconds": 36.743353582999994,
+      "exportSeconds": 157.126952375,
+      "independentVerificationSeconds": 124.083559083,
+      "peakGiB": 1.946319580078125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 75.85735450001084,
+          "max": 214.65275000000838,
+          "p95": 181.0084580000257
+        },
+        "effects": {
+          "count": 32,
+          "median": 170.68566700001247,
+          "max": 189.76008300000103,
+          "p95": 186.82433399994625
+        },
+        "cuts": {
+          "count": 32,
+          "median": 64.79168750002282,
+          "max": 89.70387500000652,
+          "p95": 66.10241700004553
+        }
+      },
+      "maxSampleGapMs": 279.24041600000055,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 14843.014208,
+        "bytes": 2089844736,
+        "processes": [
+          {
+            "pid": 88547,
+            "parent": 88538,
+            "bytes": 227360768,
+            "name": "node"
+          },
+          {
+            "pid": 88548,
+            "parent": 88538,
+            "bytes": 301121536,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 88555,
+            "parent": 88548,
+            "bytes": 166346752,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 88556,
+            "parent": 88548,
+            "bytes": 106004480,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 88557,
+            "parent": 88548,
+            "bytes": 82788352,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 88560,
+            "parent": 88548,
+            "bytes": 181141504,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 88561,
+            "parent": 88548,
+            "bytes": 100745216,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 88562,
+            "parent": 88548,
+            "bytes": 482689024,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 88575,
+            "parent": 88548,
+            "bytes": 98680832,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 88804,
+            "parent": 88547,
+            "bytes": 342966272,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "analyzeSeconds": 37.06417045799998,
+      "exportSeconds": 157.696749334,
+      "independentVerificationSeconds": 124.94900416699994,
+      "peakGiB": 2.045013427734375,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 82.62160449998919,
+          "max": 190.66758400003891,
+          "p95": 183.39549999998417
+        },
+        "effects": {
+          "count": 32,
+          "median": 163.90760399994906,
+          "max": 205.98341700003948,
+          "p95": 199.50620800000615
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.56512550002662,
+          "max": 89.3357079999987,
+          "p95": 66.49741700000595
+        }
+      },
+      "maxSampleGapMs": 281.23749999998836,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": false,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 12362.070749999955,
+        "bytes": 2195816448,
+        "processes": [
+          {
+            "pid": 88547,
+            "parent": 88538,
+            "bytes": 251822080,
+            "name": "node"
+          },
+          {
+            "pid": 88548,
+            "parent": 88538,
+            "bytes": 309755904,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 88555,
+            "parent": 88548,
+            "bytes": 174014464,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 88556,
+            "parent": 88548,
+            "bytes": 106807296,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 88557,
+            "parent": 88548,
+            "bytes": 83066880,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 88560,
+            "parent": 88548,
+            "bytes": 181256192,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 88561,
+            "parent": 88548,
+            "bytes": 100794368,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 88562,
+            "parent": 88548,
+            "bytes": 548192256,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 88575,
+            "parent": 88548,
+            "bytes": 98975744,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 90243,
+            "parent": 88547,
+            "bytes": 341131264,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.3024
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 305.2557500000112,
+      "displayMs": 0.8999999761581421,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}
