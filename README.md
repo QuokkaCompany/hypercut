@@ -111,7 +111,7 @@ AI 메뉴에서 자연어로 무음 설정을 제안받고 현재 값과 비교�
 
 계획·통과 기준·실제 결과·미실행 범위는 [검증 안내](docs/testing/README.md)에 모았습니다. [말소리 보호 검증](docs/testing/2026-09-05-speech-protection-results.md)과 [Claude Code 연결 검증](docs/testing/2026-09-05-claude-cli-results.md)을 따로 기록했습니다. 현재 정식 MVP 전체 검증이 완료된 상태는 아닙니다.
 
-요구사항별 우선순위는 [검증·테스트 계획 요약](docs/plans/README.md)에서 확인할 수 있습니다. [인코더 메모리 개선 후보](docs/testing/2026-09-06-encoder-two-results.md)는 같은 화질 설정에서 두 앱의 짧은 합성 4회, 브라우저 60분 3회와 두 앱 10분 6회가 측정 기준을 통과했습니다. Mac 60분 반복과 실제 한국어 품질·작업 시간·인증 AI 검증 등은 별도로 남아 있습니다.
+요구사항별 우선순위는 [검증·테스트 계획 요약](docs/plans/README.md)에서 확인할 수 있습니다. [인코더 메모리 개선 후보](docs/testing/2026-09-06-encoder-two-results.md)는 같은 화질 설정에서 두 앱의 짧은 합성 4회와 10분/60분 × 두 앱 × 3회, 총 12회의 장시간 측정 기준을 통과했습니다. 실제 한국어 품질·작업 시간·인증 AI·파일 캐시 조건별 성능 검증 등은 별도로 남아 있습니다.
 
 ```sh
 npm test

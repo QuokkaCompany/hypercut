@@ -1,0 +1,375 @@
+{
+  "date": "2026-09-06T11:41:58.683889+00:00",
+  "status": "COMPLETED",
+  "scope": "12 sequential synthetic composition app runs: 600/3600 seconds, browser/desktop, three iterations per app session. Manual Korean captions and synthetic effects; no human speech, OS-wide or controlled input-file cache, authenticated AI, or general quality claim.",
+  "reports": [
+    {
+      "path": "test-output/composition-encoder-two-long/browser-long/results.json",
+      "sha256": "ea6a37fd1fd59c44136eb217b0410e89f556a8a9d53715399d8b323a9625b35f",
+      "code": "3e6db03d812d2e4566b00caedb63496ea8da39d9"
+    },
+    {
+      "path": "test-output/composition-encoder-two-long/both-600/results.json",
+      "sha256": "b1681f5e1ec576b09ea3d72eb7fe467e407fd82f11e64265fe3f9eee5eeecf3c",
+      "code": "3e6db03d812d2e4566b00caedb63496ea8da39d9"
+    },
+    {
+      "path": "test-output/composition-encoder-two-long/desktop-3600/results.json",
+      "sha256": "17c55298ca89fe8117146d8147224da5d652903f199c3233fa30aaed93567fd1",
+      "code": "3e6db03d812d2e4566b00caedb63496ea8da39d9"
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 1,
+      "analyzeSeconds": 37.291237333,
+      "exportSeconds": 187.91482966700002,
+      "independentVerificationSeconds": 125.53442516699998,
+      "peakRSSBytes": 1881096192,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "srtSHA256": "ab3446b082781ea2c54ecc83fe80a0f28bb2c3f2d3135d7c0f2853dcbf9f03cc",
+      "cache": "fresh app; OS cache not purged"
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 2,
+      "analyzeSeconds": 37.07415545800002,
+      "exportSeconds": 187.85172500000004,
+      "independentVerificationSeconds": 125.21066629199998,
+      "peakRSSBytes": 2029813760,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "srtSHA256": "ab3446b082781ea2c54ecc83fe80a0f28bb2c3f2d3135d7c0f2853dcbf9f03cc",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 3,
+      "analyzeSeconds": 37.28719191699999,
+      "exportSeconds": 187.57239629199995,
+      "independentVerificationSeconds": 125.50912087500002,
+      "peakRSSBytes": 2100117504,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "srtSHA256": "ab3446b082781ea2c54ecc83fe80a0f28bb2c3f2d3135d7c0f2853dcbf9f03cc",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "iteration": 1,
+      "analyzeSeconds": 6.740584792000001,
+      "exportSeconds": 32.818365708,
+      "independentVerificationSeconds": 21.956185583,
+      "peakRSSBytes": 1768407040,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+      "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+      "cache": "fresh app; OS cache not purged"
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "iteration": 2,
+      "analyzeSeconds": 6.515204041999998,
+      "exportSeconds": 32.82287320799999,
+      "independentVerificationSeconds": 22.364638250000002,
+      "peakRSSBytes": 1832665088,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+      "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "iteration": 3,
+      "analyzeSeconds": 6.551270625000004,
+      "exportSeconds": 32.832784209,
+      "independentVerificationSeconds": 21.999063082999985,
+      "peakRSSBytes": 1855471616,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+      "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "iteration": 1,
+      "analyzeSeconds": 6.4545042499999985,
+      "exportSeconds": 32.188847624999994,
+      "independentVerificationSeconds": 22.14854791700002,
+      "peakRSSBytes": 1161412608,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+      "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+      "cache": "fresh app; OS cache not purged"
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "iteration": 2,
+      "analyzeSeconds": 6.259526874999981,
+      "exportSeconds": 32.18166108400002,
+      "independentVerificationSeconds": 21.986631333000027,
+      "peakRSSBytes": 1228341248,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+      "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "iteration": 3,
+      "analyzeSeconds": 6.577308416999993,
+      "exportSeconds": 33.399030415999995,
+      "independentVerificationSeconds": 22.349372415999998,
+      "peakRSSBytes": 1249411072,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+      "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 3600,
+      "iteration": 1,
+      "analyzeSeconds": 37.269849875,
+      "exportSeconds": 192.669096625,
+      "independentVerificationSeconds": 126.21143983300001,
+      "peakRSSBytes": 1246969856,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "srtSHA256": "ab3446b082781ea2c54ecc83fe80a0f28bb2c3f2d3135d7c0f2853dcbf9f03cc",
+      "cache": "fresh app; OS cache not purged"
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 3600,
+      "iteration": 2,
+      "analyzeSeconds": 36.59562220799999,
+      "exportSeconds": 190.54347604200007,
+      "independentVerificationSeconds": 131.92951566699998,
+      "peakRSSBytes": 1177845760,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "srtSHA256": "ab3446b082781ea2c54ecc83fe80a0f28bb2c3f2d3135d7c0f2853dcbf9f03cc",
+      "cache": "same app; OS cache not purged"
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 3600,
+      "iteration": 3,
+      "analyzeSeconds": 36.55226854200009,
+      "exportSeconds": 192.66893183300004,
+      "independentVerificationSeconds": 127.61336495900002,
+      "peakRSSBytes": 1180303360,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "srtSHA256": "ab3446b082781ea2c54ecc83fe80a0f28bb2c3f2d3135d7c0f2853dcbf9f03cc",
+      "cache": "same app; OS cache not purged"
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.30945
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 224.11945800000103,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.33072289156626505
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 199.02500000000146,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.3759036144578313
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 204.80929199996172,
+      "displayMs": 0.7999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.31005
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 205.88112500001444,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "sourceHashes": {
+    "src/WindowedList.tsx": "7231107d6f78d465c5e191e751d2a4aae3d1c62a495bf64dd9f124ad33d5bc4f",
+    "src/CutList.tsx": "8e67df4bc7682648a1ed520f074a241d9261149f335168660e3b1318ebdc48b0",
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionList.tsx": "04fad9264e4c86c0117b5f37f14e0072f74d2ca873a9954be73d77bdf728befd",
+    "src/captions.css": "fc0982fe15f1b16f61c5cbf4275445036399036c178bd7ba1780428664b1c493",
+    "src/Effects.tsx": "f3754c85b1f6dc7b8ae667988073d446d054fae9e13bbffd358a14e6611f6187",
+    "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+    "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+    "server/effects.mjs": "972611657a16780bc47f386c579d9c589ca3287ad730103a9b899094efae7d5b",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "6e559cc7af5d4353113aba40c4c698d8bcffd11e44b5759a7cea843257a70eaa",
+    "scripts/composition-benchmark.mjs": "603c7bcae4a927dff706e978f9be07bccd860cf7ddf9bcd746e4e4adedb5f4af",
+    "scripts/benchmark-server.mjs": "f11922fc29260ada2e544ce06eebabcfda59c32ca13bc9f9475d306a8b984529",
+    "scripts/helpers/composition-oracle.mjs": "46c22c4463e070c3c97de9d05d235df18c83db9dfa03ff7b2523b1b1c1193c17",
+    "scripts/helpers/composition-performance-fixture.mjs": "4d7bc3816c54a7918d40b60c7eef5eedb985c92efa983c6cfe12965cb4da7aa1",
+    "scripts/helpers/threshold-performance-fixture.mjs": "8d98fc7c46c0bfde0d883a29207968a295582bc0cb0f7c036d4e7a448d40a466",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "assets/fonts/manifest.json": "6e5b4b0d572cf3f502c9253530b6adb6b58d05928c04e904881b67a0d53de309",
+    "package-lock.json": "33e014da156d3a7f4b3de5d81efd223249bc5564bc41124c8669eae83f96acce",
+    "dist/index.html": "1b287501fedd3c601e9710d25ada9fae5cf925a51c9988879dc0852394eb6a90",
+    "dist/assets/index-BOL8mdxe.js": "807e72db6903f9770ae7cece0b319207c2db4495df17fba53b70e8d4f543c906",
+    "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "1c76ba7cf476ecf9492939b08f26b23da0504256863dee44983b0c71ec2c75fd"
+  },
+  "maximumPeakRSSGiB": 1.9558868408203125,
+  "summary": [
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "analysisMedianSeconds": 6.551270625000004,
+      "exportMedianSeconds": 32.82287320799999,
+      "maximumPeakRSSGiB": 1.7280426025390625
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "analysisMedianSeconds": 37.28719191699999,
+      "exportMedianSeconds": 187.85172500000004,
+      "maximumPeakRSSGiB": 1.9558868408203125
+    },
+    {
+      "surface": "desktop",
+      "seconds": 600,
+      "analysisMedianSeconds": 6.4545042499999985,
+      "exportMedianSeconds": 32.188847624999994,
+      "maximumPeakRSSGiB": 1.163604736328125
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "analysisMedianSeconds": 36.59562220799999,
+      "exportMedianSeconds": 192.66893183300004,
+      "maximumPeakRSSGiB": 1.1613311767578125
+    }
+  ]
+}

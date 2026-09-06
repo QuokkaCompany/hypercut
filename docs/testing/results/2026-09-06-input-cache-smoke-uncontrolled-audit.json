@@ -1,0 +1,470 @@
+{
+  "date": "2026-09-06T11:46:07.533907+00:00",
+  "status": "AUDITED_COMPLETED",
+  "code": "9d1e50acedff6e1ffff44973a9f6b6ec1f66403e",
+  "scope": "Entire projects, actual file hashes, independent output verification, UI samples, simultaneous raw RSS sums and cancellation/retry audited. Comparisons retain all oracle values; path and savedAt are excluded only where appropriate. Only the explicitly listed input-cache control harness may differ; product, oracle, client bundle, and package sources must match. MP4/SRT/verification are compared for the same product, to the same surface/duration where available or another surface at the same duration. If baseline equals this report the first run is only an internal consistency check, not independent validation of itself; the executed benchmark supplies the independent oracle checks. Full decoded comparisons are separate. No human speech-quality or OS cold-cache claim.",
+  "baseline": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-smoke",
+  "runs": [
+    {
+      "surface": "browser",
+      "seconds": 60,
+      "iteration": 1,
+      "baselineIteration": 1,
+      "baselineSurface": "browser",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 1.422999959,
+      "exportSeconds": 4.1063315419999995,
+      "independentVerificationSeconds": 3.356093500000001,
+      "peakGiB": 1.510772705078125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.93127099999947,
+          "max": 98.56929200000013,
+          "p95": 67.19062499999927
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.14277100000072,
+          "max": 100.22958300000028,
+          "p95": 99.78404199999932
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.80685399999857,
+          "max": 82.33295899999939,
+          "p95": 68.09950000000026
+        }
+      },
+      "maxSampleGapMs": 291.3347909999993,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 810.7904169999997,
+        "bytes": 1622179840,
+        "processes": [
+          {
+            "pid": 23091,
+            "parent": 23082,
+            "bytes": 97501184,
+            "name": "node"
+          },
+          {
+            "pid": 23092,
+            "parent": 23082,
+            "bytes": 241631232,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 23098,
+            "parent": 23092,
+            "bytes": 162545664,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 23099,
+            "parent": 23092,
+            "bytes": 105398272,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 23100,
+            "parent": 23092,
+            "bytes": 82788352,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 23103,
+            "parent": 23092,
+            "bytes": 185876480,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 23104,
+            "parent": 23092,
+            "bytes": 100745216,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 23105,
+            "parent": 23092,
+            "bytes": 266010624,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 23121,
+            "parent": 23092,
+            "bytes": 98189312,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 23143,
+            "parent": 23091,
+            "bytes": 281493504,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 60,
+      "iteration": 2,
+      "baselineIteration": 2,
+      "baselineSurface": "browser",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 1.171941290999999,
+      "exportSeconds": 3.823430083000003,
+      "independentVerificationSeconds": 3.108981125000002,
+      "peakGiB": 1.3955535888671875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 66.3316040000027,
+          "max": 98.64995899999849,
+          "p95": 67.28470899999957
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.19306199999846,
+          "max": 100.8260420000006,
+          "p95": 100.62550000000192
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.88243750000038,
+          "max": 66.93395800000144,
+          "p95": 66.7488330000051
+        }
+      },
+      "maxSampleGapMs": 282.8765829999975,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 3321.601083999998,
+        "bytes": 1498464256,
+        "processes": [
+          {
+            "pid": 23091,
+            "parent": 23082,
+            "bytes": 97697792,
+            "name": "node"
+          },
+          {
+            "pid": 23092,
+            "parent": 23082,
+            "bytes": 225525760,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 23098,
+            "parent": 23092,
+            "bytes": 149569536,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 23099,
+            "parent": 23092,
+            "bytes": 88850432,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 23100,
+            "parent": 23092,
+            "bytes": 63913984,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 23103,
+            "parent": 23092,
+            "bytes": 147341312,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 23104,
+            "parent": 23092,
+            "bytes": 82460672,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 23105,
+            "parent": 23092,
+            "bytes": 280625152,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 23121,
+            "parent": 23092,
+            "bytes": 80429056,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 23476,
+            "parent": 23091,
+            "bytes": 282050560,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 60,
+      "iteration": 1,
+      "baselineIteration": 1,
+      "baselineSurface": "desktop",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 1.2933398750000051,
+      "exportSeconds": 3.7735534170000027,
+      "independentVerificationSeconds": 3.201559957999998,
+      "peakGiB": 0.94635009765625,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.47785400000066,
+          "max": 69.02212499999587,
+          "p95": 40.67320800000016
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.30272899999909,
+          "max": 60.816541999993206,
+          "p95": 60.523542000002635
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.37160400000357,
+          "max": 40.375583000000915,
+          "p95": 40.30633300000045
+        }
+      },
+      "maxSampleGapMs": 280.92725000000064,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "cancel",
+        "milliseconds": 556.273374999997,
+        "bytes": 1016135680,
+        "processes": [
+          {
+            "pid": 23592,
+            "parent": 23082,
+            "bytes": 280313856,
+            "name": "HyperCut"
+          },
+          {
+            "pid": 23593,
+            "parent": 23592,
+            "bytes": 126025728,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 23594,
+            "parent": 23592,
+            "bytes": 56524800,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 23595,
+            "parent": 23592,
+            "bytes": 238927872,
+            "name": "HyperCut Helper (Renderer)"
+          },
+          {
+            "pid": 23601,
+            "parent": 23592,
+            "bytes": 48857088,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 23683,
+            "parent": 23592,
+            "bytes": 265486336,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 60,
+      "iteration": 2,
+      "baselineIteration": 2,
+      "baselineSurface": "desktop",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 1.1116984169999997,
+      "exportSeconds": 3.7830671250000014,
+      "independentVerificationSeconds": 3.083366000000009,
+      "peakGiB": 1.0326385498046875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.3817915000036,
+          "max": 59.29833299999882,
+          "p95": 59.05874999999651
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.4632294999974,
+          "max": 60.57395799999358,
+          "p95": 60.43979200000467
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.27972950000549,
+          "max": 40.56149999999616,
+          "p95": 40.18825000000652
+        }
+      },
+      "maxSampleGapMs": 278.64666600000055,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 3065.136624999999,
+        "bytes": 1108787200,
+        "processes": [
+          {
+            "pid": 23592,
+            "parent": 23082,
+            "bytes": 286490624,
+            "name": "HyperCut"
+          },
+          {
+            "pid": 23593,
+            "parent": 23592,
+            "bytes": 133054464,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 23594,
+            "parent": 23592,
+            "bytes": 56639488,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 23595,
+            "parent": 23592,
+            "bytes": 301285376,
+            "name": "HyperCut Helper (Renderer)"
+          },
+          {
+            "pid": 23601,
+            "parent": 23592,
+            "bytes": 49020928,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 23759,
+            "parent": 23592,
+            "bytes": 282296320,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.44999999999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 206.3478329999998,
+      "displayMs": 1.2999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.44999999999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 199.9199579999986,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "auditSourceSHA256": "3bb9110d91d3a68bdc4c5e6b00316563238908879a8ef3f06856408e2e702f43",
+  "harnessSourceChanges": {
+    "scripts/composition-benchmark.mjs": {
+      "before": "603c7bcae4a927dff706e978f9be07bccd860cf7ddf9bcd746e4e4adedb5f4af",
+      "after": "0dcdb9fd55f38851e911974bf66573d0cb21d9e00b758dfba549e9463467e65b"
+    },
+    "scripts/helpers/file-cache.c": {
+      "before": null,
+      "after": "1eb8f26f1901138b0d20be925a8437cb56c8ced059e6313483f3d8cabb1ae106"
+    },
+    "scripts/helpers/file-cache.mjs": {
+      "before": null,
+      "after": "c12bfba383cefe2369e364c700f712fad2ca22083c957862711f6d743bc9d84f"
+    }
+  },
+  "inputCacheMode": "uncontrolled",
+  "inputCacheChecks": []
+}

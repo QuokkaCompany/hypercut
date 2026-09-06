@@ -1,0 +1,298 @@
+{
+  "date": "2026-09-06T11:41:04.661032+00:00",
+  "status": "AUDITED_COMPLETED",
+  "code": "3e6db03d812d2e4566b00caedb63496ea8da39d9",
+  "scope": "Entire projects, actual file hashes, independent output verification, UI samples, simultaneous raw RSS sums and cancellation/retry audited. Comparisons retain all oracle values; path and savedAt are excluded only where appropriate. MP4/SRT/verification are compared within the same build, to the same surface/duration where available or another surface at the same duration. If baseline equals this report the first run is only an internal consistency check, not independent validation of itself; the executed benchmark supplies the independent oracle checks. Full decoded comparisons are separate. No human speech-quality or OS cold-cache claim.",
+  "baseline": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long",
+  "runs": [
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "iteration": 1,
+      "baselineIteration": 1,
+      "baselineSurface": "browser",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 37.269849875,
+      "exportSeconds": 192.669096625,
+      "independentVerificationSeconds": 126.21143983300001,
+      "peakGiB": 1.1613311767578125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.47370800000499,
+          "max": 59.43804200005252,
+          "p95": 49.214541999972425
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.233228999975836,
+          "max": 60.779833999986295,
+          "p95": 60.194707999995444
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.11185449999175,
+          "max": 49.20529199996963,
+          "p95": 40.20670799998334
+        }
+      },
+      "maxSampleGapMs": 284.7568749999991,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 181175.559542,
+        "bytes": 1246969856,
+        "processes": [
+          {
+            "pid": 16951,
+            "parent": 16942,
+            "bytes": 388546560,
+            "name": "HyperCut"
+          },
+          {
+            "pid": 16952,
+            "parent": 16951,
+            "bytes": 125042688,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 16953,
+            "parent": 16951,
+            "bytes": 57475072,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 16954,
+            "parent": 16951,
+            "bytes": 299352064,
+            "name": "HyperCut Helper (Renderer)"
+          },
+          {
+            "pid": 16961,
+            "parent": 16951,
+            "bytes": 49364992,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 17238,
+            "parent": 16951,
+            "bytes": 327188480,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "iteration": 2,
+      "baselineIteration": 2,
+      "baselineSurface": "browser",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 36.59562220799999,
+      "exportSeconds": 190.54347604200007,
+      "independentVerificationSeconds": 131.92951566699998,
+      "peakGiB": 1.096954345703125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.33908350003185,
+          "max": 59.494124999968335,
+          "p95": 57.91583400010131
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.41316649998771,
+          "max": 65.7263329999987,
+          "p95": 60.27912500000093
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.03429199993843,
+          "max": 40.023207999998704,
+          "p95": 39.945124999969266
+        }
+      },
+      "maxSampleGapMs": 286.62637499999255,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 12597.182083000022,
+        "bytes": 1177845760,
+        "processes": [
+          {
+            "pid": 16951,
+            "parent": 16942,
+            "bytes": 335249408,
+            "name": "HyperCut"
+          },
+          {
+            "pid": 16952,
+            "parent": 16951,
+            "bytes": 115785728,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 16953,
+            "parent": 16951,
+            "bytes": 50364416,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 16954,
+            "parent": 16951,
+            "bytes": 333348864,
+            "name": "HyperCut Helper (Renderer)"
+          },
+          {
+            "pid": 16961,
+            "parent": 16951,
+            "bytes": 43368448,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 18885,
+            "parent": 16951,
+            "bytes": 299728896,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "iteration": 3,
+      "baselineIteration": 3,
+      "baselineSurface": "browser",
+      "comparisonToSelf": false,
+      "analyzeSeconds": 36.55226854200009,
+      "exportSeconds": 192.66893183300004,
+      "independentVerificationSeconds": 127.61336495900002,
+      "peakGiB": 1.0992431640625,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.44789549999405,
+          "max": 58.93870799988508,
+          "p95": 49.74879099987447
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.47218700009398,
+          "max": 66.63791700010188,
+          "p95": 60.19570800010115
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.05472949997056,
+          "max": 49.96650000009686,
+          "p95": 49.10575000010431
+        }
+      },
+      "maxSampleGapMs": 316.39354199985974,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": true,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 19115.629167000065,
+        "bytes": 1180303360,
+        "processes": [
+          {
+            "pid": 16951,
+            "parent": 16942,
+            "bytes": 365510656,
+            "name": "HyperCut"
+          },
+          {
+            "pid": 16952,
+            "parent": 16951,
+            "bytes": 106135552,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 16953,
+            "parent": 16951,
+            "bytes": 49545216,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 16954,
+            "parent": 16951,
+            "bytes": 314572800,
+            "name": "HyperCut Helper (Renderer)"
+          },
+          {
+            "pid": 16961,
+            "parent": 16951,
+            "bytes": 41582592,
+            "name": "HyperCut Helper"
+          },
+          {
+            "pid": 21185,
+            "parent": 16951,
+            "bytes": 302956544,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "desktop",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.31005
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 205.88112500001444,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "auditSourceSHA256": "d59b8a7371f50ec31d108faf6c950f5925d27e3d3985adf2c5a4d0d54f3f8edf"
+}

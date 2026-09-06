@@ -13,14 +13,17 @@ import { expectedComposition, verifyCompositionSRT } from './helpers/composition
 import { verifyThresholdFrames, verifyThresholdSync } from './helpers/threshold-performance-fixture.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { capture } from '../server/process.mjs';
+import { createFileCacheController } from './helpers/file-cache.mjs';
 
 const exec = promisify(execFile);
 const option = (name, fallback) => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const durations = option('durations', '3600,600').split(',').map(Number);
 const iterations = Number(option('iterations', '3'));
 const surfaces = option('surfaces', 'browser,desktop').split(',');
+const inputCache = option('input-cache', 'uncontrolled');
 assert.ok(durations.every(value => [60, 600, 3600].includes(value)));
 assert.ok([2, 3].includes(iterations) && surfaces.every(value => ['browser', 'desktop'].includes(value)));
+assert.ok(['uncontrolled', 'cold', 'warm'].includes(inputCache), 'Unknown input-file cache condition');
 const output = path.resolve(option('output', 'test-output/composition-performance'));
 assert.ok(output.startsWith(path.resolve('test-output') + path.sep));
 await mkdir(output, { recursive: true });
@@ -31,14 +34,16 @@ const report = {
   date: new Date().toISOString(), code: (await exec('git', ['rev-parse', 'HEAD'])).stdout.trim(), status: 'running',
   platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length,
   memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset', ['-g', 'batt'])).stdout.trim(),
-  ffmpeg: (await capture('ffmpeg', ['-version'])).split('\n')[0], requested: { durations, iterations, surfaces, uiLocator: 'css', controlLocator: 'css with scoped native button name/state checks' },
+  ffmpeg: (await capture('ffmpeg', ['-version'])).split('\n')[0], requested: { durations, iterations, surfaces, inputCache, uiLocator: 'css', controlLocator: 'css with scoped native button name/state checks' },
   scope: 'Synthetic 30fps tone/flash video with manual Korean captions and 880Hz effects. Actual app import, analysis, project loading, audio reconnection, SRT/MP4/project saving, UI and render cancellation/retry. App trees sampled every 250ms including their render/verification workers. Driver and independent media verifiers excluded from RSS. Export elapsed includes application output verification; independent verification elapsed reported separately. Native file paths controlled by test. No OS cache purge, authenticated AI, speech accuracy or human audio-quality claim.',
   sourceHashes: {}, packageSourceHashes: {}, fixtures: [], runs: [], cancellations: [], failures: []
 };
+let cacheController;
 const bundles = [...(await readFile('dist/index.html', 'utf8')).matchAll(/"(\/assets\/[^\"]+)"/g)].map(match => `dist${match[1]}`);
 assert.ok(bundles.some(file => file.endsWith('.js')));
 for (const file of ['src/WindowedList.tsx', 'src/CutList.tsx', 'src/App.tsx', 'src/Captions.tsx', 'src/CaptionList.tsx', 'src/captions.css', 'src/Effects.tsx', 'server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'scripts/composition-benchmark.mjs', 'scripts/benchmark-server.mjs', 'scripts/helpers/composition-oracle.mjs', 'scripts/helpers/composition-performance-fixture.mjs', 'scripts/helpers/threshold-performance-fixture.mjs', 'scripts/helpers/performance.mjs', 'assets/fonts/manifest.json', 'package-lock.json', 'dist/index.html', ...bundles, packagePath]) report.sourceHashes[file] = await sha256(file);
 const packagedFiles = ['server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'dist/index.html', ...bundles];
+for (const file of ['scripts/helpers/file-cache.mjs', 'scripts/helpers/file-cache.c']) report.sourceHashes[file] = await sha256(file);
 const packageHashes = JSON.parse((await exec(process.execPath, ['--input-type=module', '-e', `import {extractFile} from '@electron/asar'; import {createHash} from 'node:crypto'; const [archive, ...files] = process.argv.slice(1); console.log(JSON.stringify(Object.fromEntries(files.map(file => [file, createHash('sha256').update(extractFile(archive, file)).digest('hex')]))));`, packagePath, ...packagedFiles])).stdout);
 for (const file of packagedFiles) {
   const hash = packageHashes[file];
@@ -187,14 +192,21 @@ async function exercise(surface, input) {
     for (iteration = 1; iteration <= iterations; iteration++) {
       for (const name of Object.keys(runResources)) delete runResources[name];
       const prefix = `${surface}-${Math.round(input.media.duration)}-${iteration}`;
-      await begin('analysis'); const analyzeStart = performance.now();
-      if (desktop) { await desktop.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [file] }); }, input.source); await cssButton(page, '영상 추가').click(); }
-      else await page.locator('input[type=file]').first().setInputFiles(input.source);
+      if (cacheController) phase = 'input-cache-preparation';
+      const inputFileCache = cacheController ? await cacheController.prepare({ source: input.source, prefix, mode: inputCache, expectedSHA256: input.media.fingerprint }) : null;
+      const selectedSource = inputFileCache?.file || input.source;
+      await begin('analysis');
+      if (inputFileCache) await cacheController.beforeSelection(inputFileCache);
+      const analyzeStart = performance.now();
+      if (inputFileCache) cacheController.markSelection(inputFileCache);
+      if (desktop) { await desktop.evaluate(({ dialog }, file) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [file] }); }, selectedSource); await cssButton(page, '영상 추가').click(); }
+      else await page.locator('input[type=file]').first().setInputFiles(selectedSource);
       await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2 && !document.querySelector('.job-overlay'));
       const importSeconds = (performance.now() - analyzeStart) / 1000;
       await start('analyze'); const analysis = (await waitForState(job => job.status === 'completed')).result;
       await page.waitForFunction(() => !document.querySelector('.job-overlay')); await paints(page);
       const analyzeSeconds = (performance.now() - analyzeStart) / 1000; await end();
+      if (inputFileCache) { await cacheController.afterAnalysis(inputFileCache); await flush(); }
       assert.equal(analysis.cuts.length, input.expectedCuts); assert.ok(!analysis.protection?.enabled);
       assert.ok(Math.abs(analysis.decodedSamples - input.media.duration * 48000) <= 1);
       await writeFile(path.join(output, `${prefix}-analysis.json`), JSON.stringify(analysis, null, 2));
@@ -257,9 +269,11 @@ async function exercise(surface, input) {
       await begin('ui'); const ui = await measureUI(page, input); await end();
       assert.deepEqual(content(await saveProject(active, path.join(output, `${prefix}-after-ui-project.json`))), content(project));
       assert.equal(await sha256(lastSaved.file), lastSaved.sha256); assert.equal(await sha256(input.source), input.media.fingerprint); assert.equal(await sha256(input.effectFile), input.effectFingerprint);
+      if (inputFileCache) await cacheController.afterRun(inputFileCache);
       assert.deepEqual(errors, []); assert.deepEqual(external, []);
       const peakRSSBytes = Math.max(...Object.values(runResources).map(value => value.peakBytes));
       const result = { surface, inputSeconds: input.media.duration, iteration, cache: iteration === 1 ? 'fresh app; OS cache not purged' : 'same app; OS cache not purged', viewport: await page.evaluate(() => ({ width: innerWidth, height: innerHeight })), importSeconds, analyzeSeconds, exportSeconds, saveSeconds, independentVerificationSeconds, peakRSSBytes, resources: { ...runResources }, cuts: analysis.cuts.length, captions: expected.captions.length, effects: expected.effects.length, excludedEffects: expected.excludedEffects, output: exportJob.result, outputFile: exported, outputSHA256, srtFile, srtSHA256: await sha256(srtFile), verificationFile: `${prefix}-verification.json`, ui, sourcePreserved: true, effectPreserved: true, projectPreserved: true, pageErrors: [...errors], externalRequests: external.length, goals: { analysis: analyzeSeconds <= input.media.duration * .2, export: exportSeconds <= input.media.duration, memory: peakRSSBytes <= 2 * 1024 ** 3, ui: Object.values(ui.byFamily).every(value => value.p95 !== null && value.p95 <= 200) } };
+      result.inputFileCache = inputFileCache;
       report.runs.push(result); await flush(); console.log(JSON.stringify({ surface, inputSeconds: result.inputSeconds, iteration, analyzeSeconds, exportSeconds, independentVerificationSeconds, peakRSSBytes, ui: ui.byFamily, goals: result.goals }));
       assert.ok(Object.values(result.goals).every(Boolean), 'Measured goals failed; stop before expanding repetitions');
     }
@@ -272,6 +286,11 @@ async function exercise(surface, input) {
 }
 
 try {
+  if (inputCache !== 'uncontrolled') {
+    cacheController = await createFileCacheController(output);
+    report.inputFileCache = cacheController.state;
+    await flush();
+  }
   for (const seconds of durations) {
     const input = await compositionFixture(seconds, path.join(output, `fixture-${seconds}`)); report.fixtures.push(input); await flush();
     for (const surface of surfaces) await exercise(surface, input);

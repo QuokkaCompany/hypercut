@@ -1,0 +1,19 @@
+{
+  "scope": "Each actual Mac MP4 hash was rechecked by the raw-sample audit and equals the fully decoded browser candidate. Reuse applies to identical file bytes; no repeated decoding is claimed.",
+  "decodeComparison": "2026-09-06-composition-encoder-two-browser-3600-decoding.json",
+  "decodeComparisonSHA256": "720e45c4c01fc9c26ad7e2deea2e5d878da7edb8f3c1247bc83c95ebd7062bd4",
+  "macOutputs": [
+    {
+      "iteration": 1,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e"
+    },
+    {
+      "iteration": 2,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e"
+    },
+    {
+      "iteration": 3,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e"
+    }
+  ]
+}

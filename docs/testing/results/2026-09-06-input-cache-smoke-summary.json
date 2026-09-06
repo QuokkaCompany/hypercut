@@ -1,0 +1,455 @@
+{
+  "date": "2026-09-06T11:51:33.263051+00:00",
+  "status": "COMPLETED",
+  "scope": "60-second synthetic source: default regression 4 runs and controlled cold/warm input 8 runs. Not the 10/60-minute cache matrix, real speech, or OS-wide cold-cache. All app/oracle/output criteria unchanged.",
+  "auditorSource": "from pathlib import Path\nimport json, hashlib, math, datetime, sys\nbase=Path(sys.argv[1]).resolve(); baseline=Path(sys.argv[2]).resolve(); root=Path.cwd()\nassert sys.argv[3:]==['--same-product'], 'Explicit same-product comparison is required'\ndef read(p):return json.loads(Path(p).read_text())\ndef sha(p):\n h=hashlib.sha256()\n with Path(p).open('rb') as f:\n  for b in iter(lambda:f.read(1024*1024),b''):h.update(b)\n return h.hexdigest()\ndef content(p):return {k:v for k,v in p.items() if k!='savedAt'}\ndef normalize(v):\n if isinstance(v,dict):return {k:normalize(x) for k,x in v.items() if k not in ['path','savedAt','visualReview']}\n if isinstance(v,list):return [normalize(x) for x in v]\n return v\nr=read(base/'results.json');old=read(baseline/'results.json')\nallowed_harness_changes={'scripts/composition-benchmark.mjs','scripts/helpers/file-cache.mjs','scripts/helpers/file-cache.c'}\nassert {k:v for k,v in r['sourceHashes'].items() if k not in allowed_harness_changes}=={k:v for k,v in old['sourceHashes'].items() if k not in allowed_harness_changes}, 'Product or oracle sources changed'\nassert sha(baseline/'executed-benchmark.mjs')==old['sourceHashes']['scripts/composition-benchmark.mjs']\nassert r['status'] in ['completed','failed'] and r['runs']\nfor f,digest in r['sourceHashes'].items():assert sha(root/f)==digest, f\nfor f,digest in r['packageSourceHashes'].items():assert digest==r['sourceHashes'][f]\nfor a,b in [('executed-benchmark.mjs','scripts/composition-benchmark.mjs'),('executed-server.mjs','scripts/benchmark-server.mjs')]:assert sha(base/a)==r['sourceHashes'][b]\nfor f in r['fixtures']:\n assert sha(f['source'])==f['media']['fingerprint'];assert sha(f['effectFile'])==f['effectFingerprint']\na={'date':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'AUDITED_'+r['status'].upper(),'code':r['code'],'scope':'Entire projects, actual file hashes, independent output verification, UI samples, simultaneous raw RSS sums and cancellation/retry audited. Comparisons retain all oracle values; path and savedAt are excluded only where appropriate. Only the explicitly listed input-cache control harness may differ; product, oracle, client bundle, and package sources must match. MP4/SRT/verification are compared for the same product, to the same surface/duration where available or another surface at the same duration. If baseline equals this report the first run is only an internal consistency check, not independent validation of itself; the executed benchmark supplies the independent oracle checks. Full decoded comparisons are separate. No human speech-quality or OS cold-cache claim.','baseline':str(baseline),'runs':[],'cancellations':r['cancellations']}\nfor run in r['runs']:\n it=run['iteration'];surface=run['surface'];seconds=run['inputSeconds'];prefix=f'{surface}-{seconds}-{it}'\n # A prior failure may have prevented the same ordinal from running. Compare with\n # the last completed baseline output for the same surface and duration instead.\n candidates=[x for x in old['runs'] if x['surface']==surface and x['inputSeconds']==seconds]\n if not candidates:candidates=[x for x in old['runs'] if x['inputSeconds']==seconds]\n assert candidates\n prev=candidates[0] if base==baseline else next((x for x in candidates if x['iteration']==it),candidates[-1])\n v=read(base/run['verificationFile']);pv=read(baseline/prev['verificationFile'])\n assert v['frames']['status']=='PASS' and v['sync']['status']=='PASS'\n assert v['frames']['frames']==v['video']['frames']\n assert v['frames']['maxClockError']<=v['frames']['toleranceSeconds']\n assert v['srt']['cues']==run['captions']==len(v['expected']['captions'])\n assert v['srt']['maxErrorSeconds']<=0.001\n assert len(v['audio']['events'])==run['effects']==len(v['expected']['effects'])\n assert sha(prev['outputFile'])==prev['outputSHA256']\n assert sha(prev['srtFile'])==prev['srtSHA256']\n compared_v=dict(v);compared_pv=dict(pv)\n compared_v.pop('outputSHA256');compared_pv.pop('outputSHA256')\n assert normalize(compared_v)==normalize(compared_pv), 'independent verification differs'\n assert sha(run['outputFile'])==run['outputSHA256']==v['outputSHA256']\n assert run['outputSHA256']==prev['outputSHA256'], 'Same-build bitstream differs; investigate before asserting equivalence'\n assert sha(run['srtFile'])==run['srtSHA256']==prev['srtSHA256']\n for frame in v['video']['framesForVisualReview']:assert sha(frame['path'])==frame['sha256']\n projects=[read(base/f'{prefix}-{kind}.json') for kind in ['input-project','project','after-ui-project']]\n assert content(projects[0])==content(projects[1])==content(projects[2])\n assert run['sourcePreserved'] and run['effectPreserved'] and run['projectPreserved']\n assert run['pageErrors']==[] and run['externalRequests']==0\n all_peaks=[];max_gap=0;peak_info=None\n for phase,summary in run['resources'].items():\n  res=read(base/summary['file']);assert res['errors']==[]\n  samples=res['samples'];assert len(samples)==summary['samples']\n  for x in samples:assert x['bytes']==sum(p['bytes'] for p in x['processes'])\n  top=max(samples,key=lambda x:x['bytes']);assert top['bytes']==res['peakBytes']==summary['peakBytes']\n  gap=max([b['milliseconds']-a['milliseconds'] for a,b in zip(samples,samples[1:])] or [0]);assert math.isclose(gap,summary['maxSampleGapMs'],abs_tol=1e-7)\n  all_peaks.append(top['bytes']);max_gap=max(max_gap,gap)\n  if peak_info is None or top['bytes']>peak_info['bytes']:peak_info={'phase':phase,**top}\n assert max(all_peaks)==run['peakRSSBytes']\n for family,summary in run['ui']['byFamily'].items():\n  vals=sorted(x['ms'] for x in run['ui']['samples'] if x['family']==family);assert len(vals)==32==summary['count']\n  assert vals[30]==summary['p95'] and vals[-1]==summary['max']\n expected={'analysis':run['analyzeSeconds']<=seconds*.2,'export':run['exportSeconds']<=seconds,'memory':run['peakRSSBytes']<=2*1024**3,'ui':all(x['p95']<=200 for x in run['ui']['byFamily'].values())}\n assert run['goals']==expected\n a['runs'].append({'surface':surface,'seconds':seconds,'iteration':it,'baselineIteration':prev['iteration'],'baselineSurface':prev['surface'],'comparisonToSelf':base==baseline and run['surface']==prev['surface'] and it==prev['iteration'],'analyzeSeconds':run['analyzeSeconds'],'exportSeconds':run['exportSeconds'],'independentVerificationSeconds':run['independentVerificationSeconds'],'peakGiB':run['peakRSSBytes']/1024**3,'ui':run['ui']['byFamily'],'maxSampleGapMs':max_gap,'goals':expected,'wholeProjectPreserved':True,'actualOutputHashMatchesReport':True,'outputBytesEqualToBaseline':True,'srtBytesEqualToBaseline':True,'outputSHA256':run['outputSHA256'],'independentCorrectnessEqual':True,'visualSampleHashesEqual':True,'peakSample':peak_info})\nfor c in r['cancellations']:\n for key in ['deleteCancelled','projectPreserved','savedOutputPreserved','displayedOutputPreserved']:assert c[key]\n assert c['jobStatus']=='cancelled'\n assert c['displayPass']==(c['displayMs']<=300) and c['readyPass']==(c['readyMs']<=5000)\n prefix=f\"{c['surface']}-{c['inputSeconds']}-1\"\n assert content(read(base/f'{prefix}-cancel-project.json'))==content(read(base/f'{prefix}-input-project.json'))\n if c['retryCompletedIteration'] is not None:assert any(x['surface']==c['surface'] and x['inputSeconds']==c['inputSeconds'] and x['iteration']==c['retryCompletedIteration'] for x in r['runs'])\nif r['status']=='completed':\n assert r['measuredGoalsPass'] and r['failures']==[]\n for seconds in r['requested']['durations']:\n  for surface in r['requested']['surfaces']:\n   assert sorted(x['iteration'] for x in r['runs'] if x['surface']==surface and x['inputSeconds']==seconds)==list(range(1,r['requested']['iterations']+1))\n assert all(all(x['goals'].values()) for x in r['runs'])\n assert len(r['cancellations'])==len(r['requested']['durations'])*len(r['requested']['surfaces'])\n assert all(c['retryCompletedIteration']==2 and c['displayPass'] and c['readyPass'] for c in r['cancellations'])\nelse:\n assert r['failures'];a['failures']=[{k:f[k] for k in ['surface','inputSeconds','iteration','phase','error']} for f in r['failures']]\na['auditSourceSHA256']=sha(__file__)\n\na['harnessSourceChanges']={k:{'before':old['sourceHashes'].get(k),'after':r['sourceHashes'].get(k)} for k in sorted(allowed_harness_changes) if old['sourceHashes'].get(k)!=r['sourceHashes'].get(k)}\nmode=r['requested']['inputCache'];assert mode in ['uncontrolled','cold','warm']\na['inputCacheMode']=mode;a['inputCacheChecks']=[]\nif mode=='uncontrolled':\n assert 'inputFileCache' not in r and all(x['inputFileCache'] is None for x in r['runs'])\nelse:\n state=r['inputFileCache'];directory=Path(state['directory'])\n assert sha(directory/'executed-file-cache.c')==state['sourceSHA256']==r['sourceHashes']['scripts/helpers/file-cache.c']\n assert sha(directory/'file-cache-tool')==state['binarySHA256']\n if r['status']=='completed':assert state['attempts']==[x['inputFileCache'] for x in r['runs']]\n for run in r['runs']:\n  c=run['inputFileCache'];assert c['mode']==mode and c['status']=='completed'\n  assert read(directory/(c['prefix']+'.json'))==c\n  assert sha(c['file'])==sha(c['source'])==c['expectedSHA256']==c['actualSHA256']==c['endOfRunSHA256']\n  assert Path(c['file']).name==Path(c['source']).name\n  expected_commands=['copy','inspect','inspect'] if mode=='cold' else ['copy','warm','inspect','inspect']\n  calls=c['calls'];assert [x['command'] for x in calls]==expected_commands\n  for call in calls:assert call['startedMs']<=call['completedMs'] and 'error' not in call\n  for previous,current in zip(calls,calls[1:]):assert previous['completedMs']<=current['startedMs']\n  pre=c['beforeSelection'];assert pre==calls[-2]['observations'][0]\n  assert c['afterAnalysis']==calls[-1]['observations'][0]\n  for call in calls:\n   for ob in call['observations']:\n    if 'residentPages' not in ob:continue\n    assert all(type(ob[k]) is int for k in ['bytes','pages','pageBytes','residentPages'])\n    assert ob['bytes']>0 and ob['pageBytes']>0 and ob['pages']==math.ceil(ob['bytes']/ob['pageBytes'])\n    assert 0<=ob['residentPages']<=ob['pages']\n  assert pre['bytes']==Path(c['file']).stat().st_size==calls[0]['observations'][0]['bytes']\n  assert pre['residentPages']==(0 if mode=='cold' else pre['pages'])\n  if mode=='cold':assert calls[0]['observations'][-1]['residentPages']==0\n  else:assert calls[1]['observations'][-1]['residentPages']==pre['pages']\n  assert c['inspectionCompletedMs']==calls[-2]['completedMs']<=c['selectionActionMs']<=c['analysisCompletedMs']<=calls[-1]['startedMs']\n  assert math.isclose(c['observationReturnToSelectionMs'],c['selectionActionMs']-c['inspectionCompletedMs'],abs_tol=1e-7)\n  a['inputCacheChecks'].append({'surface':run['surface'],'seconds':run['inputSeconds'],'iteration':run['iteration'],'mode':mode,'bytes':pre['bytes'],'pages':pre['pages'],'residentPages':pre['residentPages'],'observationReturnToSelectionMs':c['observationReturnToSelectionMs'],'preparationMs':c['preparationMs'],'actualInputHashVerified':True,'postAnalysisAndEndOfRunInputPreserved':True})\n\n(base/'audit.json').write_text(json.dumps(a,ensure_ascii=False,indent=2)+'\\n')\nfor x in a['runs']: print(json.dumps({k:v for k,v in x.items() if k not in ['peakSample','ui']},ensure_ascii=False))\nprint(json.dumps({'status':a['status'],'cancellations':a['cancellations']},ensure_ascii=False))\n",
+  "modes": [
+    {
+      "mode": "uncontrolled",
+      "reportSHA256": "7559554f11f086be06276e9e99c6f763224ff315191b6ef4360d288fc03af375",
+      "auditSHA256": "4fcd69260974fd75c3466e45b846ac888adcd41ef0ef00aa6ba569faa437f835",
+      "inputCacheChecks": [],
+      "runs": [
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 1,
+          "analyzeSeconds": 1.422999959,
+          "exportSeconds": 4.1063315419999995,
+          "peakGiB": 1.510772705078125,
+          "maxSampleGapMs": 291.3347909999993,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 2,
+          "analyzeSeconds": 1.171941290999999,
+          "exportSeconds": 3.823430083000003,
+          "peakGiB": 1.3955535888671875,
+          "maxSampleGapMs": 282.8765829999975,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 1,
+          "analyzeSeconds": 1.2933398750000051,
+          "exportSeconds": 3.7735534170000027,
+          "peakGiB": 0.94635009765625,
+          "maxSampleGapMs": 280.92725000000064,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 2,
+          "analyzeSeconds": 1.1116984169999997,
+          "exportSeconds": 3.7830671250000014,
+          "peakGiB": 1.0326385498046875,
+          "maxSampleGapMs": 278.64666600000055,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        }
+      ],
+      "cancellations": [
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.44999999999999996
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 206.3478329999998,
+          "displayMs": 1.2999999523162842,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.44999999999999996
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 199.9199579999986,
+          "displayMs": 0.8000000715255737,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        }
+      ]
+    },
+    {
+      "mode": "cold",
+      "reportSHA256": "49d37b67a9e0cd291491b4bdf26ff6896e1ac1aebba69cbd5f78828a8a577c41",
+      "auditSHA256": "8adbef23f76d676ca7518fd9cdb50600f4a77d15b1cea2ccff65d6c94f61caf0",
+      "inputCacheChecks": [
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 1,
+          "mode": "cold",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 0,
+          "observationReturnToSelectionMs": 0.35670900000013717,
+          "preparationMs": 158.6043749999999,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        },
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 2,
+          "mode": "cold",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 0,
+          "observationReturnToSelectionMs": 0.3820420000010927,
+          "preparationMs": 3.585124999997788,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 1,
+          "mode": "cold",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 0,
+          "observationReturnToSelectionMs": 0.28104099999472965,
+          "preparationMs": 3.2110830000019632,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 2,
+          "mode": "cold",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 0,
+          "observationReturnToSelectionMs": 0.24020899999595713,
+          "preparationMs": 3.133291999998619,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        }
+      ],
+      "runs": [
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 1,
+          "analyzeSeconds": 1.5269207079999998,
+          "exportSeconds": 4.114840458000001,
+          "peakGiB": 1.3437652587890625,
+          "maxSampleGapMs": 318.4765,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 2,
+          "analyzeSeconds": 1.1637273749999986,
+          "exportSeconds": 3.8165790000000017,
+          "peakGiB": 1.424591064453125,
+          "maxSampleGapMs": 284.50987499999974,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 1,
+          "analyzeSeconds": 1.3174964160000018,
+          "exportSeconds": 4.073206749999998,
+          "peakGiB": 0.944061279296875,
+          "maxSampleGapMs": 290.6377500000017,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 2,
+          "analyzeSeconds": 1.1265821250000008,
+          "exportSeconds": 4.091563332999998,
+          "peakGiB": 0.9449005126953125,
+          "maxSampleGapMs": 282.84937500000524,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        }
+      ],
+      "cancellations": [
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.43125
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 308.1110410000001,
+          "displayMs": 1,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.44999999999999996
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 203.01554100000067,
+          "displayMs": 0.8999999761581421,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        }
+      ]
+    },
+    {
+      "mode": "warm",
+      "reportSHA256": "d130c3e777d14604a42981a1fd7d2cff81c92e7ab4fb49f9d354a890d01c1aea",
+      "auditSHA256": "166f2f24fca8caf0db9304d1ba30c7fd9a010b8b264a8aaca65aaa0cf2cb0f74",
+      "inputCacheChecks": [
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 1,
+          "mode": "warm",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 74,
+          "observationReturnToSelectionMs": 0.3300409999999374,
+          "preparationMs": 167.410083,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        },
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 2,
+          "mode": "warm",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 74,
+          "observationReturnToSelectionMs": 0.3291669999998703,
+          "preparationMs": 8.231874999997672,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 1,
+          "mode": "warm",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 74,
+          "observationReturnToSelectionMs": 0.3662079999994603,
+          "preparationMs": 6.487249999998312,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 2,
+          "mode": "warm",
+          "bytes": 1207118,
+          "pages": 74,
+          "residentPages": 74,
+          "observationReturnToSelectionMs": 0.3320839999942109,
+          "preparationMs": 6.06699999999546,
+          "actualInputHashVerified": true,
+          "postAnalysisAndEndOfRunInputPreserved": true
+        }
+      ],
+      "runs": [
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 1,
+          "analyzeSeconds": 1.3760181660000002,
+          "exportSeconds": 4.100068042,
+          "peakGiB": 1.519256591796875,
+          "maxSampleGapMs": 282.880666,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "browser",
+          "seconds": 60,
+          "iteration": 2,
+          "analyzeSeconds": 1.1616684999999998,
+          "exportSeconds": 4.121876832999998,
+          "peakGiB": 1.59326171875,
+          "maxSampleGapMs": 282.7848330000015,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 1,
+          "analyzeSeconds": 1.1984549580000021,
+          "exportSeconds": 4.085262750000002,
+          "peakGiB": 0.9390106201171875,
+          "maxSampleGapMs": 287.9382919999989,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        },
+        {
+          "surface": "desktop",
+          "seconds": 60,
+          "iteration": 2,
+          "analyzeSeconds": 1.1165407500000002,
+          "exportSeconds": 4.086508875,
+          "peakGiB": 0.925811767578125,
+          "maxSampleGapMs": 297.23195800000394,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402"
+        }
+      ],
+      "cancellations": [
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.44999999999999996
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 207.89674999999988,
+          "displayMs": 0.9000000953674316,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.44999999999999996
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 202.8547499999986,
+          "displayMs": 0.7999999523162842,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        }
+      ]
+    }
+  ],
+  "decodedEquivalenceReference": {
+    "path": "docs/testing/results/2026-09-06-windowed-encoder-comparison.json",
+    "sha256": "07bd5f969cfa79e6ca2e92a62b6b8aeab9633e29a20eee8c0bf709f7e85bcd45",
+    "basis": "Every actual MP4 hash is the same candidate file already compared over all 1448 decoded frames/PTS and whole float32 PCM; identical files are not decoded again."
+  }
+}

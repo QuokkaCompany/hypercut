@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-06T11:44:27.984981+00:00",
+  "command": "node --test tests/file-cache.integration.mjs",
+  "exitCode": 0,
+  "tests": 9,
+  "passed": 9,
+  "failed": 0,
+  "skipped": 0,
+  "scope": "Actual native file-cache helper integrated with the controller on synthetic bytes, including cold/warm boundary observation, premature reads, preserved existing files, invalid sequence, content changes and malformed observations. No app media benchmark in this test.",
+  "sourceHashes": {
+    "scripts/helpers/file-cache.mjs": "c12bfba383cefe2369e364c700f712fad2ca22083c957862711f6d743bc9d84f",
+    "scripts/helpers/file-cache.c": "1eb8f26f1901138b0d20be925a8437cb56c8ced059e6313483f3d8cabb1ae106",
+    "tests/file-cache.integration.mjs": "a658bd63b70d14bcbaec42736d95f18132bb062d9c278bab414637a2e252ecca"
+  },
+  "output": "\u25b6 input-file cache controller observes the selection boundary and preserves bytes\n  \u2714 cold input passes real native observations and post-analysis hash (361.763625ms)\n  \u2714 warm input passes real native observations and post-analysis hash (12.081375ms)\n  \u2714 an accidental pre-read rejects a cold-file claim and persists the failure (5.115834ms)\n  \u2714 an existing attempt folder and its file remain unchanged (0.548875ms)\n  \u2714 verification cannot hash an input before file selection (3.376709ms)\n  \u2714 different selected bytes cannot finish as a successful analysis (9.452209ms)\n  \u2714 the input must also remain unchanged after output and UI operations (10.034833ms)\n\u2714 input-file cache controller observes the selection boundary and preserves bytes (787.51325ms)\n\u2714 partial or malformed residency is not accepted as a warm or cold file (2.152708ms)\n\u2139 tests 9\n\u2139 suites 0\n\u2139 pass 9\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 824.858667\n"
+}
