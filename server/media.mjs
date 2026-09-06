@@ -18,8 +18,8 @@ import { validateEffects, mapEffects } from '../shared/effects.mjs';
 import { mixEffects, inspectMixedOutput } from './effects.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
-// Bound encoder frame buffers while leaving CPU capacity for the editor.
-const encoderThreads = Math.min(4, availableParallelism());
+// Limit concurrent encoder frames so repeated exports leave room for the editor.
+const encoderThreads = Math.min(2, availableParallelism());
 
 export async function inspectMedia(filePath, name, signal) {
   const info = JSON.parse(await capture('ffprobe', ['-v', 'error', '-show_format', '-show_streams', '-of', 'json', filePath], { signal }));

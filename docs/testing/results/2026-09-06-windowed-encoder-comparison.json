@@ -1,0 +1,41 @@
+{
+  "scope": "Two sequential 60-second backend runs. All decoded video frames and float32 PCM compared; no general human-quality or long-app performance claim.",
+  "runs": [
+    {
+      "threads": 4,
+      "exportSeconds": 2.937618375,
+      "peakMiB": 391.828125,
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "decodedFrameCount": 1448,
+      "decodedVideoSHA256": "ede200512407aa4f032ebd9ceefefd6904e173e515769b51378ca6b197cb06b3",
+      "decodedFloatAudio": "SHA256=e7e04d3105e44d388a305a3ef73c5e8de81aa5facd7689d0acf7ea652d134189",
+      "sourceHashes": {
+        "server/media.mjs": "051d3d034b0c13eeb3e29bf0a64ffea5685fc7363652a19a960fc2fa8f15951d",
+        "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+        "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+        "server/caption-render-worker.mjs": "6e559cc7af5d4353113aba40c4c698d8bcffd11e44b5759a7cea843257a70eaa",
+        "scripts/composition-render-diagnostic.mjs": "624514faa458188ec8ef8e7bfcead53f2a144a25418e1a74aceb828cd851c981"
+      }
+    },
+    {
+      "threads": 2,
+      "exportSeconds": 3.411299959,
+      "peakMiB": 352.40625,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "decodedFrameCount": 1448,
+      "decodedVideoSHA256": "ede200512407aa4f032ebd9ceefefd6904e173e515769b51378ca6b197cb06b3",
+      "decodedFloatAudio": "SHA256=e7e04d3105e44d388a305a3ef73c5e8de81aa5facd7689d0acf7ea652d134189",
+      "sourceHashes": {
+        "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+        "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+        "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+        "server/caption-render-worker.mjs": "6e559cc7af5d4353113aba40c4c698d8bcffd11e44b5759a7cea843257a70eaa",
+        "scripts/composition-render-diagnostic.mjs": "624514faa458188ec8ef8e7bfcead53f2a144a25418e1a74aceb828cd851c981"
+      },
+      "wholeFrameRowsEqual": true,
+      "differingFrames": 0,
+      "floatAudioEqual": true,
+      "independentCorrectnessEqual": true
+    }
+  ]
+}
