@@ -61,3 +61,5 @@ node --test tests/composition-oracle.integration.mjs
 node --test tests/composition-smoke.integration.mjs
 node --test tests/threshold-sync.integration.mjs
 ```
+
+후속 두 앱 동시 합성, 첫 60분 실패 및 개선 후보 재검사는 [두 앱 동시 합성 기록](2026-09-06-composition-app-results.md)에서 이어간다. 위 미실행 표기는 이 사전 검사 시점의 범위다.

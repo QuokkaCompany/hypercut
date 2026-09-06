@@ -1,0 +1,103 @@
+{
+  "date": "2026-09-06T07:05:22.859Z",
+  "status": "PASS",
+  "scope": "Raw report, current source, saved project, MP4/SRT hashes and RSS sample integrity. Independent media oracles were executed in each run; this audit does not re-decode.",
+  "runs": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "frameHashes": [
+        "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62",
+        "38f638a03a07a61b48c6c42ef75a3ec8db807d764d7616df8fadeff453b9ac1e",
+        "80fd8d174c1c04dc26aec9ce719a763b376a248b2a7ffcf6998bfcbb719e748c"
+      ],
+      "GiB": 1.8808135986328125,
+      "uiMaxP95": 100.41562499999964,
+      "maxGap": 275.90766699999995
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "frameHashes": [
+        "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62",
+        "38f638a03a07a61b48c6c42ef75a3ec8db807d764d7616df8fadeff453b9ac1e",
+        "80fd8d174c1c04dc26aec9ce719a763b376a248b2a7ffcf6998bfcbb719e748c"
+      ],
+      "GiB": 1.9498748779296875,
+      "uiMaxP95": 100.20054200000595,
+      "maxGap": 275.9551250000004
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "frameHashes": [
+        "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62",
+        "38f638a03a07a61b48c6c42ef75a3ec8db807d764d7616df8fadeff453b9ac1e",
+        "80fd8d174c1c04dc26aec9ce719a763b376a248b2a7ffcf6998bfcbb719e748c"
+      ],
+      "GiB": 1.2871551513671875,
+      "uiMaxP95": 60.8670839999977,
+      "maxGap": 278.10375000000204
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "frameHashes": [
+        "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62",
+        "38f638a03a07a61b48c6c42ef75a3ec8db807d764d7616df8fadeff453b9ac1e",
+        "80fd8d174c1c04dc26aec9ce719a763b376a248b2a7ffcf6998bfcbb719e748c"
+      ],
+      "GiB": 1.3759613037109375,
+      "uiMaxP95": 59.68045900001016,
+      "maxGap": 276.8409169999941
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.33749999999999997
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 207.8442500000001,
+      "displayMs": 0.7999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.4125
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 200.77441700000054,
+      "displayMs": 0.9000000953674316,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}

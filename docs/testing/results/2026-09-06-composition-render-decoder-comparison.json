@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-06T07:17:01.099Z",
+  "scope": "One paired backend-only 60-second diagnostic. Not repeated full-app performance.",
+  "before": {
+    "seconds": 3.5785946669999995,
+    "peakMiB": 730.203125
+  },
+  "after": {
+    "seconds": 3.537107916,
+    "peakMiB": 452.375
+  },
+  "outputBytesEqual": true,
+  "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211"
+}

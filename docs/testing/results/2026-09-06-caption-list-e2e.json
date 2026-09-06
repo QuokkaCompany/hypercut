@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-06T07:20:20.145Z",
+  "status": "completed",
+  "scope": "1000 very short synthetic manual cues exercise list identity, keyboard selection, unapplied-draft protection, current timestamps, undo/redo and whole-project persistence. Not speech quality, caption readability or performance measurement.",
+  "sourceHashes": {
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionList.tsx": "5a7e68180ee65d7f906618b500a8decf2bdd649eb318ba041b402573d3cb6db0",
+    "scripts/caption-list-e2e.mjs": "c1ca4ba0c16241b1f6ae89574219356201535f009332739f68b86823a55c0c9a",
+    "dist/index.html": "c27f627281f313d35a9b2d87ba7b85554290bdca104b047b99ca51de393006f8",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "85fbe0684ce930b0b566768f56b7bdbbcd9bf57fc1fd29518725259dbbda2f6b"
+  },
+  "runs": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "allThousandRowsPresent": true,
+      "enterAndSpaceSelection": true,
+      "rejectedDraftDiscardPreserved": true,
+      "acceptedDraftDiscardApplied": true,
+      "editUndoRedo": true,
+      "currentTextAndSeek": true,
+      "fullProjectRoundTrip": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "allThousandRowsPresent": true,
+      "enterAndSpaceSelection": true,
+      "rejectedDraftDiscardPreserved": true,
+      "acceptedDraftDiscardApplied": true,
+      "editUndoRedo": true,
+      "currentTextAndSeek": true,
+      "fullProjectRoundTrip": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ]
+}

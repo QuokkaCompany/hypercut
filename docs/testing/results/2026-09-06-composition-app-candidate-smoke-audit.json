@@ -1,0 +1,95 @@
+{
+  "date": "2026-09-06T07:24:35.809Z",
+  "status": "PASS",
+  "scope": "Current source/package, full saved project, MP4/SRT bytes, independent verifier reports and raw RSS samples. Short repeated app verification only.",
+  "runs": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "beforeGiB": 1.8808135986328125,
+      "afterGiB": 1.6019744873046875,
+      "exportSeconds": 3.731948,
+      "uiMaxP95": 101.0489579999994,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "maxSampleGapMs": 278.6575419999999
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "beforeGiB": 1.9498748779296875,
+      "afterGiB": 1.6812286376953125,
+      "exportSeconds": 3.7314669999999968,
+      "uiMaxP95": 101.20495899999514,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "maxSampleGapMs": 279.51037500000166
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "beforeGiB": 1.2871551513671875,
+      "afterGiB": 1.0348968505859375,
+      "exportSeconds": 3.675804542000005,
+      "uiMaxP95": 59.700667000004614,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "maxSampleGapMs": 277.14804199999344
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "beforeGiB": 1.3759613037109375,
+      "afterGiB": 1.1274261474609375,
+      "exportSeconds": 3.7782434999999968,
+      "uiMaxP95": 59.94808299999568,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "maxSampleGapMs": 275.0305410000001
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.309375
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 306.7097080000003,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.40312499999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 199.60491600000387,
+      "displayMs": 0.8999999761581421,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}

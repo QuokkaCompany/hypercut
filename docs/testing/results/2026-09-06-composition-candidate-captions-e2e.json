@@ -1,0 +1,38 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "actualModel": "Whisper small",
+    "fixture": "Korean TTS, not user footage",
+    "editingAndReview": true,
+    "draftProtection": true,
+    "originalVideoCaptions": true,
+    "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+    "styledPreviewPixels": 3326,
+    "styledMP4SavedAndDecoded": true,
+    "styleChangesInvalidateOldOutput": true,
+    "projectVersion": 7,
+    "projectRoundTrip": true,
+    "captionAndStyleUndoRedo": true,
+    "errors": [],
+    "browserExternalRequests": 0
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "actualModel": "Whisper small",
+    "fixture": "Korean TTS, not user footage",
+    "editingAndReview": true,
+    "draftProtection": true,
+    "originalVideoCaptions": true,
+    "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+    "styledPreviewPixels": 3326,
+    "styledMP4SavedAndDecoded": true,
+    "styleChangesInvalidateOldOutput": true,
+    "projectVersion": 7,
+    "projectRoundTrip": true,
+    "captionAndStyleUndoRedo": true,
+    "errors": [],
+    "browserExternalRequests": 0
+  }
+]

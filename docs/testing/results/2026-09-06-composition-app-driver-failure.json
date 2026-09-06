@@ -1,0 +1,394 @@
+{
+  "date": "2026-09-06T07:01:09.652Z",
+  "code": "8aa2ef7cda4a204baad344de81e1baac6e2ba796",
+  "status": "failed",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "cpuCount": 14,
+  "memoryBytes": 38654705664,
+  "node": "v24.14.1",
+  "power": "Now drawing from 'AC Power'",
+  "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "requested": {
+    "durations": [
+      60
+    ],
+    "iterations": 2,
+    "surfaces": [
+      "browser",
+      "desktop"
+    ],
+    "uiLocator": "css"
+  },
+  "scope": "Synthetic 30fps tone/flash video with manual Korean captions and 880Hz effects. Actual app import, analysis, project loading, audio reconnection, SRT/MP4/project saving, UI and render cancellation/retry. App trees sampled every 250ms including their render/verification workers. Driver and independent media verifiers excluded from RSS. Export elapsed includes application output verification; independent verification elapsed reported separately. Native file paths controlled by test. No OS cache purge, authenticated AI, speech accuracy or human audio-quality claim.",
+  "sourceHashes": {
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/Captions.tsx": "29c7306e5dedb9d2008df13a5ec6bd25a3c449da2037301ae6b47fa46d7f1588",
+    "src/Effects.tsx": "f3754c85b1f6dc7b8ae667988073d446d054fae9e13bbffd358a14e6611f6187",
+    "server/media.mjs": "064f6a984bd8b823ae3abed45fd59c65895f3bdf9bbd7e8e6494c65abe38099e",
+    "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+    "server/effects.mjs": "972611657a16780bc47f386c579d9c589ca3287ad730103a9b899094efae7d5b",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "73a6215294dc384c7500abd6e8fbca5d10dc10b410dbb711f7d6151f38e0aa55",
+    "scripts/composition-benchmark.mjs": "98f2ac060d77457e1713741bd05a79881423e68e9757a14cb752b43e504b91fd",
+    "scripts/helpers/composition-oracle.mjs": "46c22c4463e070c3c97de9d05d235df18c83db9dfa03ff7b2523b1b1c1193c17",
+    "scripts/helpers/composition-performance-fixture.mjs": "4d7bc3816c54a7918d40b60c7eef5eedb985c92efa983c6cfe12965cb4da7aa1",
+    "scripts/helpers/threshold-performance-fixture.mjs": "8d98fc7c46c0bfde0d883a29207968a295582bc0cb0f7c036d4e7a448d40a466",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "assets/fonts/manifest.json": "6e5b4b0d572cf3f502c9253530b6adb6b58d05928c04e904881b67a0d53de309",
+    "package-lock.json": "d5fe6beaad8a68c9cfb98a596d4d54f8d307c9aec24ec6517fc5d301afe1e65a",
+    "dist/index.html": "31b697496e464ca4cda30ed204c195c09db2f507ab08c53b983369c5bdea1bdb",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "5bd133076a39b478dc5b29953e405b903199cec3a3fbd76599f406e3b1c88a50"
+  },
+  "packageSourceHashes": {
+    "server/media.mjs": "064f6a984bd8b823ae3abed45fd59c65895f3bdf9bbd7e8e6494c65abe38099e",
+    "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+    "server/effects.mjs": "972611657a16780bc47f386c579d9c589ca3287ad730103a9b899094efae7d5b",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "73a6215294dc384c7500abd6e8fbca5d10dc10b410dbb711f7d6151f38e0aa55"
+  },
+  "fixtures": [
+    {
+      "kind": "Repeated synthetic 440Hz tone and 400ms-delayed flash; not human speech",
+      "cycleSeconds": 3.6,
+      "toneSeconds": 2.6,
+      "flashSeconds": 0.4,
+      "expectedCuts": 16,
+      "reusedBaseline": false,
+      "media": {
+        "id": "35d64c25-9e85-4bee-a702-2dc54b3ae474",
+        "name": "60s.mp4",
+        "duration": 60,
+        "fingerprint": "d7286a91d14e379b4e514eb61e9f8db6942d29ef6f84674ea29d9f4e13c3c22e",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 1207118,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "/Users/dante/Desktop/github/hyper_cut/test-output/threshold-performance-fixtures/60s.mp4",
+      "effectFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-app-smoke-v1/fixture-60/composition-880hz.wav",
+      "effectFingerprint": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+      "tone": {
+        "rate": 48000,
+        "frequency": 880,
+        "amplitude": 0.1,
+        "seconds": 0.5
+      },
+      "data": {
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual synthetic composition fixture",
+          "cues": [
+            {
+              "id": "caption-0",
+              "start": 0.8,
+              "end": 2.2,
+              "text": "합성 검증 0001"
+            },
+            {
+              "id": "caption-1",
+              "start": 4.4,
+              "end": 5.800000000000001,
+              "text": "합성 검증 0002"
+            },
+            {
+              "id": "caption-2",
+              "start": 8,
+              "end": 9.4,
+              "text": "합성 검증 0003"
+            },
+            {
+              "id": "caption-3",
+              "start": 11.600000000000001,
+              "end": 13,
+              "text": "합성 검증 0004"
+            },
+            {
+              "id": "caption-4",
+              "start": 15.200000000000001,
+              "end": 16.6,
+              "text": "합성 검증 0005"
+            },
+            {
+              "id": "caption-5",
+              "start": 18.8,
+              "end": 20.2,
+              "text": "합성 검증 0006"
+            },
+            {
+              "id": "caption-6",
+              "start": 22.400000000000002,
+              "end": 23.8,
+              "text": "합성 검증 0007"
+            },
+            {
+              "id": "caption-7",
+              "start": 26,
+              "end": 27.4,
+              "text": "합성 검증 0008"
+            },
+            {
+              "id": "caption-8",
+              "start": 29.6,
+              "end": 31,
+              "text": "합성 검증 0009"
+            },
+            {
+              "id": "caption-9",
+              "start": 33.199999999999996,
+              "end": 34.6,
+              "text": "합성 검증 0010"
+            },
+            {
+              "id": "caption-10",
+              "start": 36.8,
+              "end": 38.2,
+              "text": "합성 검증 0011"
+            },
+            {
+              "id": "caption-11",
+              "start": 40.4,
+              "end": 41.800000000000004,
+              "text": "합성 검증 0012"
+            },
+            {
+              "id": "caption-12",
+              "start": 44,
+              "end": 45.400000000000006,
+              "text": "합성 검증 0013"
+            },
+            {
+              "id": "caption-13",
+              "start": 47.6,
+              "end": 49.00000000000001,
+              "text": "합성 검증 0014"
+            },
+            {
+              "id": "caption-14",
+              "start": 51.199999999999996,
+              "end": 52.6,
+              "text": "합성 검증 0015"
+            },
+            {
+              "id": "caption-15",
+              "start": 54.8,
+              "end": 56.2,
+              "text": "합성 검증 0016"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": true,
+          "preset": "emphasis",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "fingerprint": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "name": "composition-880hz.wav",
+              "duration": 0.5
+            }
+          ],
+          "clips": [
+            {
+              "id": "effect-0",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 1.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-1",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 5.2,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-2",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 8.8,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-3",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 12.4,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-4",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 16,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-5",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 19.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-6",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 23.200000000000003,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-7",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 26.8,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-8",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 30.400000000000002,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-9",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 34,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-10",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 37.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-11",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 41.2,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-12",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 44.800000000000004,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-13",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 48.400000000000006,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-14",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 52,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-15",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 55.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "muted-control",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 0.9,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": true
+            },
+            {
+              "id": "removed-control",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 3.1,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "runs": [],
+  "cancellations": [],
+  "failures": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "iteration": 1,
+      "phase": "analysis",
+      "error": "TypeError: import_stream7.default.promises.pipeline is not a function\n    at convertInputFiles (/Users/dante/Desktop/github/hyper_cut/node_modules/playwright-core/lib/coreBundle.js:60762:47)\n    at async _Frame.setInputFiles (/Users/dante/Desktop/github/hyper_cut/node_modules/playwright-core/lib/coreBundle.js:60598:27)\n    at async _Locator.setInputFiles (/Users/dante/Desktop/github/hyper_cut/node_modules/playwright-core/lib/coreBundle.js:58573:16)\n    at async exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/composition-benchmark.mjs:168:12)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/composition-benchmark.mjs:253:37",
+      "resources": {},
+      "pageErrors": [],
+      "externalRequests": []
+    }
+  ],
+  "error": "TypeError: import_stream7.default.promises.pipeline is not a function\n    at convertInputFiles (/Users/dante/Desktop/github/hyper_cut/node_modules/playwright-core/lib/coreBundle.js:60762:47)\n    at async _Frame.setInputFiles (/Users/dante/Desktop/github/hyper_cut/node_modules/playwright-core/lib/coreBundle.js:60598:27)\n    at async _Locator.setInputFiles (/Users/dante/Desktop/github/hyper_cut/node_modules/playwright-core/lib/coreBundle.js:58573:16)\n    at async exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/composition-benchmark.mjs:168:12)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/composition-benchmark.mjs:253:37"
+}

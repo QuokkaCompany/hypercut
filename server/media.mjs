@@ -235,8 +235,10 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     const graph = captionStyle.enabled ? `${base},scale=${media.width}:${media.height},setsar=1,pad=ceil(iw/2)*2:ceil(ih/2)*2[base];[base][2:v]overlay=eof_action=repeat:repeatlast=1:alpha=straight${scale}[v]` : `${base}${scale}[v]`;
     const filterPath = path.join(work, 'filter.txt');
     await writeFile(filterPath, graph);
-    const args = ['-v', 'error', '-nostdin', '-copyts', ...seekArgs(media, decodeStart), '-i', media.path, '-f', 'f32le', '-ar', String(track.sampleRate), '-ac', String(track.channels), '-i', pcmPath,
-      ...(captionStyle.enabled ? ['-f', 'concat', '-safe', '0', '-protocol_whitelist', 'file,pipe', '-i', path.join(work, 'captions.ffconcat')] : []),
+    // Avoid parallel full-size decoded image buffers when combining video and
+    // caption PNGs. Output encoding retains its separate thread limit.
+    const args = ['-v', 'error', '-nostdin', '-copyts', ...seekArgs(media, decodeStart), ...(captionStyle.enabled ? ['-threads:v', '1'] : []), '-i', media.path, '-f', 'f32le', '-ar', String(track.sampleRate), '-ac', String(track.channels), '-i', pcmPath,
+      ...(captionStyle.enabled ? ['-f', 'concat', '-safe', '0', '-protocol_whitelist', 'file,pipe', '-threads:v', '1', '-i', path.join(work, 'captions.ffconcat')] : []),
       '-filter_complex_script', filterPath, '-map', '[v]', '-map', '1:a:0', '-c:v', 'libx264', '-threads:v', String(encoderThreads), '-preset', preview ? 'ultrafast' : 'veryfast', '-crf', preview ? '25' : '18',
       '-pix_fmt', 'yuv420p', '-fps_mode', 'vfr', '-enc_time_base:v', '1:90000', '-video_track_timescale', '90000', '-c:a', 'aac', '-b:a', '192k',
       '-t', expectedDuration.toFixed(9), '-movflags', '+faststart', '-progress', 'pipe:1', '-y', temporaryOutput];

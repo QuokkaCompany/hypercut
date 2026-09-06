@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-06T07:23:46.640830+00:00",
+  "scope": "Caption 501 and 1000 PNGs directly viewed; caption 1 hash equals the previously directly reviewed engine image. Not all-glyph OCR or human video quality.",
+  "status": "PASS",
+  "frames": [
+    {
+      "cueIndex": 0,
+      "text": "합성 검증 0001",
+      "time": 1.5,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-long-baseline/browser-long/browser-3600-1-frames/caption-1.png",
+      "sha256": "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62"
+    },
+    {
+      "cueIndex": 500,
+      "text": "합성 검증 0501",
+      "time": 1434.8333333333314,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-long-baseline/browser-long/browser-3600-1-frames/caption-501.png",
+      "sha256": "75bf3de3bf6274399bc9b5ea85da4915620e9adff60a4bd054c7518a503c373e"
+    },
+    {
+      "cueIndex": 999,
+      "text": "합성 검증 1000",
+      "time": 2865.299999999982,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-long-baseline/browser-long/browser-3600-1-frames/caption-1000.png",
+      "sha256": "adfe2755cd9d0ebbeb31e6c3c45752d37baf97975918a42b8b605c739e10be8f"
+    }
+  ],
+  "finding": "Expected Korean text and 0501/1000 numbers are legible, yellow with dark outlines, aligned at bottom center and not clipped."
+}
