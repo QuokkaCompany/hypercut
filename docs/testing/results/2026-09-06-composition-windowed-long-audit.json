@@ -1,0 +1,364 @@
+{
+  "date": "2026-09-06T10:27:50.168158+00:00",
+  "status": "AUDITED_FAILED",
+  "code": "3d572b4b923ee23416015d27b5fc9a9e50e07c21",
+  "scope": "Entire projects, actual file hashes, independent output verification, UI samples, simultaneous raw RSS sums and cancellation/retry audited. Comparisons retain all oracle values; path and savedAt are excluded only where appropriate. No human speech-quality or OS cold-cache claim.",
+  "baseline": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-strip-long/browser-long",
+  "runs": [
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 1,
+      "baselineIteration": 1,
+      "analyzeSeconds": 36.668764624999994,
+      "exportSeconds": 156.985249625,
+      "independentVerificationSeconds": 125.07328608400002,
+      "peakGiB": 1.7734222412109375,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.88760400001775,
+          "max": 99.49479099997552,
+          "p95": 67.22541699995054
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.51091650000308,
+          "max": 116.41024999995716,
+          "p95": 101.53912499995204
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.06966649999958,
+          "max": 66.36566699994728,
+          "p95": 66.15391699998872
+        }
+      },
+      "maxSampleGapMs": 278.4746249999953,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 105743.12312500001,
+        "bytes": 1904197632,
+        "processes": [
+          {
+            "pid": 97042,
+            "parent": 97033,
+            "bytes": 206094336,
+            "name": "node"
+          },
+          {
+            "pid": 97043,
+            "parent": 97033,
+            "bytes": 258539520,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 97050,
+            "parent": 97043,
+            "bytes": 167985152,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 97051,
+            "parent": 97043,
+            "bytes": 107003904,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97052,
+            "parent": 97043,
+            "bytes": 83083264,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97055,
+            "parent": 97043,
+            "bytes": 181059584,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97056,
+            "parent": 97043,
+            "bytes": 100827136,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97057,
+            "parent": 97043,
+            "bytes": 341458944,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97068,
+            "parent": 97043,
+            "bytes": 98795520,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97326,
+            "parent": 97042,
+            "bytes": 359350272,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 2,
+      "baselineIteration": 2,
+      "analyzeSeconds": 36.999408999999986,
+      "exportSeconds": 158.02583629099996,
+      "independentVerificationSeconds": 125.90485675000004,
+      "peakGiB": 1.9223785400390625,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.70137450000038,
+          "max": 98.61666599998716,
+          "p95": 66.85095799993724
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.35016649996396,
+          "max": 119.97991699993145,
+          "p95": 119.70845899998676
+        },
+        "cuts": {
+          "count": 32,
+          "median": 64.62887499999488,
+          "max": 65.64462499995716,
+          "p95": 65.63204200007021
+        }
+      },
+      "maxSampleGapMs": 309.04891700000735,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 146977.938708,
+        "bytes": 2064138240,
+        "processes": [
+          {
+            "pid": 97042,
+            "parent": 97033,
+            "bytes": 243597312,
+            "name": "node"
+          },
+          {
+            "pid": 97043,
+            "parent": 97033,
+            "bytes": 263143424,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 97050,
+            "parent": 97043,
+            "bytes": 173391872,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 97051,
+            "parent": 97043,
+            "bytes": 107282432,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97052,
+            "parent": 97043,
+            "bytes": 83083264,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97055,
+            "parent": 97043,
+            "bytes": 181108736,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97056,
+            "parent": 97043,
+            "bytes": 100827136,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97057,
+            "parent": 97043,
+            "bytes": 449904640,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97068,
+            "parent": 97043,
+            "bytes": 98893824,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 98592,
+            "parent": 97042,
+            "bytes": 362905600,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 3,
+      "baselineIteration": 2,
+      "analyzeSeconds": 37.689003875000054,
+      "exportSeconds": 160.40505925000005,
+      "independentVerificationSeconds": 126.19961295799993,
+      "peakGiB": 2.00799560546875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.99485400004778,
+          "max": 98.53345900005661,
+          "p95": 67.63145799993072
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.45947950001573,
+          "max": 102.2160000000149,
+          "p95": 102.17162500007544
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.9813955000136,
+          "max": 67.20675000001211,
+          "p95": 66.39783400006127
+        }
+      },
+      "maxSampleGapMs": 278.1962920000078,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": false,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 146321.92449999996,
+        "bytes": 2156068864,
+        "processes": [
+          {
+            "pid": 348,
+            "parent": 97042,
+            "bytes": 364838912,
+            "name": "ffmpeg"
+          },
+          {
+            "pid": 97042,
+            "parent": 97033,
+            "bytes": 273694720,
+            "name": "node"
+          },
+          {
+            "pid": 97043,
+            "parent": 97033,
+            "bytes": 264110080,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 97050,
+            "parent": 97043,
+            "bytes": 174112768,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 97051,
+            "parent": 97043,
+            "bytes": 107446272,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97052,
+            "parent": 97043,
+            "bytes": 83083264,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 97055,
+            "parent": 97043,
+            "bytes": 181108736,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97056,
+            "parent": 97043,
+            "bytes": 100827136,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97057,
+            "parent": 97043,
+            "bytes": 507887616,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 97068,
+            "parent": 97043,
+            "bytes": 98959360,
+            "name": "Google Chrome Helper"
+          }
+        ]
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.30795
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 221.278833999997,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "failures": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "iteration": 3,
+      "phase": "ui",
+      "error": "AssertionError [ERR_ASSERTION]: Measured goals failed; stop before expanding repetitions\n    at exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/composition-benchmark.mjs:264:14)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/composition-benchmark.mjs:277:37"
+    }
+  ],
+  "auditSourceSHA256": "5fa9b043d60f4b9517cd54e0fc3d15d943eb4a3636ea0126d207bebdfd11dd10"
+}

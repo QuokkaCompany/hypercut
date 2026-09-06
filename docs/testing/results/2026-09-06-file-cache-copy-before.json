@@ -1,0 +1,310 @@
+{
+  "date": "2026-09-06T10:27:50.216641+00:00",
+  "scope": "Synthetic byte files only. No media app or global cache modification. Ordinary reads for hashes occur only after all residency observations.",
+  "cases": [
+    {
+      "bytes": 1,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 1,
+          "elapsedMs": 0.342,
+          "paddedBytes": 16383
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999646.164
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999648.534
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999650.58
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999652.749
+        }
+      ],
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "sourceAndCopyEqual": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true,
+      "coldFileObserved": false
+    },
+    {
+      "bytes": 16383,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 16383,
+          "elapsedMs": 0.305,
+          "paddedBytes": 1
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999712.155
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999714.598
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999716.781
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999718.97
+        }
+      ],
+      "sha256": "035e53363016c680879c0a5ddf1ea573791ed595f2c57ab1217651ffbbaef7d9",
+      "sourceAndCopyEqual": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true,
+      "coldFileObserved": false
+    },
+    {
+      "bytes": 16384,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 16384,
+          "elapsedMs": 0.198,
+          "paddedBytes": 0
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 924999781.695
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 924999783.812
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999785.707
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999787.923
+        }
+      ],
+      "sha256": "27e727238448007a0373f946790ba8acb9042b2d3d7ccd3fb9e682275af99474",
+      "sourceAndCopyEqual": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true,
+      "coldFileObserved": true
+    },
+    {
+      "bytes": 16385,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 16385,
+          "elapsedMs": 0.264,
+          "paddedBytes": 16383
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999849.188
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999851.734
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 2,
+          "pageBytes": 16384,
+          "monotonicMs": 924999854.056
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 2,
+          "pageBytes": 16384,
+          "monotonicMs": 924999856.012
+        }
+      ],
+      "sha256": "285ead037bf0ec4424ba103a912ce4e1d8af0e879d41dbe57dc46773af470797",
+      "sourceAndCopyEqual": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true,
+      "coldFileObserved": false
+    },
+    {
+      "bytes": 33554469,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 33554469,
+          "elapsedMs": 7.638,
+          "paddedBytes": 16347
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999928.2
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 924999931.658
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 2049,
+          "pageBytes": 16384,
+          "monotonicMs": 924999951.73
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 2049,
+          "pageBytes": 16384,
+          "monotonicMs": 924999954.746
+        }
+      ],
+      "sha256": "8ca75f8d88897a7f37ddc3ca65f84fee1fd2049eb595a15062b0a5de2ce2f9c6",
+      "sourceAndCopyEqual": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true,
+      "coldFileObserved": false
+    }
+  ],
+  "rejections": [
+    {
+      "kind": "empty",
+      "exitCode": 1,
+      "stderr": "expected a nonempty regular file fitting size_t",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "directory",
+      "exitCode": 1,
+      "stderr": "expected a nonempty regular file fitting size_t",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "source-symlink",
+      "exitCode": 1,
+      "stderr": "open source: Too many levels of symbolic links",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "destination-symlink",
+      "exitCode": 1,
+      "stderr": "open new destination: File exists",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "fifo",
+      "exitCode": 1,
+      "stderr": "expected a nonempty regular file fitting size_t",
+      "sentinelPreserved": true
+    }
+  ],
+  "sourceSHA256": "eb4878238d25f91e71fa28509f68cceabc47f42419a97512efbd2460bc95a6a4",
+  "status": "CONTROLS_COMPLETED"
+}

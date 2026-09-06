@@ -1,0 +1,314 @@
+{
+  "date": "2026-09-06T10:29:32.236991+00:00",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "macOS": "26.5.2",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
+  "scope": "Synthetic byte files only. No media app or global cache modification. Hash reads occur after residency observations. File cache state does not establish OS-wide cold-cache.",
+  "cases": [
+    {
+      "bytes": 1,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 1,
+          "elapsedMs": 0.189,
+          "method": "F_NOCACHE_EXT"
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101637.775
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101640.446
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 925101643.1
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 1,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 925101645.32
+        }
+      ],
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "sourceAndCopyEqual": true,
+      "coldFileObserved": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true
+    },
+    {
+      "bytes": 16383,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 16383,
+          "elapsedMs": 0.144,
+          "method": "F_NOCACHE_EXT"
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101707.696
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101709.782
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 925101712.0
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16383,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 925101714.248
+        }
+      ],
+      "sha256": "035e53363016c680879c0a5ddf1ea573791ed595f2c57ab1217651ffbbaef7d9",
+      "sourceAndCopyEqual": true,
+      "coldFileObserved": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true
+    },
+    {
+      "bytes": 16384,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 16384,
+          "elapsedMs": 0.193,
+          "method": "F_NOCACHE_EXT"
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101777.363
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101779.67
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 925101781.875
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16384,
+          "pages": 1,
+          "residentPages": 1,
+          "pageBytes": 16384,
+          "monotonicMs": 925101784.075
+        }
+      ],
+      "sha256": "27e727238448007a0373f946790ba8acb9042b2d3d7ccd3fb9e682275af99474",
+      "sourceAndCopyEqual": true,
+      "coldFileObserved": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true
+    },
+    {
+      "bytes": 16385,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 16385,
+          "elapsedMs": 0.192,
+          "method": "F_NOCACHE_EXT"
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101846.683
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101849.12
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 2,
+          "pageBytes": 16384,
+          "monotonicMs": 925101851.517
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 16385,
+          "pages": 2,
+          "residentPages": 2,
+          "pageBytes": 16384,
+          "monotonicMs": 925101853.755
+        }
+      ],
+      "sha256": "285ead037bf0ec4424ba103a912ce4e1d8af0e879d41dbe57dc46773af470797",
+      "sourceAndCopyEqual": true,
+      "coldFileObserved": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true
+    },
+    {
+      "bytes": 33554469,
+      "copied": [
+        {
+          "phase": "copy_complete",
+          "bytes": 33554469,
+          "elapsedMs": 7.289,
+          "method": "F_NOCACHE_EXT"
+        },
+        {
+          "phase": "after_uncached_copy",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101927.208
+        }
+      ],
+      "inspected": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 0,
+          "pageBytes": 16384,
+          "monotonicMs": 925101930.673
+        }
+      ],
+      "warmed": [
+        {
+          "phase": "after_cached_read",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 2049,
+          "pageBytes": 16384,
+          "monotonicMs": 925101954.29
+        }
+      ],
+      "final": [
+        {
+          "phase": "inspect_without_read",
+          "bytes": 33554469,
+          "pages": 2049,
+          "residentPages": 2049,
+          "pageBytes": 16384,
+          "monotonicMs": 925101957.896
+        }
+      ],
+      "sha256": "8ca75f8d88897a7f37ddc3ca65f84fee1fd2049eb595a15062b0a5de2ce2f9c6",
+      "sourceAndCopyEqual": true,
+      "coldFileObserved": true,
+      "existingDestinationRejected": true,
+      "existingDestinationUnchanged": true
+    }
+  ],
+  "rejections": [
+    {
+      "kind": "empty",
+      "exitCode": 1,
+      "stderr": "expected a nonempty regular file fitting size_t",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "directory",
+      "exitCode": 1,
+      "stderr": "expected a nonempty regular file fitting size_t",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "source-symlink",
+      "exitCode": 1,
+      "stderr": "open source: Too many levels of symbolic links",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "destination-symlink",
+      "exitCode": 1,
+      "stderr": "open new destination: File exists",
+      "sentinelPreserved": true
+    },
+    {
+      "kind": "fifo",
+      "exitCode": 1,
+      "stderr": "expected a nonempty regular file fitting size_t",
+      "sentinelPreserved": true
+    }
+  ],
+  "sourceSHA256": "1eb8f26f1901138b0d20be925a8437cb56c8ced059e6313483f3d8cabb1ae106",
+  "testSHA256": "f6d8ab891533d933ff8443cc0af294ff91a0423d6ed6c32f5d62a7a489addc6d",
+  "status": "CONTROLS_COMPLETED"
+}
