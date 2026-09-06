@@ -10,7 +10,7 @@ export function captionCues(input, media, trackIndex, fullKept, renderKept = ful
   if (transcript.trackIndex !== trackIndex || !track || transcript.channel >= track.channels) throw new Error('현재 오디오 트랙과 자막의 전사 트랙이 다릅니다.');
   const reviewed = new Map(mapCaptions(transcript, fullKept).map(cue => [cue.id, cue]));
   return mapCaptions(transcript, renderKept).filter(cue => !cue.removed).map(cue => {
-    if (reviewed.get(cue.id).needsReview) throw new Error('컷과 겹치는 자막 문구를 먼저 검토해 주세요.');
+    if (reviewed.get(cue.id).needsReview) throw new Error('출력할 자막의 문구와 경계를 먼저 검토해 주세요.');
     return { start: cue.outputStart, end: cue.outputEnd, text: cue.text };
   });
 }

@@ -1,0 +1,62 @@
+{
+  "sourceDuration": 3600,
+  "engine": "whisper.cpp 1.9.3-dev / small multilingual",
+  "scope": "Last five segments from actual generated Korean 60-minute inference; no user footage",
+  "transcription": [
+    {
+      "timestamps": {
+        "from": "00:59:30,240",
+        "to": "00:59:35,240"
+      },
+      "offsets": {
+        "from": 3570240,
+        "to": 3575240
+      },
+      "text": " 먼저 원본 파일을 열고 마이크의 소리를 확인합니다."
+    },
+    {
+      "timestamps": {
+        "from": "00:59:35,240",
+        "to": "00:59:40,240"
+      },
+      "offsets": {
+        "from": 3575240,
+        "to": 3580240
+      },
+      "text": " 문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+    },
+    {
+      "timestamps": {
+        "from": "00:59:40,240",
+        "to": "00:59:45,240"
+      },
+      "offsets": {
+        "from": 3580240,
+        "to": 3585240
+      },
+      "text": " 자막의 숫자와 고유 면산은 원본을 들으며 다시 확인합니다."
+    },
+    {
+      "timestamps": {
+        "from": "00:59:45,240",
+        "to": "00:59:52,240"
+      },
+      "offsets": {
+        "from": 3585240,
+        "to": 3592240
+      },
+      "text": " 마지막으로 편집한 영상을 저장하고 처음부터 끝까지 재생합니다."
+    },
+    {
+      "timestamps": {
+        "from": "00:59:56,240",
+        "to": "01:00:00,240"
+      },
+      "offsets": {
+        "from": 3596240,
+        "to": 3600240
+      },
+      "text": " 오늘은 영상 편집의 순서를 살펴보겠습니다."
+    }
+  ]
+}

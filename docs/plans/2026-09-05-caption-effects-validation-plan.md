@@ -144,3 +144,5 @@ FFmpeg `subtitles` 경로를 선택한다면 [공식 필터 문서](https://ffmp
 프로젝트 교정 용어의 저장·이전·요청별 임시 변경은 [용어 계획](2026-09-05-project-glossary-plan.md)과 [두 앱 실행 기록](../testing/2026-09-05-project-glossary-results.md)에 연결한다. C07/C08의 실제 인증 모델 품질 판정을 대체하지 않는다.
 
 T07의 긴 영상 전사 측정은 [성능 실행 계획](2026-09-05-transcription-performance-plan.md)과 [실행 기록](../testing/2026-09-05-transcription-performance-results.md)에 연결한다. 합성 반복 입력·OS 캐시 미제거·자막 선택만의 반응 측정이라는 한계를 유지하며, 실제 녹음과 전체 조작의 성능을 대신하지 않는다.
+
+60분 T07 실행에서 발견한 모델 끝 시각 초과와 검토 처리는 [끝 경계 계획](2026-09-05-transcription-end-review-plan.md) 및 [재현·수정 기록](../testing/2026-09-05-transcription-end-results.md)을 따른다. 원본 범위 밖의 일반 프로젝트 자막은 계속 거부하며, 조정한 전사 자막은 검토 전 출력하지 않는다.

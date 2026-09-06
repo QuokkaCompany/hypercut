@@ -1,0 +1,56 @@
+{
+  "input": "Generated Korean repeated TTS, 1080p30 mono AAC48k, no user footage",
+  "inputSeconds": 3600,
+  "decodedSampleRate": 16000,
+  "decodedSamples": 57600000,
+  "rawSHA256": "70f1d1fc4efdc3a2124da6b4226469863c633690ae741661ce08082ae4b69e21",
+  "wavSHA256": "4869553105f672cba36b0457827551918f06bfcf2e10ecb5e3ae1738965e3d34",
+  "model": {
+    "type": "small",
+    "multilingual": true,
+    "vocab": 51865,
+    "audio": {
+      "ctx": 1500,
+      "state": 768,
+      "head": 12,
+      "layer": 12
+    },
+    "text": {
+      "ctx": 448,
+      "state": 768,
+      "head": 12,
+      "layer": 12
+    },
+    "mels": 80,
+    "ftype": 1
+  },
+  "rawSegments": 580,
+  "invalidBefore": [
+    {
+      "timestamps": {
+        "from": "00:59:56,240",
+        "to": "01:00:00,240"
+      },
+      "offsets": {
+        "from": 3596240,
+        "to": 3600240
+      },
+      "text": " 오늘은 영상 편집의 순서를 살펴보겠습니다."
+    }
+  ],
+  "retainedAfter": 580,
+  "pendingReviews": [
+    {
+      "id": "40dd2ccc-3779-4e72-81b5-f7083689af59",
+      "start": 3596.24,
+      "end": 3600,
+      "text": "오늘은 영상 편집의 순서를 살펴보겠습니다.",
+      "timingWarning": {
+        "kind": "source-end",
+        "originalEnd": 3600.24
+      }
+    }
+  ],
+  "sourceEndAfter": 3600,
+  "scope": "Actual CLI reproduction plus corrected parser; new app long-performance matrix is separate"
+}

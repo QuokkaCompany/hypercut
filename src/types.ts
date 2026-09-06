@@ -10,7 +10,7 @@ export interface EffectClip { id: string; assetId: string; start: number; offset
 export interface Effects { assets: EffectAsset[]; clips: EffectClip[] }
 export interface TranscriptionSettings { channel: number; language: 'ko' | 'en' | 'auto' }
 export interface CaptionStyle { enabled: boolean; preset: 'clean' | 'box' | 'emphasis'; sizePercent: number; position: 'top' | 'bottom'; marginPercent: number }
-export interface CaptionCue { id: string; start: number; end: number; text: string; reviewedFor?: string }
+export interface CaptionCue { id: string; start: number; end: number; text: string; timingWarning?: { kind: 'source-end'; originalEnd: number }; reviewedFor?: string }
 export interface Transcript extends TranscriptionSettings { trackIndex: number; model: string; cues: CaptionCue[] }
 export interface Job { id: string; type: string; status: 'running' | 'completed' | 'failed' | 'cancelled'; progress: number; stage: string; error?: string; result?: Analysis | Output | Transcript }
 declare global {

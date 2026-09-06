@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capture } from './process.mjs';
 import { transcriptionAudio } from './media.mjs';
-import { validateTranscript } from '../shared/captions.mjs';
+import { MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS, validateTranscript } from '../shared/captions.mjs';
 
 export const TRANSCRIPTION_MODEL = Object.freeze({ name: 'Whisper small (multilingual)', file: 'ggml-small.bin', size: 487601967, sha256: '1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b', engine: 'whisper.cpp 1.9.3', revision: '371b5a7561823ab2bb32142d2751e35e7534727b' });
 export function transcriptionRuntime() {
@@ -32,8 +32,9 @@ export function parseTranscription(value, media, trackIndex, settings) {
     if (typeof segment.text !== 'string' || !Number.isFinite(segment.offsets?.from) || !Number.isFinite(segment.offsets?.to) || segment.offsets.from < 0 || segment.offsets.to < segment.offsets.from) throw new Error('전사 엔진의 문구·시각을 읽을 수 없습니다.');
     const text = segment.text.trim();
     if (!text) return [];
-    if (segment.offsets.from >= media.duration * 1000 || segment.offsets.to > media.duration * 1000 + 100) throw new Error('전사 시각이 원본 길이와 일치하지 않습니다.');
-    return [{ id: randomUUID(), start: segment.offsets.from / 1000, end: Math.min(media.duration, segment.offsets.to / 1000), text }];
+    const start = segment.offsets.from / 1000, originalEnd = segment.offsets.to / 1000, crossesEnd = originalEnd > media.duration;
+    if (start >= media.duration || (crossesEnd && (originalEnd - start > MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS || start < media.duration - MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS || originalEnd > media.duration + MAX_TRANSCRIPTION_END_OVERFLOW_SECONDS))) throw new Error('전사 시각이 원본 길이와 일치하지 않습니다.');
+    return [{ id: randomUUID(), start, end: Math.min(media.duration, originalEnd), text, ...(crossesEnd ? { timingWarning: { kind: 'source-end', originalEnd } } : {}) }];
   });
   return validateTranscript({ trackIndex, ...settings, model: `${TRANSCRIPTION_MODEL.engine} / ${TRANSCRIPTION_MODEL.name} / ${TRANSCRIPTION_MODEL.sha256}`, cues }, media.duration);
 }

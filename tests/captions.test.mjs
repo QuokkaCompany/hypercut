@@ -38,5 +38,5 @@ test('T03/T06: engine output and channel contracts reject corrupt or out-of-rang
   for (const settings of [{ channel: 2, language: 'ko' }, { channel: 0, language: 'bad' }]) assert.throws(() => validateTranscriptionSettings(settings, media, 1));
   const parsed = parseTranscription({ transcription: [{ text: '첫 문장', offsets: { from: 1000, to: 2000 } }] }, media, 1, { channel: 1, language: 'ko' });
   assert.equal(parsed.cues[0].start, 1); assert.equal(parsed.cues[0].end, 2);
-  for (const output of [{}, { transcription: [{ text: '문구', offsets: { from: 1000, to: NaN } }] }, { transcription: [{ text: '문구', offsets: { from: 1000, to: 15000 } }] }]) assert.throws(() => parseTranscription(output, media, 1, { channel: 0, language: 'ko' }));
+  for (const output of [{}, { transcription: [{ text: '문구', offsets: { from: 1000, to: NaN } }] }, { transcription: [{ text: '문구', offsets: { from: 1000, to: 45000 } }] }]) assert.throws(() => parseTranscription(output, media, 1, { channel: 0, language: 'ko' }));
 });

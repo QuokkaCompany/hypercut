@@ -43,7 +43,7 @@ try {
       const projectDownload = page.waitForEvent('download'); await page.getByRole('button', { name: '프로젝트 저장', exact: true }).first().click(); await (await projectDownload).saveAs(projectPath);
     }
     const project = JSON.parse(await readFile(projectPath, 'utf8'));
-    assert.equal(project.version, 6); assert.deepEqual(project.speechProtection, { enabled: true, threshold: 0.5 });
+    assert.equal(project.version, 7); assert.deepEqual(project.speechProtection, { enabled: true, threshold: 0.5 });
     assert.ok((await readFile(outputPath)).length > 1000);
     await page.screenshot({ path: path.resolve(`test-output/speech-${surface}.png`), fullPage: true });
     await page.getByRole('slider', { name: '음성 감지 기준', exact: true }).fill('0.35');
