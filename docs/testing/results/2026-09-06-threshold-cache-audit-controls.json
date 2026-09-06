@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "source": "/Users/dante/Desktop/github/hyper_cut/test-output/threshold-input-cache-smoke/cold",
+  "sourceReportSHA256": "c4fe7a60da51d9462e5dc0b0ed6f2b25cf6c1a00abb9080d61ca29de0e05ebf9",
+  "auditorSHA256": "4154383fba8b21d6b210da366e7a26872fc161b0b3ce7c9b0d41a91ec17563b6",
+  "scope": "Audit positive and deliberately altered report controls; original recordings, output files and source report untouched.",
+  "cases": [
+    {
+      "name": "positive",
+      "expected": "accepted",
+      "code": 0,
+      "stdout": "{\"status\": \"AUDITED_COMPLETED\", \"runs\": 4, \"cancellations\": 2, \"mode\": \"cold\", \"peakRSSGiB\": 1.5278167724609375}\n",
+      "stderr": ""
+    },
+    {
+      "name": "lower-reported-rss",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 132, in <module>\n    assert max(v['peakBytes'] for v in phases.values()) == run['peakRSSBytes']\nAssertionError\n"
+    },
+    {
+      "name": "lower-ui-p95",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 137, in <module>\n    assert stats([s['ms'] for s in samples]) == run['ui']['byFamily'][family]\nAssertionError\n"
+    },
+    {
+      "name": "missing-frame",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 144, in <module>\n    assert run['frames']['frames'] == expected_frames\nAssertionError\n"
+    },
+    {
+      "name": "wrong-output-hash",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 105, in <module>\n    assert sha(run['outputFile']) == run['outputSHA256']\nAssertionError\n"
+    },
+    {
+      "name": "missing-run",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 49, in <module>\n    assert len(actual_keys) == len(expected_keys) and set(actual_keys) == expected_keys\nAssertionError\n"
+    },
+    {
+      "name": "changed-project",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 128, in <module>\n    assert project == content(read(previous_base / f'{previous_prefix}-project.json'))\nAssertionError\n"
+    },
+    {
+      "name": "resident-pages-in-cold-input",
+      "expected": "rejected",
+      "code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/dante/Desktop/github/hyper_cut/scripts/audit-threshold-benchmark.py\", line 170, in <module>\n    assert pre['residentPages'] == (0 if mode == 'cold' else pre['pages'])\nAssertionError\n"
+    }
+  ],
+  "controlSource": "from pathlib import Path\nimport copy\nimport hashlib\nimport json\nimport subprocess\nimport sys\n\nsource = Path(sys.argv[1]).resolve()\noutput = Path(sys.argv[2]).resolve()\nassert source.is_relative_to(Path('test-output').resolve())\nassert output.is_relative_to(Path('test-output').resolve())\noutput.mkdir()\noriginal = json.loads((source / 'results.json').read_text())\nbefore = hashlib.sha256((source / 'results.json').read_bytes()).hexdigest()\nauditor = Path('scripts/audit-threshold-benchmark.py').resolve()\nrecords = []\n\n\ndef rss(r, folder):\n    r['runs'][0]['peakRSSBytes'] -= 1\n\n\ndef ui(r, folder):\n    r['runs'][0]['ui']['byFamily']['restore']['p95'] -= 1\n\n\ndef frames(r, folder):\n    r['runs'][0]['frames']['frames'] -= 1\n\n\ndef bitstream(r, folder):\n    r['runs'][0]['outputSHA256'] = '0' * 64\n\n\ndef missing(r, folder):\n    r['runs'].pop()\n\n\ndef project(r, folder):\n    run = r['runs'][0]\n    file = folder / f\"{run['surface']}-{run['inputSeconds']}-{run['iteration']}-project.json\"\n    value = json.loads(file.read_text()); value['glossary'] = 'unexpected persisted edit'\n    file.unlink()  # Remove only the newly created symlink, never the source.\n    file.write_text(json.dumps(value))\n\n\ndef residency(r, folder):\n    c = r['runs'][0]['inputFileCache']\n    c['beforeSelection']['residentPages'] = c['beforeSelection']['pages']\n    c['calls'][-2]['observations'][0] = copy.deepcopy(c['beforeSelection'])\n\n\ncases = [('positive', None), ('lower-reported-rss', rss), ('lower-ui-p95', ui),\n         ('missing-frame', frames), ('wrong-output-hash', bitstream),\n         ('missing-run', missing), ('changed-project', project)]\nif original['requested']['inputCache'] == 'cold':\n    cases.append(('resident-pages-in-cold-input', residency))\nfor name, change in cases:\n    folder = output / name; folder.mkdir()\n    for file in source.iterdir():\n        if file.is_file() and file.name not in ['results.json', 'audit.json']:\n            (folder / file.name).symlink_to(file)\n    report = copy.deepcopy(original)\n    if change:\n        change(report, folder)\n    if report['inputFileCache']:\n        old_directory = Path(report['inputFileCache']['directory'])\n        cache_directory = folder / 'input-cache'; cache_directory.mkdir()\n        for name2 in ['executed-file-cache.c', 'file-cache-tool']:\n            (cache_directory / name2).symlink_to(old_directory / name2)\n        report['inputFileCache']['directory'] = str(cache_directory)\n        report['inputFileCache']['attempts'] = [copy.deepcopy(run['inputFileCache']) for run in report['runs']]\n        for attempt in report['inputFileCache']['attempts']:\n            (cache_directory / (attempt['prefix'] + '.json')).write_text(json.dumps(attempt))\n    (folder / 'results.json').write_text(json.dumps(report))\n    result = subprocess.run([sys.executable, str(auditor), str(folder)], capture_output=True, text=True)\n    record = dict(name=name, expected='accepted' if change is None else 'rejected',\n                  code=result.returncode, stdout=result.stdout, stderr=result.stderr)\n    records.append(record)\n    assert (result.returncode == 0) == (change is None), record\nassert hashlib.sha256((source / 'results.json').read_bytes()).hexdigest() == before\n(output / 'results.json').write_text(json.dumps(dict(status='PASS', source=str(source),\n    sourceReportSHA256=before, auditorSHA256=hashlib.sha256(auditor.read_bytes()).hexdigest(),\n    scope='Audit positive and deliberately altered report controls; original recordings, output files and source report untouched.',\n    cases=records), indent=2) + '\\n')\nprint(json.dumps({'status': 'PASS', 'controls': len(records)}))\n"
+}

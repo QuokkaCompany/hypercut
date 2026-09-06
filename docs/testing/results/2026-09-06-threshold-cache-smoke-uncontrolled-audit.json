@@ -1,0 +1,301 @@
+{
+  "date": "2026-09-06T12:39:22.635600+00:00",
+  "status": "AUDITED_COMPLETED",
+  "scope": "Completed requested matrix, actual hashes, full projects/analysis, raw RSS sums, UI statistics, cache residency and cancellation/retry. Baseline-less first comparisons are internal consistency only; separate decoded oracle results are checked but not rerun. No human speech or OS-wide cold-cache claim.",
+  "code": "d0a03db6bd97885d43c83bf31d4930caaf5c6639",
+  "baseline": null,
+  "reportSHA256": "5283a7fa29f5038f39b49862325d24370457592c2609529f7f8cf6de06b58095",
+  "auditorSHA256": "4154383fba8b21d6b210da366e7a26872fc161b0b3ce7c9b0d41a91ec17563b6",
+  "runs": [
+    {
+      "surface": "browser",
+      "seconds": 60,
+      "iteration": 1,
+      "inputCache": "uncontrolled",
+      "peakRSSGiB": 1.540679931640625,
+      "phases": {
+        "analysis": {
+          "file": "browser-60-1-analysis-resources.json",
+          "sha256": "0d65b9254aec23588cb56f910d18e21151d3141e5c66cc878ae14acd95236908",
+          "peakBytes": 1276067840,
+          "samples": 7,
+          "maxSampleGapMs": 280.15866700000015
+        },
+        "export": {
+          "file": "browser-60-1-export-resources.json",
+          "sha256": "883eb3223e2c6cf684e201475ca46dae3f562199d095fec0a742ce75e42cac36",
+          "peakBytes": 1654292480,
+          "samples": 15,
+          "maxSampleGapMs": 285.0200840000002
+        },
+        "save": {
+          "file": "browser-60-1-save-resources.json",
+          "sha256": "4ade98c3de5ef38807b95cf111f7b690b97ff70c56116bc0ba44eef62ea9e8c2",
+          "peakBytes": 1313275904,
+          "samples": 2,
+          "maxSampleGapMs": 85.57020899999952
+        },
+        "ui": {
+          "file": "browser-60-1-ui-resources.json",
+          "sha256": "930b0df8e987aa2826e8941534e31801fa256f678ac5f5ac3f0dd0d3d8bf2027",
+          "peakBytes": 1365344256,
+          "samples": 36,
+          "maxSampleGapMs": 279.0022919999992
+        },
+        "project": {
+          "file": "browser-60-1-project-resources.json",
+          "sha256": "88996ea44ad7a038ed6ddd52f376a2828296cbc50b3cdd46a0be624dddc290f2",
+          "peakBytes": 1361100800,
+          "samples": 2,
+          "maxSampleGapMs": 60.16191600000093
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+      "analysisSeconds": 1.365618209,
+      "exportSeconds": 3.506414875,
+      "frames": 1448,
+      "baselineComparisonToSelf": true,
+      "inputResidency": null
+    },
+    {
+      "surface": "browser",
+      "seconds": 60,
+      "iteration": 2,
+      "inputCache": "uncontrolled",
+      "peakRSSGiB": 1.6241455078125,
+      "phases": {
+        "analysis": {
+          "file": "browser-60-2-analysis-resources.json",
+          "sha256": "737e8e389a8bb26c12afc43dd3e85a9d87a3ddb47dddbbba067c07b981ddf970",
+          "peakBytes": 1410744320,
+          "samples": 6,
+          "maxSampleGapMs": 282.25745800000004
+        },
+        "export": {
+          "file": "browser-60-2-export-resources.json",
+          "sha256": "811c8a1b13d5b256bcc3a80b300bf0c05d50264f6870dfeddcf6ed6561adc5d9",
+          "peakBytes": 1743912960,
+          "samples": 15,
+          "maxSampleGapMs": 282.5942500000019
+        },
+        "save": {
+          "file": "browser-60-2-save-resources.json",
+          "sha256": "e535f30d512966287fb6cb8aa64d407149c2c5032cb1f690a833a81e6f76a647",
+          "peakBytes": 1393950720,
+          "samples": 2,
+          "maxSampleGapMs": 84.06358399999954
+        },
+        "ui": {
+          "file": "browser-60-2-ui-resources.json",
+          "sha256": "254e22963dbeca037286a12f79285b7e3669ca33d01c9af17bfe50f6c911948f",
+          "peakBytes": 1397129216,
+          "samples": 36,
+          "maxSampleGapMs": 280.572750000003
+        },
+        "project": {
+          "file": "browser-60-2-project-resources.json",
+          "sha256": "22238171603ba6afbecc6be25097c06f4685579cb68f9dafc50a7f191d14a3ae",
+          "peakBytes": 1392443392,
+          "samples": 2,
+          "maxSampleGapMs": 59.96041599999808
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+      "analysisSeconds": 1.1696785830000007,
+      "exportSeconds": 3.4903356249999997,
+      "frames": 1448,
+      "baselineComparisonToSelf": false,
+      "inputResidency": null
+    },
+    {
+      "surface": "desktop",
+      "seconds": 60,
+      "iteration": 1,
+      "inputCache": "uncontrolled",
+      "peakRSSGiB": 0.9087066650390625,
+      "phases": {
+        "analysis": {
+          "file": "desktop-60-1-analysis-resources.json",
+          "sha256": "71426256c0240b877475f322373725b0e9834200c8627251d9514b0907adda49",
+          "peakBytes": 643235840,
+          "samples": 7,
+          "maxSampleGapMs": 318.81120800000645
+        },
+        "export": {
+          "file": "desktop-60-1-export-resources.json",
+          "sha256": "43e1cd7c8b818a0debb5ae21fd68c81e457739c940b70c544a3e6b18cc531ccd",
+          "peakBytes": 975716352,
+          "samples": 15,
+          "maxSampleGapMs": 285.88891700000386
+        },
+        "save": {
+          "file": "desktop-60-1-save-resources.json",
+          "sha256": "a3d92c88e933909c99256b3ee6383520f18d53e2ec8b45e2cf12c8de35007f61",
+          "peakBytes": 631341056,
+          "samples": 2,
+          "maxSampleGapMs": 77.9397919999974
+        },
+        "ui": {
+          "file": "desktop-60-1-ui-resources.json",
+          "sha256": "d1d5e000a3fc5e81f3fb58e283f409b45ce9e7e2a189de1dba276463fe50261b",
+          "peakBytes": 676888576,
+          "samples": 22,
+          "maxSampleGapMs": 281.4672500000015
+        },
+        "project": {
+          "file": "desktop-60-1-project-resources.json",
+          "sha256": "2764602f4ffd915defb820d099766e6168587fcf3aaf210a0083891861f2d704",
+          "peakBytes": 666124288,
+          "samples": 2,
+          "maxSampleGapMs": 79.49920900000143
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+      "analysisSeconds": 1.3120952919999982,
+      "exportSeconds": 3.478222458000004,
+      "frames": 1448,
+      "baselineComparisonToSelf": false,
+      "inputResidency": null
+    },
+    {
+      "surface": "desktop",
+      "seconds": 60,
+      "iteration": 2,
+      "inputCache": "uncontrolled",
+      "peakRSSGiB": 0.95184326171875,
+      "phases": {
+        "analysis": {
+          "file": "desktop-60-2-analysis-resources.json",
+          "sha256": "403e9a08f434683eace74bd464fae4522507a14b4ca72829ed64b6332c015ba8",
+          "peakBytes": 702742528,
+          "samples": 6,
+          "maxSampleGapMs": 281.697791999999
+        },
+        "export": {
+          "file": "desktop-60-2-export-resources.json",
+          "sha256": "94c00b83c23a557334fe3a902b884cfb78d88e443b7b8a52129d20440e1347f0",
+          "peakBytes": 1022033920,
+          "samples": 15,
+          "maxSampleGapMs": 286.87162499999977
+        },
+        "save": {
+          "file": "desktop-60-2-save-resources.json",
+          "sha256": "817ebd0307885c73f87d092eb3044ee9d707d41e526c65be0b4a849e17b78d21",
+          "peakBytes": 672251904,
+          "samples": 2,
+          "maxSampleGapMs": 78.69541700000264
+        },
+        "ui": {
+          "file": "desktop-60-2-ui-resources.json",
+          "sha256": "c8352b3da2502c6ac963178958df8f240f21073b5fcd44774b475bb2ebda5fc1",
+          "peakBytes": 679084032,
+          "samples": 22,
+          "maxSampleGapMs": 281.30291600000055
+        },
+        "project": {
+          "file": "desktop-60-2-project-resources.json",
+          "sha256": "07efab1c257ac9a91088e212b014bd0954e59e1c572c17a9fe115e1a125d6fc1",
+          "peakBytes": 674856960,
+          "samples": 2,
+          "maxSampleGapMs": 75.34554199999548
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+      "analysisSeconds": 1.142237083,
+      "exportSeconds": 3.467578999999998,
+      "frames": 1448,
+      "baselineComparisonToSelf": false,
+      "inputResidency": null
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "memory": {
+        "file": "browser-60-1-cancel-resources.json",
+        "peakBytes": 1370701824,
+        "samples": 3,
+        "errors": []
+      },
+      "memoryPass": true,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "작업 준비",
+        "progress": 0
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 309.4884579999998,
+      "displayMs": 0.7999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2,
+      "rawMemory": {
+        "file": "browser-60-1-cancel-resources.json",
+        "sha256": "f6ec5ee1dbb5e3f0ae24e621308bc673a62c9d983666e2273b6c822a7f3d60a1",
+        "peakBytes": 1370701824,
+        "samples": 3,
+        "maxSampleGapMs": 280.86491699999897
+      }
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "memory": {
+        "file": "desktop-60-1-cancel-resources.json",
+        "peakBytes": 667779072,
+        "samples": 3,
+        "errors": []
+      },
+      "memoryPass": true,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "작업 준비",
+        "progress": 0
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 306.2038339999999,
+      "displayMs": 0.7999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2,
+      "rawMemory": {
+        "file": "desktop-60-1-cancel-resources.json",
+        "sha256": "296590462bf14f0e9a8153c607db775e7a91125e78ede90325ebcbbf758a2559",
+        "peakBytes": 667779072,
+        "samples": 3,
+        "maxSampleGapMs": 280.2169589999976
+      }
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "status": "IN_PROGRESS",
+  "scope": "Composition input-file cold/warm matrix. Basic threshold-only mode, actual Korean quality and OS-wide cold-cache are separate.",
+  "plannedRuns": 24,
+  "completedRuns": 6,
+  "conditions": [
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "mode": "cold",
+      "plannedRuns": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "mode": "warm",
+      "plannedRuns": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "mode": "cold",
+      "plannedRuns": 3,
+      "status": "PASS",
+      "report": "docs/testing/results/2026-09-06-input-cache-browser-3600-cold.json",
+      "reportSHA256": "cd8192d65010b6b754a0f5ac37c9addbb205d3c4e58d2447cfaac43bfb34034f",
+      "audit": "docs/testing/results/2026-09-06-input-cache-browser-3600-cold-audit.json",
+      "auditSHA256": "8f3a521fedb2f2ce1d9838a1aa94ea5dd25ff225a744fbb76628cc8d7514db40",
+      "runs": [
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "iteration": 1,
+          "analyzeSeconds": 38.021732792,
+          "exportSeconds": 191.862964583,
+          "peakRSSBytes": 1593311232,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          }
+        },
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "iteration": 2,
+          "analyzeSeconds": 37.61965408399998,
+          "exportSeconds": 190.611334584,
+          "peakRSSBytes": 1675902976,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          }
+        },
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "iteration": 3,
+          "analyzeSeconds": 37.84614312500006,
+          "exportSeconds": 192.47700820799997,
+          "peakRSSBytes": 1706754048,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          }
+        }
+      ],
+      "cancellations": [
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.3102
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 210.11741599999368,
+          "displayMs": 0.7999999523162842,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        }
+      ]
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "mode": "warm",
+      "plannedRuns": 3,
+      "status": "PASS",
+      "report": "docs/testing/results/2026-09-06-input-cache-browser-3600-warm.json",
+      "reportSHA256": "248c13cff4f2b8823cd41eaff3dfa41e952f9cda0f7f3e0db98e61421594d3d1",
+      "audit": "docs/testing/results/2026-09-06-input-cache-browser-3600-warm-audit.json",
+      "auditSHA256": "df8c3b93d4f35aa11afb2eb0fb5429d4704f36649155b19fc184edb0eac46021",
+      "runs": [
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "iteration": 1,
+          "analyzeSeconds": 37.261881584,
+          "exportSeconds": 188.762825333,
+          "peakRSSBytes": 1865908224,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          }
+        },
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "iteration": 2,
+          "analyzeSeconds": 38.85918179100001,
+          "exportSeconds": 188.542427166,
+          "peakRSSBytes": 1790623744,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          }
+        },
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "iteration": 3,
+          "analyzeSeconds": 39.461949416999936,
+          "exportSeconds": 194.89534941599996,
+          "peakRSSBytes": 1655521280,
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          }
+        }
+      ],
+      "cancellations": [
+        {
+          "surface": "browser",
+          "inputSeconds": 3600,
+          "beforeCancel": {
+            "status": "running",
+            "stage": "자막 디자인 합성 준비",
+            "progress": 0.30555
+          },
+          "deleteCancelled": true,
+          "jobStatus": "cancelled",
+          "readyMs": 201.82941700000083,
+          "displayMs": 0.8999999761581421,
+          "projectPreserved": true,
+          "savedOutputPreserved": true,
+          "displayedOutputPreserved": true,
+          "displayPass": true,
+          "readyPass": true,
+          "retryCompletedIteration": 2
+        }
+      ]
+    },
+    {
+      "surface": "desktop",
+      "seconds": 600,
+      "mode": "cold",
+      "plannedRuns": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "surface": "desktop",
+      "seconds": 600,
+      "mode": "warm",
+      "plannedRuns": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "mode": "cold",
+      "plannedRuns": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "mode": "warm",
+      "plannedRuns": 3,
+      "status": "NOT_RUN"
+    }
+  ]
+}

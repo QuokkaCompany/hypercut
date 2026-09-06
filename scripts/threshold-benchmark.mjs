@@ -2,7 +2,7 @@ import { chromium, _electron as electron } from 'playwright';
 import { fork, execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { once } from 'node:events';
-import { mkdtemp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, copyFile, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
@@ -11,19 +11,38 @@ import { sha256 } from './helpers/transcription-performance-fixture.mjs';
 import { capture } from '../server/process.mjs';
 import { DEFAULT_SETTINGS, validateProject } from '../shared/timeline.mjs';
 import { thresholdFixture, verifyThresholdSync, verifyThresholdFrames } from './helpers/threshold-performance-fixture.mjs';
+import { createFileCacheController } from './helpers/file-cache.mjs';
 
 const exec = promisify(execFile);
 const option = (name, fallback) => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const durations = option('durations', '600,3600').split(',').map(Number), iterations = Number(option('iterations', '3')), surfaces = option('surfaces', 'browser,desktop').split(',');
 const uiLocator = option('ui-locator', 'role');
+const inputCache = option('input-cache', 'uncontrolled');
 assert.ok(['role', 'css'].includes(uiLocator));
-assert.ok(durations.every(value => [60,600,3600].includes(value)) && [1,3].includes(iterations) && surfaces.every(value => ['browser','desktop'].includes(value)));
+assert.ok(['uncontrolled', 'cold', 'warm'].includes(inputCache), 'Unknown input-file cache condition');
+assert.ok(durations.every(value => [60,600,3600].includes(value)) && [1,2,3].includes(iterations) && surfaces.every(value => ['browser','desktop'].includes(value)));
 const output = path.resolve(option('output', 'test-output/threshold-performance'));
 assert.ok(output.startsWith(path.resolve('test-output') + path.sep)); await mkdir(output, { recursive: true });
 const reportPath = path.join(output, 'results.json');
 if (await stat(reportPath).catch(error => { if (error.code === 'ENOENT') return null; throw error; })) throw new Error('Results exist; choose a new --output.');
-const report = { date: new Date().toISOString(), code: (await exec('git',['rev-parse','HEAD'])).stdout.trim(), status: 'running', platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset',['-g','batt'])).stdout.trim(), ffmpeg: (await capture('ffmpeg',['-version'])).split('\n')[0], requested: {durations, iterations, surfaces, uiLocator}, settings: DEFAULT_SETTINGS, speechProtection: {enabled:false,threshold:.5}, scope: 'Repeated tone/flash fixture; threshold-only real app import/analyze/export, 60 minutes includes 1000 cuts. Whole app tree RSS at 250ms, driver excluded. UI timings include Playwright overhead and two animation frames. Repeated UI targets use the recorded role or CSS selector mode; native click/fill and state assertions are unchanged. No OS cache purge, no human quality or cold-cache claim. Native file paths controlled by test.', sourceHashes:{}, fixtures:[], runs:[], cancellations:[], failures:[] };
+const report = { date: new Date().toISOString(), code: (await exec('git',['rev-parse','HEAD'])).stdout.trim(), status: 'running', platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset',['-g','batt'])).stdout.trim(), ffmpeg: (await capture('ffmpeg',['-version'])).split('\n')[0], requested: {durations, iterations, surfaces, uiLocator}, settings: DEFAULT_SETTINGS, speechProtection: {enabled:false,threshold:.5}, scope: 'Repeated tone/flash fixture; threshold-only real app import/analyze/export, 60 minutes includes 1000 cuts. Whole app tree RSS at 250ms, driver excluded. UI timings include Playwright overhead and two animation frames. Repeated UI targets use the recorded role or CSS selector mode; native click/fill and state assertions are unchanged. No OS cache purge, no human quality or OS-wide cold-cache claim. Native file paths controlled by test.', sourceHashes:{}, fixtures:[], runs:[], cancellations:[], failures:[] };
 for (const file of ['src/WindowedList.tsx', 'src/CutList.tsx', 'src/App.tsx','server/media.mjs','shared/timeline.mjs','scripts/threshold-benchmark.mjs','scripts/helpers/threshold-performance-fixture.mjs','scripts/helpers/performance.mjs','tests/threshold-sync.integration.mjs','package-lock.json','release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar']) report.sourceHashes[file] = await sha256(file);
+report.requested.inputCache = inputCache;
+report.scope += ' Optional input-file cold/warm residency is measured just before selection; no OS-wide or internal working-copy cache claim. Input preparation is recorded outside analysis timing.';
+const bundles = [...(await readFile('dist/index.html', 'utf8')).matchAll(/"(\/assets\/[^\"]+)"/g)].map(match => `dist${match[1]}`);
+assert.ok(bundles.some(file => file.endsWith('.js')));
+for (const file of ['scripts/benchmark-server.mjs', 'scripts/helpers/file-cache.mjs', 'scripts/helpers/file-cache.c', 'dist/index.html', ...bundles]) report.sourceHashes[file] = await sha256(file);
+const packagePath = 'release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar';
+const packagedFiles = ['server/media.mjs', 'shared/timeline.mjs', 'dist/index.html', ...bundles];
+const packageHashes = JSON.parse((await exec(process.execPath, ['--input-type=module', '-e', `import {extractFile} from '@electron/asar'; import {createHash} from 'node:crypto'; const [archive, ...files] = process.argv.slice(1); console.log(JSON.stringify(Object.fromEntries(files.map(file => [file, createHash('sha256').update(extractFile(archive, file)).digest('hex')]))));`, packagePath, ...packagedFiles])).stdout);
+report.packageSourceHashes = {};
+for (const file of packagedFiles) {
+  assert.equal(packageHashes[file], report.sourceHashes[file], `Stale Mac package: ${file}`);
+  report.packageSourceHashes[file] = packageHashes[file];
+}
+await copyFile('scripts/threshold-benchmark.mjs', path.join(output, 'executed-benchmark.mjs'));
+await copyFile('scripts/benchmark-server.mjs', path.join(output, 'executed-server.mjs'));
+let cacheController;
 const flush = () => writeFile(reportPath, JSON.stringify(report,null,2)+'\n'); await flush();
 const button = (page,name) => page.getByRole('button',{name,exact:true});
 const paints = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -77,13 +96,20 @@ async function exercise(surface,input) {
     async function waitForState(predicate) {const deadline=performance.now()+Math.max(180000,input.media.duration*1500);let lastLog=0;while(performance.now()<deadline){const job=jobs.get(currentId);if(job?.status==='failed')throw new Error(job.error);if(job&&predicate(job))return job;if(performance.now()-lastLog>15000){console.log(JSON.stringify({surface,seconds:input.media.duration,iteration,phase,job:currentId,status:job?.status,stage:job?.stage,progress:job?.progress}));lastLog=performance.now();}await new Promise(resolve=>setTimeout(resolve,100));}throw new Error(`Timed out waiting for ${currentId}`);}
     let referenceCuts,cancelResult;
     for(iteration=1;iteration<=iterations;iteration++) {
+      phase='input-cache-preparation';
+      const prefix=`${surface}-${Math.round(input.media.duration)}-${iteration}`;
+      const inputFileCache=cacheController?await cacheController.prepare({source:input.source,prefix,mode:inputCache,expectedSHA256:input.media.fingerprint}):null;
+      const selectedSource=inputFileCache?.file||input.source;
       phase='import-and-analyze';sampler=rssSampler(active.roots);await sampler.start();
-      if(active.desktop)await active.desktop.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});},input.source);
+      if(active.desktop)await active.desktop.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});},selectedSource);
+      if(inputFileCache)await cacheController.beforeSelection(inputFileCache);
       const started=performance.now();
-      if(active.desktop)await button(page,'영상 추가').click();else await page.locator('input[type=file]').first().setInputFiles(input.source);
+      if(inputFileCache)cacheController.markSelection(inputFileCache);
+      if(active.desktop)await button(page,'영상 추가').click();else await page.locator('input[type=file]').first().setInputFiles(selectedSource);
       await page.waitForFunction(()=>document.querySelector('video')?.readyState>=2&&!document.querySelector('.job-overlay'),undefined,{timeout:180000});const importSeconds=(performance.now()-started)/1000;
       await start('analyze');const analysisJob=await waitForState(job=>job.status==='completed');await page.waitForFunction(()=>!document.querySelector('.job-overlay')&&document.querySelectorAll('.cut-row').length>0);await paints(page);
       const analyzeSeconds=(performance.now()-started)/1000,analyzeMemory=await resources('analysis'),analysis=analysisJob.result;
+      if(inputFileCache){await cacheController.afterAnalysis(inputFileCache);await flush();}
       assert.equal(analysis.cuts.length,input.expectedCuts);assert.ok(!analysis.protection?.enabled);assert.ok(Math.abs(analysis.decodedSamples-input.media.duration*48000)<=1);assert.equal(Number(await page.locator('.cut-list').getAttribute('data-item-count')),analysis.cuts.length);
       const cuts=cutContent(analysis.cuts);for(let i=0;i<cuts.length;i++){assert.ok(cuts[i].start>=0&&cuts[i].end<=input.media.duration&&cuts[i].end>cuts[i].start);if(i)assert.ok(cuts[i].start>=cuts[i-1].end);}
       if(referenceCuts)assert.deepEqual(cuts,referenceCuts);else referenceCuts=cuts;
@@ -100,11 +126,16 @@ async function exercise(surface,input) {
       const sync=await verifyThresholdSync(input,exported,cuts,output);
       const frames=await verifyThresholdFrames(input,exported,cuts);
       const outputSHA256=await sha256(exported);
+      phase='project';sampler=rssSampler(active.roots);await sampler.start();
       const stored=await saveProject(page,path.join(output,`${surface}-${Math.round(input.media.duration)}-${iteration}-project.json`));assert.deepEqual(cutContent(stored.cuts),referenceCuts);assert.deepEqual(stored.speechProtection,{enabled:false,threshold:.5});
-      const peakRSSBytes=Math.max(analyzeMemory.peakBytes,exportMemory.peakBytes,saveMemory.peakBytes,uiMemory.peakBytes),result={surface,inputSeconds:input.media.duration,iteration,cache:iteration===1?'fresh app process; OS cache not purged':'same app after previous iteration; OS cache not purged',viewport:await page.evaluate(()=>({width:innerWidth,height:innerHeight})),importSeconds,analyzeSeconds,exportSeconds,saveSeconds,peakRSSBytes,resources:{analysis:analyzeMemory,export:exportMemory,save:saveMemory,ui:uiMemory},cuts:cuts.length,analysisPeak:Math.max(...analysis.peaks),decodedSamples:analysis.decodedSamples,outputSeconds:exportJob.result.duration,expectedOutputSeconds:expectedDuration,fullDecodeVerified:exportJob.result.verified,outputFile:path.relative(process.cwd(),exported),outputSHA256,sync,frames,ui,goals:{analysis:analyzeSeconds<=input.media.duration*.2,export:exportSeconds<=input.media.duration,memory:peakRSSBytes<=2*1024**3,ui:Object.values(ui.byFamily).every(value=>value.p95!==null&&value.p95<=200)},pageErrors:[...errors],externalRequests:external.length};
+      const projectMemory=await resources('project');
+      const peakRSSBytes=Math.max(analyzeMemory.peakBytes,exportMemory.peakBytes,saveMemory.peakBytes,uiMemory.peakBytes,projectMemory.peakBytes),result={surface,inputSeconds:input.media.duration,iteration,cache:iteration===1?'fresh app process; OS cache not purged':'same app after previous iteration; OS cache not purged',viewport:await page.evaluate(()=>({width:innerWidth,height:innerHeight})),importSeconds,analyzeSeconds,exportSeconds,saveSeconds,peakRSSBytes,resources:{analysis:analyzeMemory,export:exportMemory,save:saveMemory,ui:uiMemory,project:projectMemory},cuts:cuts.length,analysisPeak:Math.max(...analysis.peaks),decodedSamples:analysis.decodedSamples,outputSeconds:exportJob.result.duration,expectedOutputSeconds:expectedDuration,fullDecodeVerified:exportJob.result.verified,outputFile:path.relative(process.cwd(),exported),outputSHA256,sync,frames,ui,goals:{analysis:analyzeSeconds<=input.media.duration*.2,export:exportSeconds<=input.media.duration,memory:peakRSSBytes<=2*1024**3,ui:Object.values(ui.byFamily).every(value=>value.p95!==null&&value.p95<=200)},pageErrors:[...errors],externalRequests:external.length};
+      if(inputFileCache)await cacheController.afterRun(inputFileCache);
+      result.inputFileCache=inputFileCache;
       report.runs.push(result);if(iteration===2&&cancelResult)cancelResult.retryCompletedIteration=2;await flush();console.log(JSON.stringify({surface,inputSeconds:result.inputSeconds,iteration,analyzeSeconds,exportSeconds,peakRSSBytes,cuts:result.cuts,ui:ui.byFamily,goals:result.goals}));assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
+      assert.ok(Object.values(result.goals).every(Boolean),'A completed run exceeded its measured goals; preserve the failure before expanding conditions');
       if(iteration===1&&iterations>1){
-        phase='cancel';
+        phase='cancel';sampler=rssSampler(active.roots);await sampler.start();
         await page.evaluate(()=>{window.__vadCancelAt=null;window.__vadCancelFeedback=null;const observer=new MutationObserver(()=>{if(window.__vadCancelAt!==null&&window.__vadCancelFeedback===null&&/취소/.test(document.querySelector('.job-card strong')?.textContent||document.querySelector('.notice-toast')?.textContent||'')){window.__vadCancelFeedback=performance.now()-window.__vadCancelAt;observer.disconnect();}});observer.observe(document.body,{subtree:true,childList:true,characterData:true});const onClick=event=>{if(event.target.closest?.('button')?.textContent==='작업 취소'){window.__vadCancelAt=performance.now();document.removeEventListener('click',onClick,true);}};document.addEventListener('click',onClick,true);});
         await start('analyze');
         const beforeCancel=await(await page.request.get(new URL(`/api/jobs/${currentId}`,page.url()).href,{headers})).json();assert.equal(beforeCancel.status,'running');
@@ -113,7 +144,11 @@ async function exercise(surface,input) {
         const cancellationResponse=await deletion;assert.equal(cancellationResponse.status(),200);const cancellationBody=await cancellationResponse.json();assert.equal(cancellationBody.cancelled,true);
         const job=await(await page.request.get(new URL(`/api/jobs/${currentId}`,page.url()).href,{headers})).json();assert.equal(job.status,'cancelled');assert.equal(await page.locator('.analyze-button').isEnabled(),true);
         assert.deepEqual(content(await saveProject(page,path.join(output,`${surface}-${Math.round(input.media.duration)}-cancel-project.json`))),content(stored));assert.ok(displayMs!==null);
-        cancelResult={surface,inputSeconds:input.media.duration,beforeCancel:{status:beforeCancel.status,stage:beforeCancel.stage,progress:beforeCancel.progress},deleteCancelled:cancellationBody.cancelled,jobStatus:job.status,readyMs,displayMs,projectPreserved:true,displayPass:displayMs<=300,readyPass:readyMs<=5000,retryCompletedIteration:null};report.cancellations.push(cancelResult);await flush();
+        const cancelMemory=await resources('cancel');
+        assert.equal(await sha256(exported),outputSHA256);
+        if(inputFileCache)await cacheController.afterRun(inputFileCache);
+        cancelResult={surface,inputSeconds:input.media.duration,memory:cancelMemory,memoryPass:cancelMemory.peakBytes<=2*1024**3,beforeCancel:{status:beforeCancel.status,stage:beforeCancel.stage,progress:beforeCancel.progress},deleteCancelled:cancellationBody.cancelled,jobStatus:job.status,readyMs,displayMs,projectPreserved:true,savedOutputPreserved:true,displayPass:displayMs<=300,readyPass:readyMs<=5000,retryCompletedIteration:null};report.cancellations.push(cancelResult);await flush();
+        assert.ok(cancelResult.displayPass&&cancelResult.readyPass&&cancelResult.memoryPass,'Cancellation exceeded its measured goals');
       }
     }
     assert.equal(await sha256(input.source),input.media.fingerprint);report.fixtures.find(value=>value.media.fingerprint===input.media.fingerprint).sourcePreserved=true;
@@ -123,9 +158,11 @@ async function exercise(surface,input) {
   } finally {await sampler?.stop();await active?.close();active=undefined;await rm(directory,{recursive:true,force:true});}
 }
 try {
+  cacheController=inputCache==='uncontrolled'?null:await createFileCacheController(output);
+  report.inputFileCache=cacheController?.state||null;await flush();
   for(const seconds of durations){const input=await thresholdFixture(seconds);report.fixtures.push({...input,source:path.relative(process.cwd(),input.source)});await flush();for(const surface of surfaces)await exercise(surface,input);}
   report.summary=[];for(const seconds of durations)for(const surface of surfaces){const runs=report.runs.filter(run=>run.surface===surface&&Math.abs(run.inputSeconds-seconds)<1);report.summary.push({surface,seconds,analyzeSeconds:summarize(runs.map(run=>run.analyzeSeconds)),exportSeconds:summarize(runs.map(run=>run.exportSeconds)),peakRSSBytes:summarize(runs.map(run=>run.peakRSSBytes)),allMeasuredGoalsPass:runs.every(run=>Object.values(run.goals).every(Boolean))});}
-  report.status='completed';report.measuredGoalsPass=report.summary.every(value=>value.allMeasuredGoalsPass)&&report.cancellations.every(value=>value.displayPass&&value.readyPass&&value.retryCompletedIteration===2);if(!report.measuredGoalsPass)process.exitCode=1;
+  report.status='completed';report.measuredGoalsPass=report.summary.every(value=>value.allMeasuredGoalsPass)&&report.cancellations.every(value=>value.displayPass&&value.readyPass&&value.memoryPass&&value.retryCompletedIteration===2);if(!report.measuredGoalsPass)process.exitCode=1;
 } catch(error){report.status='failed';report.error=error.stack;process.exitCode=1;}
 finally{await flush();}
 console.log(JSON.stringify({status:report.status,measuredGoalsPass:report.measuredGoalsPass,reportPath}));
