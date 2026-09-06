@@ -1,0 +1,503 @@
+{
+  "date": "2026-09-06T14:29:32.719910+00:00",
+  "baseCommit": "0fa85af",
+  "status": "PASS_FOR_RECORDED_SCOPE",
+  "scope": "Specific readiness causes; 22 filesystem/subprocess/API checks, two actual Chrome/Mac recovery workflows and four existing actual Whisper integration tests. Synthetic Korean TTS, not human evaluation or a clean-machine installation.",
+  "before": {
+    "raw": "test-output/transcription-readiness-before-1",
+    "counts": {
+      "tests": 18,
+      "pass": 5,
+      "fail": 13,
+      "skipped": 0
+    },
+    "log": "✖ R01: missing engine and missing model have different causes without running inference (5.364125ms)\n✖ R02: engine directory fails before engine execution and preserves files (3.03675ms)\n✖ R02: model directory fails before engine execution and preserves files (1.458333ms)\n✖ R02: incomplete model fails before engine execution and preserves files (1.382792ms)\n✖ R02: non-executable engine fails before engine execution and preserves files (1.293292ms)\n✖ R02: unreadable model is not reported ready (458.854458ms)\n✔ R03/R06: supported 1.9.3 is metadata-ready, not hash-verified (157.865708ms)\n✔ R03/R06: supported 1.9.3-dev is metadata-ready, not hash-verified (160.482417ms)\n✖ R03: unsupported version 1.8.0 is rejected (159.511292ms)\n✖ R03: unsupported version 1.9.30 is rejected (158.96125ms)\n✖ R03: unsupported version 11.9.3 is rejected (159.436666ms)\n✖ R03: unsupported version not a version is rejected (156.64975ms)\n✖ R04: subprocess failure is actionable without echoing private diagnostics (162.940792ms)\n✔ R05: an already cancelled check never starts the engine (1.2795ms)\n✔ R05: cancellation during version detection closes the actual subprocess (156.902708ms)\n✖ R05: actual ten-second version timeout closes the subprocess and is distinguished from absence (10003.288042ms)\n✔ R06: same-size corrupt model cannot proceed from readiness to inference (485.257792ms)\n✖ R07: authenticated status API carries the specific cause and does not expose it without app authority (47.386834ms)\nℹ tests 18\nℹ suites 0\nℹ pass 5\nℹ fail 13\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12409.303917\n\n✖ failing tests:\n\ntest at tests/transcription-readiness.integration.mjs:45:1\n✖ R01: missing engine and missing model have different causes without running inference (5.364125ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-missing'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:49:3)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-missing',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:58:4\n✖ R02: engine directory fails before engine execution and preserves files (3.03675ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-invalid'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:60:3)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-invalid',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:58:4\n✖ R02: model directory fails before engine execution and preserves files (1.458333ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'model-invalid'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:60:3)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'model-invalid',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:58:4\n✖ R02: incomplete model fails before engine execution and preserves files (1.382792ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'model-incomplete'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:60:3)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'model-incomplete',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:58:4\n✖ R02: non-executable engine fails before engine execution and preserves files (1.293292ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-permission'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:60:3)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-permission',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:65:1\n✖ R02: unreadable model is not reported ready (458.854458ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":true,\"model\":\"Whisper small (multilingual)\",\"engine\":\"1.9.3-dev\",\"local\":true,\"integrity\":\"checked-at-transcription\"}\n  \n  true !== false\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:30:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:68:3)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: true,\n    expected: false,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:79:71\n✖ R03: unsupported version 1.8.0 is rejected (159.511292ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-version'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:80:52)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-version',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:79:71\n✖ R03: unsupported version 1.9.30 is rejected (158.96125ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":true,\"model\":\"Whisper small (multilingual)\",\"engine\":\"1.9.30\",\"local\":true,\"integrity\":\"checked-at-transcription\"}\n  \n  true !== false\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:30:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:80:52)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: true,\n    expected: false,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:79:71\n✖ R03: unsupported version 11.9.3 is rejected (159.436666ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":true,\"model\":\"Whisper small (multilingual)\",\"engine\":\"11.9.3\",\"local\":true,\"integrity\":\"checked-at-transcription\"}\n  \n  true !== false\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:30:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:80:52)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: true,\n    expected: false,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:79:71\n✖ R03: unsupported version not a version is rejected (156.64975ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-version'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:80:52)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-version',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:84:1\n✖ R04: subprocess failure is actionable without echoing private diagnostics (162.940792ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-failed'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:85:51)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-failed',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:102:1\n✖ R05: actual ten-second version timeout closes the subprocess and is distinguished from absence (10003.288042ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'engine-timeout'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:104:3)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'engine-timeout',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/transcription-readiness.integration.mjs:117:1\n✖ R07: authenticated status API carries the specific cause and does not expose it without app authority (47.386834ms)\n  AssertionError [ERR_ASSERTION]: {\"ready\":false,\"model\":\"Whisper small (multilingual)\",\"local\":true,\"error\":\"로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.\"}\n  + actual - expected\n  \n  + undefined\n  - 'model-missing'\n  \n      at unavailable (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:31:10)\n      at TestContext.<anonymous> (file:///Users/dante/Desktop/github/hyper_cut/tests/transcription-readiness.integration.mjs:126:41)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1125:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: 'model-missing',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n",
+    "logSHA256": "2fce596cdfc5eb2a50a80b57dcb4890974b2c47d234eecf64ca3732e243c69e7",
+    "executedTestsSHA256": "32a5b66944dd4c5419bc63366e694b9d72aa1471cd94a8fa6617772fb2746784",
+    "productSourceSHA256": "758da25327e5043ee163cbcb2fb0ab3927b8ae3295739c0635372fd73414b26c"
+  },
+  "firstCandidate": {
+    "raw": "test-output/transcription-readiness-after-1",
+    "counts": {
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "skipped": 0
+    },
+    "log": "✔ R01: missing engine and missing model have different causes without running inference (4.335083ms)\n✔ R02: engine directory fails before engine execution and preserves files (0.751958ms)\n✔ R02: model directory fails before engine execution and preserves files (0.906166ms)\n✔ R02: incomplete model fails before engine execution and preserves files (0.855083ms)\n✔ R02: non-executable engine fails before engine execution and preserves files (0.89825ms)\n✔ R02: unreadable model is not reported ready (1.051125ms)\n✔ R03/R06: supported 1.9.3 is metadata-ready, not hash-verified (304.521542ms)\n✔ R03/R06: supported 1.9.3-dev is metadata-ready, not hash-verified (154.917833ms)\n✔ R03: unsupported version 1.8.0 is rejected (161.863458ms)\n✔ R03: unsupported version 1.9.30 is rejected (155.970209ms)\n✔ R03: unsupported version 11.9.3 is rejected (164.73175ms)\n✔ R03: unsupported version not a version is rejected (162.635333ms)\n✔ R04: subprocess failure is actionable without echoing private diagnostics (155.746166ms)\n✔ R05: an already cancelled check never starts the engine (1.194666ms)\n✔ R05: cancellation during version detection closes the actual subprocess (168.66075ms)\n✔ R05: actual ten-second version timeout closes the subprocess and is distinguished from absence (10004.026875ms)\n✔ R06: same-size corrupt model cannot proceed from readiness to inference (476.1465ms)\n✔ R07: authenticated status API carries the specific cause and does not expose it without app authority (44.530041ms)\nℹ tests 18\nℹ suites 0\nℹ pass 18\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12048.948541\n",
+    "logSHA256": "73d695a6ed89f54b13bfe13b69bcdf9800f7d100b3a78f3dd6306e4759a59a5f",
+    "executedTestsSHA256": "32a5b66944dd4c5419bc63366e694b9d72aa1471cd94a8fa6617772fb2746784",
+    "productSourceSHA256": "301bc05700b437fccae13c2cafb015d440041ac3ccec5616de3f8ec451860f66",
+    "installedStatus": {
+      "version": "whisper.cpp version: 1.9.3-dev\n",
+      "status": {
+        "ready": false,
+        "reason": "engine-version",
+        "model": "Whisper small (multilingual)",
+        "local": true,
+        "error": "지원하지 않는 전사 엔진 버전입니다. 호환되는 앱 또는 엔진으로 다시 준비해 주세요."
+      }
+    }
+  },
+  "finalContracts": {
+    "raw": "test-output/transcription-readiness-after-2",
+    "counts": {
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "skipped": 0
+    },
+    "log": "✔ R01: missing engine and missing model have different causes without running inference (5.465625ms)\n✔ R02: engine directory fails before engine execution and preserves files (0.972792ms)\n✔ R02: model directory fails before engine execution and preserves files (1.150292ms)\n✔ R02: incomplete model fails before engine execution and preserves files (1.118208ms)\n✔ R02: non-executable engine fails before engine execution and preserves files (1.166041ms)\n✔ R02: unreadable model is not reported ready (1.346625ms)\n✔ R03/R06: supported 1.9.3 is metadata-ready, not hash-verified (294.729625ms)\n✔ R03/R06: supported 1.9.3-dev is metadata-ready, not hash-verified (161.006334ms)\n✔ R03/R06: supported whisper.cpp version: 1.9.3 is metadata-ready, not hash-verified (164.903791ms)\n✔ R03/R06: supported whisper.cpp version: 1.9.3-dev is metadata-ready, not hash-verified (156.649667ms)\n✔ R03: unsupported version 1.8.0 is rejected (162.679292ms)\n✔ R03: unsupported version 1.9.30 is rejected (158.27975ms)\n✔ R03: unsupported version 11.9.3 is rejected (159.166042ms)\n✔ R03: unsupported version not a version is rejected (158.74375ms)\n✔ R03: unsupported version whisper.cpp version: 1.9.30 is rejected (161.823166ms)\n✔ R03: unsupported version whisper.cpp version: 11.9.3 is rejected (157.554458ms)\n✔ R04: subprocess failure is actionable without echoing private diagnostics (155.740084ms)\n✔ R05: an already cancelled check never starts the engine (2.632ms)\n✔ R05: cancellation during version detection closes the actual subprocess (166.029667ms)\n✔ R05: actual ten-second version timeout closes the subprocess and is distinguished from absence (10003.868208ms)\n✔ R06: same-size corrupt model cannot proceed from readiness to inference (486.366208ms)\n✔ R07: authenticated status API carries the specific cause and does not expose it without app authority (48.813167ms)\nℹ tests 22\nℹ suites 0\nℹ pass 22\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12704.7525\n",
+    "logSHA256": "fd861a6be22b14cad4ae867430de75e21dce65422ae119c6022b56abfbc8d957",
+    "executedTestsSHA256": "73911281866a17d492d61b6b0d721a1894523427ebceff730de096635729c79c",
+    "productSourceSHA256": "b87574f76c19a6d6f967496a9a53b9d1392bf07588d135db223c862fdb484299",
+    "installedStatus": {
+      "ready": true,
+      "model": "Whisper small (multilingual)",
+      "engine": "whisper.cpp version: 1.9.3-dev",
+      "local": true,
+      "integrity": "checked-at-transcription"
+    }
+  },
+  "uiRaw": "test-output/transcription-readiness-1788704679280",
+  "ui": {
+    "date": "2026-09-06T14:24:39.281Z",
+    "status": "completed",
+    "scope": "Actual Chrome and packaged Mac readiness API, missing runtime recovery via test-owned symlinks, manual caption preservation and actual Whisper inference on Korean TTS. Native dialog paths controlled by test. No external model/account, human-quality, first-install or performance claim.",
+    "sourceHashes": {
+      "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+      "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/transcription.mjs": "b87574f76c19a6d6f967496a9a53b9d1392bf07588d135db223c862fdb484299",
+      "server/process.mjs": "e1577ca5f0e2b7c90e1be3ac5122257ec30f58fa6f0f5656066cf17f6bd2b239",
+      "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+      "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+      "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+      "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90",
+      "scripts/transcription-readiness-e2e.mjs": "aabc5e98538ed1cc2d955ee1ba1cc50cfada711a1e451f523e6a8deea2fb44e5",
+      "tests/helpers/speech-fixture.mjs": "092a2d98cd7b3097b07bc9784b8498cd4435df5280c52877acbf34fbfead4866",
+      "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "6a9815b97a3263e65ebb172654080a09d6299f0bfa23bc1750eb9a08cd0783a9"
+    },
+    "packageSourceHashes": {
+      "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+      "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/transcription.mjs": "b87574f76c19a6d6f967496a9a53b9d1392bf07588d135db223c862fdb484299",
+      "server/process.mjs": "e1577ca5f0e2b7c90e1be3ac5122257ec30f58fa6f0f5656066cf17f6bd2b239",
+      "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+      "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+      "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+      "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+    },
+    "runs": [
+      {
+        "surface": "browser",
+        "status": "PASS",
+        "statuses": [
+          {
+            "ready": false,
+            "reason": "engine-missing",
+            "model": "Whisper small (multilingual)",
+            "local": true,
+            "error": "로컬 전사 엔진을 찾을 수 없습니다. 전사 기능이 포함된 앱을 다시 설치하거나 로컬 엔진 준비를 완료한 뒤 다시 확인해 주세요."
+          },
+          {
+            "ready": false,
+            "reason": "engine-missing",
+            "model": "Whisper small (multilingual)",
+            "local": true,
+            "error": "로컬 전사 엔진을 찾을 수 없습니다. 전사 기능이 포함된 앱을 다시 설치하거나 로컬 엔진 준비를 완료한 뒤 다시 확인해 주세요."
+          },
+          {
+            "ready": false,
+            "reason": "model-missing",
+            "model": "Whisper small (multilingual)",
+            "local": true,
+            "error": "음성 인식 모델을 찾을 수 없습니다. 모델 준비를 완료한 뒤 다시 확인해 주세요."
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          }
+        ],
+        "actualTranscript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "1a17cb4f-c937-4203-8c05-68e43eb26f4a",
+              "start": 0,
+              "end": 8,
+              "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+            },
+            {
+              "id": "66b36ff2-ad27-40e3-9c2f-6571867631d2",
+              "start": 10,
+              "end": 16,
+              "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+            }
+          ]
+        },
+        "savedProjectVersion": 7,
+        "manualEditAndSaveWithoutModel": true,
+        "retryAfterEngineAndModelRecovery": true,
+        "actualWhisperInference": true,
+        "undoRedoAndFullProjectPreservation": true,
+        "sourcePreserved": true,
+        "errors": [],
+        "externalPageRequests": []
+      },
+      {
+        "surface": "desktop",
+        "status": "PASS",
+        "statuses": [
+          {
+            "ready": false,
+            "reason": "engine-missing",
+            "model": "Whisper small (multilingual)",
+            "local": true,
+            "error": "로컬 전사 엔진을 찾을 수 없습니다. 전사 기능이 포함된 앱을 다시 설치하거나 로컬 엔진 준비를 완료한 뒤 다시 확인해 주세요."
+          },
+          {
+            "ready": false,
+            "reason": "engine-missing",
+            "model": "Whisper small (multilingual)",
+            "local": true,
+            "error": "로컬 전사 엔진을 찾을 수 없습니다. 전사 기능이 포함된 앱을 다시 설치하거나 로컬 엔진 준비를 완료한 뒤 다시 확인해 주세요."
+          },
+          {
+            "ready": false,
+            "reason": "model-missing",
+            "model": "Whisper small (multilingual)",
+            "local": true,
+            "error": "음성 인식 모델을 찾을 수 없습니다. 모델 준비를 완료한 뒤 다시 확인해 주세요."
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          },
+          {
+            "ready": true,
+            "model": "Whisper small (multilingual)",
+            "engine": "whisper.cpp version: 1.9.3-dev",
+            "local": true,
+            "integrity": "checked-at-transcription"
+          }
+        ],
+        "actualTranscript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "fc495d89-008b-447d-bf4e-01163c2169cd",
+              "start": 0,
+              "end": 8,
+              "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+            },
+            {
+              "id": "07ae5780-1187-4d85-814f-61b43b36d48f",
+              "start": 10,
+              "end": 16,
+              "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+            }
+          ]
+        },
+        "savedProjectVersion": 7,
+        "manualEditAndSaveWithoutModel": true,
+        "retryAfterEngineAndModelRecovery": true,
+        "actualWhisperInference": true,
+        "undoRedoAndFullProjectPreservation": true,
+        "sourcePreserved": true,
+        "errors": [],
+        "externalPageRequests": []
+      }
+    ],
+    "fixture": {
+      "mediaSHA256": "9784c84c2077b7931074ca8c847102e9d167dc1d5642b646554a47905702ec53",
+      "spoken": [
+        {
+          "start": 1,
+          "end": 7.349615
+        },
+        {
+          "start": 10.349615,
+          "end": 16.69923
+        }
+      ],
+      "text": "작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다."
+    }
+  },
+  "uiFailures": [
+    {
+      "raw": "test-output/transcription-readiness-1788704325554",
+      "record": {
+        "status": "FAILED_HARNESS",
+        "firstFailure": "Desktop save helper read desktop-recovered.json before the new save completed because an earlier success toast was still visible.",
+        "subsequentObservation": "desktop-recovered.json existed after the first error. The test entered close while a before-unload confirmation was pending.",
+        "cleanup": "Owned Electron PID 66643 (parent test PID 66600) did not exit after SIGTERM; stopped with SIGKILL. A dialog.accept rejection during closure prevented the normal results.json write.",
+        "browserStdout": {
+          "surface": "browser",
+          "status": "PASS",
+          "readinessRecovery": true,
+          "manualEditsPreserved": true,
+          "actualInferenceCues": 2
+        },
+        "desktopStatus": "INCOMPLETE; saved output is not a completed UI run",
+        "sourceHashes": {
+          "server/transcription.mjs": "b87574f76c19a6d6f967496a9a53b9d1392bf07588d135db223c862fdb484299",
+          "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+          "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+          "scripts/transcription-readiness-e2e.mjs": "352038a4148cfe1f7b1ddaf7bdab1af97c6124d01b8c45a7bc1300db15070994",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "6a9815b97a3263e65ebb172654080a09d6299f0bfa23bc1750eb9a08cd0783a9"
+        },
+        "artifacts": {
+          "desktop-recovered.json": "39b6fdab1f2c876c8da4560d505acf9ba952089ac3d526bbc679d7bec5ae4256",
+          "browser-undo-after-recovery.json": "2c05676b9b78a4516d43dcbf6145bd5f1eb1b4af0dd0db7877fe900e251d350d",
+          "desktop-undo-after-recovery.json": "4d5cdd3944d12e31f24d94b7d01f02a528454b4d3725083d8abbaa176790d0af",
+          "executed-runner.mjs": "352038a4148cfe1f7b1ddaf7bdab1af97c6124d01b8c45a7bc1300db15070994",
+          "browser-recovered.json": "fe033d53e40af4fceb59ddae7ae9c7f07463d2f1081825c48d604562f3de7a96",
+          "browser-while-unavailable.json": "a4b717839db64cc411d9ff232cc1ef2ba50ceff79bfa06494dca2307973df34a",
+          "desktop-while-unavailable.json": "13ac22865dd1ccf881010d1f861b2230fe346a544f17e29d79f2476705fae96c",
+          "initial.json": "6da0b868bd2100aff3f8651b2d8ab0221128b43afcefabf57397be99281a355c"
+        }
+      }
+    },
+    {
+      "raw": "test-output/transcription-readiness-1788704583153",
+      "classification": "Harness observed UI caption rows before its asynchronous response listener finished reading the completed job. Replaced listener timing with an explicit completed-response wait.",
+      "record": {
+        "date": "2026-09-06T14:23:03.155Z",
+        "status": "failed",
+        "scope": "Actual Chrome and packaged Mac readiness API, missing runtime recovery via test-owned symlinks, manual caption preservation and actual Whisper inference on Korean TTS. Native dialog paths controlled by test. No external model/account, human-quality, first-install or performance claim.",
+        "sourceHashes": {
+          "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+          "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/transcription.mjs": "b87574f76c19a6d6f967496a9a53b9d1392bf07588d135db223c862fdb484299",
+          "server/process.mjs": "e1577ca5f0e2b7c90e1be3ac5122257ec30f58fa6f0f5656066cf17f6bd2b239",
+          "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+          "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+          "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+          "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90",
+          "scripts/transcription-readiness-e2e.mjs": "df0736fdae2c5e264a5c357dd1609463ee0ce3327413d8749765894a28575149",
+          "tests/helpers/speech-fixture.mjs": "092a2d98cd7b3097b07bc9784b8498cd4435df5280c52877acbf34fbfead4866",
+          "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "6a9815b97a3263e65ebb172654080a09d6299f0bfa23bc1750eb9a08cd0783a9"
+        },
+        "packageSourceHashes": {
+          "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+          "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/transcription.mjs": "b87574f76c19a6d6f967496a9a53b9d1392bf07588d135db223c862fdb484299",
+          "server/process.mjs": "e1577ca5f0e2b7c90e1be3ac5122257ec30f58fa6f0f5656066cf17f6bd2b239",
+          "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+          "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+          "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+          "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+        },
+        "runs": [],
+        "fixture": {
+          "mediaSHA256": "9784c84c2077b7931074ca8c847102e9d167dc1d5642b646554a47905702ec53",
+          "spoken": [
+            {
+              "start": 1,
+              "end": 7.349615
+            },
+            {
+              "start": 10.349615,
+              "end": 16.69923
+            }
+          ],
+          "text": "작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다."
+        },
+        "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(inferred?.cues.length === 2)\n\n    at exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/transcription-readiness-e2e.mjs:78:12)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/transcription-readiness-e2e.mjs:95:111"
+      }
+    }
+  ],
+  "regression": {
+    "raw": "test-output/transcription-readiness-regression-1",
+    "command": "node --test /Users/dante/Desktop/github/hyper_cut/tests/transcription.integration.mjs",
+    "counts": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skipped": 0
+    },
+    "testSourceSHA256": "bf5bc2e911360612756d3f4755f32935f35ca66de206156c854535e9194474ae",
+    "log": "✔ T01/T03: actual local Whisper decodes quiet Korean, selected stereo channels and offset source timestamps (6062.002458ms)\n✔ T04: cancelling an actual inference preserves the source and permits retry (2288.72275ms)\n✔ T05: absent and corrupted real-size models fail explicitly without an inference fallback (715.7005ms)\n✔ T06/C01/C05: authenticated API runs real transcription and exports frame-consistent SRT (2075.324458ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 11221.497375\n",
+    "logSHA256": "7af7c2d3d002ac90ec4ff40c1a741ddfb52735d7686e6e45cd79765b801d0a8f",
+    "actualTranscriptionResults": [
+      {
+        "input": {
+          "channels": "mono"
+        },
+        "engine": {
+          "name": "Whisper small (multilingual)",
+          "file": "ggml-small.bin",
+          "size": 487601967,
+          "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "engine": "whisper.cpp 1.9.3",
+          "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+        },
+        "seconds": 1.3097986250000004,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "370f450d-b3d3-41f1-bbcd-4069a82505b2",
+              "start": 0,
+              "end": 8,
+              "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+            },
+            {
+              "id": "a138d1e4-7f59-441b-bb77-53031feec8e5",
+              "start": 10,
+              "end": 16,
+              "text": "작은 목소리도 남겨주세요 긴 부분만 줄이면 됩니다."
+            }
+          ]
+        },
+        "scope": "Actual inference and channel/clock integration; TTS does not establish human recording quality"
+      },
+      {
+        "input": {
+          "channels": "right"
+        },
+        "engine": {
+          "name": "Whisper small (multilingual)",
+          "file": "ggml-small.bin",
+          "size": 487601967,
+          "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "engine": "whisper.cpp 1.9.3",
+          "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+        },
+        "seconds": 1.265734833,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 1,
+          "language": "ko",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "e3de027b-52c6-4d03-a4b2-b49873eb06cb",
+              "start": 0,
+              "end": 8,
+              "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+            },
+            {
+              "id": "e1d7ecc8-329a-420d-9a0f-963a77ad6728",
+              "start": 10,
+              "end": 17,
+              "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+            }
+          ]
+        },
+        "scope": "Actual inference and channel/clock integration; TTS does not establish human recording quality"
+      },
+      {
+        "input": {
+          "channels": "opposite",
+          "sampleRate": 44100,
+          "offset": 3
+        },
+        "engine": {
+          "name": "Whisper small (multilingual)",
+          "file": "ggml-small.bin",
+          "size": 487601967,
+          "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "engine": "whisper.cpp 1.9.3",
+          "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+        },
+        "seconds": 1.2472009580000003,
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 1,
+          "language": "ko",
+          "model": "whisper.cpp 1.9.3 / Whisper small (multilingual) / 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+          "cues": [
+            {
+              "id": "4e8e7725-5dce-45e9-99a3-fffd31d99fed",
+              "start": 0,
+              "end": 8,
+              "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+            },
+            {
+              "id": "c870f1a7-7bb6-4218-9b7d-bd9db07a8b25",
+              "start": 10,
+              "end": 16,
+              "text": "작은 목소리도 남겨 주세요. 긴분만 줄이면 됩니다."
+            }
+          ]
+        },
+        "scope": "Actual inference and channel/clock integration; TTS does not establish human recording quality"
+      }
+    ]
+  },
+  "artifacts": {
+    "test-output/transcription-readiness-1788704679280/desktop-recovered.json": "163a00c76fd47bfa8977bf2d43ebc4edd710499eb274aee2a57f20ee5eb8d483",
+    "test-output/transcription-readiness-1788704679280/results.json": "1cd4464517dfa04b3763d7d5bcd10843532e7fd3aa226be9056423b207f7c099",
+    "test-output/transcription-readiness-1788704679280/browser-undo-after-recovery.json": "05cf26088ac9b1aa0d0dd834f8970e4409c1d4375ad3686dd54f94243fd03a05",
+    "test-output/transcription-readiness-1788704679280/desktop-undo-after-recovery.json": "68eeba8d2cf2e90eb1159b2c40c8ccd2a8c5b547e6849d0b37689bcdbf9c820f",
+    "test-output/transcription-readiness-1788704679280/executed-runner.mjs": "aabc5e98538ed1cc2d955ee1ba1cc50cfada711a1e451f523e6a8deea2fb44e5",
+    "test-output/transcription-readiness-1788704679280/browser-recovered.json": "0196b6b2966f3b0bba9e9b381bec1f3310acbefff90f0d0f36d7a6a73df5bb00",
+    "test-output/transcription-readiness-1788704679280/browser-while-unavailable.json": "6dc2ca61b82184ed947f18e31dd4d9419d2cdd2e67781fa7b502c70131a31396",
+    "test-output/transcription-readiness-1788704679280/desktop-while-unavailable.json": "86ab106ac62faab4ca98e7e12187f578e01bf30bb8bffadc8d371ce6ab84ac3b",
+    "test-output/transcription-readiness-1788704679280/initial.json": "b13f7ded921f2684c47e457c00548ed401a46d0eac673d0841002ec1d25da153",
+    "test-output/transcription-readiness-1788704679280/fixture/quiet-korean.mp4": "9784c84c2077b7931074ca8c847102e9d167dc1d5642b646554a47905702ec53"
+  },
+  "notRun": [
+    "Human Korean speech/transcription quality and editing-time comparison",
+    "Fresh-machine install, signing/notarization and whole setup/build recovery",
+    "Authenticated external AI and ChatGPT tunnel",
+    "Long-media performance of the changed server/package"
+  ]
+}

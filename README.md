@@ -77,6 +77,8 @@ VAD 모델(약 2.3MB)과 라이선스는 `assets/models/`에 포함됩니다. �
 
 엔진·모델이 없으면 무음 편집은 계속 사용할 수 있습니다. 전사 실패 시 다른 모델이나 클라우드로 자동 전환하지 않습니다. 개발 환경의 전사 위치는 `.hypercut/transcription/`, 패키지는 앱의 `Resources/transcription/`이며 테스트 환경에서는 `HYPERCUT_TRANSCRIPTION_DIR`로 지정할 수 있습니다. [모델 명세](assets/models/whisper-small.json)와 [실행 기록](docs/testing/2026-09-05-transcription-results.md)을 참고하세요.
 
+전사 준비 상태는 엔진·모델 누락, 권한, 모델 크기, 지원 버전, 실행 실패·시간 초과를 구분합니다. 원인을 해결한 뒤 **다시 확인**을 누르면 됩니다. 모델이 없어도 기존 자막의 직접 수정과 프로젝트 저장은 사용할 수 있습니다. [준비 상태와 두 앱의 복구 검증](docs/testing/2026-09-06-transcription-readiness-results.md)에 실제 전사·실행 취소·저장 근거를 기록했습니다.
+
 자막은 번들 Noto Sans KR 글꼴과 `@napi-rs/canvas`로 투명 이미지를 만들고 FFmpeg `overlay`로 합성합니다. FFmpeg의 `subtitles`/libass 필터는 필요하지 않습니다. 폰트 출처·해시는 [글꼴 명세](assets/fonts/manifest.json), SIL OFL 라이선스는 [OFL.txt](assets/fonts/OFL.txt), 실제 프레임·두 앱·오프라인 근거는 [자막 디자인 검증](docs/testing/2026-09-05-caption-rendering-results.md)에 있습니다. 사용자 컴퓨터의 다른 글꼴은 읽지 않습니다.
 
 ## 로컬 효과음
@@ -133,6 +135,8 @@ npm run test:claude:e2e -- --desktop
 npm run test:speech:e2e -- --desktop
 npm run test:speech:offline
 npm run test:transcription
+node --test tests/transcription-readiness.integration.mjs
+node scripts/transcription-readiness-e2e.mjs --desktop
 npm run test:transcription:end:e2e -- --desktop
 npm run benchmark:transcription
 npm run test:captions

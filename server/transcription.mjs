@@ -17,14 +17,41 @@ export function validateTranscriptionSettings(value, media, trackIndex) {
   return { channel: value.channel, language: value.language };
 }
 export async function transcriptionStatus(runtime = transcriptionRuntime(), { signal } = {}) {
+  const unavailable = (reason, error) => {
+    signal?.throwIfAborted();
+    return { ready: false, reason, model: TRANSCRIPTION_MODEL.name, local: true, error };
+  };
+  let phase = 'engine', timeout;
   try {
+    signal?.throwIfAborted();
     const cli = path.join(runtime, process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli');
+    if (!(await stat(cli)).isFile()) return unavailable('engine-invalid', '전사 엔진 경로가 실행 파일이 아닙니다. 호환되는 앱을 다시 설치해 주세요.');
     await access(cli, constants.X_OK);
-    if ((await stat(path.join(runtime, TRANSCRIPTION_MODEL.file))).size !== TRANSCRIPTION_MODEL.size) throw new Error('모델 파일의 크기가 올바르지 않습니다.');
-    const version = (await capture(cli, ['--version'], { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(10000)]) : AbortSignal.timeout(10000) })).trim();
-    if (!version.includes('1.9.3')) throw new Error('지원하는 전사 엔진 버전이 아닙니다.');
+    phase = 'model';
+    const model = path.join(runtime, TRANSCRIPTION_MODEL.file), info = await stat(model);
+    if (!info.isFile()) return unavailable('model-invalid', '음성 인식 모델 경로가 파일이 아닙니다. 모델을 다시 준비해 주세요.');
+    if (info.size !== TRANSCRIPTION_MODEL.size) return unavailable('model-incomplete', '음성 인식 모델의 크기가 올바르지 않습니다. 준비가 중단됐거나 파일이 손상됐을 수 있으니 모델을 다시 준비해 주세요.');
+    await access(model, constants.R_OK);
+    signal?.throwIfAborted(); phase = 'version'; timeout = AbortSignal.timeout(10000);
+    const version = (await capture(cli, ['--version'], { signal: signal ? AbortSignal.any([signal, timeout]) : timeout })).trim();
+    if (!/^(?:whisper\.cpp version: )?1\.9\.3(?:-dev)?$/.test(version)) return unavailable('engine-version', '지원하지 않는 전사 엔진 버전입니다. 호환되는 앱 또는 엔진으로 다시 준비해 주세요.');
+    signal?.throwIfAborted();
     return { ready: true, model: TRANSCRIPTION_MODEL.name, engine: version, local: true, integrity: 'checked-at-transcription' };
-  } catch { signal?.throwIfAborted(); return { ready: false, model: TRANSCRIPTION_MODEL.name, local: true, error: '로컬 전사 엔진 또는 모델이 준비되지 않았습니다. 개발 환경에서 npm run setup:transcription을 실행하거나 전사 모델을 포함한 앱을 사용해 주세요.' }; }
+  } catch (error) {
+    signal?.throwIfAborted();
+    if (phase === 'version') return timeout?.aborted
+      ? unavailable('engine-timeout', '전사 엔진 확인 시간이 초과됐습니다. 잠시 후 다시 확인해 주세요.')
+      : unavailable('engine-failed', '이 컴퓨터에서 전사 엔진을 실행하지 못했습니다. 호환되는 앱인지 확인하거나 앱을 다시 설치해 주세요.');
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') return phase === 'engine'
+      ? unavailable('engine-missing', '로컬 전사 엔진을 찾을 수 없습니다. 전사 기능이 포함된 앱을 다시 설치하거나 로컬 엔진 준비를 완료한 뒤 다시 확인해 주세요.')
+      : unavailable('model-missing', '음성 인식 모델을 찾을 수 없습니다. 모델 준비를 완료한 뒤 다시 확인해 주세요.');
+    if (error.code === 'EACCES' || error.code === 'EPERM') return phase === 'engine'
+      ? unavailable('engine-permission', '전사 엔진을 실행할 권한이 없습니다. 파일 실행 권한을 확인하거나 앱을 다시 설치해 주세요.')
+      : unavailable('model-permission', '음성 인식 모델을 읽을 권한이 없습니다. 파일 접근 권한을 확인한 뒤 다시 시도해 주세요.');
+    return phase === 'engine'
+      ? unavailable('engine-unreadable', '전사 엔진을 확인하지 못했습니다. 파일과 접근 권한을 확인해 주세요.')
+      : unavailable('model-unreadable', '음성 인식 모델을 확인하지 못했습니다. 파일과 접근 권한을 확인해 주세요.');
+  }
 }
 export function parseTranscription(value, media, trackIndex, settings) {
   if (!Array.isArray(value?.transcription) || value.transcription.length > 10000) throw new Error('전사 엔진의 결과 형식이 올바르지 않습니다.');
