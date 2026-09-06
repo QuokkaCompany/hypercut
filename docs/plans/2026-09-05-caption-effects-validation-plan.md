@@ -142,3 +142,5 @@ P0/P1 모두 해당 기능의 지원 완료 전 필수다. P0는 상태·원본�
 FFmpeg `subtitles` 경로를 선택한다면 [공식 필터 문서](https://ffmpeg.org/ffmpeg-filters.html#subtitles-1)의 libass 지원 조건을 만족하는 실행 파일과 한글 폰트가 필요하다. 실제 구현에서는 `@napi-rs/canvas`와 번들 Noto Sans KR로 PNG를 만들고 기존 FFmpeg의 `overlay`로 합성하는 경로를 선택했다. 전역 FFmpeg를 교체하지 않았으며 같은 실제 프레임·시간축 테스트를 적용했다. 렌더러·폰트 버전·누락/취소·두 앱의 증거는 후속 결과 기록에 있다.
 
 프로젝트 교정 용어의 저장·이전·요청별 임시 변경은 [용어 계획](2026-09-05-project-glossary-plan.md)과 [두 앱 실행 기록](../testing/2026-09-05-project-glossary-results.md)에 연결한다. C07/C08의 실제 인증 모델 품질 판정을 대체하지 않는다.
+
+T07의 긴 영상 전사 측정은 [성능 실행 계획](2026-09-05-transcription-performance-plan.md)과 [실행 기록](../testing/2026-09-05-transcription-performance-results.md)에 연결한다. 합성 반복 입력·OS 캐시 미제거·자막 선택만의 반응 측정이라는 한계를 유지하며, 실제 녹음과 전체 조작의 성능을 대신하지 않는다.

@@ -123,6 +123,7 @@ npm run test:claude:e2e -- --desktop
 npm run test:speech:e2e -- --desktop
 npm run test:speech:offline
 npm run test:transcription
+npm run benchmark:transcription
 npm run test:captions
 npm run test:captions:e2e -- --desktop
 npm run test:captions:offline
@@ -138,3 +139,5 @@ npm run test:ai-effects:e2e -- --desktop
 E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니다. `npm run benchmark`는 긴 합성 영상을 만들고 10분·60분 조건을 각 3회 처리합니다. 단위 검증과 실제 FFmpeg 입출력 검증을 구분합니다. 자세한 요구와 실행 계획은 [검증 계획](docs/plans/2026-09-05-validation-plan.md), [테스트 계획](docs/plans/2026-09-05-test-plan.md), [구현 계획](docs/plans/2026-09-05-implementation-plan.md)에 있습니다.
 
 한국어 VAD 시험은 macOS에 설치된 `Eddy (Korean (South Korea))` TTS 음성을 사용합니다. TTS 자료는 제품 배포에 포함하지 않으며 사용자 영상 품질 평가를 대신하지 않습니다. 외부 연결을 차단한 OS 시험은 현재 브라우저 모드에서 수행합니다. 모델 출처와 해시는 [모델 명세](assets/models/silero-vad.json), 조건은 [VAD 계획](docs/plans/2026-09-05-speech-protection-plan.md)을 참고하세요.
+
+`npm run benchmark:transcription`은 10분·60분의 반복 한국어 TTS 자료를 두 앱에서 각각 3회 실제 전사합니다. 앱/모델 프로세스 트리의 RSS와 자막 선택 반응·취소를 측정하며 CPU를 사용합니다. 60초 예비 확인은 `npm run benchmark:transcription -- --durations=60 --iterations=1 --output=test-output/transcription-performance-smoke`로 실행합니다. OS 캐시를 비우지 않으며 실제 녹음 품질 시험을 대체하지 않습니다. [측정 계획](docs/plans/2026-09-05-transcription-performance-plan.md)과 [실행 기록](docs/testing/2026-09-05-transcription-performance-results.md)에 범위와 결과를 구분합니다.

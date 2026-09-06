@@ -23,6 +23,7 @@
     "test:disk-full": "node --test tests/disk-full.integration.mjs",
     "test:recovery": "node scripts/recovery-e2e.mjs",
     "benchmark": "node scripts/benchmark.mjs",
+    "benchmark:transcription": "node scripts/transcription-benchmark.mjs",
     "test:e2e": "node scripts/e2e.mjs",
     "fixtures": "node scripts/fixtures.mjs",
     "package:desktop": "npm run build && node scripts/package-desktop.mjs",
