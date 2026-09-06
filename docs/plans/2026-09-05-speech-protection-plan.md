@@ -34,3 +34,5 @@
 TTS는 실제 ONNX 입출력의 재현용 fixture이며 사용자 한국어 영상 Q01~Q05를 대체하지 않는다. 이 모드의 실제 녹음 정확도와 긴 영상 성능은 별도로 측정한다.
 
 공식 계약: [Silero VAD](https://github.com/snakers4/silero-vad/tree/v6.2.1), [ONNX 상태·문맥 래퍼](https://github.com/snakers4/silero-vad/blob/v6.2.1/src/silero_vad/utils_vad.py), [ONNX Runtime Node](https://onnxruntime.ai/docs/get-started/with-javascript/node.html).
+
+긴 영상의 후속 측정은 [VAD 성능 계획](2026-09-05-vad-performance-plan.md)과 [12회 실행 기록](../testing/2026-09-06-vad-performance-results.md)을 따른다. 현재 앱의 브라우저 RSS가 2GiB를 초과했으므로 전체 성능 통과로 표시하지 않는다.

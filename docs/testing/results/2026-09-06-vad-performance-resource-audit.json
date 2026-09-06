@@ -1,0 +1,2180 @@
+{
+  "scope": "Post-run integrity checks and peak samples derived from preserved raw RSS records; not a second performance run.",
+  "sourceHashesMatch": true,
+  "model": "silero-vad-6.2.1",
+  "onnxRuntimeVersion": "1.29.0",
+  "runs": [
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "iteration": 1,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/browser-600-1-analysis-resources.json",
+          "sha256": "71df2cb7e9473b3d51d972e45d9f3d505f1d391a98d17042239103dbaba31489",
+          "samples": 35,
+          "maxSamplingGapMs": 276.5490829999999,
+          "peak": {
+            "milliseconds": 8082.04925,
+            "bytes": 1424211968,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 191217664,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 235192320,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 155451392,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 107413504,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 82739200,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 186843136,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 100614144,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 240058368,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 98058240,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 15028,
+                "parent": 14975,
+                "bytes": 26624000,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/browser-600-1-export-resources.json",
+          "sha256": "e11c2dcfad42d1845dabd3e8dad7fb6dc0639b7f217124d3af5e2994f6c3b433",
+          "samples": 66,
+          "maxSamplingGapMs": 277.0536659999998,
+          "peak": {
+            "milliseconds": 14149.627791,
+            "bytes": 2161917952,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 192397312,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 238092288,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 156844032,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 105480192,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 82755584,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 186941440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 100745216,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 285589504,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 98582528,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 15047,
+                "parent": 14975,
+                "bytes": 714489856,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/browser-600-1-ui-resources.json",
+          "sha256": "969734bee3fb79931b9ba1385f67eebeaec7d606262d5e73b93f5466b813c829",
+          "samples": 36,
+          "maxSamplingGapMs": 273.19012499999735,
+          "peak": {
+            "milliseconds": 8585.835583999997,
+            "bytes": 1512882176,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 192528384,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 245350400,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 158367744,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 105955328,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 82755584,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 181960704,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 100745216,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 346374144,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 98844672,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "iteration": 2,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/browser-600-2-analysis-resources.json",
+          "sha256": "604f54bd88f89ff7daa7b743f25442f3baf8c075aa669b73a711798a742c76cf",
+          "samples": 35,
+          "maxSamplingGapMs": 275.83712500000547,
+          "peak": {
+            "milliseconds": 1550.5719160000008,
+            "bytes": 1557676032,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 194985984,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 248283136,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 159023104,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 108085248,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 82755584,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 181960704,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 100745216,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 353681408,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 98861056,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 15182,
+                "parent": 14975,
+                "bytes": 29294592,
+                "name": "ffprobe"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/browser-600-2-export-resources.json",
+          "sha256": "df87b9c804fcc988bbae5518f107cd0bf78caa897fcc0bd27e5cc814d3a166c3",
+          "samples": 66,
+          "maxSamplingGapMs": 278.2479999999996,
+          "peak": {
+            "milliseconds": 14145.080084000001,
+            "bytes": 2204794880,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 196083712,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 251346944,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 159875072,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 106905600,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 84180992,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 183549952,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 102236160,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 306692096,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 99827712,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 15229,
+                "parent": 14975,
+                "bytes": 714096640,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/browser-600-2-ui-resources.json",
+          "sha256": "89c89cc9ce831237519244fd8832fe123a514f2408a69422630bb63ebe2d864d",
+          "samples": 36,
+          "maxSamplingGapMs": 271.7670000000071,
+          "peak": {
+            "milliseconds": 8646.064165999996,
+            "bytes": 1519058944,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 196100096,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 253034496,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 160579584,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 107315200,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 84410368,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 183599104,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 102252544,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 331612160,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 100155392,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "iteration": 3,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/browser-600-3-analysis-resources.json",
+          "sha256": "a965def7da42043a1b2fab5b56df65f4e907ef4fa6427b520674f974351a801c",
+          "samples": 35,
+          "maxSamplingGapMs": 276.2575419999921,
+          "peak": {
+            "milliseconds": 7329.751167000009,
+            "bytes": 1558052864,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 202833920,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 251920384,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 160137216,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 109445120,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 84410368,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 183615488,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 102252544,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 336789504,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 100155392,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 15398,
+                "parent": 14975,
+                "bytes": 26492928,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/browser-600-3-export-resources.json",
+          "sha256": "ad8a52dedff993d33c7f2f20a0cbdb39410b790d148ea3526835934376e62b30",
+          "samples": 66,
+          "maxSamplingGapMs": 278.33699999999953,
+          "peak": {
+            "milliseconds": 14401.849957999992,
+            "bytes": 2218147840,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 202883072,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 252002304,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 160284672,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 107364352,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 84410368,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 183615488,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 102252544,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 311869440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 100007936,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 15416,
+                "parent": 14975,
+                "bytes": 713457664,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/browser-600-3-ui-resources.json",
+          "sha256": "1ec268c18aca6a3fb2e6c1fa5beb1b5570a7002c1081ee5010192a8f080ae74e",
+          "samples": 36,
+          "maxSamplingGapMs": 277.61599999999453,
+          "peak": {
+            "milliseconds": 8650.037249999994,
+            "bytes": 1525137408,
+            "processes": [
+              {
+                "pid": 14975,
+                "parent": 14951,
+                "bytes": 202899456,
+                "name": "node"
+              },
+              {
+                "pid": 14977,
+                "parent": 14951,
+                "bytes": 253231104,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 14985,
+                "parent": 14977,
+                "bytes": 160890880,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 14986,
+                "parent": 14977,
+                "bytes": 107364352,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14987,
+                "parent": 14977,
+                "bytes": 84410368,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 14990,
+                "parent": 14977,
+                "bytes": 183648256,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14991,
+                "parent": 14977,
+                "bytes": 102252544,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14992,
+                "parent": 14977,
+                "bytes": 330203136,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 14998,
+                "parent": 14977,
+                "bytes": 100237312,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 600,
+      "iteration": 1,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/desktop-600-1-analysis-resources.json",
+          "sha256": "d43e2e430a7cee085257c9957e8447d3392824fc89cf17753d024a157537520e",
+          "samples": 35,
+          "maxSamplingGapMs": 278.7315830000007,
+          "peak": {
+            "milliseconds": 8351.850124999997,
+            "bytes": 802897920,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 359170048,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 113295360,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 58900480,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 196067328,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 48857088,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15870,
+                "parent": 15544,
+                "bytes": 26607616,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/desktop-600-1-export-resources.json",
+          "sha256": "9178f5bef5c26aedf76a869e4df77b1fef8955d62e0a3b71bd7df9487975224d",
+          "samples": 67,
+          "maxSamplingGapMs": 278.4526659999974,
+          "peak": {
+            "milliseconds": 14641.256374999997,
+            "bytes": 1550532608,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 366166016,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 115507200,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 56950784,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 249643008,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49348608,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15892,
+                "parent": 15544,
+                "bytes": 712916992,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/desktop-600-1-ui-resources.json",
+          "sha256": "0d67b19d196147f2c21c4a66049bf24c1a4328be85b67cbabf8975afa091e6dd",
+          "samples": 22,
+          "maxSamplingGapMs": 272.182541999995,
+          "peak": {
+            "milliseconds": 5217.96970799999,
+            "bytes": 894058496,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 361545728,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 118013952,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 56967168,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 307970048,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49561600,
+                "name": "HyperCut Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 600,
+      "iteration": 2,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/desktop-600-2-analysis-resources.json",
+          "sha256": "3e9629fea96cff2c0068dac63dbff9e091358dac10798bc47253b79607ddd489",
+          "samples": 35,
+          "maxSamplingGapMs": 277.9600420000206,
+          "peak": {
+            "milliseconds": 8092.223916999996,
+            "bytes": 946405376,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 375160832,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 117293056,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 59097088,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 318816256,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49430528,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 16053,
+                "parent": 15544,
+                "bytes": 26607616,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/desktop-600-2-export-resources.json",
+          "sha256": "4e3c699a48fe3d6f8753c128f0e16cb851f1a6401aab32b49db0d1e39a265c7b",
+          "samples": 67,
+          "maxSamplingGapMs": 279.46508399999584,
+          "peak": {
+            "milliseconds": 5589.029166000022,
+            "bytes": 1632485376,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 375767040,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 117604352,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 59129856,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 319881216,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49430528,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 16069,
+                "parent": 15544,
+                "bytes": 710672384,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/desktop-600-2-ui-resources.json",
+          "sha256": "bb8f0aba999865833a4284954a869e11640357cc6a96780c58168a2340581954",
+          "samples": 22,
+          "maxSamplingGapMs": 272.4302500000049,
+          "peak": {
+            "milliseconds": 5057.367916999996,
+            "bytes": 873791488,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 369508352,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 119128064,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 57065472,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 278462464,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49627136,
+                "name": "HyperCut Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 600,
+      "iteration": 3,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/desktop-600-3-analysis-resources.json",
+          "sha256": "105d429eb4514553e4e301aa762a874a3c50133f1aea643186548a897b8a76c7",
+          "samples": 35,
+          "maxSamplingGapMs": 277.04308400000446,
+          "peak": {
+            "milliseconds": 1557.340916999994,
+            "bytes": 912752640,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 370409472,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 119242752,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 59162624,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 285048832,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49676288,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 16182,
+                "parent": 15544,
+                "bytes": 29212672,
+                "name": "ffprobe"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/desktop-600-3-export-resources.json",
+          "sha256": "17b8102d3ea20627cd6eed2d22ca2e0671c89416c71dbe1e5e5d8378a06f3efe",
+          "samples": 67,
+          "maxSamplingGapMs": 277.52579200000037,
+          "peak": {
+            "milliseconds": 6576.016458999977,
+            "bytes": 1595850752,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 373751808,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 117915648,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 59179008,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 283901952,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49528832,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 16231,
+                "parent": 15544,
+                "bytes": 711573504,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/desktop-600-3-ui-resources.json",
+          "sha256": "ac8bb6fbb7b17b020bfbcc1d30e82123887543dd2a0a75791676bdce6c1070d5",
+          "samples": 22,
+          "maxSamplingGapMs": 272.0717500000028,
+          "peak": {
+            "milliseconds": 5218.039040999982,
+            "bytes": 878886912,
+            "processes": [
+              {
+                "pid": 15544,
+                "parent": 14951,
+                "bytes": 369917952,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 15545,
+                "parent": 15544,
+                "bytes": 119390208,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15546,
+                "parent": 15544,
+                "bytes": 57114624,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 15547,
+                "parent": 15544,
+                "bytes": 282836992,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 15612,
+                "parent": 15544,
+                "bytes": 49627136,
+                "name": "HyperCut Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 1,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/browser-3600-1-analysis-resources.json",
+          "sha256": "499cddd845b97549f6ae1fe4a7e56f6b1b0569fdf6dcb7be48bb8013255e06fa",
+          "samples": 194,
+          "maxSamplingGapMs": 276.7776249999879,
+          "peak": {
+            "milliseconds": 45932.96029200003,
+            "bytes": 1548943360,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 275152896,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 238125056,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 155009024,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 105775104,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 82771968,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181256192,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100810752,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 265764864,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98516992,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16578,
+                "parent": 16376,
+                "bytes": 45760512,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/browser-3600-1-export-resources.json",
+          "sha256": "b5ffdded76c3b43249af38bdd33da30389d7eaaf66c431c8e16c0cd1e0a9a80c",
+          "samples": 381,
+          "maxSamplingGapMs": 276.78800000000047,
+          "peak": {
+            "milliseconds": 85105.53804200003,
+            "bytes": 2352250880,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 274432000,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 249397248,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 157351936,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106577920,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181321728,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 350584832,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98648064,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16646,
+                "parent": 16376,
+                "bytes": 749977600,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/browser-3600-1-ui-resources.json",
+          "sha256": "2785d5621a2c63e379ebb09e500a456402d6a0439881bf7d175474cc261827a9",
+          "samples": 37,
+          "maxSamplingGapMs": 275.8982909999904,
+          "peak": {
+            "milliseconds": 8566.531875000044,
+            "bytes": 1638006784,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 274563072,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 256212992,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 158941184,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106643456,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181698560,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 377094144,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98893824,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 2,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/browser-3600-2-analysis-resources.json",
+          "sha256": "3b9ba1135b1931525a34f4c17a7c4abb9981f3ea96ba322de1e525d1001611ad",
+          "samples": 196,
+          "maxSamplingGapMs": 273.3342499999562,
+          "peak": {
+            "milliseconds": 3555.0119580000173,
+            "bytes": 1706557440,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 281837568,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 258801664,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 163577856,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106676224,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181698560,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 381714432,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98926592,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 17203,
+                "parent": 16376,
+                "bytes": 49364992,
+                "name": "ffprobe"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/browser-3600-2-export-resources.json",
+          "sha256": "49a66962bcf93888e0acd9c5df9ed63bf609fd84b48a82845046e4782f5bb024",
+          "samples": 381,
+          "maxSamplingGapMs": 276.9345410000533,
+          "peak": {
+            "milliseconds": 85726.78470799996,
+            "bytes": 2391261184,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 288047104,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 258129920,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 162693120,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106758144,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181780480,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 362250240,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98811904,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 17455,
+                "parent": 16376,
+                "bytes": 748830720,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/browser-3600-2-ui-resources.json",
+          "sha256": "48e93909540de6bec05d876c2edfb95db3fdfd804c88a910a81f654734757d02",
+          "samples": 37,
+          "maxSamplingGapMs": 273.60645800002385,
+          "peak": {
+            "milliseconds": 6576.930082999985,
+            "bytes": 1681850368,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 288063488,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 259571712,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 163545088,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106758144,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181911552,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 398966784,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 99074048,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 3,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/browser-3600-3-analysis-resources.json",
+          "sha256": "eefb2dc08b45d76ab29569a38a255fb97747bcb13c86952d802736f7f886a767",
+          "samples": 195,
+          "maxSamplingGapMs": 274.77558300003875,
+          "peak": {
+            "milliseconds": 36706.43729100004,
+            "bytes": 1751416832,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 308756480,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 258850816,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 163053568,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106807296,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181911552,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 398278656,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98942976,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 18146,
+                "parent": 16376,
+                "bytes": 50855936,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/browser-3600-3-export-resources.json",
+          "sha256": "25022c1fc58dca4561daf6b377afbfe7b5987015bb25e73c9f0263abee552531",
+          "samples": 381,
+          "maxSamplingGapMs": 278.67504200001713,
+          "peak": {
+            "milliseconds": 85631.06325,
+            "bytes": 2450227200,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 309116928,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 258949120,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 163151872,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106856448,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181911552,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 397033472,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 98942976,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 18220,
+                "parent": 16376,
+                "bytes": 750305280,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/browser-3600-3-ui-resources.json",
+          "sha256": "9cda3bf0593a256ffc998eb5848ebbc8e603bcd7339bf0e9428292b60efffc2a",
+          "samples": 37,
+          "maxSamplingGapMs": 273.6768329999177,
+          "peak": {
+            "milliseconds": 8826.785417000065,
+            "bytes": 1687764992,
+            "processes": [
+              {
+                "pid": 16376,
+                "parent": 14951,
+                "bytes": 279052288,
+                "name": "node"
+              },
+              {
+                "pid": 16377,
+                "parent": 14951,
+                "bytes": 260243456,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 16383,
+                "parent": 16377,
+                "bytes": 163921920,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 16384,
+                "parent": 16377,
+                "bytes": 106856448,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16385,
+                "parent": 16377,
+                "bytes": 83116032,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 16387,
+                "parent": 16377,
+                "bytes": 181911552,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16388,
+                "parent": 16377,
+                "bytes": 100843520,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16389,
+                "parent": 16377,
+                "bytes": 412631040,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 16402,
+                "parent": 16377,
+                "bytes": 99188736,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "iteration": 1,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/desktop-3600-1-analysis-resources.json",
+          "sha256": "dc132e149d81880e4fadf62183fc20ddb3852c2ffef1453afc525a67b3f679b9",
+          "samples": 197,
+          "maxSamplingGapMs": 280.74829200003296,
+          "peak": {
+            "milliseconds": 48610.017292000004,
+            "bytes": 892977152,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 409354240,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 113737728,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 56918016,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 217972736,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49250304,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 19227,
+                "parent": 18744,
+                "bytes": 45744128,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/desktop-3600-1-export-resources.json",
+          "sha256": "3b980d0ce22ce0195db4d379287e562021e3786e9c45a16b56d52066bfb01e49",
+          "samples": 386,
+          "maxSamplingGapMs": 277.18929100001696,
+          "peak": {
+            "milliseconds": 86487.70033399994,
+            "bytes": 1675722752,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 418037760,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 116506624,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 57180160,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 286621696,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49299456,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 19310,
+                "parent": 18744,
+                "bytes": 748077056,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/desktop-3600-1-ui-resources.json",
+          "sha256": "359e769dbd934afb9f9fca94d239ecc40e54ebe3fa0284e555c77f4db431813e",
+          "samples": 26,
+          "maxSamplingGapMs": 275.0994590000482,
+          "peak": {
+            "milliseconds": 6178.834459000034,
+            "bytes": 1000734720,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 420249600,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 118308864,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 57180160,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 355418112,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49577984,
+                "name": "HyperCut Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "iteration": 2,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/desktop-3600-2-analysis-resources.json",
+          "sha256": "39ebff5acdb40d7fc08dfa123811e67a596083412cbe1109f7b534e417d3984b",
+          "samples": 199,
+          "maxSamplingGapMs": 276.1061670000199,
+          "peak": {
+            "milliseconds": 1303.3049170000013,
+            "bytes": 1071546368,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 430686208,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 118767616,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 59310080,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 365805568,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49627136,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 19819,
+                "parent": 18744,
+                "bytes": 47349760,
+                "name": "ffprobe"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/desktop-3600-2-export-resources.json",
+          "sha256": "5e45e0432d610dcbe05ae26a191ee33c5d97620ca1f805a85c29166faf21b9f3",
+          "samples": 388,
+          "maxSamplingGapMs": 276.36733300006017,
+          "peak": {
+            "milliseconds": 86859.40470800002,
+            "bytes": 1725399040,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 431030272,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 118292480,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 57376768,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 308232192,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49397760,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 20070,
+                "parent": 18744,
+                "bytes": 761069568,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/desktop-3600-2-ui-resources.json",
+          "sha256": "8a96aa56db1fbc1f3d55aff80327ad1d59718b875ffeb5137c82f13171717fb3",
+          "samples": 26,
+          "maxSamplingGapMs": 274.5154169999296,
+          "peak": {
+            "milliseconds": 5308.531458999962,
+            "bytes": 1032044544,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 431177728,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 118947840,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 57393152,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 374898688,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49627136,
+                "name": "HyperCut Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 3600,
+      "iteration": 3,
+      "phases": {
+        "analysis": {
+          "path": "test-output/vad-performance-current/desktop-3600-3-analysis-resources.json",
+          "sha256": "5fe687755f461b859275c7fe5337dea0d93a91b6a4bf1e249ff77496f33b6665",
+          "samples": 199,
+          "maxSamplingGapMs": 274.8393340000184,
+          "peak": {
+            "milliseconds": 1550.9604999999283,
+            "bytes": 1093713920,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 431980544,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 119144448,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 59490304,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 382369792,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49643520,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 20573,
+                "parent": 18744,
+                "bytes": 51085312,
+                "name": "ffprobe"
+              }
+            ]
+          }
+        },
+        "export": {
+          "path": "test-output/vad-performance-current/desktop-3600-3-export-resources.json",
+          "sha256": "4a95a4b5a839d68f10b646a7d755915ef4063f20437c99015877e636225e6e6c",
+          "samples": 388,
+          "maxSamplingGapMs": 278.9619159998838,
+          "peak": {
+            "milliseconds": 87309.41470899992,
+            "bytes": 1777958912,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 439271424,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 118636544,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 57475072,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 363757568,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49414144,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 20845,
+                "parent": 18744,
+                "bytes": 749404160,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "path": "test-output/vad-performance-current/desktop-3600-3-ui-resources.json",
+          "sha256": "1e55e16109c9f483dbae9421e82df04b4401ef28afdf869c4c8a986e2e928a48",
+          "samples": 26,
+          "maxSamplingGapMs": 275.5109999999404,
+          "peak": {
+            "milliseconds": 6277.725374999922,
+            "bytes": 1054670848,
+            "processes": [
+              {
+                "pid": 18744,
+                "parent": 14951,
+                "bytes": 439713792,
+                "name": "HyperCut"
+              },
+              {
+                "pid": 18745,
+                "parent": 18744,
+                "bytes": 119029760,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18746,
+                "parent": 18744,
+                "bytes": 57475072,
+                "name": "HyperCut Helper"
+              },
+              {
+                "pid": 18747,
+                "parent": 18744,
+                "bytes": 388841472,
+                "name": "HyperCut Helper (Renderer)"
+              },
+              {
+                "pid": 18817,
+                "parent": 18744,
+                "bytes": 49610752,
+                "name": "HyperCut Helper"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
