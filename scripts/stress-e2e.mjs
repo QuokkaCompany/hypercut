@@ -16,7 +16,7 @@ try {
   await page.locator('input[type=file]').first().setInputFiles(path.resolve('test-output/benchmark/3600s.mp4'));
   await page.waitForFunction(()=>!!document.querySelector('video'),null,{timeout:30000});
   await page.locator('.analyze-button').click();
-  await page.waitForFunction(()=>document.querySelectorAll('.cut-row').length===1000,null,{timeout:120000});
+  await page.waitForFunction(()=>Number(document.querySelector('.cut-list')?.dataset.itemCount)===1000,null,{timeout:120000});
   const latencies = [];
   const samples = [];
   for(let i=0;i<32;i++) {
@@ -62,10 +62,10 @@ try {
     });
     assert.ok(feedback.ms<300);assert.match(feedback.text,/취소/);
     await page.locator('.job-overlay').waitFor({state:'hidden',timeout:5000});
-    const terminalMs=performance.now()-start;assert.ok(terminalMs<5000);assert.equal(await page.locator('.cut-row').count(),1000);
+    const terminalMs=performance.now()-start;assert.ok(terminalMs<5000);assert.equal(Number(await page.locator('.cut-list').getAttribute('data-item-count')),1000);
     cancellation.push({type,feedbackMs:feedback.ms,terminalMs});
   }
-  await page.locator('.analyze-button').click();await page.locator('.job-overlay').waitFor({state:'hidden',timeout:60000});assert.equal(await page.locator('.cut-row').count(),1000);
+  await page.locator('.analyze-button').click();await page.locator('.job-overlay').waitFor({state:'hidden',timeout:60000});assert.equal(Number(await page.locator('.cut-list').getAttribute('data-item-count')),1000);
   assert.deepEqual(errors,[]);
   await page.screenshot({path:path.resolve('test-output/stress-1000-cuts.png')});
   const result = { scope:'Browser 60-minute input, 1000 actual cuts, 64 restore/undo/settings/play/pause samples. Settings and transport include Playwright locator overhead; all include two paints. OS process memory measured separately in desktop benchmark.', status:'PASS',samples,latencies,p95Ms:p95,cancellation,keyboardSpaceAndSeeking:true,retryAfterCancel:true,cutsPreserved:1000,pageErrors:0 };

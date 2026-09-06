@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-06T09:48:17.389Z",
+  "status": "completed",
+  "scope": "1000 very short synthetic manual cues exercise list identity, keyboard selection, unapplied-draft protection, current timestamps, undo/redo and whole-project persistence. Not speech quality, caption readability or performance measurement.",
+  "sourceHashes": {
+    "src/WindowedList.tsx": "7231107d6f78d465c5e191e751d2a4aae3d1c62a495bf64dd9f124ad33d5bc4f",
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionList.tsx": "04fad9264e4c86c0117b5f37f14e0072f74d2ca873a9954be73d77bdf728befd",
+    "scripts/caption-list-e2e.mjs": "05f5183838f49ebc5ff9b3c9141ae1d7c837c7e38dd911997d7031b77f57e08c",
+    "dist/index.html": "d265e77d697faedec78f7d46750a68b95ef6f50dfafb44495864883616a25136",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "5e987c9e855c71af2d439ba6002c3c742e2e5a445dc8bd34d2b595e2942d65f3"
+  },
+  "runs": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "neighbourVisibilityWaitMs": 12.40341699999999,
+      "visibleNeighboursRendered": true,
+      "sourceSeekSettled": true,
+      "allThousandCuesRetained": true,
+      "nativeEdgeNavigation": true,
+      "enterAndSpaceSelection": true,
+      "rejectedDraftDiscardPreserved": true,
+      "acceptedDraftDiscardApplied": true,
+      "editUndoRedo": true,
+      "currentTextAndSeek": true,
+      "fullProjectRoundTrip": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "neighbourVisibilityWaitMs": 4.56270799999993,
+      "visibleNeighboursRendered": true,
+      "sourceSeekSettled": true,
+      "allThousandCuesRetained": true,
+      "nativeEdgeNavigation": true,
+      "enterAndSpaceSelection": true,
+      "rejectedDraftDiscardPreserved": true,
+      "acceptedDraftDiscardApplied": true,
+      "editUndoRedo": true,
+      "currentTextAndSeek": true,
+      "fullProjectRoundTrip": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ]
+}

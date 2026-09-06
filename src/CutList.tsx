@@ -1,7 +1,8 @@
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { AudioLines, RotateCcw, Scissors } from 'lucide-react';
 import type { Cut } from './types';
 import { formatTime } from './format';
+import { WindowedList } from './WindowedList';
 
 type Props = {
   cuts: Cut[];
@@ -26,15 +27,15 @@ const CutRow = memo(function CutRow({ cut, index, selected, disabled }: { cut: C
 
 // The list handles events with current callbacks; unchanged rows keep their UI.
 export const CutList = memo(function CutList({ cuts, selected, disabled, onSelect, onSeek, onToggle }: Props) {
-  return <div className="cut-list" onClick={event => {
+  const listRef = useRef<HTMLDivElement>(null);
+  return <WindowedList items={cuts} selected={selected} listRef={listRef} className="cut-list" label="무음 구간 목록" estimateSize={54} onClick={event => {
     const button = (event.target as Element).closest<HTMLButtonElement>('button[data-cut-action]');
     if (!button || button.disabled || !event.currentTarget.contains(button)) return;
     const cut = cuts.find(value => value.id === button.dataset.cutId);
     if (!cut) return;
     if (button.dataset.cutAction === 'toggle') onToggle(cut.id);
     else { onSelect(cut.id); onSeek(Math.max(0, cut.start - 0.5)); }
-  }}>
-    {cuts.length ? cuts.map((cut, index) => <CutRow key={cut.id} cut={cut} index={index} selected={selected === cut.id} disabled={disabled} />)
-      : <div className="cuts-empty"><AudioLines size={22} /><p>무음 분석 후<br />편집할 구간을 확인하세요.</p></div>}
-  </div>;
+  }} empty={<div className="cuts-empty"><AudioLines size={22} /><p>무음 분석 후<br />편집할 구간을 확인하세요.</p></div>}>
+    {(cut, index) => <CutRow cut={cut} index={index} selected={selected === cut.id} disabled={disabled} />}
+  </WindowedList>;
 });

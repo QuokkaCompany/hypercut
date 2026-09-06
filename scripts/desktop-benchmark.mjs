@@ -26,7 +26,7 @@ try {
     await page.getByRole('button',{name:'영상 추가',exact:true}).click();
     await page.waitForFunction(()=>!document.querySelector('.job-overlay')&&document.querySelector('video')?.readyState>=2,null,{timeout:60000});
     await page.locator('.analyze-button').click();await page.locator('.job-overlay').waitFor({state:'hidden',timeout:180000});
-    const analyzeSeconds=(performance.now()-begin)/1000,analyzePeakBytes=peak,cuts=await page.locator('.cut-row').count();peak=0;
+    const analyzeSeconds=(performance.now()-begin)/1000,analyzePeakBytes=peak,cuts=Number(await page.locator('.cut-list').getAttribute('data-item-count'));peak=0;
     assert.equal(cuts,duration===3600?1000:166);
     const exporting=performance.now();await page.getByRole('button',{name:'내보내기',exact:true}).click();
     await page.getByRole('button',{name:'편집한 MP4 저장',exact:true}).waitFor({timeout:600000});

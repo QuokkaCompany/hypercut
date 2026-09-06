@@ -10,3 +10,10 @@
 /* Retain every native button while deferring offscreen row rendering. Once
    measured, auto remembers each row's height, including wrapped captions. */
 .caption-row{content-visibility:auto;contain-intrinsic-size:auto 115px}
+
+.caption-list[data-windowed=true]{height:220px}
+.windowed-item .caption-row{content-visibility:visible;contain-intrinsic-size:none}
+
+/* Keep the complete caption image inside its fixed-height grid track. */
+.caption-design-preview{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr)}
+.caption-design-preview img{min-height:0;min-width:0}

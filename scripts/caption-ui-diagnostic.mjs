@@ -51,7 +51,7 @@ try {
   await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2 && !document.querySelector('.job-overlay'));
   if (analyze) {
     await page.locator('.analyze-button').click();
-    await page.waitForFunction(() => document.querySelectorAll('.cut-row').length === 1000 && !document.querySelector('.job-overlay'), undefined, { timeout: 120000 });
+    await page.waitForFunction(() => Number(document.querySelector('.cut-list')?.dataset.itemCount) === 1000 && !document.querySelector('.job-overlay'), undefined, { timeout: 120000 });
     assert.equal(await page.locator('.audio-track svg rect').count(), 600);
   }
   await page.locator('input[type=file]').nth(1).setInputFiles(projectFile);
@@ -63,7 +63,7 @@ try {
   }
   const button = name => page.locator(`button[aria-label="${name}"]`);
   await button('전사와 자막').click();
-  assert.equal(await page.locator('.caption-row').count(), 1000);
+  assert.equal(Number(await page.locator('.caption-list').getAttribute('data-item-count')), 1000);
   cdp = await page.context().newCDPSession(page);
   await cdp.send('Performance.enable');
   cdp.on('Tracing.dataCollected', event => trace.push(...event.value));
@@ -109,7 +109,7 @@ try {
   const complete = once(cdp, 'Tracing.tracingComplete'); await cdp.send('Tracing.end'); await complete; tracing = false;
   report.events = await page.evaluate(() => window.__captionDiagnostic);
   report.summary = summarize(report.samples.map(sample => sample.totalMs));
-  assert.equal(await page.locator('.caption-row').count(), 1000);
+  assert.equal(Number(await page.locator('.caption-list').getAttribute('data-item-count')), 1000);
   await page.screenshot({ path: path.join(output, 'caption-editor.png') });
   await button('자막 창 닫기').click();
   const download = page.waitForEvent('download'); await button('프로젝트 저장').first().click();

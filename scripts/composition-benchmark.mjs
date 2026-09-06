@@ -37,7 +37,7 @@ const report = {
 };
 const bundles = [...(await readFile('dist/index.html', 'utf8')).matchAll(/"(\/assets\/[^\"]+)"/g)].map(match => `dist${match[1]}`);
 assert.ok(bundles.some(file => file.endsWith('.js')));
-for (const file of ['src/App.tsx', 'src/Captions.tsx', 'src/CaptionList.tsx', 'src/captions.css', 'src/Effects.tsx', 'server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'scripts/composition-benchmark.mjs', 'scripts/benchmark-server.mjs', 'scripts/helpers/composition-oracle.mjs', 'scripts/helpers/composition-performance-fixture.mjs', 'scripts/helpers/threshold-performance-fixture.mjs', 'scripts/helpers/performance.mjs', 'assets/fonts/manifest.json', 'package-lock.json', 'dist/index.html', ...bundles, packagePath]) report.sourceHashes[file] = await sha256(file);
+for (const file of ['src/WindowedList.tsx', 'src/CutList.tsx', 'src/App.tsx', 'src/Captions.tsx', 'src/CaptionList.tsx', 'src/captions.css', 'src/Effects.tsx', 'server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'scripts/composition-benchmark.mjs', 'scripts/benchmark-server.mjs', 'scripts/helpers/composition-oracle.mjs', 'scripts/helpers/composition-performance-fixture.mjs', 'scripts/helpers/threshold-performance-fixture.mjs', 'scripts/helpers/performance.mjs', 'assets/fonts/manifest.json', 'package-lock.json', 'dist/index.html', ...bundles, packagePath]) report.sourceHashes[file] = await sha256(file);
 const packagedFiles = ['server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'dist/index.html', ...bundles];
 const packageHashes = JSON.parse((await exec(process.execPath, ['--input-type=module', '-e', `import {extractFile} from '@electron/asar'; import {createHash} from 'node:crypto'; const [archive, ...files] = process.argv.slice(1); console.log(JSON.stringify(Object.fromEntries(files.map(file => [file, createHash('sha256').update(extractFile(archive, file)).digest('hex')]))));`, packagePath, ...packagedFiles])).stdout);
 for (const file of packagedFiles) {
@@ -212,7 +212,7 @@ async function exercise(surface, input) {
       const stored = await saveProject(active, path.join(output, `${prefix}-project.json`)); assert.deepEqual(content(stored), content(project));
       await end();
       await begin('srt'); await cssButton(page, '전사와 자막').click();
-      assert.equal(await page.locator('.caption-row').count(), expected.captions.length);
+      assert.equal(Number(await page.locator('.caption-list').getAttribute('data-item-count')), expected.captions.length);
       const srtFile = path.join(output, `${prefix}.srt`);
       await save(active, await button(page, '편집한 SRT 저장'), srtFile, '편집한 자막을 저장했습니다.');
       await page.waitForFunction(() => !document.querySelector('.caption-progress'));

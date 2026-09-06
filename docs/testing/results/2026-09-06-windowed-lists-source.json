@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-06T10:01:39.105270+00:00",
+  "scope": "Windowed-list product and later caption-preview CSS correction. Functional list reports precede the thumbnail-only CSS correction; the final thumbnail suite and upcoming composition suite use this final package.",
+  "sourceHashes": {
+    "src/WindowedList.tsx": "7231107d6f78d465c5e191e751d2a4aae3d1c62a495bf64dd9f124ad33d5bc4f",
+    "src/CutList.tsx": "8e67df4bc7682648a1ed520f074a241d9261149f335168660e3b1318ebdc48b0",
+    "src/CaptionList.tsx": "04fad9264e4c86c0117b5f37f14e0072f74d2ca873a9954be73d77bdf728befd",
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionStyle.tsx": "a6b246823d34df9d053ea862587870116ed3eb5d79ed1bb3e09ff8782fbcfedc",
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/captions.css": "fc0982fe15f1b16f61c5cbf4275445036399036c178bd7ba1780428664b1c493",
+    "src/styles.css": "97a43bc6b73c5cafbb171f022db357b06f167143154e53d67fef9d233656703d",
+    "package.json": "a15c9c37eeb6503d5545f6e118c00fe30488569d0d965919ab485a95e7c7b0c4",
+    "package-lock.json": "33e014da156d3a7f4b3de5d81efd223249bc5564bc41124c8669eae83f96acce",
+    "server/media.mjs": "051d3d034b0c13eeb3e29bf0a64ffea5685fc7363652a19a960fc2fa8f15951d",
+    "server/caption-render-worker.mjs": "6e559cc7af5d4353113aba40c4c698d8bcffd11e44b5759a7cea843257a70eaa",
+    "scripts/windowed-lists-e2e.mjs": "446cdaf29388c57eb0fdf1e49d2b251ab0284586d1ab0ec46cd4b56eb2175225",
+    "scripts/caption-list-e2e.mjs": "05f5183838f49ebc5ff9b3c9141ae1d7c837c7e38dd911997d7031b77f57e08c",
+    "scripts/caption-preview-layout-e2e.mjs": "d01e2b3f45e3e22d0466cff65de778728c52c075786bfff913f7b3303f459232",
+    "scripts/composition-benchmark.mjs": "603c7bcae4a927dff706e978f9be07bccd860cf7ddf9bcd746e4e4adedb5f4af",
+    "dist/index.html": "1b287501fedd3c601e9710d25ada9fae5cf925a51c9988879dc0852394eb6a90",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "ebbb3e5f3c2470b0d80821532354930f9dadf2c3c4f084d7dca17afce5ae22c6",
+    "dist/assets/index-BOL8mdxe.js": "807e72db6903f9770ae7cece0b319207c2db4495df17fba53b70e8d4f543c906",
+    "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+  },
+  "unitTests": {
+    "pass": 80,
+    "fail": 0,
+    "log": "test-output/windowed-lists-unit.log"
+  },
+  "build": "Typecheck, Vite and Electron 44.2.0 arm64 packaging completed",
+  "screensViewed": [
+    "test-output/windowed-lists-apps/browser-narrow.png",
+    "test-output/windowed-lists-apps/desktop-cuts.png",
+    "test-output/windowed-lists-apps/desktop-captions.png",
+    "test-output/caption-list-desktop.png",
+    "test-output/caption-preview-layout/before.png",
+    "test-output/caption-preview-layout/after.png",
+    "test-output/caption-preview-layout-apps-v5/browser-1440-기본형.png",
+    "test-output/caption-preview-layout-apps-v5/desktop-native-강조형.png"
+  ],
+  "wholeThousandCutAndCaptionProjectsAudited": true
+}

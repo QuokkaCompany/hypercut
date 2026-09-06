@@ -1,0 +1,141 @@
+{
+  "date": "2026-09-06T09:46:36.880Z",
+  "status": "completed",
+  "scope": "1000 synthetic cuts and captions in actual browser/packaged Mac. Native keyboard navigation, viewport rendering, long text, selection/draft/review/delete/undo, project replacement and whole-state persistence. No media-performance or human-quality claim.",
+  "sourceHashes": {
+    "src/WindowedList.tsx": "7231107d6f78d465c5e191e751d2a4aae3d1c62a495bf64dd9f124ad33d5bc4f",
+    "src/CutList.tsx": "8e67df4bc7682648a1ed520f074a241d9261149f335168660e3b1318ebdc48b0",
+    "src/CaptionList.tsx": "04fad9264e4c86c0117b5f37f14e0072f74d2ca873a9954be73d77bdf728befd",
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/styles.css": "97a43bc6b73c5cafbb171f022db357b06f167143154e53d67fef9d233656703d",
+    "src/captions.css": "e4a40a8ea71cfb941f003beb87697d91ce754a26cd2dfcc12323e9f130de0fc6",
+    "scripts/windowed-lists-e2e.mjs": "446cdaf29388c57eb0fdf1e49d2b251ab0284586d1ab0ec46cd4b56eb2175225",
+    "package-lock.json": "33e014da156d3a7f4b3de5d81efd223249bc5564bc41124c8669eae83f96acce",
+    "dist/index.html": "d265e77d697faedec78f7d46750a68b95ef6f50dfafb44495864883616a25136",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "5e987c9e855c71af2d439ba6002c3c742e2e5a445dc8bd34d2b595e2942d65f3"
+  },
+  "runs": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "captionTabStops": 1000,
+      "cutTabStops": 80,
+      "snapshots": [
+        {
+          "phase": "large-cuts",
+          "cutCount": 1000,
+          "cutRows": 14,
+          "captionCount": null,
+          "captionRows": 0,
+          "nodes": 1513
+        },
+        {
+          "phase": "focused-cut-kept-outside-viewport",
+          "cutCount": 1000,
+          "cutRows": 22,
+          "captionCount": null,
+          "captionRows": 0,
+          "nodes": 1613
+        },
+        {
+          "phase": "large-captions",
+          "cutCount": 1000,
+          "cutRows": 14,
+          "captionCount": 1000,
+          "captionRows": 8,
+          "nodes": 1669
+        },
+        {
+          "phase": "long-multiline-caption",
+          "cutCount": 1000,
+          "cutRows": 14,
+          "captionCount": 1000,
+          "captionRows": 15,
+          "nodes": 1704
+        },
+        {
+          "phase": "after-edit-undo-redo",
+          "cutCount": 1000,
+          "cutRows": 15,
+          "captionCount": 1000,
+          "captionRows": 8,
+          "nodes": 1679
+        }
+      ],
+      "cutTabReverse": true,
+      "homeEndAndEnterSpace": true,
+      "focusPreserved": true,
+      "unappliedDraftProtected": true,
+      "reviewJump": true,
+      "multilinePreserved": true,
+      "deleteUndo": true,
+      "editUndoRedo": true,
+      "smallLargeReplacement": true,
+      "wholeProjectPreserved": true,
+      "sourcePreserved": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "captionTabStops": 1000,
+      "cutTabStops": 80,
+      "snapshots": [
+        {
+          "phase": "large-cuts",
+          "cutCount": 1000,
+          "cutRows": 12,
+          "captionCount": null,
+          "captionRows": 0,
+          "nodes": 1491
+        },
+        {
+          "phase": "focused-cut-kept-outside-viewport",
+          "cutCount": 1000,
+          "cutRows": 20,
+          "captionCount": null,
+          "captionRows": 0,
+          "nodes": 1591
+        },
+        {
+          "phase": "large-captions",
+          "cutCount": 1000,
+          "cutRows": 12,
+          "captionCount": 1000,
+          "captionRows": 8,
+          "nodes": 1647
+        },
+        {
+          "phase": "long-multiline-caption",
+          "cutCount": 1000,
+          "cutRows": 12,
+          "captionCount": 1000,
+          "captionRows": 12,
+          "nodes": 1667
+        },
+        {
+          "phase": "after-edit-undo-redo",
+          "cutCount": 1000,
+          "cutRows": 12,
+          "captionCount": 1000,
+          "captionRows": 8,
+          "nodes": 1646
+        }
+      ],
+      "cutTabReverse": true,
+      "homeEndAndEnterSpace": true,
+      "focusPreserved": true,
+      "unappliedDraftProtected": true,
+      "reviewJump": true,
+      "multilinePreserved": true,
+      "deleteUndo": true,
+      "editUndoRedo": true,
+      "smallLargeReplacement": true,
+      "wholeProjectPreserved": true,
+      "sourcePreserved": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ]
+}

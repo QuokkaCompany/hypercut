@@ -40,7 +40,7 @@ try {
   await page.locator('input[type=file]').first().setInputFiles(input.source);
   await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2 && !document.querySelector('.job-overlay'));
   await page.locator('.analyze-button').click();
-  await page.waitForFunction(() => document.querySelectorAll('.cut-row').length === 1000 && !document.querySelector('.job-overlay'), undefined, { timeout: 120000 });
+  await page.waitForFunction(() => Number(document.querySelector('.cut-list')?.dataset.itemCount) === 1000 && !document.querySelector('.job-overlay'), undefined, { timeout: 120000 });
   await page.locator('input[type=file]').nth(1).setInputFiles(projectFile);
   await page.getByText('프로젝트의 편집 구간을 복원했습니다. 파형이 필요하면 다시 분석할 수 있습니다.', { exact: true }).waitFor();
   const button = name => page.locator(`button[aria-label="${name}"]`);
@@ -52,7 +52,7 @@ try {
       const video = document.querySelector('.caption-source video');
       return video?.textTracks[0]?.cues?.length === 1000 && video.readyState >= 2 && !video.seeking;
     });
-    assert.equal(await page.locator('.caption-row').count(), 1000);
+    assert.equal(Number(await page.locator('.caption-list').getAttribute('data-item-count')), 1000);
   }
   await openCaptions();
   assert.equal(await page.locator('.audio-track svg rect').count(), 600);

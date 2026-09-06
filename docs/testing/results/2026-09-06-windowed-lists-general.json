@@ -1,0 +1,46 @@
+[
+  {
+    "browser": "PASS",
+    "upload": true,
+    "videoPlayback": true,
+    "analyzeCuts": 5,
+    "undoRestore": true,
+    "timelineZoomSelection": true,
+    "zoomedRuler": {
+      "visible": 5,
+      "times": [
+        "00:12.80",
+        "00:12.90",
+        "00:13.00",
+        "00:13.09",
+        "00:13.19"
+      ],
+      "scrollLeft": 19124
+    },
+    "projectRoundTrip": true,
+    "wrongSourceRejected": true,
+    "renderedPreviewSeconds": 9.066667,
+    "exportedFile": "/Users/dante/Desktop/github/hyper_cut/test-output/browser-output.mp4",
+    "aiManualProposal": true,
+    "aiInvalidPayloadRejected": true,
+    "unsavedReplacementCancelled": true,
+    "mobileOverflow": false,
+    "externalRequests": 0,
+    "pageErrors": 0
+  },
+  {
+    "desktop": "PASS",
+    "security": {
+      "sandbox": true,
+      "contextIsolation": true,
+      "nodeIntegration": false
+    },
+    "nativeFileIpc": true,
+    "dialogResponse": "test-controlled",
+    "analyzeCuts": 5,
+    "export": "/Users/dante/Desktop/github/hyper_cut/test-output/desktop-output.mp4",
+    "sourceOverwriteBlocked": true,
+    "projectSaveCancelPreservesDirty": true,
+    "nativeProjectSave": true
+  }
+]

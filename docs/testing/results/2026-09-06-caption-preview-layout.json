@@ -1,0 +1,217 @@
+{
+  "date": "2026-09-06T10:00:00.514Z",
+  "status": "completed",
+  "scope": "Actual browser and packaged Mac caption-design thumbnail. Three styles, browser wide/narrow and native Mac size. Complete image rectangle inside preview and visible text pixels after image decode. No export or human caption-quality claim.",
+  "sourceHashes": {
+    "src/captions.css": "fc0982fe15f1b16f61c5cbf4275445036399036c178bd7ba1780428664b1c493",
+    "src/CaptionStyle.tsx": "a6b246823d34df9d053ea862587870116ed3eb5d79ed1bb3e09ff8782fbcfedc",
+    "scripts/caption-preview-layout-e2e.mjs": "d01e2b3f45e3e22d0466cff65de778728c52c075786bfff913f7b3303f459232",
+    "dist/index.html": "1b287501fedd3c601e9710d25ada9fae5cf925a51c9988879dc0852394eb6a90",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "ebbb3e5f3c2470b0d80821532354930f9dadf2c3c4f084d7dca17afce5ae22c6"
+  },
+  "runs": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "conditions": [
+        {
+          "width": 1440,
+          "style": "기본형",
+          "geometry": {
+            "container": {
+              "width": 407.09375,
+              "height": 150
+            },
+            "image": {
+              "width": 407.09375,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 272,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/browser-1440-기본형.png",
+          "sha256": "7bb0ca463622071f1d9a58c68594dab9eee34026fd8388248f53677b9b44226a"
+        },
+        {
+          "width": 1440,
+          "style": "배경 박스",
+          "geometry": {
+            "container": {
+              "width": 407.09375,
+              "height": 150
+            },
+            "image": {
+              "width": 407.09375,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 1121,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/browser-1440-배경 박스.png",
+          "sha256": "92a7c8b61059e231f08c66af210f99003792f9dc6bb89ba71a5e79fd355d685c"
+        },
+        {
+          "width": 1440,
+          "style": "강조형",
+          "geometry": {
+            "container": {
+              "width": 407.09375,
+              "height": 150
+            },
+            "image": {
+              "width": 407.09375,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 340,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/browser-1440-강조형.png",
+          "sha256": "b96df811875efc2865331b0e6e54c66f7d29f8eca2eb35c674eba06bd3d58c56"
+        },
+        {
+          "width": 680,
+          "style": "기본형",
+          "geometry": {
+            "container": {
+              "width": 590,
+              "height": 150
+            },
+            "image": {
+              "width": 590,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 259,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/browser-680-기본형.png",
+          "sha256": "b1d5b4189ba90596dcdf43b51bfba58cd85037e1fb1edb24ac25c47159d6ef8e"
+        },
+        {
+          "width": 680,
+          "style": "배경 박스",
+          "geometry": {
+            "container": {
+              "width": 590,
+              "height": 150
+            },
+            "image": {
+              "width": 590,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 1111,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/browser-680-배경 박스.png",
+          "sha256": "396767202b4b4d3900f9e18e593c8eaf625ce746a499b8687810ff7607ca866e"
+        },
+        {
+          "width": 680,
+          "style": "강조형",
+          "geometry": {
+            "container": {
+              "width": 590,
+              "height": 150
+            },
+            "image": {
+              "width": 590,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 326,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/browser-680-강조형.png",
+          "sha256": "c338de14e27bcc4424478a4146e567f521f0dc1208f72f2f3c1e667766039819"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "conditions": [
+        {
+          "width": null,
+          "style": "기본형",
+          "geometry": {
+            "container": {
+              "width": 404.828125,
+              "height": 150
+            },
+            "image": {
+              "width": 404.828125,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 287,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/desktop-native-기본형.png",
+          "sha256": "a5faccc3138d84cd6c7e7c1d4bd19c951066dcad619a58bef0bd1f5b078d559c"
+        },
+        {
+          "width": null,
+          "style": "배경 박스",
+          "geometry": {
+            "container": {
+              "width": 404.828125,
+              "height": 150
+            },
+            "image": {
+              "width": 404.828125,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 1130,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/desktop-native-배경 박스.png",
+          "sha256": "854fa378d89d1a9f6c4a7e6775e9811991bd5d6378bbb786ce5c961dbc3e16ae"
+        },
+        {
+          "width": null,
+          "style": "강조형",
+          "geometry": {
+            "container": {
+              "width": 404.828125,
+              "height": 150
+            },
+            "image": {
+              "width": 404.828125,
+              "height": 150,
+              "left": 0,
+              "top": 0,
+              "naturalWidth": 960,
+              "naturalHeight": 540
+            }
+          },
+          "visibleInkPixels": 339,
+          "png": "/Users/dante/Desktop/github/hyper_cut/test-output/caption-preview-layout-apps-v5/desktop-native-강조형.png",
+          "sha256": "16bfc61a07358cfd0c44c4a2af1425c313ecddaf00357df6b0d7967f23465245"
+        }
+      ],
+      "pageErrors": []
+    }
+  ]
+}

@@ -54,7 +54,7 @@ try {
   await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2 && !document.querySelector('.job-overlay'), undefined, { timeout: 180000 });
   await snapshot('import');
   await page.locator('.analyze-button').click();
-  await page.waitForFunction(() => !document.querySelector('.job-overlay') && document.querySelectorAll('.cut-row').length === 1000, undefined, { timeout: 180000 });
+  await page.waitForFunction(() => !document.querySelector('.job-overlay') && Number(document.querySelector('.cut-list')?.dataset.itemCount) === 1000, undefined, { timeout: 180000 });
   await paints(); await snapshot('analysis');
   for (let cycle = 1; cycle <= 3; cycle++) {
     for (const family of ['restore', 'settings', 'transport']) {
