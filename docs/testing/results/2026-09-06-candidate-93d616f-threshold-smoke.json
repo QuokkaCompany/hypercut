@@ -1,0 +1,2037 @@
+{
+  "date": "2026-09-06T14:47:18.502120+00:00",
+  "candidate": "93d616fbe97cb7771b895c2579ed072c4ed7c669",
+  "status": "PASS_FOR_RECORDED_SCOPE",
+  "scope": "Threshold-only 60-second synthetic media in actual Chrome and packaged Mac. Input-file cold/warm, four completed runs and two cancellation/retries per mode. Native dialog paths controlled by the runner. No long-media, speech quality, authenticated AI, OS-wide cold-cache or OS network-denial claim.",
+  "modes": {
+    "warm": {
+      "raw": "test-output/candidate-93d616f-threshold-warm-smoke",
+      "reportSHA256": "d5385351d72720f91a32b48ff270e3aa6e925c3c1857943929452749c9cdb763",
+      "auditSHA256": "0cf84fb978b890f23aa8c4e3f44815fe6792fb015b7bf5c0d9a779cab9fb6cce",
+      "platform": "darwin 25.5.0 arm64",
+      "cpu": "Apple M4 Max",
+      "cpuCount": 14,
+      "memoryBytes": 38654705664,
+      "node": "v24.14.1",
+      "power": "Now drawing from 'AC Power'",
+      "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+      "requested": {
+        "durations": [
+          60
+        ],
+        "iterations": 2,
+        "surfaces": [
+          "browser",
+          "desktop"
+        ],
+        "uiLocator": "css",
+        "inputCache": "warm"
+      },
+      "settings": {
+        "thresholdDb": -40,
+        "minSilenceMs": 500,
+        "preRollMs": 100,
+        "postRollMs": 150
+      },
+      "speechProtection": {
+        "enabled": false,
+        "threshold": 0.5
+      },
+      "sourceHashes": {
+        "src/WindowedList.tsx": "7231107d6f78d465c5e191e751d2a4aae3d1c62a495bf64dd9f124ad33d5bc4f",
+        "src/CutList.tsx": "8e67df4bc7682648a1ed520f074a241d9261149f335168660e3b1318ebdc48b0",
+        "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+        "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+        "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+        "scripts/threshold-benchmark.mjs": "6cc77dd497e670b4c13c49636e6844b477ce6dbdea96dbc878619efb3671d40c",
+        "scripts/helpers/threshold-performance-fixture.mjs": "8d98fc7c46c0bfde0d883a29207968a295582bc0cb0f7c036d4e7a448d40a466",
+        "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+        "tests/threshold-sync.integration.mjs": "e398eeee933b5cbed7323349b90235b9c35ba2dbb240235a46981970007d2d43",
+        "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+        "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "6a9815b97a3263e65ebb172654080a09d6299f0bfa23bc1750eb9a08cd0783a9",
+        "scripts/benchmark-server.mjs": "f11922fc29260ada2e544ce06eebabcfda59c32ca13bc9f9475d306a8b984529",
+        "scripts/helpers/file-cache.mjs": "c12bfba383cefe2369e364c700f712fad2ca22083c957862711f6d743bc9d84f",
+        "scripts/helpers/file-cache.c": "1eb8f26f1901138b0d20be925a8437cb56c8ced059e6313483f3d8cabb1ae106",
+        "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+        "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+        "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+      },
+      "packageSourceHashes": {
+        "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+        "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+        "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+        "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+        "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+      },
+      "fixtures": [
+        {
+          "kind": "Repeated synthetic 440Hz tone and 400ms-delayed flash; not human speech",
+          "cycleSeconds": 3.6,
+          "toneSeconds": 2.6,
+          "flashSeconds": 0.4,
+          "expectedCuts": 16,
+          "reusedBaseline": false,
+          "media": {
+            "id": "35d64c25-9e85-4bee-a702-2dc54b3ae474",
+            "name": "60s.mp4",
+            "duration": 60,
+            "fingerprint": "d7286a91d14e379b4e514eb61e9f8db6942d29ef6f84674ea29d9f4e13c3c22e",
+            "width": 1920,
+            "height": 1080,
+            "fps": 30,
+            "size": 1207118,
+            "videoIndex": 0,
+            "timeBase": 6.510416666666667e-05,
+            "origin": 0,
+            "audioTracks": [
+              {
+                "index": 1,
+                "codec": "aac",
+                "channels": 1,
+                "sampleRate": 48000,
+                "label": "SoundHandler",
+                "language": "und"
+              }
+            ]
+          },
+          "source": "test-output/threshold-performance-fixtures/60s.mp4",
+          "sourcePreserved": true
+        }
+      ],
+      "runs": [
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "iteration": 1,
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "analyzeSeconds": 1.3604650830000002,
+          "exportSeconds": 3.505643,
+          "saveSeconds": 0.059298291000000065,
+          "peakRSSBytes": 1655144448,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-warm-smoke/browser-60-1-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 65.71366649999982,
+              "max": 66.60916700000053,
+              "p95": 66.47674999999981
+            },
+            "settings": {
+              "count": 32,
+              "median": 32.63185450000037,
+              "max": 33.55975000000035,
+              "p95": 33.18645800000013
+            },
+            "transport": {
+              "count": 32,
+              "median": 66.30104149999988,
+              "max": 67.46854200000053,
+              "p95": 67.23854200000096
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "iteration": 2,
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "analyzeSeconds": 1.1684178329999995,
+          "exportSeconds": 3.510623166999998,
+          "saveSeconds": 0.03605633300000045,
+          "peakRSSBytes": 1746468864,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-warm-smoke/browser-60-2-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 65.96072950000053,
+              "max": 66.65870799999902,
+              "p95": 66.5959580000017
+            },
+            "settings": {
+              "count": 32,
+              "median": 32.786166999998386,
+              "max": 34.56999999999971,
+              "p95": 33.712791999998444
+            },
+            "transport": {
+              "count": 32,
+              "median": 66.20145899999807,
+              "max": 67.10483300000124,
+              "p95": 66.9507909999993
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "iteration": 1,
+          "viewport": {
+            "width": 1440,
+            "height": 908
+          },
+          "analyzeSeconds": 1.287870541999997,
+          "exportSeconds": 3.479470583000002,
+          "saveSeconds": 0.04999483300000429,
+          "peakRSSBytes": 1019428864,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-warm-smoke/desktop-60-1-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 39.505292000001646,
+              "max": 40.69987499999843,
+              "p95": 40.42591700000048
+            },
+            "settings": {
+              "count": 32,
+              "median": 19.58631249999962,
+              "max": 19.966541000001598,
+              "p95": 19.956915999995545
+            },
+            "transport": {
+              "count": 32,
+              "median": 39.636437000001024,
+              "max": 40.437958000002254,
+              "p95": 40.3836669999946
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "iteration": 2,
+          "viewport": {
+            "width": 1440,
+            "height": 908
+          },
+          "analyzeSeconds": 1.121896249999998,
+          "exportSeconds": 3.4770944999999993,
+          "saveSeconds": 0.046938417000004846,
+          "peakRSSBytes": 1073790976,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-warm-smoke/desktop-60-2-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 39.50835449999795,
+              "max": 68.97579099999712,
+              "p95": 40.50062500000058
+            },
+            "settings": {
+              "count": 32,
+              "median": 19.230208500001027,
+              "max": 19.98895800000173,
+              "p95": 19.788000000000466
+            },
+            "transport": {
+              "count": 32,
+              "median": 39.57085450000159,
+              "max": 40.53795900000114,
+              "p95": 40.26491700000042
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        }
+      ],
+      "audit": {
+        "date": "2026-09-06T14:46:09.396317+00:00",
+        "status": "AUDITED_COMPLETED",
+        "scope": "Completed requested matrix, actual hashes, full projects/analysis, raw RSS sums, UI statistics, cache residency and cancellation/retry. Baseline-less first comparisons are internal consistency only; separate decoded oracle results are checked but not rerun. No human speech or OS-wide cold-cache claim.",
+        "code": "93d616fbe97cb7771b895c2579ed072c4ed7c669",
+        "baseline": null,
+        "reportSHA256": "d5385351d72720f91a32b48ff270e3aa6e925c3c1857943929452749c9cdb763",
+        "auditorSHA256": "4154383fba8b21d6b210da366e7a26872fc161b0b3ce7c9b0d41a91ec17563b6",
+        "runs": [
+          {
+            "surface": "browser",
+            "seconds": 60,
+            "iteration": 1,
+            "inputCache": "warm",
+            "peakRSSGiB": 1.541473388671875,
+            "phases": {
+              "analysis": {
+                "file": "browser-60-1-analysis-resources.json",
+                "sha256": "fd728ba2fb4927c3f09f561e5aac6ca3ad3e19ecf23762c1813654313c0d62d0",
+                "peakBytes": 1277149184,
+                "samples": 7,
+                "maxSampleGapMs": 279.4950839999999
+              },
+              "export": {
+                "file": "browser-60-1-export-resources.json",
+                "sha256": "2c25541296e385eb8a7ba39c6e969ec1871e45a388be5509f1c8524bd48e3309",
+                "peakBytes": 1655144448,
+                "samples": 15,
+                "maxSampleGapMs": 279.235541
+              },
+              "save": {
+                "file": "browser-60-1-save-resources.json",
+                "sha256": "ec9a519c5ac2c7b2fa3ec95e9a93585e7ed40220bcc13053d77fad17d8f080fc",
+                "peakBytes": 1314373632,
+                "samples": 2,
+                "maxSampleGapMs": 83.75366699999995
+              },
+              "ui": {
+                "file": "browser-60-1-ui-resources.json",
+                "sha256": "28c0c7efbeacf90ac6fa14d08b7f76920e832c2baa172184e0ff5b4acb07407a",
+                "peakBytes": 1366261760,
+                "samples": 36,
+                "maxSampleGapMs": 275.44495899999947
+              },
+              "project": {
+                "file": "browser-60-1-project-resources.json",
+                "sha256": "275e536fd17d56cf1a85417fd380d54ea23c787659c3738224def0734dc10d6d",
+                "peakBytes": 1362198528,
+                "samples": 2,
+                "maxSampleGapMs": 53.35375000000204
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.3604650830000002,
+            "exportSeconds": 3.505643,
+            "frames": 1448,
+            "baselineComparisonToSelf": true,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 74,
+              "pageBytes": 16384,
+              "monotonicMs": 939676753.454
+            }
+          },
+          {
+            "surface": "browser",
+            "seconds": 60,
+            "iteration": 2,
+            "inputCache": "warm",
+            "peakRSSGiB": 1.62652587890625,
+            "phases": {
+              "analysis": {
+                "file": "browser-60-2-analysis-resources.json",
+                "sha256": "31e14fa045d3ca428b7621936f5c779eda529fa15a20f9e7b90baaaa9b92305f",
+                "peakBytes": 1410154496,
+                "samples": 6,
+                "maxSampleGapMs": 278.2095420000005
+              },
+              "export": {
+                "file": "browser-60-2-export-resources.json",
+                "sha256": "482dfbe573ca9a9b5693c3c51cdbd204973e8add34f9e63fcb8bb1a3bd9e9e75",
+                "peakBytes": 1746468864,
+                "samples": 16,
+                "maxSampleGapMs": 279.8987500000003
+              },
+              "save": {
+                "file": "browser-60-2-save-resources.json",
+                "sha256": "fcb8ab862ed649166a52b6c54ed97570409a7b319e8bffede35ae1422993d988",
+                "peakBytes": 1397145600,
+                "samples": 2,
+                "maxSampleGapMs": 60.887957999999344
+              },
+              "ui": {
+                "file": "browser-60-2-ui-resources.json",
+                "sha256": "ccc14c6d8926a058b46ca1290453a97efc9c2f0f85152e710f686c2a8378af4a",
+                "peakBytes": 1399767040,
+                "samples": 36,
+                "maxSampleGapMs": 278.9863750000004
+              },
+              "project": {
+                "file": "browser-60-2-project-resources.json",
+                "sha256": "e815bb51e66bf9cbf80f6ba0fd166adf7a7c661f1a04e16241f04fd14fdd19e7",
+                "peakBytes": 1394786304,
+                "samples": 2,
+                "maxSampleGapMs": 52.910666999996465
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.1684178329999995,
+            "exportSeconds": 3.510623166999998,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 74,
+              "pageBytes": 16384,
+              "monotonicMs": 939692695.629
+            }
+          },
+          {
+            "surface": "desktop",
+            "seconds": 60,
+            "iteration": 1,
+            "inputCache": "warm",
+            "peakRSSGiB": 0.9494171142578125,
+            "phases": {
+              "analysis": {
+                "file": "desktop-60-1-analysis-resources.json",
+                "sha256": "e0e1b76fb5f7f7a4424c1e465fefeedc21beb79b02d8c951679063976300496a",
+                "peakBytes": 638976000,
+                "samples": 7,
+                "maxSampleGapMs": 283.5056659999973
+              },
+              "export": {
+                "file": "desktop-60-1-export-resources.json",
+                "sha256": "c190348aedfac455c86b19b9efd517be2c6a74b3ef6a7758db56fb691634e604",
+                "peakBytes": 1019428864,
+                "samples": 15,
+                "maxSampleGapMs": 279.9291669999948
+              },
+              "save": {
+                "file": "desktop-60-1-save-resources.json",
+                "sha256": "0295b591c30844e8e407845961e69819ed20d112f88c60911ad4e721559b7d02",
+                "peakBytes": 675725312,
+                "samples": 2,
+                "maxSampleGapMs": 76.05683399999543
+              },
+              "ui": {
+                "file": "desktop-60-1-ui-resources.json",
+                "sha256": "61bbd9c93c3651111dad3a747e78be53fb387070a5490368053f0f4c26a8f214",
+                "peakBytes": 719405056,
+                "samples": 22,
+                "maxSampleGapMs": 274.82458300000144
+              },
+              "project": {
+                "file": "desktop-60-1-project-resources.json",
+                "sha256": "b9f93c32ea53105695d4eef5a07084c2b083e7ebbadeb59e9e707791de0fd875",
+                "peakBytes": 720732160,
+                "samples": 2,
+                "maxSampleGapMs": 69.01720800000476
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.287870541999997,
+            "exportSeconds": 3.479470583000002,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 74,
+              "pageBytes": 16384,
+              "monotonicMs": 939708866.224
+            }
+          },
+          {
+            "surface": "desktop",
+            "seconds": 60,
+            "iteration": 2,
+            "inputCache": "warm",
+            "peakRSSGiB": 1.0000457763671875,
+            "phases": {
+              "analysis": {
+                "file": "desktop-60-2-analysis-resources.json",
+                "sha256": "78477737df632d0cb552641a6e72d120ff70ef529b90276cd7c7b759ece79f2b",
+                "peakBytes": 753713152,
+                "samples": 6,
+                "maxSampleGapMs": 279.2296669999996
+              },
+              "export": {
+                "file": "desktop-60-2-export-resources.json",
+                "sha256": "a5a63309feb3a731cb1ded600ca6578a32706efce35b91aead02378054ad8042",
+                "peakBytes": 1073790976,
+                "samples": 15,
+                "maxSampleGapMs": 277.8742920000004
+              },
+              "save": {
+                "file": "desktop-60-2-save-resources.json",
+                "sha256": "3207757c2a2c18aec86f5c997a35a9bb144e25923fe5e9ea5b39ba559c7e5c32",
+                "peakBytes": 727826432,
+                "samples": 2,
+                "maxSampleGapMs": 72.18095899999753
+              },
+              "ui": {
+                "file": "desktop-60-2-ui-resources.json",
+                "sha256": "7af1b367597d3c88db9b1fef078d9d1a5dd0431fae237d68546b450b409b4802",
+                "peakBytes": 735313920,
+                "samples": 22,
+                "maxSampleGapMs": 283.8228750000053
+              },
+              "project": {
+                "file": "desktop-60-2-project-resources.json",
+                "sha256": "6301d3092cb445bdf30a91296a34d151cb78d1aa91469862051770a66aebffc5",
+                "peakBytes": 731889664,
+                "samples": 2,
+                "maxSampleGapMs": 67.74133400000574
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.121896249999998,
+            "exportSeconds": 3.4770944999999993,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 74,
+              "pageBytes": 16384,
+              "monotonicMs": 939721251.132
+            }
+          }
+        ],
+        "cancellations": [
+          {
+            "surface": "browser",
+            "inputSeconds": 60,
+            "memory": {
+              "file": "browser-60-1-cancel-resources.json",
+              "peakBytes": 1372880896,
+              "samples": 3,
+              "errors": []
+            },
+            "memoryPass": true,
+            "beforeCancel": {
+              "status": "running",
+              "stage": "작업 준비",
+              "progress": 0
+            },
+            "deleteCancelled": true,
+            "jobStatus": "cancelled",
+            "readyMs": 311.8523329999989,
+            "displayMs": 0.8000000715255737,
+            "projectPreserved": true,
+            "savedOutputPreserved": true,
+            "displayPass": true,
+            "readyPass": true,
+            "retryCompletedIteration": 2,
+            "rawMemory": {
+              "file": "browser-60-1-cancel-resources.json",
+              "sha256": "8a51b1932a7aa7ff0ee823cba99193912a719433f360f3c74ae70b2351247aeb",
+              "peakBytes": 1372880896,
+              "samples": 3,
+              "maxSampleGapMs": 275.2386250000018
+            }
+          },
+          {
+            "surface": "desktop",
+            "inputSeconds": 60,
+            "memory": {
+              "file": "desktop-60-1-cancel-resources.json",
+              "peakBytes": 721960960,
+              "samples": 3,
+              "errors": []
+            },
+            "memoryPass": true,
+            "beforeCancel": {
+              "status": "running",
+              "stage": "작업 준비",
+              "progress": 0
+            },
+            "deleteCancelled": true,
+            "jobStatus": "cancelled",
+            "readyMs": 304.32833299999766,
+            "displayMs": 0.6000000238418579,
+            "projectPreserved": true,
+            "savedOutputPreserved": true,
+            "displayPass": true,
+            "readyPass": true,
+            "retryCompletedIteration": 2,
+            "rawMemory": {
+              "file": "desktop-60-1-cancel-resources.json",
+              "sha256": "60de7acb948bfb4f40c9ab960055c9ac574565fbe6f1654607d446128611c0e0",
+              "peakBytes": 721960960,
+              "samples": 3,
+              "maxSampleGapMs": 275.2013749999969
+            }
+          }
+        ]
+      }
+    },
+    "cold": {
+      "raw": "test-output/candidate-93d616f-threshold-cold-smoke",
+      "reportSHA256": "00ad4a6252632f96e5c4f1acb29de0e8272e8e5eb6c89e5d6499d828787ce30e",
+      "auditSHA256": "f0fc646561fffb0c2c141314a6b69ddb1e8b11893eb982e0e998f4a8809b43a5",
+      "platform": "darwin 25.5.0 arm64",
+      "cpu": "Apple M4 Max",
+      "cpuCount": 14,
+      "memoryBytes": 38654705664,
+      "node": "v24.14.1",
+      "power": "Now drawing from 'AC Power'",
+      "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+      "requested": {
+        "durations": [
+          60
+        ],
+        "iterations": 2,
+        "surfaces": [
+          "browser",
+          "desktop"
+        ],
+        "uiLocator": "css",
+        "inputCache": "cold"
+      },
+      "settings": {
+        "thresholdDb": -40,
+        "minSilenceMs": 500,
+        "preRollMs": 100,
+        "postRollMs": 150
+      },
+      "speechProtection": {
+        "enabled": false,
+        "threshold": 0.5
+      },
+      "sourceHashes": {
+        "src/WindowedList.tsx": "7231107d6f78d465c5e191e751d2a4aae3d1c62a495bf64dd9f124ad33d5bc4f",
+        "src/CutList.tsx": "8e67df4bc7682648a1ed520f074a241d9261149f335168660e3b1318ebdc48b0",
+        "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+        "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+        "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+        "scripts/threshold-benchmark.mjs": "6cc77dd497e670b4c13c49636e6844b477ce6dbdea96dbc878619efb3671d40c",
+        "scripts/helpers/threshold-performance-fixture.mjs": "8d98fc7c46c0bfde0d883a29207968a295582bc0cb0f7c036d4e7a448d40a466",
+        "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+        "tests/threshold-sync.integration.mjs": "e398eeee933b5cbed7323349b90235b9c35ba2dbb240235a46981970007d2d43",
+        "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+        "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "6a9815b97a3263e65ebb172654080a09d6299f0bfa23bc1750eb9a08cd0783a9",
+        "scripts/benchmark-server.mjs": "f11922fc29260ada2e544ce06eebabcfda59c32ca13bc9f9475d306a8b984529",
+        "scripts/helpers/file-cache.mjs": "c12bfba383cefe2369e364c700f712fad2ca22083c957862711f6d743bc9d84f",
+        "scripts/helpers/file-cache.c": "1eb8f26f1901138b0d20be925a8437cb56c8ced059e6313483f3d8cabb1ae106",
+        "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+        "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+        "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+      },
+      "packageSourceHashes": {
+        "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+        "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+        "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+        "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+        "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+      },
+      "fixtures": [
+        {
+          "kind": "Repeated synthetic 440Hz tone and 400ms-delayed flash; not human speech",
+          "cycleSeconds": 3.6,
+          "toneSeconds": 2.6,
+          "flashSeconds": 0.4,
+          "expectedCuts": 16,
+          "reusedBaseline": false,
+          "media": {
+            "id": "35d64c25-9e85-4bee-a702-2dc54b3ae474",
+            "name": "60s.mp4",
+            "duration": 60,
+            "fingerprint": "d7286a91d14e379b4e514eb61e9f8db6942d29ef6f84674ea29d9f4e13c3c22e",
+            "width": 1920,
+            "height": 1080,
+            "fps": 30,
+            "size": 1207118,
+            "videoIndex": 0,
+            "timeBase": 6.510416666666667e-05,
+            "origin": 0,
+            "audioTracks": [
+              {
+                "index": 1,
+                "codec": "aac",
+                "channels": 1,
+                "sampleRate": 48000,
+                "label": "SoundHandler",
+                "language": "und"
+              }
+            ]
+          },
+          "source": "test-output/threshold-performance-fixtures/60s.mp4",
+          "sourcePreserved": true
+        }
+      ],
+      "runs": [
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "iteration": 1,
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "analyzeSeconds": 1.4075205829999997,
+          "exportSeconds": 3.490497083,
+          "saveSeconds": 0.062491625000000564,
+          "peakRSSBytes": 1652752384,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-cold-smoke/browser-60-1-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 65.75008350000007,
+              "max": 66.28570799999943,
+              "p95": 66.27654199999961
+            },
+            "settings": {
+              "count": 32,
+              "median": 32.605375000000095,
+              "max": 33.640167000001384,
+              "p95": 33.501125000000684
+            },
+            "transport": {
+              "count": 32,
+              "median": 65.95010450000063,
+              "max": 66.55183399999987,
+              "p95": 66.5069999999996
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "browser",
+          "inputSeconds": 60,
+          "iteration": 2,
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "analyzeSeconds": 1.1786515830000026,
+          "exportSeconds": 3.493147291999998,
+          "saveSeconds": 0.06087312499999825,
+          "peakRSSBytes": 1744125952,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-cold-smoke/browser-60-2-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 65.46970799999872,
+              "max": 66.23483299999862,
+              "p95": 66.15049999999974
+            },
+            "settings": {
+              "count": 32,
+              "median": 32.75670799999898,
+              "max": 48.57970799999748,
+              "p95": 33.584624999999505
+            },
+            "transport": {
+              "count": 32,
+              "median": 66.41085449999991,
+              "max": 67.27024999999776,
+              "p95": 67.07395800000086
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "iteration": 1,
+          "viewport": {
+            "width": 1440,
+            "height": 908
+          },
+          "analyzeSeconds": 1.3081433750000069,
+          "exportSeconds": 3.473404792000001,
+          "saveSeconds": 0.04829266600000119,
+          "peakRSSBytes": 1024802816,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-cold-smoke/desktop-60-1-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 39.42943799999921,
+              "max": 40.24645800000144,
+              "p95": 40.23570800000016
+            },
+            "settings": {
+              "count": 32,
+              "median": 19.553854000001593,
+              "max": 20.53450000000157,
+              "p95": 20.400125000000116
+            },
+            "transport": {
+              "count": 32,
+              "median": 39.57739599999695,
+              "max": 40.57575000000361,
+              "p95": 40.36762499999895
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "inputSeconds": 60,
+          "iteration": 2,
+          "viewport": {
+            "width": 1440,
+            "height": 908
+          },
+          "analyzeSeconds": 1.132125334000004,
+          "exportSeconds": 3.466794958999999,
+          "saveSeconds": 0.04721720800000185,
+          "peakRSSBytes": 1082933248,
+          "cuts": 16,
+          "decodedSamples": 2880000,
+          "outputSeconds": 48.266667,
+          "expectedOutputSeconds": 48.266666666666666,
+          "fullDecodeVerified": true,
+          "outputFile": "test-output/candidate-93d616f-threshold-cold-smoke/desktop-60-2-output.mp4",
+          "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+          "sync": {
+            "status": "PASS",
+            "scope": "Six independently decoded flash/tone pairs in start/middle/end windows; not exhaustive frame identity or human listening.",
+            "toleranceSeconds": 0.03333333333333333,
+            "firstToLastDrift": 3.3333333959717493e-07,
+            "pairs": [
+              {
+                "name": "start",
+                "cycle": 1,
+                "precedingCuts": 1,
+                "sourceTone": 3.6001875,
+                "sourceFlash": 4,
+                "expectedOutputTone": 2.8668541666666667,
+                "expectedOutputFlash": 3.2666666666666666,
+                "outputTone": 2.8668541666666667,
+                "outputFlash": 3.2666666666666666,
+                "toneError": 0,
+                "flashError": 0,
+                "extraAVError": 0
+              },
+              {
+                "name": "start",
+                "cycle": 2,
+                "precedingCuts": 2,
+                "sourceTone": 7.2001875,
+                "sourceFlash": 7.6,
+                "expectedOutputTone": 5.733520833333333,
+                "expectedOutputFlash": 6.133333333333333,
+                "outputTone": 5.733520833333333,
+                "outputFlash": 6.133333666666667,
+                "toneError": 0,
+                "flashError": 3.333333342681044e-07,
+                "extraAVError": 3.333333342681044e-07
+              },
+              {
+                "name": "middle",
+                "cycle": 8,
+                "precedingCuts": 8,
+                "sourceTone": 28.8001875,
+                "sourceFlash": 29.2,
+                "expectedOutputTone": 22.933520833333336,
+                "expectedOutputFlash": 23.333333333333336,
+                "outputTone": 22.933520833333333,
+                "outputFlash": 23.333333333333332,
+                "toneError": -3.552713678800501e-15,
+                "flashError": -3.552713678800501e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "middle",
+                "cycle": 9,
+                "precedingCuts": 9,
+                "sourceTone": 32.4001875,
+                "sourceFlash": 32.8,
+                "expectedOutputTone": 25.80018750000001,
+                "expectedOutputFlash": 26.200000000000006,
+                "outputTone": 25.8001875,
+                "outputFlash": 26.200000333333332,
+                "toneError": -1.0658141036401503e-14,
+                "flashError": 3.333333253863202e-07,
+                "extraAVError": 3.3333333604446125e-07
+              },
+              {
+                "name": "end",
+                "cycle": 14,
+                "precedingCuts": 14,
+                "sourceTone": 50.4001875,
+                "sourceFlash": 50.800000000000004,
+                "expectedOutputTone": 40.13352083333334,
+                "expectedOutputFlash": 40.533333333333346,
+                "outputTone": 40.133520833333336,
+                "outputFlash": 40.53333333333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": -7.105427357601002e-15,
+                "extraAVError": 0
+              },
+              {
+                "name": "end",
+                "cycle": 15,
+                "precedingCuts": 15,
+                "sourceTone": 54.0001875,
+                "sourceFlash": 54.4,
+                "expectedOutputTone": 43.00018750000001,
+                "expectedOutputFlash": 43.400000000000006,
+                "outputTone": 43.0001875,
+                "outputFlash": 43.40000033333334,
+                "toneError": -7.105427357601002e-15,
+                "flashError": 3.3333333249174757e-07,
+                "extraAVError": 3.3333333959717493e-07
+              }
+            ]
+          },
+          "frames": {
+            "status": "PASS",
+            "frames": 1448,
+            "maxClockError": 7.105427357601002e-15,
+            "toleranceSeconds": 1.667666666666667e-05,
+            "scope": "Every retained synthetic 30fps frame count and PTS; not full pixel identity."
+          },
+          "ui": {
+            "restore": {
+              "count": 32,
+              "median": 39.2243750000016,
+              "max": 40.14024999999674,
+              "p95": 40.1151250000039
+            },
+            "settings": {
+              "count": 32,
+              "median": 19.612166999999317,
+              "max": 20.27079199999571,
+              "p95": 20.095291999998153
+            },
+            "transport": {
+              "count": 32,
+              "median": 39.481854000001476,
+              "max": 49.00929100000212,
+              "p95": 40.266999999999825
+            }
+          },
+          "goals": {
+            "analysis": true,
+            "export": true,
+            "memory": true,
+            "ui": true
+          },
+          "pageErrors": [],
+          "externalRequests": 0
+        }
+      ],
+      "audit": {
+        "date": "2026-09-06T14:46:09.497928+00:00",
+        "status": "AUDITED_COMPLETED",
+        "scope": "Completed requested matrix, actual hashes, full projects/analysis, raw RSS sums, UI statistics, cache residency and cancellation/retry. Baseline-less first comparisons are internal consistency only; separate decoded oracle results are checked but not rerun. No human speech or OS-wide cold-cache claim.",
+        "code": "93d616fbe97cb7771b895c2579ed072c4ed7c669",
+        "baseline": "/Users/dante/Desktop/github/hyper_cut/test-output/candidate-93d616f-threshold-warm-smoke",
+        "reportSHA256": "00ad4a6252632f96e5c4f1acb29de0e8272e8e5eb6c89e5d6499d828787ce30e",
+        "auditorSHA256": "4154383fba8b21d6b210da366e7a26872fc161b0b3ce7c9b0d41a91ec17563b6",
+        "runs": [
+          {
+            "surface": "browser",
+            "seconds": 60,
+            "iteration": 1,
+            "inputCache": "cold",
+            "peakRSSGiB": 1.53924560546875,
+            "phases": {
+              "analysis": {
+                "file": "browser-60-1-analysis-resources.json",
+                "sha256": "27bd0bcaa9c93b048254a78270f55ba6151d38046d47143fae875b554cdc853b",
+                "peakBytes": 1280737280,
+                "samples": 7,
+                "maxSampleGapMs": 290.5328340000001
+              },
+              "export": {
+                "file": "browser-60-1-export-resources.json",
+                "sha256": "f75e107256b2913ea74f1978ab7f6e309a65478b84c06d873472a0507ff82d0e",
+                "peakBytes": 1652752384,
+                "samples": 15,
+                "maxSampleGapMs": 280.43891699999995
+              },
+              "save": {
+                "file": "browser-60-1-save-resources.json",
+                "sha256": "22d7e574e0b43ec87706589b4df3ea9702e0e1cdb244ad4ab4a9849616c63d79",
+                "peakBytes": 1314734080,
+                "samples": 2,
+                "maxSampleGapMs": 89.32091700000001
+              },
+              "ui": {
+                "file": "browser-60-1-ui-resources.json",
+                "sha256": "ee5bf778ea2ae23ddf40bd5d9fcb76112258c29d93fea508e153ca18666b60d8",
+                "peakBytes": 1366982656,
+                "samples": 36,
+                "maxSampleGapMs": 276.85699999999997
+              },
+              "project": {
+                "file": "browser-60-1-project-resources.json",
+                "sha256": "2835c1ed44ef5dc58813b13f5462b76ad3ce06818b231f96a23b0075c8e85312",
+                "peakBytes": 1368047616,
+                "samples": 2,
+                "maxSampleGapMs": 49.54412500000035
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.4075205829999997,
+            "exportSeconds": 3.490497083,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 0,
+              "pageBytes": 16384,
+              "monotonicMs": 939967897.929
+            }
+          },
+          {
+            "surface": "browser",
+            "seconds": 60,
+            "iteration": 2,
+            "inputCache": "cold",
+            "peakRSSGiB": 1.6243438720703125,
+            "phases": {
+              "analysis": {
+                "file": "browser-60-2-analysis-resources.json",
+                "sha256": "1375a9b40ee9614cb87265eeff00431ceab8edceeb077c2f6927e0159884e9b7",
+                "peakBytes": 1410187264,
+                "samples": 6,
+                "maxSampleGapMs": 280.0536249999968
+              },
+              "export": {
+                "file": "browser-60-2-export-resources.json",
+                "sha256": "8dad97c8c2a5c46b40155eaa77afdba88e813ec5b92c3db02f96c71d85d514f5",
+                "peakBytes": 1744125952,
+                "samples": 15,
+                "maxSampleGapMs": 279.7198329999992
+              },
+              "save": {
+                "file": "browser-60-2-save-resources.json",
+                "sha256": "8401c8ab25067d4ee99df44288de9170401baa3de36da5d896386d8e73cfb1dc",
+                "peakBytes": 1394245632,
+                "samples": 2,
+                "maxSampleGapMs": 88.10800000000017
+              },
+              "ui": {
+                "file": "browser-60-2-ui-resources.json",
+                "sha256": "733fa56fa8e708a350e04f58b035f883d200f6e1d0fa40a9b58846e18fd5194a",
+                "peakBytes": 1396965376,
+                "samples": 36,
+                "maxSampleGapMs": 276.8218340000021
+              },
+              "project": {
+                "file": "browser-60-2-project-resources.json",
+                "sha256": "0da0c24b8beb3dc27454e3d76ae753bb22e90d57f2a8ba22d83135826ef2dd12",
+                "peakBytes": 1257308160,
+                "samples": 2,
+                "maxSampleGapMs": 45.44741700000304
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.1786515830000026,
+            "exportSeconds": 3.493147291999998,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 0,
+              "pageBytes": 16384,
+              "monotonicMs": 939983927.371
+            }
+          },
+          {
+            "surface": "desktop",
+            "seconds": 60,
+            "iteration": 1,
+            "inputCache": "cold",
+            "peakRSSGiB": 0.9544219970703125,
+            "phases": {
+              "analysis": {
+                "file": "desktop-60-1-analysis-resources.json",
+                "sha256": "2a66d9803b8156fe0726be9195ed51249270a2cbae8657275aad83657c7a650f",
+                "peakBytes": 642154496,
+                "samples": 7,
+                "maxSampleGapMs": 286.46174999999494
+              },
+              "export": {
+                "file": "desktop-60-1-export-resources.json",
+                "sha256": "f0890d12a7e30f133fa608fdafd1e16240ba6a1122b33d29c07108ec06590881",
+                "peakBytes": 1024802816,
+                "samples": 15,
+                "maxSampleGapMs": 277.8654999999999
+              },
+              "save": {
+                "file": "desktop-60-1-save-resources.json",
+                "sha256": "7a4c03082f413dd111b99e5fc5e82afce278adb432e2e5f7b8ba50e972b70548",
+                "peakBytes": 680886272,
+                "samples": 2,
+                "maxSampleGapMs": 73.47724999999627
+              },
+              "ui": {
+                "file": "desktop-60-1-ui-resources.json",
+                "sha256": "2aa5e1b256c7eb430819e79dc957548327bf221e01c91be530d3c33a8b32044b",
+                "peakBytes": 724090880,
+                "samples": 22,
+                "maxSampleGapMs": 276.78366699999606
+              },
+              "project": {
+                "file": "desktop-60-1-project-resources.json",
+                "sha256": "d578a7a88d0b17965aedf8f2a9433786352e02bdeea8e46246391dda53ad23cc",
+                "peakBytes": 725123072,
+                "samples": 2,
+                "maxSampleGapMs": 70.33058300000266
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.3081433750000069,
+            "exportSeconds": 3.473404792000001,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 0,
+              "pageBytes": 16384,
+              "monotonicMs": 940000323.746
+            }
+          },
+          {
+            "surface": "desktop",
+            "seconds": 60,
+            "iteration": 2,
+            "inputCache": "cold",
+            "peakRSSGiB": 1.0085601806640625,
+            "phases": {
+              "analysis": {
+                "file": "desktop-60-2-analysis-resources.json",
+                "sha256": "36748046f7c68a1a2dbf1c712bb6f77e796601341eda395875cf80f7a60cc518",
+                "peakBytes": 763592704,
+                "samples": 6,
+                "maxSampleGapMs": 277.7624999999971
+              },
+              "export": {
+                "file": "desktop-60-2-export-resources.json",
+                "sha256": "78d0b95812688b10c56868cf5f31c82b7dd20fcd97e1c8e31b46578c8f89c53b",
+                "peakBytes": 1082933248,
+                "samples": 15,
+                "maxSampleGapMs": 284.03391700000066
+              },
+              "save": {
+                "file": "desktop-60-2-save-resources.json",
+                "sha256": "c5fab2087940f5026339cbb88d95d7c7725c59a59c49f613dc5bd3ec5093e208",
+                "peakBytes": 737722368,
+                "samples": 2,
+                "maxSampleGapMs": 76.7902080000058
+              },
+              "ui": {
+                "file": "desktop-60-2-ui-resources.json",
+                "sha256": "6cf34657a10f25d94bec80281b3e53a0d2ad03480e08ae3cf7d1839d396af585",
+                "peakBytes": 738639872,
+                "samples": 22,
+                "maxSampleGapMs": 274.2867499999993
+              },
+              "project": {
+                "file": "desktop-60-2-project-resources.json",
+                "sha256": "e698f8513c135103931cfb034fda6b0a6a893537256023b72831644f6554f89f",
+                "peakBytes": 735674368,
+                "samples": 2,
+                "maxSampleGapMs": 75.43820899999992
+              }
+            },
+            "goals": {
+              "analysis": true,
+              "export": true,
+              "memory": true,
+              "ui": true
+            },
+            "outputSHA256": "f6a0ca24ac51507d5eb61cec94b673cc3f96e3d9790651b0d3a9195e5147a7f1",
+            "analysisSeconds": 1.132125334000004,
+            "exportSeconds": 3.466794958999999,
+            "frames": 1448,
+            "baselineComparisonToSelf": false,
+            "inputResidency": {
+              "phase": "inspect_without_read",
+              "bytes": 1207118,
+              "pages": 74,
+              "residentPages": 0,
+              "pageBytes": 16384,
+              "monotonicMs": 940012758.892
+            }
+          }
+        ],
+        "cancellations": [
+          {
+            "surface": "browser",
+            "inputSeconds": 60,
+            "memory": {
+              "file": "browser-60-1-cancel-resources.json",
+              "peakBytes": 1373388800,
+              "samples": 3,
+              "errors": []
+            },
+            "memoryPass": true,
+            "beforeCancel": {
+              "status": "running",
+              "stage": "작업 준비",
+              "progress": 0
+            },
+            "deleteCancelled": true,
+            "jobStatus": "cancelled",
+            "readyMs": 311.17645800000173,
+            "displayMs": 0.7999999523162842,
+            "projectPreserved": true,
+            "savedOutputPreserved": true,
+            "displayPass": true,
+            "readyPass": true,
+            "retryCompletedIteration": 2,
+            "rawMemory": {
+              "file": "browser-60-1-cancel-resources.json",
+              "sha256": "c8981843759874679de7a098a8ff02c48f01c9472aa41913b41f0eef268760ab",
+              "peakBytes": 1373388800,
+              "samples": 3,
+              "maxSampleGapMs": 281.35670799999934
+            }
+          },
+          {
+            "surface": "desktop",
+            "inputSeconds": 60,
+            "memory": {
+              "file": "desktop-60-1-cancel-resources.json",
+              "peakBytes": 729677824,
+              "samples": 3,
+              "errors": []
+            },
+            "memoryPass": true,
+            "beforeCancel": {
+              "status": "running",
+              "stage": "작업 준비",
+              "progress": 0
+            },
+            "deleteCancelled": true,
+            "jobStatus": "cancelled",
+            "readyMs": 306.32600000000093,
+            "displayMs": 0.7000000476837158,
+            "projectPreserved": true,
+            "savedOutputPreserved": true,
+            "displayPass": true,
+            "readyPass": true,
+            "retryCompletedIteration": 2,
+            "rawMemory": {
+              "file": "desktop-60-1-cancel-resources.json",
+              "sha256": "95e9488526e09e127bb0d821e580e1daa31d2edbe96eada42ea73cdaf6071954",
+              "peakBytes": 729677824,
+              "samples": 3,
+              "maxSampleGapMs": 277.6570839999986
+            }
+          }
+        ]
+      }
+    }
+  },
+  "archivalScope": "Selected run metrics, frame and sync results, complete audits, and hashes linking raw reports and artifacts. Per-action UI samples and decoded sync windows remain in the hash-identified raw reports."
+}
