@@ -1,0 +1,31 @@
+{
+  "scope": "All four actual app MP4 byte hashes equal the candidate backend file whose every decoded frame and full PCM were compared with the 4-thread baseline. No extra decoding was needed for identical file bytes.",
+  "comparison": "test-output/composition-windowed-encoder-comparison.json",
+  "comparisonSHA256": "07bd5f969cfa79e6ca2e92a62b6b8aeab9633e29a20eee8c0bf709f7e85bcd45",
+  "runs": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "matchesFullyDecodedCandidate": true
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "matchesFullyDecodedCandidate": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "matchesFullyDecodedCandidate": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "matchesFullyDecodedCandidate": true
+    }
+  ]
+}

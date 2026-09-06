@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-06T11:03:42.845608+00:00",
+  "status": "completed",
+  "scope": "All decoded yuv420p frames including PTS and frame durations, and the whole decoded float32 PCM. Identical compressed file pairs are decoded once with every actual file hash rechecked. Synthetic composition only; no general perceptual-quality claim.",
+  "sourceSHA256": "ff351484115b4234005c0e29faaf4d576fd40a2c6a57a4b3a75a724fbd6a52be",
+  "comparisons": [
+    {
+      "index": 0,
+      "baselineOutputSHA256": "3dd0d93f77ecfbe51fc1589e12906c978e82be06eff17dcfc7fc953dba85873a",
+      "candidateOutputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "frames": 85997,
+      "differingFrames": 0,
+      "wholeVideoRowsEqual": true,
+      "wholeFloatAudioEqual": true,
+      "decodedAudioHash": "SHA256=88651614737a9cc712fc807904b6d8ab3c8e7e6d7aa49b37abc51a7ad52f9ce9",
+      "baselineFiles": {
+        "videoHashFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/decoded-comparison/0-baseline.framemd5",
+        "videoHashFileSHA256": "394b353e2bcc4f8cdcaf97bd819211988a5060f46e2797566d1d3dbeb47d53fb",
+        "audioHashFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/decoded-comparison/0-baseline.audio.sha256",
+        "audioHashFileSHA256": "ddcd4ebd3f2ea187f4522f1e5821089ce8cdacbe606215e67cc76e0e8ebc3a11"
+      },
+      "candidateFiles": {
+        "videoHashFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/decoded-comparison/0-candidate.framemd5",
+        "videoHashFileSHA256": "394b353e2bcc4f8cdcaf97bd819211988a5060f46e2797566d1d3dbeb47d53fb",
+        "audioHashFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/decoded-comparison/0-candidate.audio.sha256",
+        "audioHashFileSHA256": "ddcd4ebd3f2ea187f4522f1e5821089ce8cdacbe606215e67cc76e0e8ebc3a11"
+      }
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 1,
+      "comparisonIndex": 0,
+      "actualFileHashVerified": true
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 2,
+      "comparisonIndex": 0,
+      "actualFileHashVerified": true
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 3,
+      "comparisonIndex": 0,
+      "actualFileHashVerified": true
+    }
+  ],
+  "executedSource": "from pathlib import Path\nimport datetime, hashlib, json, subprocess, sys\nbase=Path(sys.argv[1]).resolve(); baseline=Path(sys.argv[2]).resolve(); out=base/'decoded-comparison'\nassert not out.exists();out.mkdir()\ndef read(p):return json.loads(Path(p).read_text())\ndef sha(p):\n h=hashlib.sha256()\n with Path(p).open('rb') as f:\n  for block in iter(lambda:f.read(1024*1024),b''):h.update(block)\n return h.hexdigest()\ndef decode(file, name, frames):\n print('Decoding '+name,flush=True)\n video=out/(name+'.framemd5');audio=out/(name+'.audio.sha256')\n with video.open('wb')as f:subprocess.run(['ffmpeg','-v','error','-threads:v','1','-i',str(file),'-map','0:v:0','-an','-pix_fmt','yuv420p','-fps_mode','passthrough','-enc_time_base:v','1:90000','-threads:v','1','-f','framemd5','-'],stdout=f,check=True,timeout=900)\n with audio.open('wb')as f:subprocess.run(['ffmpeg','-v','error','-i',str(file),'-map','0:a:0','-vn','-c:a','pcm_f32le','-f','hash','-'],stdout=f,check=True,timeout=900)\n rows=[x.strip()for x in video.read_text().splitlines()if x and not x.startswith('#')];assert len(rows)==frames\n return rows,audio.read_text().strip(),{'videoHashFile':str(video),'videoHashFileSHA256':sha(video),'audioHashFile':str(audio),'audioHashFileSHA256':sha(audio)}\nr=read(base/'results.json');old=read(baseline/'results.json');assert r['status'] in ['completed','failed']\nreport={'date':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'running','scope':'All decoded yuv420p frames including PTS and frame durations, and the whole decoded float32 PCM. Identical compressed file pairs are decoded once with every actual file hash rechecked. Synthetic composition only; no general perceptual-quality claim.','sourceSHA256':sha(__file__),'comparisons':[],'runs':[]}\nseen={}\nfor run in r['runs']:\n prev=next(x for x in old['runs']if x['surface']==run['surface']and x['inputSeconds']==run['inputSeconds'])\n assert sha(run['outputFile'])==run['outputSHA256'] and sha(prev['outputFile'])==prev['outputSHA256']\n pair=(run['outputSHA256'],prev['outputSHA256'])\n if pair not in seen:\n  index=len(seen);frames=read(base/run['verificationFile'])['frames']['frames']\n  before,audio_before,files_before=decode(prev['outputFile'],f'{index}-baseline',frames)\n  after,audio_after,files_after=decode(run['outputFile'],f'{index}-candidate',frames)\n  compared={'index':index,'baselineOutputSHA256':pair[1],'candidateOutputSHA256':pair[0],'frames':frames,'differingFrames':sum(x!=y for x,y in zip(before,after)),'wholeVideoRowsEqual':before==after,'wholeFloatAudioEqual':audio_before==audio_after,'decodedAudioHash':audio_after,'baselineFiles':files_before,'candidateFiles':files_after}\n  report['comparisons'].append(compared);seen[pair]=index\n  (out/'results.json').write_text(json.dumps(report,indent=2)+'\\n')\n  assert compared['wholeVideoRowsEqual'] and compared['wholeFloatAudioEqual'],compared\n report['runs'].append({'surface':run['surface'],'seconds':run['inputSeconds'],'iteration':run['iteration'],'comparisonIndex':seen[pair],'actualFileHashVerified':True})\nreport['status']='completed';(out/'results.json').write_text(json.dumps(report,indent=2)+'\\n')\n(out/'executed.py').write_bytes(Path(__file__).read_bytes())\nprint(json.dumps({'status':report['status'],'comparisons':[{k:c[k]for k in ['frames','differingFrames','wholeVideoRowsEqual','wholeFloatAudioEqual']}for c in report['comparisons']],'runs':len(report['runs'])}))\n"
+}

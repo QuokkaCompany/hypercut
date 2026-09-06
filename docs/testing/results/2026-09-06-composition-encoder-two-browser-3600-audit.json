@@ -1,0 +1,364 @@
+{
+  "date": "2026-09-06T11:03:37.263431+00:00",
+  "status": "AUDITED_COMPLETED",
+  "code": "3e6db03d812d2e4566b00caedb63496ea8da39d9",
+  "scope": "Entire projects, actual file hashes, independent output verification, UI samples, simultaneous raw RSS sums and cancellation/retry audited. Comparisons retain all oracle values; path and savedAt are excluded only where appropriate. MP4 bytes are expected to differ after the explicit encoder change; full decoded frame comparison is recorded separately. No human speech-quality or OS cold-cache claim.",
+  "baseline": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-windowed-long/browser-long",
+  "runs": [
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 1,
+      "baselineIteration": 1,
+      "analyzeSeconds": 37.291237333,
+      "exportSeconds": 187.91482966700002,
+      "independentVerificationSeconds": 125.53442516699998,
+      "peakGiB": 1.7519073486328125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 67.11433300000499,
+          "max": 98.35241599997971,
+          "p95": 67.943666999985
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.2454789999756,
+          "max": 119.02775000000838,
+          "p95": 118.8344999999972
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.91104149998864,
+          "max": 67.45487499999581,
+          "p95": 67.17808300000615
+        }
+      },
+      "maxSampleGapMs": 294.0789170000062,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": false,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 106905.119833,
+        "bytes": 1881096192,
+        "processes": [
+          {
+            "pid": 5206,
+            "parent": 5197,
+            "bytes": 225329152,
+            "name": "node"
+          },
+          {
+            "pid": 5207,
+            "parent": 5197,
+            "bytes": 259751936,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 5213,
+            "parent": 5207,
+            "bytes": 167804928,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 5214,
+            "parent": 5207,
+            "bytes": 107069440,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5215,
+            "parent": 5207,
+            "bytes": 83148800,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5218,
+            "parent": 5207,
+            "bytes": 180666368,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5219,
+            "parent": 5207,
+            "bytes": 100941824,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5220,
+            "parent": 5207,
+            "bytes": 340967424,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5246,
+            "parent": 5207,
+            "bytes": 98664448,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5495,
+            "parent": 5206,
+            "bytes": 316751872,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 2,
+      "baselineIteration": 2,
+      "analyzeSeconds": 37.07415545800002,
+      "exportSeconds": 187.85172500000004,
+      "independentVerificationSeconds": 125.21066629199998,
+      "peakGiB": 1.890411376953125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.83304150000913,
+          "max": 98.69758300005924,
+          "p95": 67.3154579999391
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.48306249995949,
+          "max": 120.43591599992942,
+          "p95": 119.57533400005195
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.56212499999674,
+          "max": 66.38537499995437,
+          "p95": 65.99779200006742
+        }
+      },
+      "maxSampleGapMs": 279.5568750000093,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": false,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 176603.56437500002,
+        "bytes": 2029813760,
+        "processes": [
+          {
+            "pid": 5206,
+            "parent": 5197,
+            "bytes": 248643584,
+            "name": "node"
+          },
+          {
+            "pid": 5207,
+            "parent": 5197,
+            "bytes": 264552448,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 5213,
+            "parent": 5207,
+            "bytes": 173604864,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 5214,
+            "parent": 5207,
+            "bytes": 107397120,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5215,
+            "parent": 5207,
+            "bytes": 83148800,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5218,
+            "parent": 5207,
+            "bytes": 180715520,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5219,
+            "parent": 5207,
+            "bytes": 100974592,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5220,
+            "parent": 5207,
+            "bytes": 447070208,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5246,
+            "parent": 5207,
+            "bytes": 98861056,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 6900,
+            "parent": 5206,
+            "bytes": 324845568,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    },
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "iteration": 3,
+      "baselineIteration": 3,
+      "analyzeSeconds": 37.28719191699999,
+      "exportSeconds": 187.57239629199995,
+      "independentVerificationSeconds": 125.50912087500002,
+      "peakGiB": 1.9558868408203125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.69008300011046,
+          "max": 99.18375000008382,
+          "p95": 66.97112500015646
+        },
+        "effects": {
+          "count": 32,
+          "median": 98.76410399994347,
+          "max": 121.09674999979325,
+          "p95": 120.17108300002292
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.27406199986581,
+          "max": 81.83262500003912,
+          "p95": 66.19045800017193
+        }
+      },
+      "maxSampleGapMs": 363.4360829999205,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "actualOutputHashMatchesReport": true,
+      "outputBytesEqualToBaseline": false,
+      "srtBytesEqualToBaseline": true,
+      "outputSHA256": "a1a18a4b7a55fd9615c8e848e5aa6dc61f2ead2177d22ff79ceb5d92cb08e74e",
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true,
+      "peakSample": {
+        "phase": "export",
+        "milliseconds": 176407.80454099993,
+        "bytes": 2100117504,
+        "processes": [
+          {
+            "pid": 5206,
+            "parent": 5197,
+            "bytes": 261439488,
+            "name": "node"
+          },
+          {
+            "pid": 5207,
+            "parent": 5197,
+            "bytes": 264962048,
+            "name": "Google Chrome"
+          },
+          {
+            "pid": 5213,
+            "parent": 5207,
+            "bytes": 174342144,
+            "name": "Google Chrome Helper (GPU)"
+          },
+          {
+            "pid": 5214,
+            "parent": 5207,
+            "bytes": 107610112,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5215,
+            "parent": 5207,
+            "bytes": 83181568,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 5218,
+            "parent": 5207,
+            "bytes": 180715520,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5219,
+            "parent": 5207,
+            "bytes": 100990976,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5220,
+            "parent": 5207,
+            "bytes": 504348672,
+            "name": "Google Chrome Helper (Renderer)"
+          },
+          {
+            "pid": 5246,
+            "parent": 5207,
+            "bytes": 98844672,
+            "name": "Google Chrome Helper"
+          },
+          {
+            "pid": 8224,
+            "parent": 5206,
+            "bytes": 323682304,
+            "name": "ffmpeg"
+          }
+        ]
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.30945
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 224.11945800000103,
+      "displayMs": 0.8000000715255737,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "auditSourceSHA256": "99328ec4b7041f8542886f3537c2c6b02f9b2db104fc3c7a6b21c1fd52608acb"
+}

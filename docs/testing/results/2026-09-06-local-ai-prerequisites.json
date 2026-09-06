@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-06T11:20:43.490837+00:00",
+  "scope": "Read-only local availability checks; no inference, credentials, downloads, or external requests. Does not inspect other ports or installation directories.",
+  "checks": [
+    {
+      "command": "command -v ollama",
+      "exitCode": 1,
+      "stdout": "",
+      "meaning": "Ollama command not found on this shell PATH."
+    },
+    {
+      "command": "curl --silent --show-error --connect-timeout 1 --max-time 2 http://127.0.0.1:11434/api/tags",
+      "exitCode": 7,
+      "stderr": "curl: (7) Failed to connect to 127.0.0.1 port 11434 after 0 ms: Couldn't connect to server\n",
+      "meaning": "The default local Ollama endpoint did not accept a connection at check time."
+    }
+  ],
+  "authenticatedInference": "NOT_RUN"
+}

@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-06T11:22:17.350553+00:00",
+  "scope": "Actual six MP4/SRT file hashes and every independent verification field compared across both apps; filesystem paths and visual-review placeholder excluded. No comparison to the old four-thread 10-minute output (not available).",
+  "outputSHA256": "cf4164f895c2010432d6b13e839b4ad8cad800ae9fbd94d351487942dcd23af1",
+  "srtSHA256": "649042e8d57b0b47adae3b44c0a5aeb29a9e1bff8b7ed021d2480d3811e39764",
+  "checks": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "actualMP4AndSRTHashesVerified": true,
+      "independentVerificationEqualAcrossSurfaces": true
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "actualMP4AndSRTHashesVerified": true,
+      "independentVerificationEqualAcrossSurfaces": true
+    },
+    {
+      "surface": "browser",
+      "iteration": 3,
+      "actualMP4AndSRTHashesVerified": true,
+      "independentVerificationEqualAcrossSurfaces": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "actualMP4AndSRTHashesVerified": true,
+      "independentVerificationEqualAcrossSurfaces": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "actualMP4AndSRTHashesVerified": true,
+      "independentVerificationEqualAcrossSurfaces": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 3,
+      "actualMP4AndSRTHashesVerified": true,
+      "independentVerificationEqualAcrossSurfaces": true
+    }
+  ]
+}

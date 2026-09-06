@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-06T11:04:59.264420+00:00",
+  "method": "Agent visual inspection using view_image of the three exported PNG files. Does not review all caption glyphs or human speech/audio quality.",
+  "frames": [
+    {
+      "cueIndex": 0,
+      "text": "합성 검증 0001",
+      "time": 1.5,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/browser-3600-1-frames/caption-1.png",
+      "sha256": "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62",
+      "observed": "Expected Korean text and number visible near bottom center, yellow with dark outline; no clipping, missing glyph or replacement box seen."
+    },
+    {
+      "cueIndex": 500,
+      "text": "합성 검증 0501",
+      "time": 1434.8333333333314,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/browser-3600-1-frames/caption-501.png",
+      "sha256": "75bf3de3bf6274399bc9b5ea85da4915620e9adff60a4bd054c7518a503c373e",
+      "observed": "Expected Korean text and number visible near bottom center, yellow with dark outline; no clipping, missing glyph or replacement box seen."
+    },
+    {
+      "cueIndex": 999,
+      "text": "합성 검증 1000",
+      "time": 2865.299999999982,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/browser-long/browser-3600-1-frames/caption-1000.png",
+      "sha256": "adfe2755cd9d0ebbeb31e6c3c45752d37baf97975918a42b8b605c739e10be8f",
+      "observed": "Expected Korean text and number visible near bottom center, yellow with dark outline; no clipping, missing glyph or replacement box seen."
+    }
+  ]
+}

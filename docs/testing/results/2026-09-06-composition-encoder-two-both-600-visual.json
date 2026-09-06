@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-06T11:23:37.083026+00:00",
+  "method": "Agent visual inspection using view_image of three actual exported PNG files. All six runs have the same verified output and sample PNG hashes. No all-glyph OCR or human speech/audio evaluation.",
+  "frames": [
+    {
+      "cueIndex": 0,
+      "text": "합성 검증 0001",
+      "time": 1.5,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/both-600/browser-600-1-frames/caption-1.png",
+      "sha256": "963a40c5f41f2c9cfeada71b4a7484309b476c226e1b851e63e568352eabad62",
+      "observed": "Expected Korean caption and number visible near bottom center in yellow with dark outline; no clipping, missing glyph or replacement box seen."
+    },
+    {
+      "cueIndex": 83,
+      "text": "합성 검증 0084",
+      "time": 239.43333333333322,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/both-600/browser-600-1-frames/caption-84.png",
+      "sha256": "ec40fd5fe194091e8d513a7f870466c362a1eed0128f1622d71f09fe90e16562",
+      "observed": "Expected Korean caption and number visible near bottom center in yellow with dark outline; no clipping, missing glyph or replacement box seen."
+    },
+    {
+      "cueIndex": 165,
+      "text": "합성 검증 0166",
+      "time": 474.49999999999966,
+      "path": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-encoder-two-long/both-600/browser-600-1-frames/caption-166.png",
+      "sha256": "cf5e716f42cb35036c2a78035c6e1c00301658dce68cd12555494ea2df6296cb",
+      "observed": "Expected Korean caption and number visible near bottom center in yellow with dark outline; no clipping, missing glyph or replacement box seen."
+    }
+  ]
+}
