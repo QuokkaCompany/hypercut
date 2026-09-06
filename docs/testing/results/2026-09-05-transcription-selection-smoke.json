@@ -1,0 +1,878 @@
+{
+  "date": "2026-09-06T01:59:18.311Z",
+  "code": "674e72dbefe6422951a32039f7e88d71b25dfa5d",
+  "workingTree": "modified benchmark harness; source hashes below",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "cpuCount": 14,
+  "memoryBytes": 38654705664,
+  "node": "v24.14.1",
+  "power": "Now drawing from 'AC Power'",
+  "model": {
+    "name": "Whisper small (multilingual)",
+    "file": "ggml-small.bin",
+    "size": 487601967,
+    "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+    "engine": "whisper.cpp 1.9.3",
+    "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+  },
+  "settings": {
+    "language": "ko",
+    "channel": 0,
+    "cpuThreads": 4,
+    "gpu": false
+  },
+  "scope": "Actual app UI + real Whisper small; repeated synthetic Korean and simple video. Union RSS of app trees sampled at 250ms, test driver excluded. No OS cache purge; unrelated desktop apps are not stopped. Exactly 32 indexed selection actions measured from click to next frame, with other clicks recorded separately; not all UI actions.",
+  "requested": {
+    "durations": [
+      60
+    ],
+    "iterations": 1,
+    "surfaces": [
+      "browser",
+      "desktop"
+    ]
+  },
+  "sourceHashes": {
+    "server/transcription.mjs": "758da25327e5043ee163cbcb2fb0ab3927b8ae3295739c0635372fd73414b26c",
+    "shared/captions.mjs": "9b73256eb63a6debba222d558439f40241024aa3058ad01874f41e0f2b57b06e",
+    "src/Captions.tsx": "29c7306e5dedb9d2008df13a5ec6bd25a3c449da2037301ae6b47fa46d7f1588",
+    "src/App.tsx": "1134b9d0c02dc60e5540074f08b2f03677db16f937b8ee781f086fe35729eaf3",
+    "scripts/transcription-benchmark.mjs": "42e76a43bc78bf4954ad2ba758b50808f12b21520df1a5cdd4a3cd8cc6813748",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "scripts/helpers/selection-probe.mjs": "05e845926300c2a5af8f2f09d3d7a781e97d46226103611821cf0d3b980c1e0a",
+    "scripts/helpers/transcription-performance-fixture.mjs": "9ff585e98fffe3cf5274905322b9ddc8f9a410bff2391ec5f142f63b635fc153",
+    "package-lock.json": "d5fe6beaad8a68c9cfb98a596d4d54f8d307c9aec24ec6517fc5d301afe1e65a",
+    ".hypercut/transcription/whisper-cli": "8ae4da90dbbee8568f77e793ab93483f902c9c6043e07fffa2833ed3530258fc",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "cb74f56c5a1dc47ac7daf1faa0f6980c6c1358650de410181047333d758cf737"
+  },
+  "fixtures": [
+    {
+      "format": "hypercut-transcription-benchmark-fixture",
+      "version": 1,
+      "kind": "Repeated generated Korean TTS and simple 1080p video, not human quality evidence",
+      "text": "오늘은 영상 편집의 순서를 살펴보겠습니다. 먼저 원본 파일을 열고 마이크의 소리를 확인합니다. 문장 사이의 긴 무음은 줄이고, 작은 목소리는 남겨 주세요. 자막의 숫자와 고유명사는 원본을 들으며 다시 확인합니다. 마지막으로 편집한 영상을 저장하고 처음부터 끝까지 재생합니다.",
+      "voice": "Eddy (Korean (South Korea))",
+      "rate": 175,
+      "spokenSeconds": 26.718458,
+      "cycleSeconds": 31,
+      "speechSHA256": "c84f97933618796ea01613789638ea3a852bc2f284598111db514628e7e75a92",
+      "cycleSHA256": "daf640ebb3cbf422268e58713677c2b2e3b7a58f232810d00164374e78610657",
+      "audioSHA256": "c87d744f8a957ff4019dc9a5073be49715e7b0b8faf9b4f36a683c7898ca62f4",
+      "media": {
+        "id": "e0b21dc1-61a0-494c-9d61-f24dd255190a",
+        "name": "60s.mp4",
+        "duration": 60,
+        "fingerprint": "72de7726e3bffdaa7d92a34a404e2355378a4cfc1a36f025c2fcee635ddd9d9f",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 1284380,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "test-output/transcription-performance-fixtures/60s.mp4"
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "fingerprint": "72de7726e3bffdaa7d92a34a404e2355378a4cfc1a36f025c2fcee635ddd9d9f",
+      "iteration": 1,
+      "cache": "first inference in fresh app process; OS cache not purged",
+      "importSeconds": 0.3161317079999999,
+      "elapsedSeconds": 4.339787875,
+      "realTimeFactor": 0.07232979791666666,
+      "peakRSSBytes": 2173009920,
+      "rssSamples": 19,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 13.349999964237213,
+        "max": 14.600000023841858,
+        "p95": 14.600000023841858
+      },
+      "selectionRaw": [
+        {
+          "action": 0,
+          "label": "자막 2 선택",
+          "at": 1398.1000000238419,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 1,
+          "label": "자막 1 선택",
+          "at": 1431.8999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 2,
+          "label": "자막 2 선택",
+          "at": 1465.2999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 3,
+          "label": "자막 1 선택",
+          "at": 1498.7000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 4,
+          "label": "자막 2 선택",
+          "at": 1532.2000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 5,
+          "label": "자막 1 선택",
+          "at": 1565.7999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 6,
+          "label": "자막 2 선택",
+          "at": 1598.8999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 7,
+          "label": "자막 1 선택",
+          "at": 1633.6000000238419,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 11.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 8,
+          "label": "자막 2 선택",
+          "at": 1665,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 9,
+          "label": "자막 1 선택",
+          "at": 1698.6000000238419,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 10,
+          "label": "자막 2 선택",
+          "at": 1732.6000000238419,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 11,
+          "label": "자막 1 선택",
+          "at": 1767.1000000238419,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 12,
+          "label": "자막 2 선택",
+          "at": 1798.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 13,
+          "label": "자막 1 선택",
+          "at": 1832.7999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 14,
+          "label": "자막 2 선택",
+          "at": 1865.6000000238419,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 15,
+          "label": "자막 1 선택",
+          "at": 1899.2000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 16,
+          "label": "자막 2 선택",
+          "at": 1931.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 17,
+          "label": "자막 1 선택",
+          "at": 1966.2999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 18,
+          "label": "자막 2 선택",
+          "at": 1998.2000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 19,
+          "label": "자막 1 선택",
+          "at": 2032.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 20,
+          "label": "자막 2 선택",
+          "at": 2065.2000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.099999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 21,
+          "label": "자막 1 선택",
+          "at": 2103,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 9.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 22,
+          "label": "자막 2 선택",
+          "at": 2132.899999976158,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 23,
+          "label": "자막 1 선택",
+          "at": 2166.399999976158,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 24,
+          "label": "자막 2 선택",
+          "at": 2198.2999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 25,
+          "label": "자막 1 선택",
+          "at": 2231.7000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 26,
+          "label": "자막 2 선택",
+          "at": 2265,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 14.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 27,
+          "label": "자막 1 선택",
+          "at": 2299.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 28,
+          "label": "자막 2 선택",
+          "at": 2331.7000000476837,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 29,
+          "label": "자막 1 선택",
+          "at": 2366.100000023842,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 30,
+          "label": "자막 2 선택",
+          "at": 2399.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 12.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 31,
+          "label": "자막 1 선택",
+          "at": 2432.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 13,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "selectionOutsideCount": 0,
+      "cues": 10,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "9fc56e2e-f0c7-4e3a-a64d-ef44b194ec64",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "aa10af9f-7c07-4127-97c6-0bce3c3e91f7",
+        "start": 51.84,
+        "end": 58.16,
+        "text": "마지막으로 편집한 영상을 저장하고 처음부터 끝까지 재생합니다."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "fingerprint": "72de7726e3bffdaa7d92a34a404e2355378a4cfc1a36f025c2fcee635ddd9d9f",
+      "iteration": 1,
+      "cache": "first inference in fresh app process; OS cache not purged",
+      "importSeconds": 0.30436941699999986,
+      "elapsedSeconds": 4.631376082999999,
+      "realTimeFactor": 0.07718960138333332,
+      "peakRSSBytes": 1636122624,
+      "rssSamples": 20,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 6.599999904632568,
+        "max": 8.300000071525574,
+        "p95": 7.899999976158142
+      },
+      "selectionRaw": [
+        {
+          "action": 0,
+          "label": "자막 2 선택",
+          "at": 1424.7999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 1,
+          "label": "자막 1 선택",
+          "at": 1454.8999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 2,
+          "label": "자막 2 선택",
+          "at": 1474.7999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 3,
+          "label": "자막 1 선택",
+          "at": 1505.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 4,
+          "label": "자막 2 선택",
+          "at": 1524.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.099999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 5,
+          "label": "자막 1 선택",
+          "at": 1545.3999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 5.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 6,
+          "label": "자막 2 선택",
+          "at": 1565.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 5.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 7,
+          "label": "자막 1 선택",
+          "at": 1594.1999999284744,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 8,
+          "label": "자막 2 선택",
+          "at": 1613.6999999284744,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 9,
+          "label": "자막 1 선택",
+          "at": 1635.5999999046326,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 5.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 10,
+          "label": "자막 2 선택",
+          "at": 1664.3999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 11,
+          "label": "자막 1 선택",
+          "at": 1685,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 12,
+          "label": "자막 2 선택",
+          "at": 1704.7999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 13,
+          "label": "자막 1 선택",
+          "at": 1735,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 14,
+          "label": "자막 2 선택",
+          "at": 1754.8999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 15,
+          "label": "자막 1 선택",
+          "at": 1775,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 16,
+          "label": "자막 2 선택",
+          "at": 1804.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.099999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 17,
+          "label": "자막 1 선택",
+          "at": 1833.8999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 18,
+          "label": "자막 2 선택",
+          "at": 1854.5999999046326,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 19,
+          "label": "자막 1 선택",
+          "at": 1875.3999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 20,
+          "label": "자막 2 선택",
+          "at": 1894.6999999284744,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 21,
+          "label": "자막 1 선택",
+          "at": 1914.2999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 22,
+          "label": "자막 2 선택",
+          "at": 1934.5,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 23,
+          "label": "자막 1 선택",
+          "at": 1955.2999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 24,
+          "label": "자막 2 선택",
+          "at": 1983.6999999284744,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 25,
+          "label": "자막 1 선택",
+          "at": 2005,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 26,
+          "label": "자막 2 선택",
+          "at": 2034.3999999761581,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 27,
+          "label": "자막 1 선택",
+          "at": 2065.0999999046326,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 5.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 28,
+          "label": "자막 2 선택",
+          "at": 2094.2999999523163,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 7.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 29,
+          "label": "자막 1 선택",
+          "at": 2115.1999999284744,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 5.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 30,
+          "label": "자막 2 선택",
+          "at": 2143.1999999284744,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 8.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "action": 31,
+          "label": "자막 1 선택",
+          "at": 2165.0999999046326,
+          "trusted": true,
+          "clickCount": 1,
+          "ms": 6.5,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "selectionOutsideCount": 0,
+      "cues": 10,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "871ed12a-ef5a-4523-bf88-f03d6c1fd1fd",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "c6fc044c-d96b-43f9-9313-406aad0cbb8c",
+        "start": 51.84,
+        "end": 58.16,
+        "text": "마지막으로 편집한 영상을 저장하고 처음부터 끝까지 재생합니다."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "failedRuns": [],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "jobStatus": "cancelled",
+      "displayMs": 0.8000000715255737,
+      "readyMs": 55.34545799999978,
+      "originalCaptionPreserved": true,
+      "realEngineProcessExited": true,
+      "retryAcceptedAndReachedInference": true,
+      "displayPass": true,
+      "readyPass": true
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "jobStatus": "cancelled",
+      "displayMs": 1.0999999046325684,
+      "readyMs": 62.799582999999984,
+      "originalCaptionPreserved": true,
+      "realEngineProcessExited": true,
+      "retryAcceptedAndReachedInference": true,
+      "displayPass": true,
+      "readyPass": true
+    }
+  ],
+  "status": "completed",
+  "summary": [
+    {
+      "surface": "browser",
+      "seconds": 60,
+      "elapsedSeconds": {
+        "count": 1,
+        "median": 4.339787875,
+        "max": 4.339787875,
+        "p95": null
+      },
+      "peakRSSBytes": {
+        "count": 1,
+        "median": 2173009920,
+        "max": 2173009920,
+        "p95": null
+      },
+      "allMeasuredGoalsPass": true
+    },
+    {
+      "surface": "desktop",
+      "seconds": 60,
+      "elapsedSeconds": {
+        "count": 1,
+        "median": 4.631376082999999,
+        "max": 4.631376082999999,
+        "p95": null
+      },
+      "peakRSSBytes": {
+        "count": 1,
+        "median": 1636122624,
+        "max": 1636122624,
+        "p95": null
+      },
+      "allMeasuredGoalsPass": true
+    }
+  ]
+}

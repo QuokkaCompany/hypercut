@@ -1,0 +1,2003 @@
+{
+  "date": "2026-09-06T01:34:13.189Z",
+  "code": "1e927ffcceb75354bab4e3af85d7fb6068189689",
+  "workingTree": "clean",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "cpuCount": 14,
+  "memoryBytes": 38654705664,
+  "node": "v24.14.1",
+  "power": "Now drawing from 'AC Power'",
+  "model": {
+    "name": "Whisper small (multilingual)",
+    "file": "ggml-small.bin",
+    "size": 487601967,
+    "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+    "engine": "whisper.cpp 1.9.3",
+    "revision": "371b5a7561823ab2bb32142d2751e35e7534727b"
+  },
+  "settings": {
+    "language": "ko",
+    "channel": 0,
+    "cpuThreads": 4,
+    "gpu": false
+  },
+  "scope": "Actual app UI + real Whisper small; repeated synthetic Korean and simple video. Union RSS of app trees sampled at 250ms, test driver excluded. No OS cache purge; unrelated desktop apps are not stopped. Selection-to-next-frame timing only, not all UI actions.",
+  "requested": {
+    "durations": [
+      600,
+      3600
+    ],
+    "iterations": 3,
+    "surfaces": [
+      "browser",
+      "desktop"
+    ]
+  },
+  "sourceHashes": {
+    "server/transcription.mjs": "758da25327e5043ee163cbcb2fb0ab3927b8ae3295739c0635372fd73414b26c",
+    "shared/captions.mjs": "9b73256eb63a6debba222d558439f40241024aa3058ad01874f41e0f2b57b06e",
+    "src/Captions.tsx": "29c7306e5dedb9d2008df13a5ec6bd25a3c449da2037301ae6b47fa46d7f1588",
+    "src/App.tsx": "1134b9d0c02dc60e5540074f08b2f03677db16f937b8ee781f086fe35729eaf3",
+    "scripts/transcription-benchmark.mjs": "73107ddbffc7d92ec2cac47090c19b7e168b4f1efd690a52e29f1d6caa6205ac",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "scripts/helpers/transcription-performance-fixture.mjs": "9ff585e98fffe3cf5274905322b9ddc8f9a410bff2391ec5f142f63b635fc153",
+    "package-lock.json": "d5fe6beaad8a68c9cfb98a596d4d54f8d307c9aec24ec6517fc5d301afe1e65a",
+    ".hypercut/transcription/whisper-cli": "8ae4da90dbbee8568f77e793ab93483f902c9c6043e07fffa2833ed3530258fc",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "cb74f56c5a1dc47ac7daf1faa0f6980c6c1358650de410181047333d758cf737"
+  },
+  "fixtures": [
+    {
+      "format": "hypercut-transcription-benchmark-fixture",
+      "version": 1,
+      "kind": "Repeated generated Korean TTS and simple 1080p video, not human quality evidence",
+      "text": "오늘은 영상 편집의 순서를 살펴보겠습니다. 먼저 원본 파일을 열고 마이크의 소리를 확인합니다. 문장 사이의 긴 무음은 줄이고, 작은 목소리는 남겨 주세요. 자막의 숫자와 고유명사는 원본을 들으며 다시 확인합니다. 마지막으로 편집한 영상을 저장하고 처음부터 끝까지 재생합니다.",
+      "voice": "Eddy (Korean (South Korea))",
+      "rate": 175,
+      "spokenSeconds": 26.718458,
+      "cycleSeconds": 31,
+      "speechSHA256": "c84f97933618796ea01613789638ea3a852bc2f284598111db514628e7e75a92",
+      "cycleSHA256": "daf640ebb3cbf422268e58713677c2b2e3b7a58f232810d00164374e78610657",
+      "audioSHA256": "c87d744f8a957ff4019dc9a5073be49715e7b0b8faf9b4f36a683c7898ca62f4",
+      "media": {
+        "id": "f6fa9c85-db9d-4a58-a098-dc271bcc2941",
+        "name": "600s.mp4",
+        "duration": 600,
+        "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 12631817,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "test-output/transcription-performance-fixtures/600s.mp4"
+    },
+    {
+      "format": "hypercut-transcription-benchmark-fixture",
+      "version": 1,
+      "kind": "Repeated generated Korean TTS and simple 1080p video, not human quality evidence",
+      "text": "오늘은 영상 편집의 순서를 살펴보겠습니다. 먼저 원본 파일을 열고 마이크의 소리를 확인합니다. 문장 사이의 긴 무음은 줄이고, 작은 목소리는 남겨 주세요. 자막의 숫자와 고유명사는 원본을 들으며 다시 확인합니다. 마지막으로 편집한 영상을 저장하고 처음부터 끝까지 재생합니다.",
+      "voice": "Eddy (Korean (South Korea))",
+      "rate": 175,
+      "spokenSeconds": 26.718458,
+      "cycleSeconds": 31,
+      "speechSHA256": "c84f97933618796ea01613789638ea3a852bc2f284598111db514628e7e75a92",
+      "cycleSHA256": "daf640ebb3cbf422268e58713677c2b2e3b7a58f232810d00164374e78610657",
+      "audioSHA256": "c87d744f8a957ff4019dc9a5073be49715e7b0b8faf9b4f36a683c7898ca62f4",
+      "media": {
+        "id": "cca4d36d-c51d-435d-a5ec-98950229cbe0",
+        "name": "3600s.mp4",
+        "duration": 3600,
+        "fingerprint": "7838f97489a5df411448e85dd90ecce8b67470f6b48f33868c6e981ea9d53e34",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 75708584,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "test-output/transcription-performance-fixtures/3600s.mp4"
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "iteration": 1,
+      "cache": "first inference in fresh app process; OS cache not purged",
+      "importSeconds": 0.721787709,
+      "elapsedSeconds": 41.897330084000004,
+      "realTimeFactor": 0.06982888347333334,
+      "peakRSSBytes": 2345582592,
+      "rssSamples": 169,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 12.75,
+        "max": 14.399999976158142,
+        "p95": 14.299999952316284
+      },
+      "selectionRaw": [
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.600000023841858,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 98,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "6e40ea61-f65e-4f24-b6d7-d257adbfc0f6",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "07a13c2f-46f4-4943-9e9b-96a1cfd3223d",
+        "start": 590.24,
+        "end": 598.24,
+        "text": "문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "iteration": 2,
+      "cache": "warm app/OS cache after previous transcription",
+      "importSeconds": 0.721787709,
+      "elapsedSeconds": 42.962960917000004,
+      "realTimeFactor": 0.07160493486166668,
+      "peakRSSBytes": 2266136576,
+      "rssSamples": 173,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 12.850000023841858,
+        "max": 14.400000095367432,
+        "p95": 14.399999976158142
+      },
+      "selectionRaw": [
+        {
+          "ms": 14.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 1.4000000953674316,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 10.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 10.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.100000023841858,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 98,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "a5e40a32-0623-4aa9-8c2c-9e3fd0d85c54",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "a7aa5c4a-d2c9-47be-9d84-0028869bac23",
+        "start": 590.24,
+        "end": 598.24,
+        "text": "문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "iteration": 3,
+      "cache": "warm app/OS cache after previous transcription",
+      "importSeconds": 0.721787709,
+      "elapsedSeconds": 40.896529291,
+      "realTimeFactor": 0.06816088215166667,
+      "peakRSSBytes": 2199142400,
+      "rssSamples": 165,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 13,
+        "max": 14.5,
+        "p95": 14.399999976158142
+      },
+      "selectionRaw": [
+        {
+          "ms": 13.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.299999952316284,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 98,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "a6cf8a83-58b1-428f-a7bb-9b35fe5df53d",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "82899805-c56e-4df4-bf68-818f2b1be65a",
+        "start": 590.24,
+        "end": 598.24,
+        "text": "문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "iteration": 1,
+      "cache": "first inference in fresh app process; OS cache not purged",
+      "importSeconds": 0.3370370830000029,
+      "elapsedSeconds": 40.885038791,
+      "realTimeFactor": 0.06814173131833333,
+      "peakRSSBytes": 1790296064,
+      "rssSamples": 165,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 6.299999952316284,
+        "max": 7.600000023841858,
+        "p95": 7.600000023841858
+      },
+      "selectionRaw": [
+        {
+          "ms": 5.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 4.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.300000071525574,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 98,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "b5f3a081-daac-487d-8bba-81df1a5fab11",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "fcc27960-02b4-4d36-ba23-bab465b5150f",
+        "start": 590.24,
+        "end": 598.24,
+        "text": "문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "iteration": 2,
+      "cache": "warm app/OS cache after previous transcription",
+      "importSeconds": 0.3370370830000029,
+      "elapsedSeconds": 41.017870583999986,
+      "realTimeFactor": 0.06836311763999997,
+      "peakRSSBytes": 1814937600,
+      "rssSamples": 165,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 6.25,
+        "max": 7.700000047683716,
+        "p95": 7.600000023841858
+      },
+      "selectionRaw": [
+        {
+          "ms": 6.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 4.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.099999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 98,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "611ac706-9196-4fa5-809d-913acb83a0fe",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "2efef000-9428-4e04-b195-4e17ea213e03",
+        "start": 590.24,
+        "end": 598.24,
+        "text": "문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "fingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "iteration": 3,
+      "cache": "warm app/OS cache after previous transcription",
+      "importSeconds": 0.3370370830000029,
+      "elapsedSeconds": 41.56343462499999,
+      "realTimeFactor": 0.06927239104166666,
+      "peakRSSBytes": 1799536640,
+      "rssSamples": 167,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 6.450000047683716,
+        "max": 7.399999976158142,
+        "p95": 7.100000023841858
+      },
+      "selectionRaw": [
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 5.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 7.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 6.400000095367432,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 98,
+      "pendingTimingReviews": 0,
+      "firstCue": {
+        "id": "275d7ac5-4783-4505-9d6c-582feebde6c4",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "27e1fc76-e59f-4cd4-bbf2-93eace342012",
+        "start": 590.24,
+        "end": 598.24,
+        "text": "문장 사이 긴 부분은 줄이고 작은 목소리는 남겨주세요."
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "fingerprint": "7838f97489a5df411448e85dd90ecce8b67470f6b48f33868c6e981ea9d53e34",
+      "iteration": 1,
+      "cache": "first inference in fresh app process; OS cache not purged",
+      "importSeconds": 2.397157750000013,
+      "elapsedSeconds": 229.417344583,
+      "realTimeFactor": 0.06372704016194444,
+      "peakRSSBytes": 2893889536,
+      "rssSamples": 916,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 13,
+        "max": 15.600000023841858,
+        "p95": 14.100000023841858
+      },
+      "selectionRaw": [
+        {
+          "ms": 15.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 11.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 580,
+      "pendingTimingReviews": 1,
+      "firstCue": {
+        "id": "0b88a920-8c67-4e2d-8bfa-03c4be108bb1",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "dc34f8f3-c52f-4cfa-b208-5f3a57caa53a",
+        "start": 3596.24,
+        "end": 3600,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다.",
+        "timingWarning": {
+          "kind": "source-end",
+          "originalEnd": 3600.24
+        }
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "fingerprint": "7838f97489a5df411448e85dd90ecce8b67470f6b48f33868c6e981ea9d53e34",
+      "iteration": 2,
+      "cache": "warm app/OS cache after previous transcription",
+      "importSeconds": 2.397157750000013,
+      "elapsedSeconds": 227.79783575000002,
+      "realTimeFactor": 0.06327717659722222,
+      "peakRSSBytes": 2873278464,
+      "rssSamples": 910,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 13.350000083446503,
+        "max": 14.199999928474426,
+        "p95": 13.900000095367432
+      },
+      "selectionRaw": [
+        {
+          "ms": 12.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 2.5999999046325684,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.900000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.100000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.800000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.899999976158142,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 580,
+      "pendingTimingReviews": 1,
+      "firstCue": {
+        "id": "dc2d1487-105e-487a-80e4-308744b1b8e9",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "1a0e26b8-05a1-45f7-8366-7a7f905a7ac4",
+        "start": 3596.24,
+        "end": 3600,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다.",
+        "timingWarning": {
+          "kind": "source-end",
+          "originalEnd": 3600.24
+        }
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "fingerprint": "7838f97489a5df411448e85dd90ecce8b67470f6b48f33868c6e981ea9d53e34",
+      "iteration": 3,
+      "cache": "warm app/OS cache after previous transcription",
+      "importSeconds": 2.397157750000013,
+      "elapsedSeconds": 228.7880542919999,
+      "realTimeFactor": 0.06355223730333331,
+      "peakRSSBytes": 2948071424,
+      "rssSamples": 913,
+      "samplingErrors": [],
+      "selectionMs": {
+        "count": 32,
+        "median": 13.450000047683716,
+        "max": 14.600000023841858,
+        "p95": 13.799999952316284
+      },
+      "selectionRaw": [
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 14.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.899999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.599999904632568,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.600000023841858,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.299999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.300000071525574,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.5,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.399999976158142,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.700000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 12.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.699999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.200000047683716,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.199999928474426,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.400000095367432,
+          "selected": true,
+          "running": true
+        },
+        {
+          "ms": 13.799999952316284,
+          "selected": true,
+          "running": true
+        }
+      ],
+      "cues": 580,
+      "pendingTimingReviews": 1,
+      "firstCue": {
+        "id": "7c3f51a4-8eb4-41d2-b987-3cfbfcd22ff9",
+        "start": 0,
+        "end": 4.88,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다."
+      },
+      "lastCue": {
+        "id": "8ca49a63-a238-4a70-825f-3c992d5f9b60",
+        "start": 3596.24,
+        "end": 3600,
+        "text": "오늘은 영상 편집의 순서를 살펴보겠습니다.",
+        "timingWarning": {
+          "kind": "source-end",
+          "originalEnd": 3600.24
+        }
+      },
+      "validTranscript": true,
+      "timingPass": true,
+      "memoryPass": true,
+      "selectionPass": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "failedRuns": [
+    {
+      "surface": "desktop",
+      "inputSeconds": 3600,
+      "iteration": 1,
+      "elapsedSeconds": 240.81312599999993,
+      "peakRSSBytes": 2593161216,
+      "samplingErrors": [],
+      "resourcesFile": "desktop-3600-1-failed-resources.json",
+      "stage": "완료",
+      "progress": 1,
+      "status": "completed",
+      "error": "Expected values to be strictly equal:\n\n36 !== 32\n"
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "jobStatus": "cancelled",
+      "displayMs": 1.2000000476837158,
+      "readyMs": 63.91025000001537,
+      "originalCaptionPreserved": true,
+      "realEngineProcessExited": true,
+      "retryAcceptedAndReachedInference": true,
+      "displayPass": true,
+      "readyPass": true
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 600,
+      "jobStatus": "cancelled",
+      "displayMs": 1.7999999523162842,
+      "readyMs": 354.15220799995586,
+      "originalCaptionPreserved": true,
+      "realEngineProcessExited": true,
+      "retryAcceptedAndReachedInference": true,
+      "displayPass": true,
+      "readyPass": true
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "jobStatus": "cancelled",
+      "displayMs": 1.7999999523162842,
+      "readyMs": 199.41204099997412,
+      "originalCaptionPreserved": true,
+      "realEngineProcessExited": true,
+      "retryAcceptedAndReachedInference": true,
+      "displayPass": true,
+      "readyPass": true
+    }
+  ],
+  "status": "failed",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n36 !== 32\n\n    at exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/transcription-benchmark.mjs:85:81)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/transcription-benchmark.mjs:120:37"
+}

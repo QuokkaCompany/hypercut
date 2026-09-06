@@ -7,6 +7,7 @@ import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
 import { rssSampler, summarize } from './helpers/performance.mjs';
+import { installSelectionProbe, measureSelections, selectionSnapshot } from './helpers/selection-probe.mjs';
 import { transcriptionFixture, sha256 } from './helpers/transcription-performance-fixture.mjs';
 import { makeProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { validateTranscript } from '../shared/captions.mjs';
@@ -19,8 +20,8 @@ const output = path.resolve(option('output', 'test-output/transcription-performa
 assert.ok(output.startsWith(path.resolve('test-output') + path.sep)); await mkdir(output, { recursive: true });
 const reportPath = path.join(output, 'results.json');
 if (await readFile(reportPath).then(() => true).catch(error => { if (error.code === 'ENOENT') return false; throw error; })) throw new Error('Results already exist. Keep the evidence and choose a new --output directory.');
-const report = { date: new Date().toISOString(), code: (await exec('git', ['rev-parse', 'HEAD'])).stdout.trim(), workingTree: (await exec('git', ['status', '--porcelain'])).stdout.trim() ? 'modified benchmark harness; source hashes below' : 'clean', platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset', ['-g', 'batt'])).stdout.trim(), model: TRANSCRIPTION_MODEL, settings: { language: 'ko', channel: 0, cpuThreads: 4, gpu: false }, scope: 'Actual app UI + real Whisper small; repeated synthetic Korean and simple video. Union RSS of app trees sampled at 250ms, test driver excluded. No OS cache purge; unrelated desktop apps are not stopped. Selection-to-next-frame timing only, not all UI actions.', requested: { durations, iterations, surfaces }, sourceHashes: {}, fixtures: [], runs: [], failedRuns: [], cancellations: [], status: 'running' };
-for (const file of ['server/transcription.mjs', 'shared/captions.mjs', 'src/Captions.tsx', 'src/App.tsx', 'scripts/transcription-benchmark.mjs', 'scripts/helpers/performance.mjs', 'scripts/helpers/transcription-performance-fixture.mjs', 'package-lock.json', '.hypercut/transcription/whisper-cli', 'release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar']) report.sourceHashes[file] = await sha256(file);
+const report = { date: new Date().toISOString(), code: (await exec('git', ['rev-parse', 'HEAD'])).stdout.trim(), workingTree: (await exec('git', ['status', '--porcelain'])).stdout.trim() ? 'modified benchmark harness; source hashes below' : 'clean', platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset', ['-g', 'batt'])).stdout.trim(), model: TRANSCRIPTION_MODEL, settings: { language: 'ko', channel: 0, cpuThreads: 4, gpu: false }, scope: 'Actual app UI + real Whisper small; repeated synthetic Korean and simple video. Union RSS of app trees sampled at 250ms, test driver excluded. No OS cache purge; unrelated desktop apps are not stopped. Exactly 32 indexed selection actions measured from click to next frame, with other clicks recorded separately; not all UI actions.', requested: { durations, iterations, surfaces }, sourceHashes: {}, fixtures: [], runs: [], failedRuns: [], cancellations: [], status: 'running' };
+for (const file of ['server/transcription.mjs', 'shared/captions.mjs', 'src/Captions.tsx', 'src/App.tsx', 'scripts/transcription-benchmark.mjs', 'scripts/helpers/performance.mjs', 'scripts/helpers/selection-probe.mjs', 'scripts/helpers/transcription-performance-fixture.mjs', 'package-lock.json', '.hypercut/transcription/whisper-cli', 'release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar']) report.sourceHashes[file] = await sha256(file);
 const flush = () => writeFile(reportPath, JSON.stringify(report, null, 2)); await flush();
 let active;
 async function launch(surface, dataDir) {
@@ -70,30 +71,31 @@ async function exercise(surface, fixture) {
       }
       throw new Error(`Timed out waiting for real transcription job ${currentId}`);
     }
-    await page.evaluate(() => {
-      window.__selectionTimes = [];
-      document.addEventListener('click', event => { const row = event.target.closest?.('button.caption-row'); if (!row) return; const at = performance.now(); requestAnimationFrame(() => { window.__selectionTimes.push({ ms: performance.now() - at, selected: row.classList.contains('selected'), running: !!document.querySelector('.caption-progress') }); }); }, true);
-    });
+    await installSelectionProbe(page);
     for (let iteration = 1; iteration <= iterations; iteration++) {
-      await page.evaluate(() => { window.__selectionTimes = []; }); sampler = rssSampler(active.roots); await sampler.start();
+      sampler = rssSampler(active.roots); await sampler.start();
       let started = performance.now(), memory;
       try {
       started = await start(); await waitForState(job => job.progress >= .15 && job.status === 'running');
-      for (let i = 0; i < 32; i++) { await button(`자막 ${i % 2 ? 1 : 2} 선택`).click(); }
+      const values = await measureSelections(page);
       const job = await waitForState(job => job.status === 'completed'); await page.waitForFunction(() => !document.querySelector('.caption-progress'));
       const elapsedSeconds = (performance.now() - started) / 1000; memory = await sampler.stop(); sampler = null;
-      const values = await page.evaluate(() => window.__selectionTimes); assert.equal(values.length, 32); assert.ok(values.every(value => value.selected && value.running));
+      const measuredClicks = await selectionSnapshot(page);
       const transcript = validateTranscript(job.result, fixture.media.duration); assert.ok(transcript.cues.length > 1); assert.ok(transcript.model.includes(TRANSCRIPTION_MODEL.sha256));
-      const key = `${surface}-${Math.round(fixture.media.duration)}-${iteration}`; await writeFile(path.join(output, `${key}-resources.json`), JSON.stringify(memory, null, 2)); await writeFile(path.join(output, `${key}-transcript.json`), JSON.stringify(transcript, null, 2));
+      const key = `${surface}-${Math.round(fixture.media.duration)}-${iteration}`; await writeFile(path.join(output, `${key}-resources.json`), JSON.stringify(memory, null, 2)); await writeFile(path.join(output, `${key}-transcript.json`), JSON.stringify(transcript, null, 2)); await writeFile(path.join(output, `${key}-selection.json`), JSON.stringify(measuredClicks, null, 2));
       const selection = summarize(values.map(value => value.ms));
-      const result = { surface, inputSeconds: fixture.media.duration, fingerprint: fixture.media.fingerprint, iteration, cache: iteration === 1 ? 'first inference in fresh app process; OS cache not purged' : 'warm app/OS cache after previous transcription', importSeconds, elapsedSeconds, realTimeFactor: elapsedSeconds / fixture.media.duration, peakRSSBytes: memory.peakBytes, rssSamples: memory.samples.length, samplingErrors: memory.errors, selectionMs: selection, selectionRaw: values, cues: transcript.cues.length, pendingTimingReviews: transcript.cues.filter(cue => cue.timingWarning).length, firstCue: transcript.cues[0], lastCue: transcript.cues.at(-1), validTranscript: true, timingPass: elapsedSeconds <= fixture.media.duration, memoryPass: memory.peakBytes !== null && memory.peakBytes <= 4 * 1024 ** 3 && memory.errors.length === 0, selectionPass: selection.p95 !== null && selection.p95 <= 200, pageErrors: [...errors], externalRequests: external.length };
+      const result = { surface, inputSeconds: fixture.media.duration, fingerprint: fixture.media.fingerprint, iteration, cache: iteration === 1 ? 'first inference in fresh app process; OS cache not purged' : 'warm app/OS cache after previous transcription', importSeconds, elapsedSeconds, realTimeFactor: elapsedSeconds / fixture.media.duration, peakRSSBytes: memory.peakBytes, rssSamples: memory.samples.length, samplingErrors: memory.errors, selectionMs: selection, selectionRaw: values, selectionOutsideCount: measuredClicks.outsideCount, cues: transcript.cues.length, pendingTimingReviews: transcript.cues.filter(cue => cue.timingWarning).length, firstCue: transcript.cues[0], lastCue: transcript.cues.at(-1), validTranscript: true, timingPass: elapsedSeconds <= fixture.media.duration, memoryPass: memory.peakBytes !== null && memory.peakBytes <= 4 * 1024 ** 3 && memory.errors.length === 0, selectionPass: selection.p95 !== null && selection.p95 <= 200, pageErrors: [...errors], externalRequests: external.length };
       report.runs.push(result); await flush(); console.log(JSON.stringify({ surface, inputSeconds: result.inputSeconds, iteration, elapsedSeconds, peakRSSBytes: memory.peakBytes, selectionP95Ms: selection.p95, cues: result.cues, timingPass: result.timingPass, memoryPass: result.memoryPass, selectionPass: result.selectionPass }));
       assert.deepEqual(errors, []); assert.deepEqual(external, []); assert.deepEqual(memory.errors, []);
       } catch (error) {
         memory ??= await sampler?.stop(); sampler = null;
         const last = jobs.get(currentId), resourcesFile = `${surface}-${Math.round(fixture.media.duration)}-${iteration}-failed-resources.json`;
         if (memory) await writeFile(path.join(output, resourcesFile), JSON.stringify(memory, null, 2));
-        report.failedRuns.push({ surface, inputSeconds: fixture.media.duration, iteration, elapsedSeconds: (performance.now() - started) / 1000, peakRSSBytes: memory?.peakBytes, samplingErrors: memory?.errors, resourcesFile: memory ? resourcesFile : null, stage: last?.stage, progress: last?.progress, status: last?.status, error: error.message });
+        const clicks = await selectionSnapshot(page).catch(() => null), selectionFile = clicks ? resourcesFile.replace('-resources.json', '-selection.json') : null;
+        if (clicks) await writeFile(path.join(output, selectionFile), JSON.stringify(clicks, null, 2));
+        const jobResultFile = last?.status === 'completed' && last.result ? resourcesFile.replace('-resources.json', '-job-result.json') : null;
+        if (jobResultFile) await writeFile(path.join(output, jobResultFile), JSON.stringify(last.result, null, 2));
+        report.failedRuns.push({ surface, inputSeconds: fixture.media.duration, iteration, elapsedSeconds: (performance.now() - started) / 1000, peakRSSBytes: memory?.peakBytes, samplingErrors: memory?.errors, resourcesFile: memory ? resourcesFile : null, selectionFile, jobResultFile, stage: last?.stage, progress: last?.progress, status: last?.status, error: error.message });
         await flush(); throw error;
       }
     }

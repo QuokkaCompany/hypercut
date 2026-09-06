@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-06T01:55:41.518Z",
+  "status": "completed",
+  "code": "674e72dbefe6422951a32039f7e88d71b25dfa5d",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "e28373fd6d52955e38ee881742966f5cb085dcce18bf2213e83b43d027809240",
+  "packageSHA256": "cb74f56c5a1dc47ac7daf1faa0f6980c6c1358650de410181047333d758cf737",
+  "scope": "Real packaged Mac UI/IPC/atomic save. Test-only rename boundary barrier, native path picker redirected to disposable files. Full main-process SIGKILL and fresh app reopen. No power-loss or native overwrite-confirmation claim.",
+  "runs": [
+    {
+      "phase": "before-rename",
+      "status": "PASS",
+      "mainSignal": "SIGKILL",
+      "appProcessesExited": 5,
+      "projectVersion": 7,
+      "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df",
+      "baselineSHA256": "f13f3cdb7f469b27c46a77dafdef15d1e8161a4fe6d383c2bd7e6cf85860768c",
+      "replacementSHA256": "4a96b27ff77761201f8a6d0da386c3f9b2ccae07504e1b50913d3caf2b192ddd",
+      "recoveredSHA256": "f13f3cdb7f469b27c46a77dafdef15d1e8161a4fe6d383c2bd7e6cf85860768c",
+      "expectedThreshold": -40,
+      "sourceUnchanged": true,
+      "noPrematureSuccess": true,
+      "dirtyUntilKilled": true,
+      "allProjectFieldsRoundTripped": true,
+      "endReviewPreserved": true,
+      "saveAfterRestart": true,
+      "orphanTemporaryCount": 1,
+      "security": {
+        "sandbox": true,
+        "contextIsolation": true,
+        "nodeIntegration": false,
+        "webSecurity": true
+      },
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "phase": "after-rename",
+      "status": "PASS",
+      "mainSignal": "SIGKILL",
+      "appProcessesExited": 5,
+      "projectVersion": 7,
+      "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df",
+      "baselineSHA256": "e8c884a00af3308e5abcb7f01ec5b83263b097a4c8f06634f0865eac687b38a8",
+      "replacementSHA256": "e9f7d096cbfd4a1203daa2ff928f2bf119aad0c98f1edd8aa93cdb5448901e52",
+      "recoveredSHA256": "e9f7d096cbfd4a1203daa2ff928f2bf119aad0c98f1edd8aa93cdb5448901e52",
+      "expectedThreshold": -41,
+      "sourceUnchanged": true,
+      "noPrematureSuccess": true,
+      "dirtyUntilKilled": true,
+      "allProjectFieldsRoundTripped": true,
+      "endReviewPreserved": true,
+      "saveAfterRestart": true,
+      "orphanTemporaryCount": 0,
+      "security": {
+        "sandbox": true,
+        "contextIsolation": true,
+        "nodeIntegration": false,
+        "webSecurity": true
+      },
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ]
+}

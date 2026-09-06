@@ -118,6 +118,8 @@ npm run test:speech
 npm run test:api
 npm run test:claude
 npm run test:failures
+npm run test:save:crash
+npm run test:benchmark:selection
 npm run build
 npm run test:e2e -- --desktop --packaged
 npm run test:claude:e2e -- --desktop
