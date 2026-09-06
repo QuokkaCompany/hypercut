@@ -47,6 +47,7 @@
 | [Claude Code 연결](2026-09-05-claude-cli-results.md) | 모의 CLI 프로세스·API·UI·종료, 실제 설치/로그인 확인과 모델 미실행 구분 |
 | [로컬 전사·자막](2026-09-05-transcription-results.md) | 실제 Whisper 추론·문구/시각 수정·SRT·v3 저장·Mac 패키지·브라우저 OS 오프라인 |
 | [자막 디자인·MP4 합성](2026-09-05-caption-rendering-results.md) | 3종 스타일·v4 저장·가로/세로/회전/SAR/VFR/PTS 실제 프레임·두 앱·브라우저 OS 오프라인 |
+| [프로젝트 교정 용어](2026-09-05-project-glossary-results.md) | v6 저장·기존 프로젝트 이전·입력 보호·요청별 임시 용어·두 앱의 복구/회귀 |
 | [AI 자막 교정](2026-09-05-caption-correction-results.md) | 원문 비교·선택 적용·숫자/부정어 검사·요청별 취소/중복 방지·두 앱·실제 모델 미실행 구분 |
 | [효과음 편집·MP4 합성](2026-09-05-effects-results.md) | 원본 시각 배치·길이/음량/음소거·v5 저장·음원 재연결·실제 PCM/AAC 수치·두 앱 |
 | [AI 효과음 제안](2026-09-05-ai-effects-results.md) | 명시적 음원/클립/자막 선택·별칭 전달·추가/수정/삭제 비교·부분 적용·요청별 취소·두 앱의 실제 출력 |

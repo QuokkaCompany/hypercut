@@ -28,7 +28,7 @@ test('S02: inclusive probability threshold preserves short speech in either chan
 
 test('S05: old projects migrate with protection off; new projects preserve explicit settings', () => {
   const data = makeProject({ name: 'fixture.mp4', fingerprint: 'a'.repeat(64), duration: 10 }, DEFAULT_SETTINGS, 1, [{ id: 'a', start: 1, end: 2, enabled: false }], { enabled: true, threshold: 0.35 });
-  assert.equal(data.version, 5);
+  assert.equal(data.version, 6);
   assert.deepEqual(validateProject(JSON.parse(JSON.stringify(data))).speechProtection, { enabled: true, threshold: 0.35 });
   const old = validateProject({ ...data, version: 1, speechProtection: undefined });
   assert.deepEqual(old.speechProtection, DEFAULT_SPEECH_PROTECTION); assert.equal(old.cuts[0].enabled, false);

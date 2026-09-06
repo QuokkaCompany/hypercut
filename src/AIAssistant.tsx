@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, Copy, LoaderCircle, Plug, Sparkles, Unplug, X } from 'lucide-react';
 import { proposalPrompt, validateProposal } from '../shared/ai.mjs';
+import { GLOSSARY_MAX_LENGTH } from '../shared/glossary.mjs';
 import { correctionPrompt, validateCorrectionProposal, validateCorrectionRequest } from '../shared/caption-correction.mjs';
 import { effectPrompt, validateEffectProposal, validateEffectRequest } from '../shared/effect-proposal.mjs';
 import { EffectProposalReview } from './EffectProposalReview';
@@ -15,21 +16,21 @@ type CLIStatus = { installed: boolean; compatible: boolean; loggedIn: boolean; r
 type Execution = { models: string[]; inputTokens: number | null; outputTokens: number | null };
 const labels: Record<keyof Settings, string> = { thresholdDb: '음량 기준 (dBFS)', minSilenceMs: '최소 무음 (ms)', preRollMs: '말하기 전 (ms)', postRollMs: '말하기 후 (ms)' };
 
-type Props = { contextId: string; disabled: boolean; onClose: () => void } & ({ settings: Settings; onApply: (settings: Settings) => void; captionTask?: never; effectsTask?: never } | { settings?: never; onApply?: never; captionTask: { cues: CorrectionRequest['cues']; onApply: (request: CorrectionRequest, proposal: CorrectionProposal, ids: string[]) => void }; effectsTask?: never } | { settings?: never; onApply?: never; captionTask?: never; effectsTask: { context: EffectAIContext; onApply: (request: EffectAIRequest, proposal: EffectAIProposal, ids: string[]) => void } });
+type Props = { contextId: string; disabled: boolean; onClose: () => void } & ({ settings: Settings; onApply: (settings: Settings) => void; captionTask?: never; effectsTask?: never } | { settings?: never; onApply?: never; captionTask: { glossary: string; cues: CorrectionRequest['cues']; onApply: (request: CorrectionRequest, proposal: CorrectionProposal, ids: string[]) => void }; effectsTask?: never } | { settings?: never; onApply?: never; captionTask?: never; effectsTask: { context: EffectAIContext; onApply: (request: EffectAIRequest, proposal: EffectAIProposal, ids: string[]) => void } });
 export function AIAssistant({ settings = DEFAULT_SETTINGS, contextId, disabled, onApply, onClose, captionTask, effectsTask }: Props) {
   const correcting = !!captionTask, arranging = !!effectsTask, route = arranging ? '/ai/effects' : correcting ? '/ai/correction' : '/ai/proposal';
   const [provider, setProvider] = useState<Provider>('manual'), [model, setModel] = useState(''), [apiKey, setApiKey] = useState(''), [baseURL, setBaseURL] = useState('http://127.0.0.1:11434');
   const [connected, setConnected] = useState(false), [working, setWorking] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
   const [instruction, setInstruction] = useState(arranging ? '설명과 선택한 자막에 맞춰 효과음을 짧고 자연스럽게 배치해 주세요. 기존 클립을 수정할 때는 말소리가 잘 들리도록 음량을 조절해 주세요.' : correcting ? '맞춤법과 띄어쓰기 오타를 고쳐 주세요. 숫자·단위·고유명사·부정 의미는 유지해 주세요.' : '작은 목소리와 짧은 쉼은 살리고, 긴 무음만 줄이고 싶어요.');
   const [effectRequest, setEffectRequest] = useState<EffectAIRequest | null>(null), [effectProposal, setEffectProposal] = useState<EffectAIProposal | null>(null);
-  const [glossary, setGlossary] = useState(''), [correctionRequest, setCorrectionRequest] = useState<CorrectionRequest | null>(null), [correction, setCorrection] = useState<CorrectionProposal | null>(null);
+  const [glossary, setGlossary] = useState(captionTask?.glossary || ''), [correctionRequest, setCorrectionRequest] = useState<CorrectionRequest | null>(null), [correction, setCorrection] = useState<CorrectionProposal | null>(null);
   const [response, setResponse] = useState(''), [prompt, setPrompt] = useState(''), [proposal, setProposal] = useState<Proposal | null>(null);
   const [cliStatus, setCLIStatus] = useState<CLIStatus | null>(null), [checkingCLI, setCheckingCLI] = useState(false), [verified, setVerified] = useState(false), [execution, setExecution] = useState<Execution | null>(null);
   const revision = useRef(0), statusRevision = useRef(0), mounted = useRef(true);
   const requestController = useRef<AbortController | null>(null);
   const activeRequestId = useRef<string | null>(null);
   const cancelRemote = () => activeRequestId.current ? request(route, { requestId: activeRequestId.current }, 'DELETE') : Promise.resolve();
-  const context = JSON.stringify([contextId, arranging ? effectsTask.context : correcting ? captionTask.cues : settings]);
+  const context = JSON.stringify([contextId, arranging ? effectsTask.context : correcting ? [captionTask.cues, captionTask.glossary] : settings]);
   const previousContext = useRef(context);
   useEffect(() => {
     mounted.current = true;
@@ -103,7 +104,7 @@ export function AIAssistant({ settings = DEFAULT_SETTINGS, contextId, disabled, 
       {connected && <p className="ai-notice">{verified ? 'AI 응답을 확인했습니다.' : '설정 저장됨 · 실제 응답은 아직 확인하지 않았습니다.'}</p>}
     </div>}
     <div className="modal-note">{cloud ? 'API 사용료는 ChatGPT·Claude 채팅 구독과 별도일 수 있어요.' : provider === 'claude_cli' ? '설치된 Claude Code의 기존 구독 로그인으로 요청합니다. 제안 요청 시 해당 계정의 사용량이 적용됩니다. 파일·셸·외부 도구는 사용할 수 없습니다.' : provider === 'ollama' ? '이 컴퓨터에서 실행하는 Ollama 모델을 사용합니다. 서버가 꺼져 있어도 무음 편집은 계속할 수 있어요.' : '사용 중인 ChatGPT·Claude 채팅에 요청을 붙여넣고, 받은 JSON 응답을 가져오세요. 자동 로그인 연결은 아닙니다.'} {arranging ? '선택한 음원의 별칭·설명·길이, 클립과 참고 자막의 원본 시각, 영상 길이·유지 구간을 전달합니다.' : correcting ? '선택한 자막 문구·용어·교정 지시만 전달합니다. 시각은 전달하거나 바꾸지 않습니다.' : '요청 문장과 네 가지 설정만 전달합니다.'} 영상·음성·파일 이름은 보내지 않습니다.</div>
-    {correcting && <><details className="ai-details correction-input"><summary>AI에 보낼 자막 {captionTask.cues.length}개 보기</summary>{captionTask.cues.map((cue, i) => <p key={cue.id}>{i + 1}. {cue.text}</p>)}</details><label className="ai-field">이번 교정에 참고할 용어<textarea aria-label="교정 참고 용어" value={glossary} maxLength={2000} rows={2} disabled={working} placeholder="예: 캡컶 → 캡컷, Whisper → 위스퍼" onChange={e => { setGlossary(e.target.value); invalidateRequest(); }} /></label><p className="field-hint">용어 입력은 이번 창에서만 사용합니다. 숫자가 바뀌는 제안은 거부합니다.</p></>}
+    {correcting && <><details className="ai-details correction-input"><summary>AI에 보낼 자막 {captionTask.cues.length}개 보기</summary>{captionTask.cues.map((cue, i) => <p key={cue.id}>{i + 1}. {cue.text}</p>)}</details><label className="ai-field">이번 교정에 참고할 용어<textarea aria-label="교정 참고 용어" value={glossary} maxLength={GLOSSARY_MAX_LENGTH} rows={2} disabled={working} placeholder="예: 캡컶 → 캡컷, Whisper → 위스퍼" onChange={e => { setGlossary(e.target.value); invalidateRequest(); }} /></label><p className="field-hint">프로젝트 용어를 기본으로 채웠습니다. 여기서 바꾸거나 비우면 이번 요청에만 반영됩니다. 숫자가 바뀌는 제안은 거부합니다.</p><button className="text-button" disabled={working || glossary === captionTask.glossary} onClick={() => { setGlossary(captionTask.glossary); invalidateRequest(); }}>프로젝트 용어로 되돌리기</button></>}
     <label className="ai-field">{correcting ? '어떻게 교정할까요?' : '어떻게 편집할까요?'}<textarea value={instruction} maxLength={2000} rows={3} disabled={working} onChange={e => { setInstruction(e.target.value); invalidateRequest(); }} /></label>
     {provider === 'manual' ? <>
       <button className="button secondary" disabled={!instruction.trim()} onClick={() => void copyPrompt()}><Copy size={15} />AI에게 보낼 요청 복사</button>

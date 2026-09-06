@@ -1,0 +1,42 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "projectVersion": 6,
+    "migrationV5": true,
+    "undoRedo": true,
+    "unappliedDraftWindowGuard": true,
+    "draftDiscardAndCancel": true,
+    "temporaryOverrideAndBlank": true,
+    "oldProposalInvalidated": true,
+    "noAutomaticModelCalls": true,
+    "requestPayload": "intercepted local request with explicit temporary glossary",
+    "realModels": "NOT_RUN",
+    "saveReopen": true,
+    "malformedProjectPreservesEditing": true,
+    "newMediaResetsGlossary": true,
+    "transcriptCutsStylePreserved": true,
+    "pageErrors": [],
+    "externalRequests": 0
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "projectVersion": 6,
+    "migrationV5": true,
+    "undoRedo": true,
+    "unappliedDraftWindowGuard": true,
+    "draftDiscardAndCancel": true,
+    "temporaryOverrideAndBlank": true,
+    "oldProposalInvalidated": true,
+    "noAutomaticModelCalls": true,
+    "requestPayload": "intercepted local request with explicit temporary glossary",
+    "realModels": "NOT_RUN",
+    "saveReopen": true,
+    "malformedProjectPreservesEditing": true,
+    "newMediaResetsGlossary": true,
+    "transcriptCutsStylePreserved": true,
+    "pageErrors": [],
+    "externalRequests": 0
+  }
+]

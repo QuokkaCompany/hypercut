@@ -27,7 +27,7 @@ test('reject corrupt identities, duplicates, nonfinite/range values and missing 
 test('v5 saves effects and legacy v1-v4 migrate to empty effects without changing captions/cuts', () => {
   const fx = { assets: [asset], clips: [clip('a', 1)] }, media = { name: 'fixture.mp4', fingerprint: 'b'.repeat(64), duration: 12 };
   const project = makeProject(media, DEFAULT_SETTINGS, 1, [], undefined, null, undefined, fx);
-  assert.equal(project.version, 5); assert.deepEqual(validateProject(JSON.parse(JSON.stringify(project))).effects, fx);
+  assert.equal(project.version, 6); assert.deepEqual(validateProject(JSON.parse(JSON.stringify(project))).effects, fx);
   assert.throws(() => validateProject({ ...project, effects: undefined }));
   for (const version of [1, 2, 3, 4]) { const migrated = validateProject({ ...project, version, effects: undefined }); assert.deepEqual(migrated.effects, { assets: [], clips: [] }); assert.deepEqual(migrated.cuts, []); }
 });

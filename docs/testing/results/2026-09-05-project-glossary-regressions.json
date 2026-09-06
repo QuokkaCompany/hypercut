@@ -1,0 +1,182 @@
+{
+  "captionCorrection": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+      "numericChangeRejected": true,
+      "negationReview": true,
+      "onlySelectedApplied": true,
+      "timingPreserved": true,
+      "undoRedo": true,
+      "oldRequestRejected": true,
+      "cancelAndRetry": true,
+      "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+      "projectSaved": true,
+      "styledMP4SavedAndDecoded": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+      "numericChangeRejected": true,
+      "negationReview": true,
+      "onlySelectedApplied": true,
+      "timingPreserved": true,
+      "undoRedo": true,
+      "oldRequestRejected": true,
+      "cancelAndRetry": true,
+      "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+      "projectSaved": true,
+      "styledMP4SavedAndDecoded": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "manualEffects": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "missingAssetBlocked": true,
+      "wrongReconnectRejected": true,
+      "sameHashReconnected": true,
+      "manualEditUndoRedo": true,
+      "muteDeleteUndo": true,
+      "dirtyDraftGuard": true,
+      "stalePreviewInvalidated": true,
+      "projectVersion": 6,
+      "projectRoundTrip": true,
+      "captionAndEffectMP4Decoded": true,
+      "expectedBeepSeconds": [
+        3,
+        3.7
+      ],
+      "rms": 0.06314186692551059,
+      "peak": 0.09251511096954346,
+      "quietPeak": 0,
+      "sourcePreserved": true,
+      "nativeEffectOverwriteBlocked": "N/A",
+      "externalRequests": 0,
+      "pageErrors": []
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "missingAssetBlocked": true,
+      "wrongReconnectRejected": true,
+      "sameHashReconnected": true,
+      "manualEditUndoRedo": true,
+      "muteDeleteUndo": true,
+      "dirtyDraftGuard": true,
+      "stalePreviewInvalidated": true,
+      "projectVersion": 6,
+      "projectRoundTrip": true,
+      "captionAndEffectMP4Decoded": true,
+      "expectedBeepSeconds": [
+        3,
+        3.7
+      ],
+      "rms": 0.06314186692551059,
+      "peak": 0.09251511096954346,
+      "quietPeak": 0,
+      "sourcePreserved": true,
+      "nativeEffectOverwriteBlocked": true,
+      "externalRequests": 0,
+      "pageErrors": []
+    }
+  ],
+  "aiEffects": [
+    {
+      "surface": "browser",
+      "status": "PASS",
+      "authenticatedModels": "NOT_RUN: manual JSON plus intercepted local UI response",
+      "explicitInputSelection": true,
+      "filenamesHashesUnselectedCuesNotSent": true,
+      "invalidTimeAndUnknownAssetRejected": true,
+      "onlySelectedChangesApplied": true,
+      "unselectedRemovalAndOutsideClipPreserved": true,
+      "oldRequestRejected": true,
+      "cancelRetry": true,
+      "pendingContextChangeDiscarded": true,
+      "selectionResetAfterChange": true,
+      "undoRedo": true,
+      "projectRoundTrip": true,
+      "captionsPreserved": true,
+      "actualMP4Decoded": true,
+      "expectedEditedTimes": {
+        "updated": [
+          3,
+          3.4
+        ],
+        "notRemoved": [
+          4,
+          4.5
+        ],
+        "added": [
+          4.5,
+          4.75
+        ],
+        "outsideSelection": [
+          5,
+          5.5
+        ]
+      },
+      "levels": {
+        "updated": 0.07080272124317472,
+        "notRemoved": 0.035504466537815076,
+        "added": 0.03549968277721971,
+        "outsideSelection": 0.035494882345063025,
+        "quiet": 0
+      },
+      "externalRequests": 0,
+      "pageErrors": []
+    },
+    {
+      "surface": "desktop",
+      "status": "PASS",
+      "authenticatedModels": "NOT_RUN: manual JSON plus intercepted local UI response",
+      "explicitInputSelection": true,
+      "filenamesHashesUnselectedCuesNotSent": true,
+      "invalidTimeAndUnknownAssetRejected": true,
+      "onlySelectedChangesApplied": true,
+      "unselectedRemovalAndOutsideClipPreserved": true,
+      "oldRequestRejected": true,
+      "cancelRetry": true,
+      "pendingContextChangeDiscarded": true,
+      "selectionResetAfterChange": true,
+      "undoRedo": true,
+      "projectRoundTrip": true,
+      "captionsPreserved": true,
+      "actualMP4Decoded": true,
+      "expectedEditedTimes": {
+        "updated": [
+          3,
+          3.4
+        ],
+        "notRemoved": [
+          4,
+          4.5
+        ],
+        "added": [
+          4.5,
+          4.75
+        ],
+        "outsideSelection": [
+          5,
+          5.5
+        ]
+      },
+      "levels": {
+        "updated": 0.07080272124317472,
+        "notRemoved": 0.035504466537815076,
+        "added": 0.03549968277721971,
+        "outsideSelection": 0.035494882345063025,
+        "quiet": 0
+      },
+      "externalRequests": 0,
+      "pageErrors": []
+    }
+  ]
+}

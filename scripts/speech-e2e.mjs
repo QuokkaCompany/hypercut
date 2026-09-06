@@ -43,7 +43,7 @@ try {
       const projectDownload = page.waitForEvent('download'); await page.getByRole('button', { name: '프로젝트 저장', exact: true }).first().click(); await (await projectDownload).saveAs(projectPath);
     }
     const project = JSON.parse(await readFile(projectPath, 'utf8'));
-    assert.equal(project.version, 5); assert.deepEqual(project.speechProtection, { enabled: true, threshold: 0.5 });
+    assert.equal(project.version, 6); assert.deepEqual(project.speechProtection, { enabled: true, threshold: 0.5 });
     assert.ok((await readFile(outputPath)).length > 1000);
     await page.screenshot({ path: path.resolve(`test-output/speech-${surface}.png`), fullPage: true });
     await page.getByRole('slider', { name: '음성 감지 기준', exact: true }).fill('0.35');
@@ -65,7 +65,7 @@ try {
       await page.screenshot({ path: path.resolve('test-output/speech-mobile.png'), fullPage: true });
     }
     assert.deepEqual(errors, []); assert.deepEqual(external, []);
-    results.push({ surface, status: 'PASS', model: 'Actual bundled Silero VAD 6.2.1', input: 'Generated quiet Korean TTS; not user footage', baselineKeptSeconds: 0, speechProtectionKeptSeconds: 11.466667, cuts: 5, projectV4RoundTrip: true, projectV1Migration: true, previewAndSavedExport: true, externalBrowserRequests: external.length, pageErrors: errors });
+    results.push({ surface, status: 'PASS', model: 'Actual bundled Silero VAD 6.2.1', input: 'Generated quiet Korean TTS; not user footage', baselineKeptSeconds: 0, speechProtectionKeptSeconds: 11.466667, cuts: 5, projectVersion: project.version, projectRoundTrip: true, projectV1Migration: true, previewAndSavedExport: true, externalBrowserRequests: external.length, pageErrors: errors });
   }
   server = await startServer({ port: 0, dataDir: path.join(directory, 'web') });
   browser = await chromium.launch({ channel: 'chrome', headless: true });

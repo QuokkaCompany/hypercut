@@ -44,8 +44,9 @@ export default function App() {
   const effects = effectsHistory.value;
   function changeEffects(next: Effects) { effectsHistory.edit(next); setUnsaved(true); }
   function openEffects() { video.current?.pause(); setEffectsOpen(true); }
-  const captionHistory = useHistory<{ transcript: Transcript | null; style: CaptionStyle }>({ transcript: null, style: { ...DEFAULT_CAPTION_STYLE } as CaptionStyle });
-  const { transcript, style: captionStyle } = captionHistory.value;
+  const captionHistory = useHistory<{ transcript: Transcript | null; style: CaptionStyle; glossary: string }>({ transcript: null, style: { ...DEFAULT_CAPTION_STYLE } as CaptionStyle, glossary: '' });
+  const { transcript, style: captionStyle, glossary } = captionHistory.value;
+  function changeGlossary(next: string) { captionHistory.edit({ ...captionHistory.value, glossary: next }); setUnsaved(true); }
   function changeTranscript(next: Transcript) { captionHistory.edit({ ...captionHistory.value, transcript: next }); setUnsaved(true); }
   function changeCaptionStyle(next: CaptionStyle) { captionHistory.edit({ ...captionHistory.value, style: next }); setUnsaved(true); }
   function openCaptions() { video.current?.pause(); setCaptionsOpen(true); }
@@ -116,7 +117,7 @@ export default function App() {
     if (project && (Math.abs(project.media.duration - next.duration) > 0.001 || project.cuts.some((cut: Cut) => cut.end > next.duration))) throw new Error('프로젝트의 영상 길이 정보가 원본과 일치하지 않습니다.');
     if (project && !next.audioTracks.some(x => x.index === project.trackIndex)) throw new Error('프로젝트의 오디오 트랙을 찾을 수 없습니다.');
     if (project?.transcript && !next.audioTracks.some(x => x.index === project.transcript!.trackIndex && x.channels > project.transcript!.channel)) throw new Error('자막의 전사 트랙 또는 채널을 찾을 수 없습니다.');
-    captionHistory.load({ transcript: project?.transcript as Transcript | null ?? null, style: (project?.captionStyle || { ...DEFAULT_CAPTION_STYLE }) as CaptionStyle });
+    captionHistory.load({ transcript: project?.transcript as Transcript | null ?? null, style: (project?.captionStyle || { ...DEFAULT_CAPTION_STYLE }) as CaptionStyle, glossary: project?.glossary ?? '' });
     effectsHistory.load((project?.effects || { assets: [], clips: [] }) as Effects);
     setAnalysis(previous => media?.fingerprint === next.fingerprint ? previous : null);
     setMedia(next); setTime(0); setRendered(null); setOutput(null); setSelected(null); setTimelineZoom(1); setMode('edited'); setPlaying(false);
@@ -191,7 +192,7 @@ export default function App() {
   function toggleCut(id: string) { edit(cuts.map(x => x.id === id ? { ...x, enabled: !x.enabled } : x)); }
   async function saveProject() {
     if (!media) return;
-    const data = makeProject(media, settings, trackIndex, cuts, speechProtection, transcript, captionStyle, effects);
+    const data = makeProject(media, settings, trackIndex, cuts, speechProtection, transcript, captionStyle, effects, glossary);
     if (window.hypercut) {
       try { if (await window.hypercut.saveProject(data)) { setUnsaved(false); setNotice('프로젝트를 저장했습니다. 영상 원본도 함께 보관해 주세요.'); } }
       catch (e) { setError((e as Error).message); }
@@ -274,7 +275,7 @@ export default function App() {
     {restoreOpen && media && <RestoreDialog duration={media.duration} start={currentCut?.start ?? 0} end={currentCut?.end ?? media.duration} onClose={() => setRestoreOpen(false)} onRestore={(start, end) => { setRestoreOpen(false); void run("restore", { start, end }); }} />}
     {previewRangeOpen && media && currentCut && <PreviewRangeDialog duration={media.duration} start={Math.max(0, currentCut.start - 2)} end={Math.min(media.duration, currentCut.end + 2)} onClose={() => setPreviewRangeOpen(false)} onPreview={range => { setPreviewRangeOpen(false); void run('preview', range); }} />}
     {rangePreview && <RangePreviewPlayer output={rangePreview} onClose={() => setRangePreview(null)} />}
-    {captionsOpen && media && <CaptionEditor media={media} trackIndex={trackIndex} transcript={transcript} captionStyle={captionStyle} onStyleChange={changeCaptionStyle} onRenderPreview={() => { setCaptionsOpen(false); void run('preview'); }} kept={kept} busy={!!busy} job={job} canUndo={captionHistory.canUndo} canRedo={captionHistory.canRedo} onChange={changeTranscript} onUndo={() => { captionHistory.undo(); setUnsaved(true); }} onRedo={() => { captionHistory.redo(); setUnsaved(true); }} onTranscribe={value => { void run('transcribe', undefined, value); }} onExport={() => { void run('captions'); }} onCancel={cancel} onClose={() => setCaptionsOpen(false)} />}
+    {captionsOpen && media && <CaptionEditor glossary={glossary} onGlossaryChange={changeGlossary} media={media} trackIndex={trackIndex} transcript={transcript} captionStyle={captionStyle} onStyleChange={changeCaptionStyle} onRenderPreview={() => { setCaptionsOpen(false); void run('preview'); }} kept={kept} busy={!!busy} job={job} canUndo={captionHistory.canUndo} canRedo={captionHistory.canRedo} onChange={changeTranscript} onUndo={() => { captionHistory.undo(); setUnsaved(true); }} onRedo={() => { captionHistory.redo(); setUnsaved(true); }} onTranscribe={value => { void run('transcribe', undefined, value); }} onExport={() => { void run('captions'); }} onCancel={cancel} onClose={() => setCaptionsOpen(false)} />}
     {effectsOpen && media && <EffectsEditor value={effects} contextId={`${media.id}:${trackIndex}`} cues={transcript?.trackIndex === trackIndex ? transcript.cues : []} duration={media.duration} time={time} kept={kept} connected={connectedEffects} onConnect={asset => setConnectedEffects(previous => new Set([...previous, asset.id]))} onImportBusy={value => setBusy(value ? 'effect-import' : null)} canUndo={effectsHistory.canUndo} canRedo={effectsHistory.canRedo} onChange={changeEffects} onUndo={() => { effectsHistory.undo(); setUnsaved(true); }} onRedo={() => { effectsHistory.redo(); setUnsaved(true); }} onClose={() => setEffectsOpen(false)} onPreview={() => { setEffectsOpen(false); void run('preview'); }} />}
     {aiOpen && <AIAssistant settings={settings} contextId={media?.id || "empty"} disabled={!!busy} onClose={() => setAIOpen(false)} onApply={next => { setSettings(next); setUnsaved(!!media); setNotice("AI 제안을 설정에 반영했습니다. 무음을 다시 분석해 주세요."); }} />}
     {dialog && <div className="modal-backdrop" onClick={() => setDialog(null)}><section className="modal" role="dialog" aria-modal="true" aria-label={dialog === 'help' ? '사용 방법' : '로컬 엔진'} onClick={e => e.stopPropagation()}><div className="panel-heading"><h2>{dialog === 'help' ? '몇 번의 클릭으로, 더 가벼운 편집' : '내 컴퓨터의 편집 엔진'}</h2><button className="icon-button" aria-label="창 닫기" onClick={() => setDialog(null)}><X size={18} /></button></div>{dialog === 'help' ? <><p><b>01.</b> H.264 MP4·MOV 영상을 불러옵니다.</p><p><b>02.</b> 음량과 최소 무음 길이를 설정하고 분석합니다.</p><p><b>03.</b> 컷을 들어보고 필요한 구간을 복원합니다.</p><p><b>04.</b> 정확한 미리보기로 확인한 뒤 MP4를 내보냅니다.</p><div className="modal-note">프로젝트 파일에는 편집 정보만 저장됩니다. 다음에 열 때 같은 원본 영상이 필요합니다. 음량 분석은 음악과 사람의 목소리를 구별하지 않으므로 마이크 트랙을 선택해 주세요.</div></> : <><p>{engineError || '영상 분석과 렌더링이 이 컴퓨터에서 실행됩니다.'}</p><div className="modal-note">현재 H.264 SDR 영상과 선택한 오디오 트랙 한 개를 지원합니다. 내보내기는 원본 파일을 변경하지 않습니다.</div>{engineError && <p>macOS에서는 FFmpeg 설치 후 앱을 다시 실행해 주세요.<code>brew install ffmpeg</code></p>}{window.hypercut && <button className="button secondary" onClick={() => window.hypercut?.openBrowser()}><Monitor size={16} />브라우저에서도 열기</button>}</>}</section></div>}

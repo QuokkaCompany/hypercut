@@ -140,3 +140,5 @@ P0/P1 모두 해당 기능의 지원 완료 전 필수다. P0는 상태·원본�
 로컬 전사 후보는 [whisper.cpp 공식 프로젝트](https://github.com/ggml-org/whisper.cpp)다. JSON 시각 출력의 실제 계약은 도입할 고정 버전의 [CLI 소스](https://github.com/ggml-org/whisper.cpp/blob/b4938/examples/cli/cli.cpp)와 실행 결과로 확인한다. 이후 고정 소스로 빌드한 엔진과 해시를 확인한 small 모델을 Mac 패키지에 포함했다. 실제 사람 녹음의 한국어 품질은 아직 검증하지 않았다.
 
 FFmpeg `subtitles` 경로를 선택한다면 [공식 필터 문서](https://ffmpeg.org/ffmpeg-filters.html#subtitles-1)의 libass 지원 조건을 만족하는 실행 파일과 한글 폰트가 필요하다. 실제 구현에서는 `@napi-rs/canvas`와 번들 Noto Sans KR로 PNG를 만들고 기존 FFmpeg의 `overlay`로 합성하는 경로를 선택했다. 전역 FFmpeg를 교체하지 않았으며 같은 실제 프레임·시간축 테스트를 적용했다. 렌더러·폰트 버전·누락/취소·두 앱의 증거는 후속 결과 기록에 있다.
+
+프로젝트 교정 용어의 저장·이전·요청별 임시 변경은 [용어 계획](2026-09-05-project-glossary-plan.md)과 [두 앱 실행 기록](../testing/2026-09-05-project-glossary-results.md)에 연결한다. C07/C08의 실제 인증 모델 품질 판정을 대체하지 않는다.

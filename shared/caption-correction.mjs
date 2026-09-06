@@ -1,3 +1,4 @@
+import { validateGlossary } from './glossary.mjs';
 const exact = (value, keys) => value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key));
 const plain = (value, max) => typeof value === 'string' && value.trim().length > 0 && value.length <= max && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value);
 export const CORRECTION_LIMITS = Object.freeze({ cues: 20, characters: 4000 });
@@ -18,7 +19,7 @@ export function validateCorrectionRequest(input) {
     ids.add(cue.id); size += cue.text.length; return { id: cue.id, text: cue.text };
   });
   if (size > CORRECTION_LIMITS.characters) throw new Error('한 번에 자막 4,000자까지 교정할 수 있습니다. 범위를 줄여 주세요.');
-  return { requestId: input.requestId, instruction: input.instruction, glossary: input.glossary, cues };
+  return { requestId: input.requestId, instruction: input.instruction, glossary: validateGlossary(input.glossary), cues };
 }
 export function correctionPrompt(input) {
   const data = validateCorrectionRequest(input);
