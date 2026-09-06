@@ -1,0 +1,278 @@
+{
+  "date": "2026-09-06T02:44:19.913Z",
+  "code": "16ad89f64dc67fe320b4b3120408ac6483fdc50c",
+  "packageSHA256": "43e1386e7d7b2e929c58441ca7120ab6edd1bfa2512ad5b860cf129233143faf",
+  "scope": "Real packaged Mac save dialogs and OS overwrite prompts; generated files only. Native save-dialog function/results are not mocked.",
+  "status": "completed",
+  "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df",
+  "projectBeforeSHA256": "93498346a2add95fd2c8ceae328c4698c413f00599fcb54abe0ac907970816d5",
+  "videoBeforeSHA256": "3d26f7498523b2a48b49b6126aed8ff2ea68eaa1db57d2b773f3229e109abbcd",
+  "checks": [
+    {
+      "id": "project-cancel",
+      "status": "PASS",
+      "existingFileUnchanged": true,
+      "dirtyPreserved": true,
+      "noFalseSuccess": true,
+      "sourceUnchanged": true
+    },
+    {
+      "id": "project-replace",
+      "status": "PASS",
+      "currentProjectSaved": true,
+      "savedSHA256": "685f50f2214059a0dd81efe2f128ffbc8b652f671cedc19242f4fe8537c9e447",
+      "projectVersion": 7,
+      "sourceUnchanged": true
+    },
+    {
+      "id": "export-cancel",
+      "status": "PASS",
+      "existingFileUnchanged": true,
+      "noFalseSuccess": true,
+      "sourceUnchanged": true
+    },
+    {
+      "id": "export-replace",
+      "status": "PASS",
+      "exactRenderedBytesSaved": true,
+      "fullDecode": true,
+      "savedSHA256": "cf7c5e8448d485736690af4003908f71b41c4bd7d701b793bc034c300e271207",
+      "duration": 9.066,
+      "sourceUnchanged": true
+    },
+    {
+      "id": "source-protection",
+      "status": "PASS",
+      "nativeReplacementApprovedButSourceRejected": true,
+      "sourceUnchanged": true
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "expectedExportSHA256": "cf7c5e8448d485736690af4003908f71b41c4bd7d701b793bc034c300e271207",
+  "expectedExportDuration": 9.066,
+  "nativeSaveFunctionUnmodified": true,
+  "harnessAtExecutionSHA256": "a87e8f4cebb9f40d49fd2ad9c5b410d5b7fd39f190467845bdef5d6a695768a1",
+  "completedAt": "2026-09-06T02:54:53.533Z",
+  "nativeUIEvidence": [
+    {
+      "action": "Save existing.hypercut.json; observe OS confirmation",
+      "requestId": "e850bbd9-e70d-428c-ae8a-ed8713170b49",
+      "rawFile": "test-output/native-save-dialog/ui-03-project-overwrite.json",
+      "rawSHA256": "9d751c991be0e1807fef1216948536fd2e81342b5771135afcd67f9a90d58fd2",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-03-project-overwrite.png",
+      "screenshotSHA256": "8e984c0799b3c316cf4dffad83c8ae7746115f911509fe4d785973cd32ed3200",
+      "treeExcerpt": [
+        "\t142 sheet hypercut 프로젝트 저장",
+        "\t\t\t144 text Where:",
+        "\t\t\t145 pop up button Where:, Value: files",
+        "\t\t\t147 text Save As:",
+        "\t\t\t148 text field (settable), Value: existing.hypercut.json",
+        "\t\t\t151 button Cancel",
+        "\t\t\t152 button (disabled) Save",
+        "\t\t153 sheet",
+        "\t\t\t155 text “existing.hypercut.json” already exists. Do you want to replace it?",
+        "\t\t\t156 text A file or folder with the same name already exists in the folder “files”. Replacing it will overwrite its current contents.",
+        "\t\t\t157 button Cancel",
+        "\t\t\t158 button Replace"
+      ]
+    },
+    {
+      "action": "Cancel overwrite confirmation",
+      "requestId": "cbe720d9-6ed7-471f-9c6b-513f3320e310",
+      "rawFile": "test-output/native-save-dialog/ui-04-project-overwrite-cancelled.json",
+      "rawSHA256": "d4fbbef4512cc23a302abd44cee2d89896d891e4db9a0ab3ad5b5a76f0fef889",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-04-project-overwrite-cancelled.png",
+      "screenshotSHA256": "45d15e29ed962ab4af4ee06e9157e39db8788bc17e09943506a493248eb3de3f",
+      "treeExcerpt": [
+        "\t142 sheet hypercut 프로젝트 저장",
+        "\t\t\t144 text Where:",
+        "\t\t\t145 pop up button Where:, Value: files",
+        "\t\t\t147 text Save As:",
+        "\t\t\t148 text field (settable), Value: existing.hypercut.json",
+        "\t\t\t151 button Cancel",
+        "\t\t\t152 button Save",
+        "The focused UI element is 148 text field (settable), Value: existing.hypercut.json."
+      ]
+    },
+    {
+      "action": "Cancel parent Save panel",
+      "requestId": "f2958818-54a2-4434-962c-d01b9df66f22",
+      "rawFile": "test-output/native-save-dialog/ui-05-project-panel-cancelled.json",
+      "rawSHA256": "c294ba6b661c9d0811adecf104cbf9119aa91a59e28c2c1c935b0edb6bfd8806",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-05-project-panel-cancelled.png",
+      "screenshotSHA256": "70b0df45f1f6ed61d930fcea26bc127a214a2a88fa2f27e6ece0c70e3710d24b",
+      "treeExcerpt": []
+    },
+    {
+      "action": "Retry Save existing.hypercut.json; observe OS confirmation",
+      "requestId": "fb070a41-bc6e-4c8a-8a88-b6ce9f34b67c",
+      "rawFile": "test-output/native-save-dialog/ui-07-project-overwrite.json",
+      "rawSHA256": "2a57799bc0b4afbca21931263f6eef366e88d50acd4c0297dd9bb47d76fb2a89",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-07-project-overwrite.png",
+      "screenshotSHA256": "d2f82a68369f7b5f5c3ca35683782d87ba12c1aaf3bd2e976669576056dd60df",
+      "treeExcerpt": [
+        "\t141 sheet hypercut 프로젝트 저장",
+        "\t\t\t143 text Where:",
+        "\t\t\t144 pop up button Where:, Value: files",
+        "\t\t\t146 text Save As:",
+        "\t\t\t147 text field (settable), Value: existing.hypercut.json",
+        "\t\t\t150 button Cancel",
+        "\t\t\t151 button (disabled) Save",
+        "\t\t152 sheet",
+        "\t\t\t154 text “existing.hypercut.json” already exists. Do you want to replace it?",
+        "\t\t\t155 text A file or folder with the same name already exists in the folder “files”. Replacing it will overwrite its current contents.",
+        "\t\t\t156 button Cancel",
+        "\t\t\t157 button Replace"
+      ]
+    },
+    {
+      "action": "Replace existing.hypercut.json",
+      "requestId": "454ad801-3cb7-43a3-9367-fd5e89ea4397",
+      "rawFile": "test-output/native-save-dialog/ui-08-project-replaced.json",
+      "rawSHA256": "143bbe85303256415728d292e1b46ddf01a6cdcf56dba79464ab164ce18ab880",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-08-project-replaced.png",
+      "screenshotSHA256": "5f1a9c3569efe65306d9816bf620b65beaf0fb11564f50f8e02d429b96bbfc33",
+      "treeExcerpt": [
+        "\t\t\t\t\t139 text 프로젝트를 저장했습니다. 영상 원본도 함께 보관해 주세요."
+      ]
+    },
+    {
+      "action": "Save existing.mp4; observe OS confirmation",
+      "requestId": "c59a8cd4-c2b0-4b99-abc9-36b20cb3023d",
+      "rawFile": "test-output/native-save-dialog/ui-10-export-overwrite.json",
+      "rawSHA256": "4a5d657d70ed60ddfeab06be4212f6ed604c7ee0ab5dfb7d9c4c7cec95547f42",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-10-export-overwrite.png",
+      "screenshotSHA256": "2ee4e1c03cfdc8059c926a562f9b6820fddd1cfad59058e90aeb9e1645cf362e",
+      "treeExcerpt": [
+        "\t144 sheet 편집한 영상 저장",
+        "\t\t\t146 text Where:",
+        "\t\t\t147 pop up button Where:, Value: files",
+        "\t\t\t149 text Save As:",
+        "\t\t\t150 text field (settable), Value: existing.mp4",
+        "\t\t\t153 button Cancel",
+        "\t\t\t154 button (disabled) Save",
+        "\t\t155 sheet",
+        "\t\t\t157 text “existing.mp4” already exists. Do you want to replace it?",
+        "\t\t\t158 text A file or folder with the same name already exists in the folder “files”. Replacing it will overwrite its current contents.",
+        "\t\t\t159 button Cancel",
+        "\t\t\t160 button Replace"
+      ]
+    },
+    {
+      "action": "Cancel overwrite confirmation",
+      "requestId": "8823456a-f81a-458c-95b3-c6b1f47259ae",
+      "rawFile": "test-output/native-save-dialog/ui-11-export-overwrite-cancelled.json",
+      "rawSHA256": "9a7af89cd87291ffa1deefb4104c167890f8dae434b0b7663160e97e84833b7b",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-11-export-overwrite-cancelled.png",
+      "screenshotSHA256": "c0a4fe25597f12d1fc75f77f120d8aacc0b591befb94e75486da8b2252801739",
+      "treeExcerpt": [
+        "\t144 sheet 편집한 영상 저장",
+        "\t\t\t146 text Where:",
+        "\t\t\t147 pop up button Where:, Value: files",
+        "\t\t\t149 text Save As:",
+        "\t\t\t150 text field (settable), Value: existing.mp4",
+        "\t\t\t153 button Cancel",
+        "\t\t\t154 button Save",
+        "The focused UI element is 150 text field (settable), Value: existing.mp4."
+      ]
+    },
+    {
+      "action": "Cancel parent Save panel",
+      "requestId": "9e7dfb99-212b-463c-bdc2-e4c96b0da778",
+      "rawFile": "test-output/native-save-dialog/ui-12-export-panel-cancelled.json",
+      "rawSHA256": "6514601c8039d180a6c1cdf6ff92e78b5b7fc96fd9cd502ef1004cd5bd80eeee",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-12-export-panel-cancelled.png",
+      "screenshotSHA256": "c1d2ba0702b51df9c2c7f2b6b8106455bd7be47ed844f856a864617f37832b4c",
+      "treeExcerpt": []
+    },
+    {
+      "action": "Retry Save existing.mp4; observe OS confirmation",
+      "requestId": "b3c340b8-a39a-434a-be3f-73b02198928e",
+      "rawFile": "test-output/native-save-dialog/ui-14-export-overwrite-retry.json",
+      "rawSHA256": "e63e319c6783fe40d790a0b172c634d937406e81c89eb8e6500d372029ec754e",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-14-export-overwrite-retry.png",
+      "screenshotSHA256": "2ee4e1c03cfdc8059c926a562f9b6820fddd1cfad59058e90aeb9e1645cf362e",
+      "treeExcerpt": [
+        "\t144 sheet 편집한 영상 저장",
+        "\t\t\t146 text Where:",
+        "\t\t\t147 pop up button Where:, Value: files",
+        "\t\t\t149 text Save As:",
+        "\t\t\t150 text field (settable), Value: existing.mp4",
+        "\t\t\t153 button Cancel",
+        "\t\t\t154 button (disabled) Save",
+        "\t\t155 sheet",
+        "\t\t\t157 text “existing.mp4” already exists. Do you want to replace it?",
+        "\t\t\t158 text A file or folder with the same name already exists in the folder “files”. Replacing it will overwrite its current contents.",
+        "\t\t\t159 button Cancel",
+        "\t\t\t160 button Replace"
+      ]
+    },
+    {
+      "action": "Replace existing.mp4",
+      "requestId": "0d17c857-d338-4985-a744-25beb6135936",
+      "rawFile": "test-output/native-save-dialog/ui-15-export-replaced.json",
+      "rawSHA256": "20ed16d6f7d4542e8a63eb9cf30bb4bfb2814fb43ebc4062509c645c57b497c5",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-15-export-replaced.png",
+      "screenshotSHA256": "9efa37624c32a259315b41c0786e80c0de2a92c4f0c0ae9339f9bc3cce9a3225",
+      "treeExcerpt": [
+        "\t\t\t\t\t142 text 편집한 영상을 저장했습니다."
+      ]
+    },
+    {
+      "action": "Save source.mp4; observe OS confirmation",
+      "requestId": "f5fb9b97-ed3d-40cb-aee6-eafd3ab9722f",
+      "rawFile": "test-output/native-save-dialog/ui-20-source-overwrite-retry.json",
+      "rawSHA256": "a5a8740f4d6da19520e2a5d94f1d20f2c9b4fe820ce4de7d79a3ceefa27d363d",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-20-source-overwrite-retry.png",
+      "screenshotSHA256": "230f070e44acfc186119d132f2772d99311afc3dfd9ffba090e84dc42ed4e505",
+      "treeExcerpt": [
+        "\t\t\t\t\t143 text Error invoking remote method 'hypercut:save-export': Error: 원본 영상과 다른 이름으로 저장해 주세요.",
+        "\t148 sheet 편집한 영상 저장",
+        "\t\t\t150 text Where:",
+        "\t\t\t151 pop up button Where:, Value: files",
+        "\t\t\t153 text Save As:",
+        "\t\t\t154 text field (settable), Value: source.mp4",
+        "\t\t\t157 button Cancel",
+        "\t\t\t158 button (disabled) Save",
+        "\t\t159 sheet",
+        "\t\t\t161 text “source.mp4” already exists. Do you want to replace it?",
+        "\t\t\t162 text A file or folder with the same name already exists in the folder “files”. Replacing it will overwrite its current contents.",
+        "\t\t\t163 button Cancel",
+        "\t\t\t164 button Replace"
+      ]
+    },
+    {
+      "action": "Approve Replace source.mp4; application rejects protected path",
+      "requestId": "6b37ac67-79a9-49a4-8757-7bf4855249a0",
+      "rawFile": "test-output/native-save-dialog/ui-21-source-replacement-approved.json",
+      "rawSHA256": "e1aa2cf7576c00665f07e61ed53f180d57c83055ff80bfdb5f8d7df4e7eace8f",
+      "screenshot": "test-output/native-save-dialog/screenshots/ui-21-source-replacement-approved.png",
+      "screenshotSHA256": "fecf2623fe5e201ee73aa6470355a153b215cb6ad188dba6e88d851abc433e98",
+      "treeExcerpt": [
+        "\t\t\t\t\t143 text Error invoking remote method 'hypercut:save-export': Error: 원본 영상과 다른 이름으로 저장해 주세요."
+      ]
+    }
+  ],
+  "operatorObservationRetries": [
+    {
+      "rawFile": "test-output/native-save-dialog/ui-06-project-overwrite-retry.json",
+      "requestId": "aecf5201-b7ef-4af2-8f3f-fea19fac9146",
+      "code": "element_not_found",
+      "message": "element 152 is stale; run get-app-state again and use a fresh element index"
+    },
+    {
+      "rawFile": "test-output/native-save-dialog/ui-16-source-target.json",
+      "requestId": "3de5c41a-dfd8-4667-ab28-d00ae58c6a57",
+      "code": "window_not_found",
+      "message": "app 'HyperCut' has no on-screen window"
+    },
+    {
+      "rawFile": "test-output/native-save-dialog/ui-17-source-overwrite.json",
+      "requestId": "5f2b3f44-7c58-40ac-8636-a79780cc16aa",
+      "code": "element_not_found",
+      "message": "element 154 is stale; run get-app-state again and use a fresh element index"
+    }
+  ],
+  "operatorNotes": "Accessibility observation reported missing or stale windows/elements on intermediate attempts. State was reread before retry. Only final observed confirmation/Cancel/Replace sequences above are used as native UI evidence. The source-protection error was already visible from the earlier attempt before the final observed source Replace; the final sequence independently confirms the OS choice and unchanged source bytes, not a new toast transition."
+}
