@@ -22,7 +22,11 @@ Mac의 첫 60분 작업은 서버에서 `completed`가 됐지만 클릭 표본�
 
 [보완한 도구의 60초 예비 실행](results/2026-09-05-transcription-selection-smoke.json)은 Chrome 4.340초, Mac 4.631초였다. 두 앱 모두 의도한 32회 측정·추론 취소·재요청을 통과했고 측정 밖 클릭은 0개였다. 앱 패키지 해시가 앞선 v7 측정 및 저장 복구 시험과 같은 것도 확인했다.
 
-보완 후 Mac 60분 3회와 취소/재요청은 새 출력 폴더에서 확인한다. 앱·모델은 같고 측정 도구의 변경과 실행별 소스 해시는 구분해 기록한다. 현재 전체 조건의 완료 판정은 보류다.
+보완 커밋 `c7ec545`에서 Mac 60분 3회와 취소/재요청을 `test-output/transcription-performance-v7-mac-retry/`로 시작했다. 단계 로그는 `test-output/transcription-performance-v7-mac-retry.log`에 있다. 앱·모델은 같고 측정 도구의 변경과 실행별 소스 해시는 구분해 기록한다. 이 문서 갱신 시점에는 재측정이 진행 중이며 전체 조건의 완료 판정은 보류다.
+
+```sh
+node scripts/transcription-benchmark.mjs --durations=3600 --surfaces=desktop --iterations=3 --output=test-output/transcription-performance-v7-mac-retry
+```
 
 ## 입력과 측정 범위
 
