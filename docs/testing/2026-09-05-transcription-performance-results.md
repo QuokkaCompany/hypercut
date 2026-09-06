@@ -1,10 +1,10 @@
 # 긴 영상 전사 성능 실행 기록
 
-실행일: 2026-09-05. 기준 앱 커밋 `a8e1bfe`와 이 문서에 포함된 측정 도구를 사용했다. **10분 조건은 두 앱에서 각 3회 완료했다. 60분 Chrome 첫 실행은 마지막 자막의 240ms 끝 시각 초과로 실패했다.** 실제 원시 출력으로 재현한 뒤 [끝 경계 검토와 v7 저장](2026-09-05-transcription-end-results.md)을 수정·검증했다. 새 빌드의 전체 성능 재측정과 T07·G3 완료 판정은 별도다.
+실행일: 2026-09-05 America/New_York. 끝 경계 수정 `1e927ff`의 같은 앱·모델에서 **10분·60분 × Chrome/Mac × 각 3회, 총 12회와 조건별 취소·재요청을 완료했다.** 측정한 전사 시간·합산 RSS·자막 선택 응답 기준을 모두 충족했다. 실제 한국어 품질·전체 조작·T07 전체 및 G3 완료를 뜻하지 않는다.
 
-[실행 계획](../plans/2026-09-05-transcription-performance-plan.md), [10분 원시값 스냅샷](results/2026-09-05-transcription-performance-10min.json)을 함께 읽는다. 종료된 최초 실행 결과는 로컬 `test-output/transcription-performance/results.json`, 단계 로그는 `test-output/transcription-performance.log`에 있다. 완료된 각 실행의 RSS 표본과 실제 전사 결과도 같은 폴더에 보존한다. 새 실행은 별도 출력 폴더를 사용하며 기존 결과를 덮어쓰지 않는다.
+[실행 계획](../plans/2026-09-05-transcription-performance-plan.md), [v7 완료 9회와 실패 원시값](results/2026-09-05-transcription-performance-v7-partial.json), [Mac 60분 완료 3회](results/2026-09-05-transcription-performance-v7-mac.json)를 함께 읽는다. 두 실행의 앱 소스·패키지·Whisper 실행 파일 해시가 같은 것을 비교했다. 최초 실행 파일의 `failed` 상태는 측정 도구 오류를 보존한 것으로 그대로 유지한다. 그 파일에서 완료된 9회와 보완한 도구의 Mac 3회를 명시적으로 구분해 합산한다.
 
-## v7 재측정
+## v7 완료 결과
 
 수정 커밋 `1e927ff`의 깨끗한 작업 트리와 같은 Mac 패키지에서 전사 전체 조건을 재실행했다. [이 실행의 원시값](results/2026-09-05-transcription-performance-v7-partial.json)을 별도로 보존한다. 최초 실행의 아래 10분 표를 덮어쓰지 않는다.
 
@@ -13,8 +13,9 @@
 | Chrome / 10분 | 3 | 40.897~42.963초 | 2.184GiB | 14.4ms |
 | Mac / 10분 | 3 | 40.885~41.563초 | 1.690GiB | 7.6ms |
 | Chrome / 60분 | 3 | 227.798~229.417초 | 2.746GiB | 14.1ms |
+| Mac / 60분 | 3 | 234.371~243.186초 | 2.245GiB | 11.5ms |
 
-위 9회는 측정한 목표를 모두 충족했다. 60분 결과는 매번 580개 자막을 보존했고 끝 경계 검토는 1개였다. Chrome의 60분 취소는 약 199.4ms에 재시도 가능 상태로 돌아왔고 실제 새 추론까지 확인했다.
+위 12회는 측정한 목표를 모두 충족했다. 10분 결과는 98개, 60분은 매번 580개 자막을 보존했고 60분의 끝 경계 검토는 1개였다. 10분 전사 중앙값은 Chrome 41.897초·Mac 41.018초, 60분은 Chrome 228.788초·Mac 242.450초다. 오류·외부 브라우저 요청·RSS 표본 오류는 모두 0건이었다. 시간 표본 3개로 p95를 계산하지 않았다.
 
 Mac의 첫 60분 작업은 서버에서 `completed`가 됐지만 클릭 표본이 예상 32개 대신 36개여서 측정 도구가 실패했다. 이 실행은 성능 통과로 세지 않는다. 전체 결과 파일은 `status: failed`이며 `test-output/transcription-performance-v7/`와 로그를 보존했다. 기존 도구는 32회 조작을 끝낸 후에도 전사가 끝날 때까지 클릭을 수집했다. 추가 4개의 시각·출처를 기록하지 않았으므로 실제 발생 원인을 확정할 수 없다.
 
@@ -22,11 +23,22 @@ Mac의 첫 60분 작업은 서버에서 `completed`가 됐지만 클릭 표본�
 
 [보완한 도구의 60초 예비 실행](results/2026-09-05-transcription-selection-smoke.json)은 Chrome 4.340초, Mac 4.631초였다. 두 앱 모두 의도한 32회 측정·추론 취소·재요청을 통과했고 측정 밖 클릭은 0개였다. 앱 패키지 해시가 앞선 v7 측정 및 저장 복구 시험과 같은 것도 확인했다.
 
-보완 커밋 `c7ec545`에서 Mac 60분 3회와 취소/재요청을 `test-output/transcription-performance-v7-mac-retry/`로 시작했다. 단계 로그는 `test-output/transcription-performance-v7-mac-retry.log`에 있다. 앱·모델은 같고 측정 도구의 변경과 실행별 소스 해시는 구분해 기록한다. 이 문서 갱신 시점에는 재측정이 진행 중이며 전체 조건의 완료 판정은 보류다.
+보완 커밋 `c7ec545`에서 Mac 60분 3회와 취소/재요청을 `test-output/transcription-performance-v7-mac-retry/`로 완료했다. 단계 로그는 `test-output/transcription-performance-v7-mac-retry.log`에 있다. Mac 3회는 측정하는 클릭 32개씩, 측정 밖 클릭 0개였다. 앱·모델은 같고 측정 도구의 변경과 실행별 소스 해시는 구분해 기록한다.
 
 ```sh
 node scripts/transcription-benchmark.mjs --durations=3600 --surfaces=desktop --iterations=3 --output=test-output/transcription-performance-v7-mac-retry
 ```
+
+### v7 취소·재요청
+
+| 앱 / 입력 | 취소 표시 | 재시도 가능 상태 |
+| --- | --- | --- |
+| Chrome / 10분 | 1.2ms | 63.9ms |
+| Mac / 10분 | 1.8ms | 354.2ms |
+| Chrome / 60분 | 1.8ms | 199.4ms |
+| Mac / 60분 | 2.6ms | 201.8ms |
+
+네 조건 모두 표시 ≤300ms·재시도 가능 ≤5초를 충족했다. 실제 Whisper 프로세스 종료, 현재 자막 문구 보존, 다시 시작한 요청의 실제 추론 진입을 확인했다. 재요청의 전체 완료나 프로젝트 전체의 비트 단위 보존을 이 성능 검사의 증거로 세지 않는다.
 
 ## 입력과 측정 범위
 
@@ -38,7 +50,7 @@ node scripts/transcription-benchmark.mjs --durations=3600 --surfaces=desktop --i
 - Chrome는 전용 Chrome 전체 프로세스 트리와 별도 로컬 서버 트리를 합산한다. Mac는 패키지 Electron 전체 트리를 합산한다. 테스트 운전 프로그램은 제외한다. RSS는 250ms 표본의 최대값이며 표본 사이의 순간 최대값을 보장하지 않는다.
 - 전사 버튼 요청부터 모델 확인·오디오 준비·실제 추론·결과 표시까지 측정했다. 영상 가져오기는 별도 원시값이다. 각 전사 중 기존 자막 선택 32회의 실제 입력 이벤트에서 선택 상태 반영 후 다음 animation frame까지 측정했다. 재생·복원·설정 등 전체 조작의 p95를 뜻하지 않는다.
 
-## 10분 실행 결과
+## 수정 전 10분 실행 결과
 
 | 앱 | 1회 | 2회 | 3회 | 중앙값 | 최대 합산 RSS | 실행별 자막 선택 p95 최댓값 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -66,6 +78,6 @@ node scripts/transcription-benchmark.mjs --durations=3600 --surfaces=desktop --i
 
 ## 아직 완료하지 않은 조건
 
-60분 최초 시도는 `전사 시각이 원본 길이와 일치하지 않습니다.` 오류로 중단됐다. 디코딩한 WAV는 16kHz·57,600,000표본으로 정확히 3,600초임을 확인했다. 기존 실패 기록은 `test-output/transcription-performance-initial-failure/`에 보존했다. 동일 CLI 설정으로 재현한 실제 580개 전사 구간 중 마지막 하나만 240ms 초과했다. 새 변환기는 문구와 시작 시각을 보존하고 끝을 조정해 필수 검토 상태로 가져온다. 이 수정은 실제 출력 전체와 단위·두 앱 UI에서 검증했다. 새 빌드의 Chrome 전체 조건과 Mac 10분은 완료했으며 Mac 60분은 클릭 측정 오류를 보완한 도구로 별도 재측정한다.
+60분 최초 시도는 `전사 시각이 원본 길이와 일치하지 않습니다.` 오류로 중단됐다. 디코딩한 WAV는 16kHz·57,600,000표본으로 정확히 3,600초임을 확인했다. 기존 실패 기록은 `test-output/transcription-performance-initial-failure/`에 보존했다. 동일 CLI 설정으로 재현한 실제 580개 전사 구간 중 마지막 하나만 240ms 초과했다. 새 변환기는 문구와 시작 시각을 보존하고 끝을 조정해 필수 검토 상태로 가져온다. 이 수정은 실제 출력 전체와 단위·두 앱 UI에서 검증했다. 같은 v7 앱의 Chrome·Mac 10분·60분 각 3회와 취소/재요청을 모두 완료했다. 위 범위와 도구 변경을 적용한 결과이며 최초 실패 기록은 보존한다.
 
 실제 녹음의 CER·발화/시각 품질·작업 시간 절감, OS cold-cache, 전체 조작 응답, 무음+VAD와 자막/효과음 합성의 긴 영상 조건, 남은 Mac OS 복구/오프라인 및 실제 인증 모델 검증도 미완료다. 이번 표만으로 제품 전체 성능 통과나 출시 준비 완료를 선언하지 않는다.
