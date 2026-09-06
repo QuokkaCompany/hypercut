@@ -154,4 +154,4 @@ E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니
 
 `node scripts/effect-import-project-race-e2e.mjs --output=test-output/새-시험-이름`은 효과음 추가·재연결·취소와 이전 프로젝트 파일 읽기가 겹치는 8조건을 두 앱에서 검사합니다. 브라우저 빌드·Mac 패키지·Chrome·FFmpeg가 필요하며, 생성 파일의 실제 저장 내용과 합성을 확인합니다. [경합 실행 기록](docs/testing/2026-09-05-effect-import-project-race-results.md)에 수정 전·후 결과와 시험 중계의 범위를 정리했습니다.
 
-`node scripts/vad-benchmark.mjs --output=test-output/새-시험-이름`은 말소리 보호를 켠 10분·60분 영상을 두 앱에서 각 3회 측정합니다. 현재 [실행 기록](docs/testing/2026-09-06-vad-performance-results.md)은 시간·조작·취소 기준을 충족했지만 브라우저 메모리가 2GiB를 초과한 결과입니다. 실제 녹음 품질이나 전체 성능 통과를 뜻하지 않습니다.
+`node scripts/vad-benchmark.mjs --output=test-output/새-시험-이름`은 말소리 보호를 켠 10분·60분 영상을 두 앱에서 각 3회 측정합니다. [출력 메모리 개선 후 기록](docs/testing/2026-09-06-render-memory-results.md)의 12회는 시간·메모리·조작·취소 측정 기준을 충족했습니다. 출력 시간 증가와 [수정 전 메모리 실패](docs/testing/2026-09-06-vad-performance-results.md)도 함께 보존했습니다. 실제 녹음 품질이나 전체 성능 통과를 뜻하지 않습니다.

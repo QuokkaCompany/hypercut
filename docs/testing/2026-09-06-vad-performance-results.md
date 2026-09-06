@@ -56,3 +56,5 @@ node scripts/vad-benchmark.mjs --output=test-output/새-시험-이름
 ```
 
 기본 실행은 10분·60분 × 두 앱 × 3회와 조건별 취소·재시도다. `--durations=60 --iterations=1`은 두 앱의 짧은 도구 점검이며 취소는 생략한다. `--surfaces=browser` 또는 `--surfaces=desktop`으로 제한할 수 있다. 기존 결과 폴더를 덮어쓰지 않는다.
+
+후속 변경: [인코더 메모리 개선과 재측정](2026-09-06-render-memory-results.md)에서 같은 조건 12회가 측정 목표를 충족했다. 이 문서의 수정 전 실패 수치는 보존한다.

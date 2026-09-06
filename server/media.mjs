@@ -3,6 +3,7 @@ import { mkdir, stat, rm, rename, writeFile } from 'node:fs/promises';
 import { createHash, randomUUID } from 'node:crypto';
 import { once } from 'node:events';
 import path from 'node:path';
+import { availableParallelism } from 'node:os';
 import readline from 'node:readline';
 import { capture, startProcess } from './process.mjs';
 import { consumePCM, SilenceDetector } from './pcm.mjs';
@@ -17,6 +18,8 @@ import { validateEffects, mapEffects } from '../shared/effects.mjs';
 import { mixEffects, inspectMixedOutput } from './effects.mjs';
 
 const rational = value => { const [n, d = 1] = String(value).split('/').map(Number); return d && Number.isFinite(n / d) ? n / d : 0; };
+// Bound encoder frame buffers while leaving CPU capacity for the editor.
+const encoderThreads = Math.min(4, availableParallelism());
 
 export async function inspectMedia(filePath, name, signal) {
   const info = JSON.parse(await capture('ffprobe', ['-v', 'error', '-show_format', '-show_streams', '-of', 'json', filePath], { signal }));
@@ -234,7 +237,7 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     await writeFile(filterPath, graph);
     const args = ['-v', 'error', '-nostdin', '-copyts', ...seekArgs(media, decodeStart), '-i', media.path, '-f', 'f32le', '-ar', String(track.sampleRate), '-ac', String(track.channels), '-i', pcmPath,
       ...(captionStyle.enabled ? ['-f', 'concat', '-safe', '0', '-protocol_whitelist', 'file,pipe', '-i', path.join(work, 'captions.ffconcat')] : []),
-      '-filter_complex_script', filterPath, '-map', '[v]', '-map', '1:a:0', '-c:v', 'libx264', '-preset', preview ? 'ultrafast' : 'veryfast', '-crf', preview ? '25' : '18',
+      '-filter_complex_script', filterPath, '-map', '[v]', '-map', '1:a:0', '-c:v', 'libx264', '-threads:v', String(encoderThreads), '-preset', preview ? 'ultrafast' : 'veryfast', '-crf', preview ? '25' : '18',
       '-pix_fmt', 'yuv420p', '-fps_mode', 'vfr', '-enc_time_base:v', '1:90000', '-video_track_timescale', '90000', '-c:a', 'aac', '-b:a', '192k',
       '-t', expectedDuration.toFixed(9), '-movflags', '+faststart', '-progress', 'pipe:1', '-y', temporaryOutput];
     const { child, done } = startProcess('ffmpeg', args, { signal });

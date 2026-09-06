@@ -1,0 +1,210 @@
+{
+  "date": "2026-09-06T04:18:01.801Z",
+  "status": "completed",
+  "sourceHashes": {
+    "server/media.mjs": "663dc2a9a59fea22fefe88b42738a11a9d897261e4ee3d3d57f1a009ee300c22",
+    "src/App.tsx": "789fcd59dd5ca61b2ceabd95ce25d1f23c855b48df4e4363a73778a6a0a98686",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "cfc5fbfb103c5eb10ab70563a26af5e0f7fcc6947d6c0d9e5839b6b9a9136f06"
+  },
+  "runs": [
+    {
+      "name": "integration",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "tests/media.integration.mjs",
+        "tests/caption-rendering.integration.mjs",
+        "tests/effects.integration.mjs",
+        "tests/failures.integration.mjs"
+      ],
+      "status": "PASS",
+      "testHashes": {
+        "tests/media.integration.mjs": "cf906b725922aa99a264f912429291c1b798d7193ce8a2b9c4e1064e90b39eac",
+        "tests/caption-rendering.integration.mjs": "91360a4b04f25d9a0e4076dc22b359e6fc722ee2c15d934e13dc30a83e053a58",
+        "tests/effects.integration.mjs": "05b02c380582446d417e0c976fab15ebe282f65a89c09c9d044b4716e477884e",
+        "tests/failures.integration.mjs": "28d100f40f611dacf772b4eae3be43c10f71645820f6e59fc086b90c1a02e457"
+      },
+      "counts": {
+        "tests": 28,
+        "pass": 28,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "core",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "testHashes": {
+        "scripts/e2e.mjs": "3ecb448ca12ba00f0cc898d689ddf1b1a6f337245e8bce74097025932b383d4a"
+      },
+      "results": [
+        {
+          "browser": "PASS",
+          "upload": true,
+          "videoPlayback": true,
+          "analyzeCuts": 5,
+          "undoRestore": true,
+          "timelineZoomSelection": true,
+          "zoomedRuler": {
+            "visible": 5,
+            "times": [
+              "00:12.80",
+              "00:12.90",
+              "00:13.00",
+              "00:13.09",
+              "00:13.19"
+            ],
+            "scrollLeft": 19124
+          },
+          "projectRoundTrip": true,
+          "wrongSourceRejected": true,
+          "renderedPreviewSeconds": 9.066667,
+          "exportedFile": "/Users/dante/Desktop/github/hyper_cut/test-output/browser-output.mp4",
+          "aiManualProposal": true,
+          "aiInvalidPayloadRejected": true,
+          "unsavedReplacementCancelled": true,
+          "mobileOverflow": false,
+          "externalRequests": 0,
+          "pageErrors": 0
+        },
+        {
+          "desktop": "PASS",
+          "security": {
+            "sandbox": true,
+            "contextIsolation": true,
+            "nodeIntegration": false
+          },
+          "nativeFileIpc": true,
+          "dialogResponse": "test-controlled",
+          "analyzeCuts": 5,
+          "export": "/Users/dante/Desktop/github/hyper_cut/test-output/desktop-output.mp4",
+          "sourceOverwriteBlocked": true,
+          "projectSaveCancelPreservesDirty": true,
+          "nativeProjectSave": true
+        }
+      ]
+    },
+    {
+      "name": "captions",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/captions-e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "testHashes": {
+        "scripts/captions-e2e.mjs": "068e1262dc9cd85d9c93f69e446ff3dc14e9c76398372c409a327ed08adb38a0"
+      },
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "actualModel": "Whisper small",
+          "fixture": "Korean TTS, not user footage",
+          "editingAndReview": true,
+          "draftProtection": true,
+          "originalVideoCaptions": true,
+          "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+          "styledPreviewPixels": 3326,
+          "styledMP4SavedAndDecoded": true,
+          "styleChangesInvalidateOldOutput": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndStyleUndoRedo": true,
+          "errors": [],
+          "browserExternalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "actualModel": "Whisper small",
+          "fixture": "Korean TTS, not user footage",
+          "editingAndReview": true,
+          "draftProtection": true,
+          "originalVideoCaptions": true,
+          "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+          "styledPreviewPixels": 3326,
+          "styledMP4SavedAndDecoded": true,
+          "styleChangesInvalidateOldOutput": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndStyleUndoRedo": true,
+          "errors": [],
+          "browserExternalRequests": 0
+        }
+      ]
+    },
+    {
+      "name": "effects",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/effects-e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "testHashes": {
+        "scripts/effects-e2e.mjs": "9a3f54e0c94b7b73128172796a02097c7ea901a43ecb59ba6a570f1530f3674e"
+      },
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "missingAssetBlocked": true,
+          "wrongReconnectRejected": true,
+          "sameHashReconnected": true,
+          "manualEditUndoRedo": true,
+          "muteDeleteUndo": true,
+          "dirtyDraftGuard": true,
+          "stalePreviewInvalidated": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndEffectMP4Decoded": true,
+          "expectedBeepSeconds": [
+            3,
+            3.7
+          ],
+          "rms": 0.06314186692551059,
+          "peak": 0.09251511096954346,
+          "quietPeak": 0,
+          "sourcePreserved": true,
+          "nativeEffectOverwriteBlocked": "N/A",
+          "externalRequests": 0,
+          "pageErrors": []
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "missingAssetBlocked": true,
+          "wrongReconnectRejected": true,
+          "sameHashReconnected": true,
+          "manualEditUndoRedo": true,
+          "muteDeleteUndo": true,
+          "dirtyDraftGuard": true,
+          "stalePreviewInvalidated": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndEffectMP4Decoded": true,
+          "expectedBeepSeconds": [
+            3,
+            3.7
+          ],
+          "rms": 0.06314186692551059,
+          "peak": 0.09251511096954346,
+          "quietPeak": 0,
+          "sourcePreserved": true,
+          "nativeEffectOverwriteBlocked": true,
+          "externalRequests": 0,
+          "pageErrors": []
+        }
+      ]
+    }
+  ]
+}

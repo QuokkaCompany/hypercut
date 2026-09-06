@@ -1,0 +1,757 @@
+{
+  "date": "2026-09-06T04:15:34.654Z",
+  "code": "7b08c8e460dec670cef267af5623ce432b3fd80e",
+  "status": "completed",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "cpuCount": 14,
+  "memoryBytes": 38654705664,
+  "node": "v24.14.1",
+  "power": "Now drawing from 'AC Power'",
+  "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "requested": {
+    "durations": [
+      600
+    ],
+    "iterations": 1,
+    "surfaces": [
+      "browser"
+    ]
+  },
+  "settings": {
+    "thresholdDb": -40,
+    "minSilenceMs": 500,
+    "preRollMs": 100,
+    "postRollMs": 150
+  },
+  "speechProtection": {
+    "enabled": true,
+    "threshold": 0.5
+  },
+  "scope": "Repeated quiet Korean TTS; actual local VAD and real app import/analyze/export. Whole app tree RSS at 250ms, driver excluded. UI timings include Playwright overhead and two animation frames. No OS cache purge, no human quality or cold-cache claim. Native file paths controlled by test.",
+  "sourceHashes": {
+    "src/App.tsx": "789fcd59dd5ca61b2ceabd95ce25d1f23c855b48df4e4363a73778a6a0a98686",
+    "server/media.mjs": "663dc2a9a59fea22fefe88b42738a11a9d897261e4ee3d3d57f1a009ee300c22",
+    "server/vad.mjs": "418cc8ef384c9fe4858503681f40a14a4c6b0a3d54f991eb035e1813873b8ba4",
+    "scripts/vad-benchmark.mjs": "100777972ec4962b449a3a67b0d425afc7e19e3793c842cc61ed27d168ad087e",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "assets/models/silero_vad.onnx": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+    "package-lock.json": "d5fe6beaad8a68c9cfb98a596d4d54f8d307c9aec24ec6517fc5d301afe1e65a",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "cfc5fbfb103c5eb10ab70563a26af5e0f7fcc6947d6c0d9e5839b6b9a9136f06"
+  },
+  "fixtures": [
+    {
+      "kind": "Repeated generated quiet Korean TTS, not human recording",
+      "originalFingerprint": "5d11350ffa5dbfe1ff290b7bc4749bba999575a6ee56e9bb2e7cd5a39ff46f30",
+      "volumeMultiplier": 0.006,
+      "voice": "Eddy (Korean (South Korea))",
+      "cycleSeconds": 31,
+      "spokenSeconds": 26.718458,
+      "media": {
+        "id": "00cc3a6e-3c19-448b-8974-1c5d77b911fc",
+        "name": "600s.mp4",
+        "duration": 600,
+        "fingerprint": "03eac989faa6c9b73937a263960011a995f05c6208ee2b23b9e1614e945aade8",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 10455338,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "test-output/vad-performance-fixtures/600s.mp4",
+      "sourcePreserved": true
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "inputSeconds": 600,
+      "iteration": 1,
+      "cache": "fresh app process; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "importSeconds": 0.5163402079999998,
+      "analyzeSeconds": 8.549362541999999,
+      "exportSeconds": 24.667394999999996,
+      "peakRSSBytes": 1855127552,
+      "resources": {
+        "analysis": {
+          "file": "browser-600-1-analysis-resources.json",
+          "peakBytes": 1427652608,
+          "samples": 36,
+          "errors": []
+        },
+        "export": {
+          "file": "browser-600-1-export-resources.json",
+          "peakBytes": 1855127552,
+          "samples": 100,
+          "errors": []
+        },
+        "ui": {
+          "file": "browser-600-1-ui-resources.json",
+          "peakBytes": 1521074176,
+          "samples": 36,
+          "errors": []
+        }
+      },
+      "cuts": 39,
+      "speechIntervals": 98,
+      "retainedSeconds": 509.4999999999999,
+      "analysisPeak": 0.003572604851797223,
+      "decodedSamples": 28800000,
+      "outputSeconds": 509.5,
+      "expectedOutputSeconds": 509.4999999999999,
+      "fullDecodeVerified": true,
+      "ui": {
+        "samples": [
+          {
+            "family": "restore",
+            "index": 0,
+            "action": "restore",
+            "ms": 67.0557919999992
+          },
+          {
+            "family": "restore",
+            "index": 1,
+            "action": "undo",
+            "ms": 66.51837500000693
+          },
+          {
+            "family": "restore",
+            "index": 2,
+            "action": "restore",
+            "ms": 66.43974999999773
+          },
+          {
+            "family": "restore",
+            "index": 3,
+            "action": "undo",
+            "ms": 66.45754200000374
+          },
+          {
+            "family": "restore",
+            "index": 4,
+            "action": "restore",
+            "ms": 66.45662500000617
+          },
+          {
+            "family": "restore",
+            "index": 5,
+            "action": "undo",
+            "ms": 66.49095800000214
+          },
+          {
+            "family": "restore",
+            "index": 6,
+            "action": "restore",
+            "ms": 66.455375000005
+          },
+          {
+            "family": "restore",
+            "index": 7,
+            "action": "undo",
+            "ms": 66.33566700000665
+          },
+          {
+            "family": "restore",
+            "index": 8,
+            "action": "restore",
+            "ms": 66.75191700000141
+          },
+          {
+            "family": "restore",
+            "index": 9,
+            "action": "undo",
+            "ms": 66.78645900000265
+          },
+          {
+            "family": "restore",
+            "index": 10,
+            "action": "restore",
+            "ms": 66.39074999999866
+          },
+          {
+            "family": "restore",
+            "index": 11,
+            "action": "undo",
+            "ms": 66.75212499999907
+          },
+          {
+            "family": "restore",
+            "index": 12,
+            "action": "restore",
+            "ms": 66.65550000000076
+          },
+          {
+            "family": "restore",
+            "index": 13,
+            "action": "undo",
+            "ms": 66.2544579999958
+          },
+          {
+            "family": "restore",
+            "index": 14,
+            "action": "restore",
+            "ms": 66.61650000000373
+          },
+          {
+            "family": "restore",
+            "index": 15,
+            "action": "undo",
+            "ms": 66.45670799999789
+          },
+          {
+            "family": "restore",
+            "index": 16,
+            "action": "restore",
+            "ms": 66.48954199999571
+          },
+          {
+            "family": "restore",
+            "index": 17,
+            "action": "undo",
+            "ms": 66.44891700000153
+          },
+          {
+            "family": "restore",
+            "index": 18,
+            "action": "restore",
+            "ms": 66.41816599999584
+          },
+          {
+            "family": "restore",
+            "index": 19,
+            "action": "undo",
+            "ms": 66.21374999999534
+          },
+          {
+            "family": "restore",
+            "index": 20,
+            "action": "restore",
+            "ms": 66.27691599999525
+          },
+          {
+            "family": "restore",
+            "index": 21,
+            "action": "undo",
+            "ms": 65.55541700000322
+          },
+          {
+            "family": "restore",
+            "index": 22,
+            "action": "restore",
+            "ms": 65.94587499999761
+          },
+          {
+            "family": "restore",
+            "index": 23,
+            "action": "undo",
+            "ms": 66.55154200000106
+          },
+          {
+            "family": "restore",
+            "index": 24,
+            "action": "restore",
+            "ms": 66.39362499999697
+          },
+          {
+            "family": "restore",
+            "index": 25,
+            "action": "undo",
+            "ms": 66.56612499999756
+          },
+          {
+            "family": "restore",
+            "index": 26,
+            "action": "restore",
+            "ms": 66.55120799999713
+          },
+          {
+            "family": "restore",
+            "index": 27,
+            "action": "undo",
+            "ms": 66.50141599999915
+          },
+          {
+            "family": "restore",
+            "index": 28,
+            "action": "restore",
+            "ms": 65.86599999999453
+          },
+          {
+            "family": "restore",
+            "index": 29,
+            "action": "undo",
+            "ms": 66.55816699999559
+          },
+          {
+            "family": "restore",
+            "index": 30,
+            "action": "restore",
+            "ms": 66.64512500000274
+          },
+          {
+            "family": "restore",
+            "index": 31,
+            "action": "undo",
+            "ms": 66.32091699999728
+          },
+          {
+            "family": "settings",
+            "index": 0,
+            "action": "setting",
+            "ms": 33.01929199999722
+          },
+          {
+            "family": "settings",
+            "index": 1,
+            "action": "setting",
+            "ms": 31.610000000000582
+          },
+          {
+            "family": "settings",
+            "index": 2,
+            "action": "setting",
+            "ms": 32.99608299999818
+          },
+          {
+            "family": "settings",
+            "index": 3,
+            "action": "setting",
+            "ms": 32.93679200000042
+          },
+          {
+            "family": "settings",
+            "index": 4,
+            "action": "setting",
+            "ms": 32.23658299999806
+          },
+          {
+            "family": "settings",
+            "index": 5,
+            "action": "setting",
+            "ms": 32.95795799999905
+          },
+          {
+            "family": "settings",
+            "index": 6,
+            "action": "setting",
+            "ms": 33.62945799999579
+          },
+          {
+            "family": "settings",
+            "index": 7,
+            "action": "setting",
+            "ms": 32.02745799999684
+          },
+          {
+            "family": "settings",
+            "index": 8,
+            "action": "setting",
+            "ms": 33.01008400000137
+          },
+          {
+            "family": "settings",
+            "index": 9,
+            "action": "setting",
+            "ms": 33.60820799999783
+          },
+          {
+            "family": "settings",
+            "index": 10,
+            "action": "setting",
+            "ms": 31.89862500000163
+          },
+          {
+            "family": "settings",
+            "index": 11,
+            "action": "setting",
+            "ms": 32.11895799999911
+          },
+          {
+            "family": "settings",
+            "index": 12,
+            "action": "setting",
+            "ms": 33.427457999998296
+          },
+          {
+            "family": "settings",
+            "index": 13,
+            "action": "setting",
+            "ms": 32.003624999997555
+          },
+          {
+            "family": "settings",
+            "index": 14,
+            "action": "setting",
+            "ms": 32.922082999997656
+          },
+          {
+            "family": "settings",
+            "index": 15,
+            "action": "setting",
+            "ms": 33.74041700000089
+          },
+          {
+            "family": "settings",
+            "index": 16,
+            "action": "setting",
+            "ms": 31.79412500000035
+          },
+          {
+            "family": "settings",
+            "index": 17,
+            "action": "setting",
+            "ms": 32.8168749999968
+          },
+          {
+            "family": "settings",
+            "index": 18,
+            "action": "setting",
+            "ms": 34.002416000002995
+          },
+          {
+            "family": "settings",
+            "index": 19,
+            "action": "setting",
+            "ms": 32.04683400000067
+          },
+          {
+            "family": "settings",
+            "index": 20,
+            "action": "setting",
+            "ms": 32.72637499999837
+          },
+          {
+            "family": "settings",
+            "index": 21,
+            "action": "setting",
+            "ms": 33.976833000000624
+          },
+          {
+            "family": "settings",
+            "index": 22,
+            "action": "setting",
+            "ms": 32.03191700000025
+          },
+          {
+            "family": "settings",
+            "index": 23,
+            "action": "setting",
+            "ms": 32.83220900000015
+          },
+          {
+            "family": "settings",
+            "index": 24,
+            "action": "setting",
+            "ms": 32.82466700000077
+          },
+          {
+            "family": "settings",
+            "index": 25,
+            "action": "setting",
+            "ms": 32.09049999999843
+          },
+          {
+            "family": "settings",
+            "index": 26,
+            "action": "setting",
+            "ms": 32.876666999996814
+          },
+          {
+            "family": "settings",
+            "index": 27,
+            "action": "setting",
+            "ms": 33.72062499999447
+          },
+          {
+            "family": "settings",
+            "index": 28,
+            "action": "setting",
+            "ms": 32.075582999998005
+          },
+          {
+            "family": "settings",
+            "index": 29,
+            "action": "setting",
+            "ms": 32.84912500000064
+          },
+          {
+            "family": "settings",
+            "index": 30,
+            "action": "setting",
+            "ms": 33.303916999997455
+          },
+          {
+            "family": "settings",
+            "index": 31,
+            "action": "setting",
+            "ms": 32.23975000000064
+          },
+          {
+            "family": "transport",
+            "index": 0,
+            "action": "play",
+            "ms": 82.35120900000038
+          },
+          {
+            "family": "transport",
+            "index": 1,
+            "action": "pause",
+            "ms": 64.5342079999973
+          },
+          {
+            "family": "transport",
+            "index": 2,
+            "action": "play",
+            "ms": 64.83366599999863
+          },
+          {
+            "family": "transport",
+            "index": 3,
+            "action": "pause",
+            "ms": 67.08966700000019
+          },
+          {
+            "family": "transport",
+            "index": 4,
+            "action": "play",
+            "ms": 65.79833299999882
+          },
+          {
+            "family": "transport",
+            "index": 5,
+            "action": "pause",
+            "ms": 66.437708999998
+          },
+          {
+            "family": "transport",
+            "index": 6,
+            "action": "play",
+            "ms": 66.46041699999478
+          },
+          {
+            "family": "transport",
+            "index": 7,
+            "action": "pause",
+            "ms": 67.36525000000256
+          },
+          {
+            "family": "transport",
+            "index": 8,
+            "action": "play",
+            "ms": 66.19908399999986
+          },
+          {
+            "family": "transport",
+            "index": 9,
+            "action": "pause",
+            "ms": 65.685166999996
+          },
+          {
+            "family": "transport",
+            "index": 10,
+            "action": "play",
+            "ms": 66.5099579999951
+          },
+          {
+            "family": "transport",
+            "index": 11,
+            "action": "pause",
+            "ms": 67.14733400000114
+          },
+          {
+            "family": "transport",
+            "index": 12,
+            "action": "play",
+            "ms": 65.87912499999948
+          },
+          {
+            "family": "transport",
+            "index": 13,
+            "action": "pause",
+            "ms": 66.38066699999763
+          },
+          {
+            "family": "transport",
+            "index": 14,
+            "action": "play",
+            "ms": 66.35650000000169
+          },
+          {
+            "family": "transport",
+            "index": 15,
+            "action": "pause",
+            "ms": 67.04349999999977
+          },
+          {
+            "family": "transport",
+            "index": 16,
+            "action": "play",
+            "ms": 65.3728340000016
+          },
+          {
+            "family": "transport",
+            "index": 17,
+            "action": "pause",
+            "ms": 66.906332999999
+          },
+          {
+            "family": "transport",
+            "index": 18,
+            "action": "play",
+            "ms": 66.4265000000014
+          },
+          {
+            "family": "transport",
+            "index": 19,
+            "action": "pause",
+            "ms": 66.18520900000294
+          },
+          {
+            "family": "transport",
+            "index": 20,
+            "action": "play",
+            "ms": 66.10562499999651
+          },
+          {
+            "family": "transport",
+            "index": 21,
+            "action": "pause",
+            "ms": 66.31566600000224
+          },
+          {
+            "family": "transport",
+            "index": 22,
+            "action": "play",
+            "ms": 66.28974999999627
+          },
+          {
+            "family": "transport",
+            "index": 23,
+            "action": "pause",
+            "ms": 67.08379199999763
+          },
+          {
+            "family": "transport",
+            "index": 24,
+            "action": "play",
+            "ms": 65.36524999999529
+          },
+          {
+            "family": "transport",
+            "index": 25,
+            "action": "pause",
+            "ms": 65.55962500000169
+          },
+          {
+            "family": "transport",
+            "index": 26,
+            "action": "play",
+            "ms": 66.29008299999987
+          },
+          {
+            "family": "transport",
+            "index": 27,
+            "action": "pause",
+            "ms": 66.96091599999636
+          },
+          {
+            "family": "transport",
+            "index": 28,
+            "action": "play",
+            "ms": 66.15904199999932
+          },
+          {
+            "family": "transport",
+            "index": 29,
+            "action": "pause",
+            "ms": 66.25233400000434
+          },
+          {
+            "family": "transport",
+            "index": 30,
+            "action": "play",
+            "ms": 66.17883399999846
+          },
+          {
+            "family": "transport",
+            "index": 31,
+            "action": "pause",
+            "ms": 66.19150000000081
+          }
+        ],
+        "byFamily": {
+          "restore": {
+            "count": 32,
+            "median": 66.45712500000081,
+            "max": 67.0557919999992,
+            "p95": 66.78645900000265
+          },
+          "settings": {
+            "count": 32,
+            "median": 32.840667000000394,
+            "max": 34.002416000002995,
+            "p95": 33.976833000000624
+          },
+          "transport": {
+            "count": 32,
+            "median": 66.28991649999807,
+            "max": 82.35120900000038,
+            "p95": 67.36525000000256
+          }
+        }
+      },
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "cancellations": [],
+  "failures": [],
+  "summary": [
+    {
+      "surface": "browser",
+      "seconds": 600,
+      "analyzeSeconds": {
+        "count": 1,
+        "median": 8.549362541999999,
+        "max": 8.549362541999999,
+        "p95": null
+      },
+      "exportSeconds": {
+        "count": 1,
+        "median": 24.667394999999996,
+        "max": 24.667394999999996,
+        "p95": null
+      },
+      "peakRSSBytes": {
+        "count": 1,
+        "median": 1855127552,
+        "max": 1855127552,
+        "p95": null
+      },
+      "allMeasuredGoalsPass": true
+    }
+  ],
+  "measuredGoalsPass": true
+}
