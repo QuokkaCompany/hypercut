@@ -4,6 +4,16 @@
 
 [실행 계획](../plans/2026-09-05-transcription-performance-plan.md), [10분 원시값 스냅샷](results/2026-09-05-transcription-performance-10min.json)을 함께 읽는다. 종료된 최초 실행 결과는 로컬 `test-output/transcription-performance/results.json`, 단계 로그는 `test-output/transcription-performance.log`에 있다. 완료된 각 실행의 RSS 표본과 실제 전사 결과도 같은 폴더에 보존한다. 새 실행은 별도 출력 폴더를 사용하며 기존 결과를 덮어쓰지 않는다.
 
+## v7 재측정
+
+수정 커밋 `1e927ff`의 깨끗한 작업 트리와 새 Mac 패키지에서 다음 명령으로 전체 재측정을 시작했다. 이 기록을 갱신하는 시점에는 진행 중이며 완료 판정은 하지 않았다. 아래 10분 표는 이전 빌드의 기록 그대로다.
+
+```sh
+node scripts/transcription-benchmark.mjs --output=test-output/transcription-performance-v7
+```
+
+10분·60분 × Chrome/Mac × 각 3회, 실제 추론 취소·재요청을 같은 조건으로 확인한다. 진행 상태와 완료/실패 판정은 `test-output/transcription-performance-v7/results.json`, 실행 로그는 `test-output/transcription-performance-v7.log`에 보존한다. 새 기록에는 원본 끝 조정 후 검토가 필요한 자막 수가 포함된다. 진행 중인 실행을 중복 시작하지 않는다.
+
 ## 입력과 측정 범위
 
 - Apple M4 Max, 14코어, 36GiB RAM, macOS/Darwin 25.5 arm64, AC 전원. 다른 데스크톱 앱은 종료하지 않았다.
@@ -42,6 +52,6 @@
 
 ## 아직 완료하지 않은 조건
 
-60분 최초 시도는 `전사 시각이 원본 길이와 일치하지 않습니다.` 오류로 중단됐다. 디코딩한 WAV는 16kHz·57,600,000표본으로 정확히 3,600초임을 확인했다. 기존 실패 기록은 `test-output/transcription-performance-initial-failure/`에 보존했다. 동일 CLI 설정으로 재현한 실제 580개 전사 구간 중 마지막 하나만 240ms 초과했다. 새 변환기는 문구와 시작 시각을 보존하고 끝을 조정해 필수 검토 상태로 가져온다. 이 수정은 실제 출력 전체와 단위·두 앱 UI에서 검증했다. 새 빌드의 10분·60분 각 3회 및 취소/재시도 성능은 새 출력 폴더에서 재측정해야 한다.
+60분 최초 시도는 `전사 시각이 원본 길이와 일치하지 않습니다.` 오류로 중단됐다. 디코딩한 WAV는 16kHz·57,600,000표본으로 정확히 3,600초임을 확인했다. 기존 실패 기록은 `test-output/transcription-performance-initial-failure/`에 보존했다. 동일 CLI 설정으로 재현한 실제 580개 전사 구간 중 마지막 하나만 240ms 초과했다. 새 변환기는 문구와 시작 시각을 보존하고 끝을 조정해 필수 검토 상태로 가져온다. 이 수정은 실제 출력 전체와 단위·두 앱 UI에서 검증했다. 새 빌드의 10분·60분 각 3회 및 취소/재시도 성능은 별도 출력 폴더에서 재측정 중이다.
 
 실제 녹음의 CER·발화/시각 품질·작업 시간 절감, OS cold-cache, 전체 조작 응답, 무음+VAD와 자막/효과음 합성의 긴 영상 조건, 남은 Mac OS 복구/오프라인 및 실제 인증 모델 검증도 미완료다. 이번 표만으로 제품 전체 성능 통과나 출시 준비 완료를 선언하지 않는다.
