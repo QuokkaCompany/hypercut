@@ -1,0 +1,244 @@
+{
+  "date": "2026-09-06T03:07:05.338Z",
+  "status": "completed",
+  "appSourceSHA256": "1b3426efa4b6ea13be26e18b5a950682dc6b5bab2bc32cd5e803c43892c5b4d1",
+  "packageSHA256": "4f7069982a271fed019c201fa5d98e4ebe8e8b5cfe3b0a73b0adc40ec04e680f",
+  "runs": [
+    {
+      "name": "core",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/e2e.mjs",
+        "--desktop",
+        "--packaged"
+      ],
+      "status": "PASS",
+      "results": [
+        {
+          "browser": "PASS",
+          "upload": true,
+          "videoPlayback": true,
+          "analyzeCuts": 5,
+          "undoRestore": true,
+          "timelineZoomSelection": true,
+          "zoomedRuler": {
+            "visible": 5,
+            "times": [
+              "00:12.80",
+              "00:12.90",
+              "00:13.00",
+              "00:13.09",
+              "00:13.19"
+            ],
+            "scrollLeft": 19124
+          },
+          "projectRoundTrip": true,
+          "wrongSourceRejected": true,
+          "renderedPreviewSeconds": 9.066667,
+          "exportedFile": "/Users/dante/Desktop/github/hyper_cut/test-output/browser-output.mp4",
+          "aiManualProposal": true,
+          "aiInvalidPayloadRejected": true,
+          "unsavedReplacementCancelled": true,
+          "mobileOverflow": false,
+          "externalRequests": 0,
+          "pageErrors": 0
+        },
+        {
+          "desktop": "PASS",
+          "security": {
+            "sandbox": true,
+            "contextIsolation": true,
+            "nodeIntegration": false
+          },
+          "nativeFileIpc": true,
+          "dialogResponse": "test-controlled",
+          "analyzeCuts": 5,
+          "export": "/Users/dante/Desktop/github/hyper_cut/test-output/desktop-output.mp4",
+          "sourceOverwriteBlocked": true,
+          "projectSaveCancelPreservesDirty": true,
+          "nativeProjectSave": true
+        }
+      ]
+    },
+    {
+      "name": "recovery",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/recovery-e2e.mjs"
+      ],
+      "status": "PASS",
+      "results": {
+        "status": "PASS",
+        "cancelBeforeAckMs": 54.83704099999977,
+        "oldCutEditsPreserved": true,
+        "staleAnalysisRejected": true,
+        "staleAIProposalRejected": true,
+        "localExportAfterAIFailure": true,
+        "pageErrors": [],
+        "scope": "Real browser/media with delayed job request and injected AI responses; no external AI calls"
+      }
+    },
+    {
+      "name": "project-io",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/project-io-race-e2e.mjs",
+        "--output=test-output/project-io-after-job-cancel"
+      ],
+      "status": "PASS",
+      "results": {
+        "date": "2026-09-06T03:07:28.842Z",
+        "status": "completed",
+        "code": "a3d5b2668e9ec2928be953d031f5dbe1a4ba9bfe",
+        "platform": "darwin 25.5.0 arm64",
+        "scope": "Real UI/media with delayed File.text return or injected late read error and native fsync-to-rename barrier. Generated files only; no external AI requests.",
+        "harnessSHA256": "2ba7c3a071c51027493be8cb781a99ed236511c48e26e19a1512449fb8d1f707",
+        "appSourceSHA256": "1b3426efa4b6ea13be26e18b5a950682dc6b5bab2bc32cd5e803c43892c5b4d1",
+        "packageSHA256": "4f7069982a271fed019c201fa5d98e4ebe8e8b5cfe3b0a73b0adc40ec04e680f",
+        "runs": [
+          {
+            "surface": "browser",
+            "scenario": "READ_LATEST",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "browser",
+            "scenario": "READ_LATEST_ERROR",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "browser",
+            "scenario": "READ_EDIT",
+            "status": "PASS",
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "READ_LATEST",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "READ_LATEST_ERROR",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "READ_EDIT",
+            "status": "PASS",
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "SAVE_EDIT",
+            "status": "PASS",
+            "duplicateSaveBlocked": true,
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "requestSnapshotSaved": true,
+            "latestSavePreserved": true,
+            "failedSavePreservesDirtyAndRetries": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "SAVE_PROJECT",
+            "status": "PASS",
+            "duplicateSaveBlocked": true,
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "requestSnapshotSaved": true,
+            "latestSavePreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          }
+        ],
+        "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df"
+      }
+    },
+    {
+      "name": "captions",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/captions-e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "actualModel": "Whisper small",
+          "fixture": "Korean TTS, not user footage",
+          "editingAndReview": true,
+          "draftProtection": true,
+          "originalVideoCaptions": true,
+          "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+          "styledPreviewPixels": 3326,
+          "styledMP4SavedAndDecoded": true,
+          "styleChangesInvalidateOldOutput": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndStyleUndoRedo": true,
+          "errors": [],
+          "browserExternalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "actualModel": "Whisper small",
+          "fixture": "Korean TTS, not user footage",
+          "editingAndReview": true,
+          "draftProtection": true,
+          "originalVideoCaptions": true,
+          "savedSRT": "1\n00:00:00,167 --> 00:00:05,467\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n\n2\n00:00:05,933 --> 00:00:11,217\n작은 목소리도 남겨 주세요. 긴 무음만 줄이면 됩니다.\n",
+          "styledPreviewPixels": 3326,
+          "styledMP4SavedAndDecoded": true,
+          "styleChangesInvalidateOldOutput": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndStyleUndoRedo": true,
+          "errors": [],
+          "browserExternalRequests": 0
+        }
+      ]
+    }
+  ]
+}

@@ -120,6 +120,7 @@ npm run test:claude
 npm run test:failures
 npm run test:save:crash
 npm run test:project:io
+npm run test:jobs:races
 npm run test:benchmark:selection
 npm run build
 npm run test:e2e -- --desktop --packaged

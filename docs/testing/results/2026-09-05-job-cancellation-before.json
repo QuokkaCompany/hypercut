@@ -1,0 +1,242 @@
+{
+  "date": "2026-09-06T03:04:25.998Z",
+  "status": "failed",
+  "code": "a3d5b2668e9ec2928be953d031f5dbe1a4ba9bfe",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "faac2ce62cf1efb85680e413ce2a47d895b00fa4952629cb33926b1ed1d27db6",
+  "appSourceSHA256": "c01e06a2f6b9bbfd71931e836c13a7dfe29aa39db7be9f5ba29209f56ba2906f",
+  "packageSHA256": "43e1386e7d7b2e929c58441ca7120ab6edd1bfa2512ad5b860cf129233143faf",
+  "scope": "Real generated media, jobs, browser and Mac UI. HTTP delivery barriers; cancellation 503 errors injected. Native file paths controlled. No private footage or external model calls.",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_LATE_ERROR",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "b730e193-eab8-48a4-a358-3ef065f23b6a",
+        "type": "analyze",
+        "mediaId": "b54a1ded-9fd8-443f-95c3-53284ec3f57f"
+      },
+      "oldTerminal": {
+        "id": "b730e193-eab8-48a4-a358-3ef065f23b6a",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "b54a1ded-9fd8-443f-95c3-53284ec3f57f"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/f8bd1e5b-0479-46c4-847a-bf7c98588dd7/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "5ade33bc-57fa-4299-9ed2-e1326be466f5",
+        "type": "preview",
+        "mediaId": "f8bd1e5b-0479-46c4-847a-bf7c98588dd7"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/f8bd1e5b-0479-46c4-847a-bf7c98588dd7/file",
+        "busy": 1,
+        "errors": [
+          "확인이 필요합니다controlled obsolete cancel failure"
+        ],
+        "outputButton": 0
+      },
+      "error": "Obsolete cancellation or job response changed current project/UI\n+ actual - expected\n\n  {\n    busy: 1,\n    cuts: [\n      '0100:03.001.00초 · 제거'\n    ],\n    dirty: 1,\n+   errors: [\n+     '확인이 필요합니다controlled obsolete cancel failure'\n+   ],\n-   errors: [],\n    media: 'source-b.mp4',\n    outputButton: 0,\n    threshold: '-42',\n    videoPath: '/api/media/f8bd1e5b-0479-46c4-847a-bf7c98588dd7/file'\n  }\n"
+    },
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_AFTER_EDIT",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "9ebdd922-0d0b-42d3-b5da-27c2e454bf9b",
+        "type": "analyze",
+        "mediaId": "dcbfc5a7-b0ca-4a4e-a9aa-3090b5465ecd"
+      },
+      "oldTerminal": {
+        "id": "9ebdd922-0d0b-42d3-b5da-27c2e454bf9b",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "dcbfc5a7-b0ca-4a4e-a9aa-3090b5465ecd"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/dcbfc5a7-b0ca-4a4e-a9aa-3090b5465ecd/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "afterRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/dcbfc5a7-b0ca-4a4e-a9aa-3090b5465ecd/file",
+        "busy": 0,
+        "errors": [
+          "확인이 필요합니다controlled obsolete cancel failure"
+        ],
+        "outputButton": 0
+      },
+      "error": "Obsolete cancellation or job response changed current project/UI\n+ actual - expected\n\n  {\n    busy: 0,\n    cuts: [\n      '0100:03.001.00초 · 제거'\n    ],\n    dirty: 1,\n+   errors: [\n+     '확인이 필요합니다controlled obsolete cancel failure'\n+   ],\n-   errors: [],\n    media: 'source-a.mp4',\n    outputButton: 0,\n    threshold: '-42',\n    videoPath: '/api/media/dcbfc5a7-b0ca-4a4e-a9aa-3090b5465ecd/file'\n  }\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_LATE_ERROR",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "831ba991-70c7-4480-a1a2-1c7a13ea1360",
+        "type": "analyze",
+        "mediaId": "8d789cd4-7680-48f1-863e-63b36ecb37c5"
+      },
+      "oldTerminal": {
+        "id": "831ba991-70c7-4480-a1a2-1c7a13ea1360",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "8d789cd4-7680-48f1-863e-63b36ecb37c5"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/ac9ef754-1c01-4a47-989b-5f0132cc0c00/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "8683431e-c7b8-4e7d-9832-31e354c1f64a",
+        "type": "preview",
+        "mediaId": "ac9ef754-1c01-4a47-989b-5f0132cc0c00"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/ac9ef754-1c01-4a47-989b-5f0132cc0c00/file",
+        "busy": 1,
+        "errors": [
+          "확인이 필요합니다controlled obsolete cancel failure"
+        ],
+        "outputButton": 0
+      },
+      "error": "Obsolete cancellation or job response changed current project/UI\n+ actual - expected\n\n  {\n    busy: 1,\n    cuts: [\n      '0100:03.001.00초 · 제거'\n    ],\n    dirty: 1,\n+   errors: [\n+     '확인이 필요합니다controlled obsolete cancel failure'\n+   ],\n-   errors: [],\n    media: 'source-b.mp4',\n    outputButton: 0,\n    threshold: '-42',\n    videoPath: '/api/media/ac9ef754-1c01-4a47-989b-5f0132cc0c00/file'\n  }\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_AFTER_EDIT",
+      "status": "FAIL",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "1eccc64d-a6ca-437a-970c-59380bba8eea",
+        "type": "analyze",
+        "mediaId": "9cd00b06-51f8-4bb8-8b27-9d18479e1463"
+      },
+      "oldTerminal": {
+        "id": "1eccc64d-a6ca-437a-970c-59380bba8eea",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "9cd00b06-51f8-4bb8-8b27-9d18479e1463"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/9cd00b06-51f8-4bb8-8b27-9d18479e1463/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "afterRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/9cd00b06-51f8-4bb8-8b27-9d18479e1463/file",
+        "busy": 0,
+        "errors": [
+          "확인이 필요합니다controlled obsolete cancel failure"
+        ],
+        "outputButton": 0
+      },
+      "error": "Obsolete cancellation or job response changed current project/UI\n+ actual - expected\n\n  {\n    busy: 0,\n    cuts: [\n      '0100:03.001.00초 · 제거'\n    ],\n    dirty: 1,\n+   errors: [\n+     '확인이 필요합니다controlled obsolete cancel failure'\n+   ],\n-   errors: [],\n    media: 'source-a.mp4',\n    outputButton: 0,\n    threshold: '-42',\n    videoPath: '/api/media/9cd00b06-51f8-4bb8-8b27-9d18479e1463/file'\n  }\n"
+    }
+  ],
+  "sourceHashes": [
+    "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df",
+    "79d64eeee2fd299df44242fbf6becc387e12d999bca93a520345bf24a2c15ad6"
+  ]
+}

@@ -1,0 +1,946 @@
+{
+  "date": "2026-09-06T03:05:21.654Z",
+  "status": "completed",
+  "code": "a3d5b2668e9ec2928be953d031f5dbe1a4ba9bfe",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "faac2ce62cf1efb85680e413ce2a47d895b00fa4952629cb33926b1ed1d27db6",
+  "appSourceSHA256": "1b3426efa4b6ea13be26e18b5a950682dc6b5bab2bc32cd5e803c43892c5b4d1",
+  "packageSHA256": "4f7069982a271fed019c201fa5d98e4ebe8e8b5cfe3b0a73b0adc40ec04e680f",
+  "scope": "Real generated media, jobs, browser and Mac UI. HTTP delivery barriers; cancellation 503 errors injected. Native file paths controlled. No private footage or external model calls.",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "POST_LATE",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-post",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "0425812b-fa72-434e-9173-98fd84411090",
+        "type": "analyze",
+        "mediaId": "a3cb1cfd-0089-48a9-9e05-c84fc82a4874"
+      },
+      "cancelServerReply": {
+        "cancelled": true
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/4bd3c6aa-0ac1-40d1-97a1-4a4fb46319c8/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "19d9265f-efc5-4fe9-875d-80ad21b59bfb",
+        "type": "preview",
+        "mediaId": "4bd3c6aa-0ac1-40d1-97a1-4a4fb46319c8"
+      },
+      "latePostResponse": {
+        "id": "0425812b-fa72-434e-9173-98fd84411090",
+        "type": "analyze",
+        "status": "cancelled"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/4bd3c6aa-0ac1-40d1-97a1-4a4fb46319c8/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "serverPreCancellationVerified": true,
+      "newPreviewVerified": {
+        "id": "a24b2927-b64c-4f12-8836-ba89357bb2fc",
+        "duration": 7,
+        "mediaId": "4bd3c6aa-0ac1-40d1-97a1-4a4fb46319c8"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "POLL_LATE_ANALYZE",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "1d2383f0-afd7-4b36-83e1-22210d4c43ab",
+        "type": "analyze",
+        "mediaId": "e7232905-8d28-4f5b-b648-e7423b7b215c"
+      },
+      "oldTerminal": {
+        "id": "1d2383f0-afd7-4b36-83e1-22210d4c43ab",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "e7232905-8d28-4f5b-b648-e7423b7b215c"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/3286174d-8498-44c9-b5c7-39ed57355c35/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "9789d12b-5ab9-41de-93d7-d493f6f2afc0",
+        "type": "preview",
+        "mediaId": "3286174d-8498-44c9-b5c7-39ed57355c35"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/3286174d-8498-44c9-b5c7-39ed57355c35/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "59af9289-d945-4bf1-811e-ed25de348e7b",
+        "duration": 7,
+        "mediaId": "3286174d-8498-44c9-b5c7-39ed57355c35"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "POLL_LATE_EXPORT",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "653ed4cb-d5f6-40fe-af2e-e3ccbf576f5d",
+        "type": "export",
+        "mediaId": "22b69ca7-f411-4435-a7f6-2a0c9e577072"
+      },
+      "oldTerminal": {
+        "id": "653ed4cb-d5f6-40fe-af2e-e3ccbf576f5d",
+        "status": "completed",
+        "type": "export",
+        "outputId": "196374b1-60ea-4ed4-afd7-49f18d483d84",
+        "mediaId": "22b69ca7-f411-4435-a7f6-2a0c9e577072"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/e2f4acf0-08db-45a0-8b1f-6f2c26bb07a6/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "cdea727d-1dac-44e5-83b6-dff6ab1aff04",
+        "type": "preview",
+        "mediaId": "e2f4acf0-08db-45a0-8b1f-6f2c26bb07a6"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/e2f4acf0-08db-45a0-8b1f-6f2c26bb07a6/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "21fc1689-10d9-4ce1-8d6e-c009e6e5c3e9",
+        "duration": 7,
+        "mediaId": "e2f4acf0-08db-45a0-8b1f-6f2c26bb07a6"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_LATE_SUCCESS",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "40416d6f-285b-4a75-a24e-af54aa6e8982",
+        "type": "export",
+        "mediaId": "aacdc3ef-c53a-4cb1-8d7c-3cebefa0901f"
+      },
+      "oldTerminal": {
+        "id": "40416d6f-285b-4a75-a24e-af54aa6e8982",
+        "status": "completed",
+        "type": "export",
+        "outputId": "953a7cfe-70b8-468f-bdf4-00cde5bfd90a",
+        "mediaId": "aacdc3ef-c53a-4cb1-8d7c-3cebefa0901f"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/16968dc7-5703-47f4-b3fd-5398f74383db/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "002134d0-e5f9-471f-add1-290c00e9889e",
+        "type": "preview",
+        "mediaId": "16968dc7-5703-47f4-b3fd-5398f74383db"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/16968dc7-5703-47f4-b3fd-5398f74383db/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "af7af06a-1a0e-431d-8a75-a5874e03b327",
+        "duration": 7,
+        "mediaId": "16968dc7-5703-47f4-b3fd-5398f74383db"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_LATE_ERROR",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "658960da-1090-449c-85ac-744544230e1e",
+        "type": "analyze",
+        "mediaId": "e0e042ca-51bf-4e77-ba04-38fe7b5deb91"
+      },
+      "oldTerminal": {
+        "id": "658960da-1090-449c-85ac-744544230e1e",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "e0e042ca-51bf-4e77-ba04-38fe7b5deb91"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/3dc278d9-0268-47fa-9628-7ab48d6b24be/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "c9842405-b0a8-4c75-bbf1-743f034071da",
+        "type": "preview",
+        "mediaId": "3dc278d9-0268-47fa-9628-7ab48d6b24be"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/3dc278d9-0268-47fa-9628-7ab48d6b24be/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "351c6219-3763-4fd7-9ad5-2e66943d1876",
+        "duration": 7,
+        "mediaId": "3dc278d9-0268-47fa-9628-7ab48d6b24be"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_AFTER_EDIT",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "3c36d8b5-74cd-44ea-a172-a245b9211274",
+        "type": "analyze",
+        "mediaId": "11eb6266-f40e-42b1-918c-472095edb4bc"
+      },
+      "oldTerminal": {
+        "id": "3c36d8b5-74cd-44ea-a172-a245b9211274",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "11eb6266-f40e-42b1-918c-472095edb4bc"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/11eb6266-f40e-42b1-918c-472095edb4bc/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "afterRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/11eb6266-f40e-42b1-918c-472095edb4bc/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "CURRENT_CANCEL_ERROR",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "ca820563-ea70-418c-885d-459c961b3ad0",
+        "type": "analyze",
+        "mediaId": "df5a0e72-9980-4e3d-8161-02dd62b0d163"
+      },
+      "oldTerminal": {
+        "id": "ca820563-ea70-418c-885d-459c961b3ad0",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "df5a0e72-9980-4e3d-8161-02dd62b0d163"
+      },
+      "currentErrorVisible": true,
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/df5a0e72-9980-4e3d-8161-02dd62b0d163/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "afterRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/df5a0e72-9980-4e3d-8161-02dd62b0d163/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "POST_LATE",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-post",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "d0161134-d29a-4d2c-9155-1feed6ca0c97",
+        "type": "analyze",
+        "mediaId": "dea4ee99-b0bc-45b1-9aa6-ba0a8fe45969"
+      },
+      "cancelServerReply": {
+        "cancelled": true
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/87dee3ae-3ad6-4f28-81a1-ec298f74aa2d/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "1dff9647-223a-479a-a862-133c1add70e3",
+        "type": "preview",
+        "mediaId": "87dee3ae-3ad6-4f28-81a1-ec298f74aa2d"
+      },
+      "latePostResponse": {
+        "id": "d0161134-d29a-4d2c-9155-1feed6ca0c97",
+        "type": "analyze",
+        "status": "cancelled"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/87dee3ae-3ad6-4f28-81a1-ec298f74aa2d/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "serverPreCancellationVerified": true,
+      "newPreviewVerified": {
+        "id": "6ef53850-01be-4a78-9b17-ab12f510f6a4",
+        "duration": 7,
+        "mediaId": "87dee3ae-3ad6-4f28-81a1-ec298f74aa2d"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "POLL_LATE_ANALYZE",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "1c3643ed-77a8-47c2-a8ab-55e2cc7809d3",
+        "type": "analyze",
+        "mediaId": "c552a0f8-868a-4075-8bc0-e5585a72a524"
+      },
+      "oldTerminal": {
+        "id": "1c3643ed-77a8-47c2-a8ab-55e2cc7809d3",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "c552a0f8-868a-4075-8bc0-e5585a72a524"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/975fe1d4-d645-40c6-89be-864a41dadcde/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "01b4ade4-6dcd-42cb-aec7-96a033e84c5e",
+        "type": "preview",
+        "mediaId": "975fe1d4-d645-40c6-89be-864a41dadcde"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/975fe1d4-d645-40c6-89be-864a41dadcde/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "c28aabb7-7362-4cc0-8ce0-bba7f210e964",
+        "duration": 7,
+        "mediaId": "975fe1d4-d645-40c6-89be-864a41dadcde"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "POLL_LATE_EXPORT",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "350e8c2b-442c-40b5-9e84-9c24614433d0",
+        "type": "export",
+        "mediaId": "e7088e2f-0e3e-4982-a6fd-d2275a631c41"
+      },
+      "oldTerminal": {
+        "id": "350e8c2b-442c-40b5-9e84-9c24614433d0",
+        "status": "completed",
+        "type": "export",
+        "outputId": "3df29f34-0dcc-4eb6-bc36-2851d5846df1",
+        "mediaId": "e7088e2f-0e3e-4982-a6fd-d2275a631c41"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/b2f6c58a-49a9-4b6f-bca0-4b22a44368ed/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "eb8918bc-16fb-41f7-a5d4-e36667301800",
+        "type": "preview",
+        "mediaId": "b2f6c58a-49a9-4b6f-bca0-4b22a44368ed"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/b2f6c58a-49a9-4b6f-bca0-4b22a44368ed/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "d8c45eab-0302-4c56-88b5-7a4bc00aa5f0",
+        "duration": 7,
+        "mediaId": "b2f6c58a-49a9-4b6f-bca0-4b22a44368ed"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_LATE_SUCCESS",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "42de7217-206b-4f09-bc44-5616597c5678",
+        "type": "export",
+        "mediaId": "39d65b73-477a-4d12-86dc-d01af5e86070"
+      },
+      "oldTerminal": {
+        "id": "42de7217-206b-4f09-bc44-5616597c5678",
+        "status": "completed",
+        "type": "export",
+        "outputId": "a25f91b5-7e21-4865-874e-7c4d84d2b29c",
+        "mediaId": "39d65b73-477a-4d12-86dc-d01af5e86070"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/4784a599-8724-42b5-810f-dc8e6acc6123/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "afcc7f88-93dc-4ddc-b6b9-04afe0a6ebb9",
+        "type": "preview",
+        "mediaId": "4784a599-8724-42b5-810f-dc8e6acc6123"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/4784a599-8724-42b5-810f-dc8e6acc6123/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "282887cb-4044-4d53-a149-dd65e17910b6",
+        "duration": 7,
+        "mediaId": "4784a599-8724-42b5-810f-dc8e6acc6123"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_LATE_ERROR",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "eedb44b5-a4f9-45e4-b650-741082681f22",
+        "type": "analyze",
+        "mediaId": "a4f822c2-0623-437b-904b-68b5159a2c6b"
+      },
+      "oldTerminal": {
+        "id": "eedb44b5-a4f9-45e4-b650-741082681f22",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "a4f822c2-0623-437b-904b-68b5159a2c6b"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/52409804-b03e-4da6-9160-70150638a341/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "newRequest": {
+        "id": "d5e11864-204c-4d61-bbcc-af61ba0a06b0",
+        "type": "preview",
+        "mediaId": "52409804-b03e-4da6-9160-70150638a341"
+      },
+      "afterRelease": {
+        "media": "source-b.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/52409804-b03e-4da6-9160-70150638a341/file",
+        "busy": 1,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "newPreviewVerified": {
+        "id": "dedd06eb-e97d-49a8-90db-3e8d27e58ce8",
+        "duration": 7,
+        "mediaId": "52409804-b03e-4da6-9160-70150638a341"
+      },
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_AFTER_EDIT",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "6b4699d8-5943-4039-ae93-e84bebd92c96",
+        "type": "analyze",
+        "mediaId": "509c898b-d0e0-4e73-be22-cbc75ab8e46e"
+      },
+      "oldTerminal": {
+        "id": "6b4699d8-5943-4039-ae93-e84bebd92c96",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "509c898b-d0e0-4e73-be22-cbc75ab8e46e"
+      },
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/509c898b-d0e0-4e73-be22-cbc75ab8e46e/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "afterRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/509c898b-d0e0-4e73-be22-cbc75ab8e46e/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CURRENT_CANCEL_ERROR",
+      "status": "PASS",
+      "delivery": [
+        {
+          "label": "old-cancel",
+          "outcome": "fulfill-resolved"
+        },
+        {
+          "label": "old-poll",
+          "outcome": "fulfill-resolved"
+        }
+      ],
+      "routeErrors": [],
+      "oldRequest": {
+        "id": "a6776eb1-8e75-4916-b763-72b00253308a",
+        "type": "analyze",
+        "mediaId": "efe27b56-b582-4aa5-a0a3-24b28327232c"
+      },
+      "oldTerminal": {
+        "id": "a6776eb1-8e75-4916-b763-72b00253308a",
+        "status": "completed",
+        "type": "analyze",
+        "mediaId": "efe27b56-b582-4aa5-a0a3-24b28327232c"
+      },
+      "currentErrorVisible": true,
+      "cancelServerReply": {
+        "cancelled": false
+      },
+      "oldProjectCutsPreserved": true,
+      "beforeRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/efe27b56-b582-4aa5-a0a3-24b28327232c/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "afterRelease": {
+        "media": "source-a.mp4",
+        "threshold": "-42",
+        "cuts": [
+          "0100:03.001.00초 · 제거"
+        ],
+        "dirty": 1,
+        "videoPath": "/api/media/efe27b56-b582-4aa5-a0a3-24b28327232c/file",
+        "busy": 0,
+        "errors": [],
+        "outputButton": 0
+      },
+      "currentUIUnchanged": true,
+      "allProjectFieldsPreserved": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "sourceHashes": [
+    "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df",
+    "79d64eeee2fd299df44242fbf6becc387e12d999bca93a520345bf24a2c15ad6"
+  ]
+}

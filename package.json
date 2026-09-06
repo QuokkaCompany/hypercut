@@ -44,7 +44,8 @@
     "test:save:crash": "node scripts/desktop-save-crash-e2e.mjs",
     "test:save:native": "node scripts/native-save-dialog-session.mjs",
     "test:benchmark:selection": "node --test tests/benchmark-selection.integration.mjs",
-    "test:project:io": "node scripts/project-io-race-e2e.mjs"
+    "test:project:io": "node scripts/project-io-race-e2e.mjs",
+    "test:jobs:races": "node scripts/job-cancellation-race-e2e.mjs"
   },
   "dependencies": {
     "@napi-rs/canvas": "1.0.8",

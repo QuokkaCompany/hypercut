@@ -77,7 +77,7 @@ RSS는 Electron 루트와 모든 자손 프로세스를 250ms마다 합산했다
 | E05 | PASS | 실제 읽기 거부를 포함한 입력/도구 오류와 복구 |
 | E03 | Mac 조건 PASS, 후속 검증 | 기존 저장 함수·손상 파일 거부에 더해 [앱 전체 종료·재열기](2026-09-05-desktop-save-crash-results.md)를 두 파일 교체 지점에서 확인. 전원 차단·브라우저 다운로드 완료는 별도 |
 | E04 | Mac PASS | [실제 OS 확인 창](2026-09-05-native-save-dialog-results.md)에서 기존 프로젝트/MP4의 교체 취소·승인과 원본 경로 차단 PASS. 브라우저 다운로드 관리자의 파일명 충돌 처리는 별도 범위 |
-| E06 | 일부 조건 PASS | 취소/설정 변경 뒤 지연 응답 및 [파일 읽기·프로젝트 저장 경합](2026-09-05-project-io-race-results.md) PASS. 취소한 작업과 새 원본의 전체 경합 조합은 남음 |
+| E06 | 일부 조건 PASS | [파일 읽기·프로젝트 저장 경합](2026-09-05-project-io-race-results.md) 및 [분석·출력 취소와 새 원본 경합](2026-09-05-job-cancellation-race-results.md) PASS. 전사·SRT·부분 복원·효과음 편집창의 새 원본 조합은 남음 |
 | U01 | NOT_RUN | 브라우저 OS 외부 연결 차단 PASS. Electron의 같은 시험은 중첩 샌드박스 오류로 실행 불가 |
 | P01–P02 | NOT_RUN | 합성 자료 수치 목표는 위 범위에서 충족. 실제 cold-cache 조건과 최종 UI 포함 전체 앱 재측정은 남음 |
 | A01 | PASS, 모의 공급자 범위 | 연결 해제/실패 뒤 실제 로컬 편집·출력 가능 |

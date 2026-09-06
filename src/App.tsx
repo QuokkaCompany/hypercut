@@ -188,10 +188,13 @@ export default function App() {
   }
   async function cancel() {
     if (busy === 'import') { importController.current?.abort(); return; }
-    const active = activeJob.current; if (!active || active.cancelled) return;
+    const active = activeJob.current, id = operation.current; if (!active || active.cancelled) return;
     active.cancelled = true; setJob(previous => previous ? { ...previous, stage: '취소 중' } : previous);
     try { await request(`/jobs/${active.id}`, undefined, 'DELETE'); active.controller.abort(); }
-    catch (e) { active.cancelled = false; setError((e as Error).message); }
+    catch (e) {
+      if (activeJob.current !== active || operation.current !== id) return;
+      active.cancelled = false; setError((e as Error).message);
+    }
   }
   function changeSettings(next: Settings | ((previous: Settings) => Settings)) { setSettings(next); if (media) setUnsaved(true); }
   function edit(next: Cut[]) { dispatch({ type: 'edit', cuts: next }); setUnsaved(true); }
