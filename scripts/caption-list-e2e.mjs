@@ -53,6 +53,17 @@ try {
     assert.equal(Number(await page.locator('input[aria-label="자막 시작"]').inputValue()), changed.start);
     await page.waitForFunction(expected => Math.abs(document.querySelector('video[aria-label="자막 원본 청취"]')?.currentTime - expected) < .0001, changed.start);
     assert.equal(await page.locator('.caption-row').count(), 1000);
+    // A selected value alone does not prove that newly visible neighbouring rows
+    // are painted after a long scroll, or that the source video finished seeking.
+    const visibleRowsStarted = performance.now();
+    await page.waitForFunction(() => {
+      const list = document.querySelector('.caption-list'), clip = list.getBoundingClientRect();
+      const rows = [...list.querySelectorAll('.caption-row')].filter(row => { const rect = row.getBoundingClientRect(); return rect.bottom > clip.top && rect.top < clip.bottom; });
+      return rows.length >= 2 && rows.every(row => row.querySelector('p').checkVisibility({ contentVisibilityAuto: true }));
+    });
+    run.neighbourVisibilityWaitMs = performance.now() - visibleRowsStarted;
+    await page.waitForFunction(() => { const video = document.querySelector('video[aria-label="자막 원본 청취"]'); return video.readyState >= 2 && !video.seeking; });
+    run.visibleNeighboursRendered = true; run.sourceSeekSettled = true;
     await page.screenshot({ path: `test-output/caption-list-${surface}.png` });
     await button('자막 창 닫기').click();
     const saved = path.join(directory, `${surface}.json`);

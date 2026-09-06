@@ -1,0 +1,3616 @@
+{
+  "date": "2026-09-06T07:53:58.856Z",
+  "code": "336d0e3ee9729e7be2f6f17ee98b0c24f744f1e5",
+  "status": "completed",
+  "platform": "darwin 25.5.0 arm64",
+  "cpu": "Apple M4 Max",
+  "cpuCount": 14,
+  "memoryBytes": 38654705664,
+  "node": "v24.14.1",
+  "power": "Now drawing from 'AC Power'",
+  "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "requested": {
+    "durations": [
+      60
+    ],
+    "iterations": 2,
+    "surfaces": [
+      "browser",
+      "desktop"
+    ],
+    "uiLocator": "css"
+  },
+  "scope": "Synthetic 30fps tone/flash video with manual Korean captions and 880Hz effects. Actual app import, analysis, project loading, audio reconnection, SRT/MP4/project saving, UI and render cancellation/retry. App trees sampled every 250ms including their render/verification workers. Driver and independent media verifiers excluded from RSS. Export elapsed includes application output verification; independent verification elapsed reported separately. Native file paths controlled by test. No OS cache purge, authenticated AI, speech accuracy or human audio-quality claim.",
+  "sourceHashes": {
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionList.tsx": "5a7e68180ee65d7f906618b500a8decf2bdd649eb318ba041b402573d3cb6db0",
+    "src/captions.css": "6b88dda9811c36f4328d5f162034a52b9bed4f98198ae35a6c8c8e336bf60ec7",
+    "src/Effects.tsx": "f3754c85b1f6dc7b8ae667988073d446d054fae9e13bbffd358a14e6611f6187",
+    "server/media.mjs": "1d447221fff611165125d6c24dbae5bb4a61c8732b2d59bee068162ba59da074",
+    "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+    "server/effects.mjs": "972611657a16780bc47f386c579d9c589ca3287ad730103a9b899094efae7d5b",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "73a6215294dc384c7500abd6e8fbca5d10dc10b410dbb711f7d6151f38e0aa55",
+    "scripts/composition-benchmark.mjs": "23e687bb8a5917f3c1c76e99f43c3dbf172cfd2fb8958534f43cb27d2dbe99e1",
+    "scripts/helpers/composition-oracle.mjs": "46c22c4463e070c3c97de9d05d235df18c83db9dfa03ff7b2523b1b1c1193c17",
+    "scripts/helpers/composition-performance-fixture.mjs": "4d7bc3816c54a7918d40b60c7eef5eedb985c92efa983c6cfe12965cb4da7aa1",
+    "scripts/helpers/threshold-performance-fixture.mjs": "8d98fc7c46c0bfde0d883a29207968a295582bc0cb0f7c036d4e7a448d40a466",
+    "scripts/helpers/performance.mjs": "904dbeaceb2d7daf6bfff1ce2c0e0b4ec05c704ce777b29d9b989b0299cac052",
+    "assets/fonts/manifest.json": "6e5b4b0d572cf3f502c9253530b6adb6b58d05928c04e904881b67a0d53de309",
+    "package-lock.json": "d5fe6beaad8a68c9cfb98a596d4d54f8d307c9aec24ec6517fc5d301afe1e65a",
+    "dist/index.html": "6df4df536456ea04752b8a651cbd95199cb133867f7bede7b7c695d257e3775c",
+    "dist/assets/index-bz0i9a7I.js": "1e2b79fadd79fdbecdbcc3fe1dae2e8b278420e6bc86ecabc31bddb61039448f",
+    "dist/assets/index-CtpzSE3v.css": "3b9f718b0139f89baef3cb82a57a8503d350880bc20c95d3080082831e775ed8",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "fd40fcdabe0cb1e584f964aefe6f03a9802b938de6efabf546da11db2ed04c91"
+  },
+  "packageSourceHashes": {
+    "server/media.mjs": "1d447221fff611165125d6c24dbae5bb4a61c8732b2d59bee068162ba59da074",
+    "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+    "server/effects.mjs": "972611657a16780bc47f386c579d9c589ca3287ad730103a9b899094efae7d5b",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "73a6215294dc384c7500abd6e8fbca5d10dc10b410dbb711f7d6151f38e0aa55",
+    "dist/index.html": "6df4df536456ea04752b8a651cbd95199cb133867f7bede7b7c695d257e3775c",
+    "dist/assets/index-bz0i9a7I.js": "1e2b79fadd79fdbecdbcc3fe1dae2e8b278420e6bc86ecabc31bddb61039448f",
+    "dist/assets/index-CtpzSE3v.css": "3b9f718b0139f89baef3cb82a57a8503d350880bc20c95d3080082831e775ed8"
+  },
+  "fixtures": [
+    {
+      "kind": "Repeated synthetic 440Hz tone and 400ms-delayed flash; not human speech",
+      "cycleSeconds": 3.6,
+      "toneSeconds": 2.6,
+      "flashSeconds": 0.4,
+      "expectedCuts": 16,
+      "reusedBaseline": false,
+      "media": {
+        "id": "35d64c25-9e85-4bee-a702-2dc54b3ae474",
+        "name": "60s.mp4",
+        "duration": 60,
+        "fingerprint": "d7286a91d14e379b4e514eb61e9f8db6942d29ef6f84674ea29d9f4e13c3c22e",
+        "width": 1920,
+        "height": 1080,
+        "fps": 30,
+        "size": 1207118,
+        "videoIndex": 0,
+        "timeBase": 0.00006510416666666667,
+        "origin": 0,
+        "audioTracks": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "channels": 1,
+            "sampleRate": 48000,
+            "label": "SoundHandler",
+            "language": "und"
+          }
+        ]
+      },
+      "source": "/Users/dante/Desktop/github/hyper_cut/test-output/threshold-performance-fixtures/60s.mp4",
+      "effectFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/fixture-60/composition-880hz.wav",
+      "effectFingerprint": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+      "tone": {
+        "rate": 48000,
+        "frequency": 880,
+        "amplitude": 0.1,
+        "seconds": 0.5
+      },
+      "data": {
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual synthetic composition fixture",
+          "cues": [
+            {
+              "id": "caption-0",
+              "start": 0.8,
+              "end": 2.2,
+              "text": "합성 검증 0001"
+            },
+            {
+              "id": "caption-1",
+              "start": 4.4,
+              "end": 5.800000000000001,
+              "text": "합성 검증 0002"
+            },
+            {
+              "id": "caption-2",
+              "start": 8,
+              "end": 9.4,
+              "text": "합성 검증 0003"
+            },
+            {
+              "id": "caption-3",
+              "start": 11.600000000000001,
+              "end": 13,
+              "text": "합성 검증 0004"
+            },
+            {
+              "id": "caption-4",
+              "start": 15.200000000000001,
+              "end": 16.6,
+              "text": "합성 검증 0005"
+            },
+            {
+              "id": "caption-5",
+              "start": 18.8,
+              "end": 20.2,
+              "text": "합성 검증 0006"
+            },
+            {
+              "id": "caption-6",
+              "start": 22.400000000000002,
+              "end": 23.8,
+              "text": "합성 검증 0007"
+            },
+            {
+              "id": "caption-7",
+              "start": 26,
+              "end": 27.4,
+              "text": "합성 검증 0008"
+            },
+            {
+              "id": "caption-8",
+              "start": 29.6,
+              "end": 31,
+              "text": "합성 검증 0009"
+            },
+            {
+              "id": "caption-9",
+              "start": 33.199999999999996,
+              "end": 34.6,
+              "text": "합성 검증 0010"
+            },
+            {
+              "id": "caption-10",
+              "start": 36.8,
+              "end": 38.2,
+              "text": "합성 검증 0011"
+            },
+            {
+              "id": "caption-11",
+              "start": 40.4,
+              "end": 41.800000000000004,
+              "text": "합성 검증 0012"
+            },
+            {
+              "id": "caption-12",
+              "start": 44,
+              "end": 45.400000000000006,
+              "text": "합성 검증 0013"
+            },
+            {
+              "id": "caption-13",
+              "start": 47.6,
+              "end": 49.00000000000001,
+              "text": "합성 검증 0014"
+            },
+            {
+              "id": "caption-14",
+              "start": 51.199999999999996,
+              "end": 52.6,
+              "text": "합성 검증 0015"
+            },
+            {
+              "id": "caption-15",
+              "start": 54.8,
+              "end": 56.2,
+              "text": "합성 검증 0016"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": true,
+          "preset": "emphasis",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "fingerprint": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "name": "composition-880hz.wav",
+              "duration": 0.5
+            }
+          ],
+          "clips": [
+            {
+              "id": "effect-0",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 1.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-1",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 5.2,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-2",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 8.8,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-3",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 12.4,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-4",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 16,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-5",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 19.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-6",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 23.200000000000003,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-7",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 26.8,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-8",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 30.400000000000002,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-9",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 34,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-10",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 37.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-11",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 41.2,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-12",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 44.800000000000004,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-13",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 48.400000000000006,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-14",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 52,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "effect-15",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 55.6,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            },
+            {
+              "id": "muted-control",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 0.9,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": true
+            },
+            {
+              "id": "removed-control",
+              "assetId": "b267fd9d1b4964ae736cfd7d0a8eb8733042cd6e85bb4576666c2fc3a78494af",
+              "start": 3.1,
+              "offset": 0.02,
+              "duration": 0.25,
+              "gainDb": -6,
+              "muted": false
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "iteration": 1,
+      "cache": "fresh app; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "importSeconds": 0.2433913339999999,
+      "analyzeSeconds": 1.043309834,
+      "exportSeconds": 3.795879792,
+      "saveSeconds": 0.10406008400000065,
+      "independentVerificationSeconds": 3.067422208,
+      "peakRSSBytes": 1732165632,
+      "resources": {
+        "analysis": {
+          "file": "browser-60-1-analysis-resources.json",
+          "peakBytes": 1276542976,
+          "samples": 6,
+          "maxSampleGapMs": 275.8670000000001
+        },
+        "project-and-audio": {
+          "file": "browser-60-1-project-and-audio-resources.json",
+          "peakBytes": 1293058048,
+          "samples": 2,
+          "maxSampleGapMs": 246.05429100000038
+        },
+        "srt": {
+          "file": "browser-60-1-srt-resources.json",
+          "peakBytes": 1316388864,
+          "samples": 2,
+          "maxSampleGapMs": 153.11633299999994
+        },
+        "export": {
+          "file": "browser-60-1-export-resources.json",
+          "peakBytes": 1732165632,
+          "samples": 17,
+          "maxSampleGapMs": 275.67708300000004
+        },
+        "save": {
+          "file": "browser-60-1-save-resources.json",
+          "peakBytes": 1355530240,
+          "samples": 2,
+          "maxSampleGapMs": 129.06220800000028
+        },
+        "cancel": {
+          "file": "browser-60-1-cancel-resources.json",
+          "peakBytes": 1450442752,
+          "samples": 4,
+          "maxSampleGapMs": 275.39066699999967
+        },
+        "ui": {
+          "file": "browser-60-1-ui-resources.json",
+          "peakBytes": 1468186624,
+          "samples": 47,
+          "maxSampleGapMs": 277.4580839999999
+        }
+      },
+      "cuts": 16,
+      "captions": 16,
+      "effects": 16,
+      "excludedEffects": [
+        {
+          "id": "muted-control",
+          "reason": "muted"
+        },
+        {
+          "id": "removed-control",
+          "reason": "removed"
+        }
+      ],
+      "output": {
+        "id": "984998ed-8051-4de5-bec4-74100b7cebe8",
+        "name": "60s-hypercut.mp4",
+        "duration": 48.266667,
+        "expectedDuration": 48.26666666666668,
+        "size": 995458,
+        "audioSamples": 2316800,
+        "audioMix": {
+          "mixedClips": 16,
+          "peak": 0.19090260565280914,
+          "peakDb": -14.383762876556847,
+          "overloadedSamples": 0,
+          "encodedPeak": 0.1912490874528885,
+          "encodedPeakDb": -14.368012568205382,
+          "encodedOverloadedSamples": 0
+        },
+        "kept": [
+          {
+            "start": 0,
+            "end": 2.7666666666666666
+          },
+          {
+            "start": 3.5,
+            "end": 6.366666666666666
+          },
+          {
+            "start": 7.1,
+            "end": 9.966666666666667
+          },
+          {
+            "start": 10.7,
+            "end": 13.566666666666666
+          },
+          {
+            "start": 14.299999999999999,
+            "end": 17.166666666666668
+          },
+          {
+            "start": 17.9,
+            "end": 20.766666666666666
+          },
+          {
+            "start": 21.5,
+            "end": 24.366666666666667
+          },
+          {
+            "start": 25.1,
+            "end": 27.966666666666665
+          },
+          {
+            "start": 28.7,
+            "end": 31.566666666666666
+          },
+          {
+            "start": 32.3,
+            "end": 35.166666666666664
+          },
+          {
+            "start": 35.9,
+            "end": 38.766666666666666
+          },
+          {
+            "start": 39.5,
+            "end": 42.36666666666667
+          },
+          {
+            "start": 43.1,
+            "end": 45.96666666666667
+          },
+          {
+            "start": 46.7,
+            "end": 49.56666666666666
+          },
+          {
+            "start": 50.3,
+            "end": 53.166666666666664
+          },
+          {
+            "start": 53.9,
+            "end": 56.766666666666666
+          },
+          {
+            "start": 57.5,
+            "end": 60
+          }
+        ],
+        "captionStyle": {
+          "enabled": true,
+          "preset": "emphasis",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "burnedCaptions": 16,
+        "verified": true
+      },
+      "outputFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/browser-60-1.mp4",
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/browser-60-1.srt",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "verificationFile": "browser-60-1-verification.json",
+      "ui": {
+        "samples": [
+          {
+            "family": "captions",
+            "index": 0,
+            "action": "select",
+            "ms": 65.02733400000034
+          },
+          {
+            "family": "captions",
+            "index": 1,
+            "action": "edit",
+            "ms": 98.76887499999975
+          },
+          {
+            "family": "captions",
+            "index": 2,
+            "action": "undo",
+            "ms": 65.89591700000165
+          },
+          {
+            "family": "captions",
+            "index": 3,
+            "action": "select",
+            "ms": 67.10750000000007
+          },
+          {
+            "family": "captions",
+            "index": 4,
+            "action": "select",
+            "ms": 66.67491599999994
+          },
+          {
+            "family": "captions",
+            "index": 5,
+            "action": "edit",
+            "ms": 65.67200000000048
+          },
+          {
+            "family": "captions",
+            "index": 6,
+            "action": "undo",
+            "ms": 65.96674999999959
+          },
+          {
+            "family": "captions",
+            "index": 7,
+            "action": "select",
+            "ms": 66.00479099999939
+          },
+          {
+            "family": "captions",
+            "index": 8,
+            "action": "select",
+            "ms": 66.96287500000108
+          },
+          {
+            "family": "captions",
+            "index": 9,
+            "action": "edit",
+            "ms": 65.65862500000003
+          },
+          {
+            "family": "captions",
+            "index": 10,
+            "action": "undo",
+            "ms": 66.02470800000083
+          },
+          {
+            "family": "captions",
+            "index": 11,
+            "action": "select",
+            "ms": 67.42416699999922
+          },
+          {
+            "family": "captions",
+            "index": 12,
+            "action": "select",
+            "ms": 66.93224999999984
+          },
+          {
+            "family": "captions",
+            "index": 13,
+            "action": "edit",
+            "ms": 65.85983300000044
+          },
+          {
+            "family": "captions",
+            "index": 14,
+            "action": "undo",
+            "ms": 66.3988330000011
+          },
+          {
+            "family": "captions",
+            "index": 15,
+            "action": "select",
+            "ms": 66.78924999999981
+          },
+          {
+            "family": "captions",
+            "index": 16,
+            "action": "select",
+            "ms": 66.97500000000036
+          },
+          {
+            "family": "captions",
+            "index": 17,
+            "action": "edit",
+            "ms": 66.17816600000151
+          },
+          {
+            "family": "captions",
+            "index": 18,
+            "action": "undo",
+            "ms": 66.42320800000016
+          },
+          {
+            "family": "captions",
+            "index": 19,
+            "action": "select",
+            "ms": 67.74845800000003
+          },
+          {
+            "family": "captions",
+            "index": 20,
+            "action": "select",
+            "ms": 66.50079200000073
+          },
+          {
+            "family": "captions",
+            "index": 21,
+            "action": "edit",
+            "ms": 66.03600000000006
+          },
+          {
+            "family": "captions",
+            "index": 22,
+            "action": "undo",
+            "ms": 66.88266699999986
+          },
+          {
+            "family": "captions",
+            "index": 23,
+            "action": "select",
+            "ms": 67.531167000001
+          },
+          {
+            "family": "captions",
+            "index": 24,
+            "action": "select",
+            "ms": 66.19300000000112
+          },
+          {
+            "family": "captions",
+            "index": 25,
+            "action": "edit",
+            "ms": 66.04358299999876
+          },
+          {
+            "family": "captions",
+            "index": 26,
+            "action": "undo",
+            "ms": 67.45870800000012
+          },
+          {
+            "family": "captions",
+            "index": 27,
+            "action": "select",
+            "ms": 67.45304199999919
+          },
+          {
+            "family": "captions",
+            "index": 28,
+            "action": "select",
+            "ms": 67.17791699999907
+          },
+          {
+            "family": "captions",
+            "index": 29,
+            "action": "edit",
+            "ms": 65.90279200000077
+          },
+          {
+            "family": "captions",
+            "index": 30,
+            "action": "undo",
+            "ms": 67.33633399999962
+          },
+          {
+            "family": "captions",
+            "index": 31,
+            "action": "select",
+            "ms": 67.0711250000004
+          },
+          {
+            "family": "effects",
+            "index": 0,
+            "action": "gain",
+            "ms": 66.26395899999989
+          },
+          {
+            "family": "effects",
+            "index": 1,
+            "action": "undo",
+            "ms": 98.9212920000009
+          },
+          {
+            "family": "effects",
+            "index": 2,
+            "action": "mute",
+            "ms": 99.45874999999978
+          },
+          {
+            "family": "effects",
+            "index": 3,
+            "action": "undo",
+            "ms": 99.91366600000038
+          },
+          {
+            "family": "effects",
+            "index": 4,
+            "action": "gain",
+            "ms": 65.40520900000047
+          },
+          {
+            "family": "effects",
+            "index": 5,
+            "action": "undo",
+            "ms": 99.16358299999956
+          },
+          {
+            "family": "effects",
+            "index": 6,
+            "action": "mute",
+            "ms": 99.46754099999998
+          },
+          {
+            "family": "effects",
+            "index": 7,
+            "action": "undo",
+            "ms": 98.49304200000006
+          },
+          {
+            "family": "effects",
+            "index": 8,
+            "action": "gain",
+            "ms": 65.66670799999883
+          },
+          {
+            "family": "effects",
+            "index": 9,
+            "action": "undo",
+            "ms": 99.63537499999984
+          },
+          {
+            "family": "effects",
+            "index": 10,
+            "action": "mute",
+            "ms": 100.24287499999991
+          },
+          {
+            "family": "effects",
+            "index": 11,
+            "action": "undo",
+            "ms": 99.66108400000121
+          },
+          {
+            "family": "effects",
+            "index": 12,
+            "action": "gain",
+            "ms": 65.70004100000006
+          },
+          {
+            "family": "effects",
+            "index": 13,
+            "action": "undo",
+            "ms": 99.67262500000106
+          },
+          {
+            "family": "effects",
+            "index": 14,
+            "action": "mute",
+            "ms": 99.17645799999991
+          },
+          {
+            "family": "effects",
+            "index": 15,
+            "action": "undo",
+            "ms": 99.59479100000317
+          },
+          {
+            "family": "effects",
+            "index": 16,
+            "action": "gain",
+            "ms": 66.39924999999857
+          },
+          {
+            "family": "effects",
+            "index": 17,
+            "action": "undo",
+            "ms": 99.5492919999997
+          },
+          {
+            "family": "effects",
+            "index": 18,
+            "action": "mute",
+            "ms": 99.81533300000228
+          },
+          {
+            "family": "effects",
+            "index": 19,
+            "action": "undo",
+            "ms": 99.85562500000015
+          },
+          {
+            "family": "effects",
+            "index": 20,
+            "action": "gain",
+            "ms": 66.15237500000148
+          },
+          {
+            "family": "effects",
+            "index": 21,
+            "action": "undo",
+            "ms": 100.07454099999813
+          },
+          {
+            "family": "effects",
+            "index": 22,
+            "action": "mute",
+            "ms": 100.1060830000024
+          },
+          {
+            "family": "effects",
+            "index": 23,
+            "action": "undo",
+            "ms": 98.6185000000005
+          },
+          {
+            "family": "effects",
+            "index": 24,
+            "action": "gain",
+            "ms": 66.24075000000084
+          },
+          {
+            "family": "effects",
+            "index": 25,
+            "action": "undo",
+            "ms": 99.46958399999858
+          },
+          {
+            "family": "effects",
+            "index": 26,
+            "action": "mute",
+            "ms": 99.85270799999853
+          },
+          {
+            "family": "effects",
+            "index": 27,
+            "action": "undo",
+            "ms": 99.64237500000309
+          },
+          {
+            "family": "effects",
+            "index": 28,
+            "action": "gain",
+            "ms": 66.4207920000008
+          },
+          {
+            "family": "effects",
+            "index": 29,
+            "action": "undo",
+            "ms": 99.047083999998
+          },
+          {
+            "family": "effects",
+            "index": 30,
+            "action": "mute",
+            "ms": 99.73812499999985
+          },
+          {
+            "family": "effects",
+            "index": 31,
+            "action": "undo",
+            "ms": 99.69233300000269
+          },
+          {
+            "family": "cuts",
+            "index": 0,
+            "action": "restore",
+            "ms": 66.50400000000081
+          },
+          {
+            "family": "cuts",
+            "index": 1,
+            "action": "undo",
+            "ms": 64.82329100000061
+          },
+          {
+            "family": "cuts",
+            "index": 2,
+            "action": "restore",
+            "ms": 65.9567500000012
+          },
+          {
+            "family": "cuts",
+            "index": 3,
+            "action": "undo",
+            "ms": 66.10608299999876
+          },
+          {
+            "family": "cuts",
+            "index": 4,
+            "action": "restore",
+            "ms": 65.9127499999995
+          },
+          {
+            "family": "cuts",
+            "index": 5,
+            "action": "undo",
+            "ms": 65.98924999999872
+          },
+          {
+            "family": "cuts",
+            "index": 6,
+            "action": "restore",
+            "ms": 65.9174579999999
+          },
+          {
+            "family": "cuts",
+            "index": 7,
+            "action": "undo",
+            "ms": 65.93241699999999
+          },
+          {
+            "family": "cuts",
+            "index": 8,
+            "action": "restore",
+            "ms": 65.40991700000086
+          },
+          {
+            "family": "cuts",
+            "index": 9,
+            "action": "undo",
+            "ms": 66.32158300000083
+          },
+          {
+            "family": "cuts",
+            "index": 10,
+            "action": "restore",
+            "ms": 65.765625
+          },
+          {
+            "family": "cuts",
+            "index": 11,
+            "action": "undo",
+            "ms": 65.76275000000169
+          },
+          {
+            "family": "cuts",
+            "index": 12,
+            "action": "restore",
+            "ms": 66.140542000001
+          },
+          {
+            "family": "cuts",
+            "index": 13,
+            "action": "undo",
+            "ms": 64.90904199999932
+          },
+          {
+            "family": "cuts",
+            "index": 14,
+            "action": "restore",
+            "ms": 65.81037500000093
+          },
+          {
+            "family": "cuts",
+            "index": 15,
+            "action": "undo",
+            "ms": 65.51504199999908
+          },
+          {
+            "family": "cuts",
+            "index": 16,
+            "action": "restore",
+            "ms": 65.89670900000056
+          },
+          {
+            "family": "cuts",
+            "index": 17,
+            "action": "undo",
+            "ms": 65.8147080000017
+          },
+          {
+            "family": "cuts",
+            "index": 18,
+            "action": "restore",
+            "ms": 65.81454200000007
+          },
+          {
+            "family": "cuts",
+            "index": 19,
+            "action": "undo",
+            "ms": 65.18866699999853
+          },
+          {
+            "family": "cuts",
+            "index": 20,
+            "action": "restore",
+            "ms": 65.80716700000266
+          },
+          {
+            "family": "cuts",
+            "index": 21,
+            "action": "undo",
+            "ms": 65.76050000000032
+          },
+          {
+            "family": "cuts",
+            "index": 22,
+            "action": "restore",
+            "ms": 65.60899999999674
+          },
+          {
+            "family": "cuts",
+            "index": 23,
+            "action": "undo",
+            "ms": 64.65170800000124
+          },
+          {
+            "family": "cuts",
+            "index": 24,
+            "action": "restore",
+            "ms": 64.80333299999984
+          },
+          {
+            "family": "cuts",
+            "index": 25,
+            "action": "undo",
+            "ms": 64.68270800000028
+          },
+          {
+            "family": "cuts",
+            "index": 26,
+            "action": "restore",
+            "ms": 64.73929200000202
+          },
+          {
+            "family": "cuts",
+            "index": 27,
+            "action": "undo",
+            "ms": 64.74795799999993
+          },
+          {
+            "family": "cuts",
+            "index": 28,
+            "action": "restore",
+            "ms": 64.7510000000002
+          },
+          {
+            "family": "cuts",
+            "index": 29,
+            "action": "undo",
+            "ms": 64.69891600000119
+          },
+          {
+            "family": "cuts",
+            "index": 30,
+            "action": "restore",
+            "ms": 64.79837500000212
+          },
+          {
+            "family": "cuts",
+            "index": 31,
+            "action": "undo",
+            "ms": 64.7724589999998
+          }
+        ],
+        "byFamily": {
+          "captions": {
+            "count": 32,
+            "median": 66.58785400000033,
+            "max": 98.76887499999975,
+            "p95": 67.74845800000003
+          },
+          "effects": {
+            "count": 32,
+            "median": 99.46856249999928,
+            "max": 100.24287499999991,
+            "p95": 100.1060830000024
+          },
+          "cuts": {
+            "count": 32,
+            "median": 65.761625000001,
+            "max": 66.50400000000081,
+            "p95": 66.32158300000083
+          }
+        }
+      },
+      "sourcePreserved": true,
+      "effectPreserved": true,
+      "projectPreserved": true,
+      "pageErrors": [],
+      "externalRequests": 0,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      }
+    },
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "iteration": 2,
+      "cache": "same app; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "importSeconds": 0.06841483399999924,
+      "analyzeSeconds": 0.8516435839999976,
+      "exportSeconds": 3.8168231669999986,
+      "saveSeconds": 0.09636416699999972,
+      "independentVerificationSeconds": 3.0293263750000006,
+      "peakRSSBytes": 1813331968,
+      "resources": {
+        "analysis": {
+          "file": "browser-60-2-analysis-resources.json",
+          "peakBytes": 1449377792,
+          "samples": 5,
+          "maxSampleGapMs": 275.38058399999863
+        },
+        "project-and-audio": {
+          "file": "browser-60-2-project-and-audio-resources.json",
+          "peakBytes": 1423507456,
+          "samples": 2,
+          "maxSampleGapMs": 231.90420799999993
+        },
+        "srt": {
+          "file": "browser-60-2-srt-resources.json",
+          "peakBytes": 1425604608,
+          "samples": 2,
+          "maxSampleGapMs": 138.99183400000038
+        },
+        "export": {
+          "file": "browser-60-2-export-resources.json",
+          "peakBytes": 1813331968,
+          "samples": 17,
+          "maxSampleGapMs": 272.5882079999974
+        },
+        "save": {
+          "file": "browser-60-2-save-resources.json",
+          "peakBytes": 1426866176,
+          "samples": 2,
+          "maxSampleGapMs": 120.74658400000044
+        },
+        "ui": {
+          "file": "browser-60-2-ui-resources.json",
+          "peakBytes": 1494204416,
+          "samples": 47,
+          "maxSampleGapMs": 274.96700000000055
+        }
+      },
+      "cuts": 16,
+      "captions": 16,
+      "effects": 16,
+      "excludedEffects": [
+        {
+          "id": "muted-control",
+          "reason": "muted"
+        },
+        {
+          "id": "removed-control",
+          "reason": "removed"
+        }
+      ],
+      "output": {
+        "id": "7df33b9f-e654-43d7-bd0a-2746e4a36d51",
+        "name": "60s-hypercut.mp4",
+        "duration": 48.266667,
+        "expectedDuration": 48.26666666666668,
+        "size": 995458,
+        "audioSamples": 2316800,
+        "audioMix": {
+          "mixedClips": 16,
+          "peak": 0.19090260565280914,
+          "peakDb": -14.383762876556847,
+          "overloadedSamples": 0,
+          "encodedPeak": 0.1912490874528885,
+          "encodedPeakDb": -14.368012568205382,
+          "encodedOverloadedSamples": 0
+        },
+        "kept": [
+          {
+            "start": 0,
+            "end": 2.7666666666666666
+          },
+          {
+            "start": 3.5,
+            "end": 6.366666666666666
+          },
+          {
+            "start": 7.1,
+            "end": 9.966666666666667
+          },
+          {
+            "start": 10.7,
+            "end": 13.566666666666666
+          },
+          {
+            "start": 14.299999999999999,
+            "end": 17.166666666666668
+          },
+          {
+            "start": 17.9,
+            "end": 20.766666666666666
+          },
+          {
+            "start": 21.5,
+            "end": 24.366666666666667
+          },
+          {
+            "start": 25.1,
+            "end": 27.966666666666665
+          },
+          {
+            "start": 28.7,
+            "end": 31.566666666666666
+          },
+          {
+            "start": 32.3,
+            "end": 35.166666666666664
+          },
+          {
+            "start": 35.9,
+            "end": 38.766666666666666
+          },
+          {
+            "start": 39.5,
+            "end": 42.36666666666667
+          },
+          {
+            "start": 43.1,
+            "end": 45.96666666666667
+          },
+          {
+            "start": 46.7,
+            "end": 49.56666666666666
+          },
+          {
+            "start": 50.3,
+            "end": 53.166666666666664
+          },
+          {
+            "start": 53.9,
+            "end": 56.766666666666666
+          },
+          {
+            "start": 57.5,
+            "end": 60
+          }
+        ],
+        "captionStyle": {
+          "enabled": true,
+          "preset": "emphasis",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "burnedCaptions": 16,
+        "verified": true
+      },
+      "outputFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/browser-60-2.mp4",
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/browser-60-2.srt",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "verificationFile": "browser-60-2-verification.json",
+      "ui": {
+        "samples": [
+          {
+            "family": "captions",
+            "index": 0,
+            "action": "select",
+            "ms": 66.26483300000109
+          },
+          {
+            "family": "captions",
+            "index": 1,
+            "action": "edit",
+            "ms": 99.18037499999991
+          },
+          {
+            "family": "captions",
+            "index": 2,
+            "action": "undo",
+            "ms": 65.34641699999702
+          },
+          {
+            "family": "captions",
+            "index": 3,
+            "action": "select",
+            "ms": 65.65470800000185
+          },
+          {
+            "family": "captions",
+            "index": 4,
+            "action": "select",
+            "ms": 65.59833299999809
+          },
+          {
+            "family": "captions",
+            "index": 5,
+            "action": "edit",
+            "ms": 65.48754199999894
+          },
+          {
+            "family": "captions",
+            "index": 6,
+            "action": "undo",
+            "ms": 65.32445799999914
+          },
+          {
+            "family": "captions",
+            "index": 7,
+            "action": "select",
+            "ms": 65.84325000000172
+          },
+          {
+            "family": "captions",
+            "index": 8,
+            "action": "select",
+            "ms": 65.60770799999955
+          },
+          {
+            "family": "captions",
+            "index": 9,
+            "action": "edit",
+            "ms": 65.27287500000239
+          },
+          {
+            "family": "captions",
+            "index": 10,
+            "action": "undo",
+            "ms": 65.37420899999779
+          },
+          {
+            "family": "captions",
+            "index": 11,
+            "action": "select",
+            "ms": 65.79804199999853
+          },
+          {
+            "family": "captions",
+            "index": 12,
+            "action": "select",
+            "ms": 65.51608399999895
+          },
+          {
+            "family": "captions",
+            "index": 13,
+            "action": "edit",
+            "ms": 65.25741700000071
+          },
+          {
+            "family": "captions",
+            "index": 14,
+            "action": "undo",
+            "ms": 65.98508299999958
+          },
+          {
+            "family": "captions",
+            "index": 15,
+            "action": "select",
+            "ms": 66.26537499999904
+          },
+          {
+            "family": "captions",
+            "index": 16,
+            "action": "select",
+            "ms": 65.68687499999942
+          },
+          {
+            "family": "captions",
+            "index": 17,
+            "action": "edit",
+            "ms": 65.40625
+          },
+          {
+            "family": "captions",
+            "index": 18,
+            "action": "undo",
+            "ms": 65.98312499999884
+          },
+          {
+            "family": "captions",
+            "index": 19,
+            "action": "select",
+            "ms": 66.34045799999876
+          },
+          {
+            "family": "captions",
+            "index": 20,
+            "action": "select",
+            "ms": 65.71970800000054
+          },
+          {
+            "family": "captions",
+            "index": 21,
+            "action": "edit",
+            "ms": 65.59875000000102
+          },
+          {
+            "family": "captions",
+            "index": 22,
+            "action": "undo",
+            "ms": 65.9442080000008
+          },
+          {
+            "family": "captions",
+            "index": 23,
+            "action": "select",
+            "ms": 65.81366600000183
+          },
+          {
+            "family": "captions",
+            "index": 24,
+            "action": "select",
+            "ms": 65.85866600000008
+          },
+          {
+            "family": "captions",
+            "index": 25,
+            "action": "edit",
+            "ms": 65.77187499999854
+          },
+          {
+            "family": "captions",
+            "index": 26,
+            "action": "undo",
+            "ms": 66.14591700000165
+          },
+          {
+            "family": "captions",
+            "index": 27,
+            "action": "select",
+            "ms": 66.49162500000239
+          },
+          {
+            "family": "captions",
+            "index": 28,
+            "action": "select",
+            "ms": 65.96770800000377
+          },
+          {
+            "family": "captions",
+            "index": 29,
+            "action": "edit",
+            "ms": 65.78175000000192
+          },
+          {
+            "family": "captions",
+            "index": 30,
+            "action": "undo",
+            "ms": 66.36087499999849
+          },
+          {
+            "family": "captions",
+            "index": 31,
+            "action": "select",
+            "ms": 66.66337500000373
+          },
+          {
+            "family": "effects",
+            "index": 0,
+            "action": "gain",
+            "ms": 66.10437500000262
+          },
+          {
+            "family": "effects",
+            "index": 1,
+            "action": "undo",
+            "ms": 99.56416600000375
+          },
+          {
+            "family": "effects",
+            "index": 2,
+            "action": "mute",
+            "ms": 99.62195800000336
+          },
+          {
+            "family": "effects",
+            "index": 3,
+            "action": "undo",
+            "ms": 99.62520900000527
+          },
+          {
+            "family": "effects",
+            "index": 4,
+            "action": "gain",
+            "ms": 66.46545799999876
+          },
+          {
+            "family": "effects",
+            "index": 5,
+            "action": "undo",
+            "ms": 99.70208300000377
+          },
+          {
+            "family": "effects",
+            "index": 6,
+            "action": "mute",
+            "ms": 99.65208300000086
+          },
+          {
+            "family": "effects",
+            "index": 7,
+            "action": "undo",
+            "ms": 99.70999999999913
+          },
+          {
+            "family": "effects",
+            "index": 8,
+            "action": "gain",
+            "ms": 66.48225000000093
+          },
+          {
+            "family": "effects",
+            "index": 9,
+            "action": "undo",
+            "ms": 100.19320800000423
+          },
+          {
+            "family": "effects",
+            "index": 10,
+            "action": "mute",
+            "ms": 99.70924999999988
+          },
+          {
+            "family": "effects",
+            "index": 11,
+            "action": "undo",
+            "ms": 99.6158329999962
+          },
+          {
+            "family": "effects",
+            "index": 12,
+            "action": "gain",
+            "ms": 66.59529099999781
+          },
+          {
+            "family": "effects",
+            "index": 13,
+            "action": "undo",
+            "ms": 99.71758400000544
+          },
+          {
+            "family": "effects",
+            "index": 14,
+            "action": "mute",
+            "ms": 99.51616700000159
+          },
+          {
+            "family": "effects",
+            "index": 15,
+            "action": "undo",
+            "ms": 99.46216599999752
+          },
+          {
+            "family": "effects",
+            "index": 16,
+            "action": "gain",
+            "ms": 65.88650000000052
+          },
+          {
+            "family": "effects",
+            "index": 17,
+            "action": "undo",
+            "ms": 99.64995799999451
+          },
+          {
+            "family": "effects",
+            "index": 18,
+            "action": "mute",
+            "ms": 99.55258299999696
+          },
+          {
+            "family": "effects",
+            "index": 19,
+            "action": "undo",
+            "ms": 99.549291000003
+          },
+          {
+            "family": "effects",
+            "index": 20,
+            "action": "gain",
+            "ms": 66.36258399999497
+          },
+          {
+            "family": "effects",
+            "index": 21,
+            "action": "undo",
+            "ms": 99.61666700000205
+          },
+          {
+            "family": "effects",
+            "index": 22,
+            "action": "mute",
+            "ms": 99.51304099999834
+          },
+          {
+            "family": "effects",
+            "index": 23,
+            "action": "undo",
+            "ms": 99.48008400000253
+          },
+          {
+            "family": "effects",
+            "index": 24,
+            "action": "gain",
+            "ms": 66.29149999999936
+          },
+          {
+            "family": "effects",
+            "index": 25,
+            "action": "undo",
+            "ms": 100.19441700000607
+          },
+          {
+            "family": "effects",
+            "index": 26,
+            "action": "mute",
+            "ms": 99.6148749999993
+          },
+          {
+            "family": "effects",
+            "index": 27,
+            "action": "undo",
+            "ms": 99.45025000000169
+          },
+          {
+            "family": "effects",
+            "index": 28,
+            "action": "gain",
+            "ms": 66.29070800000045
+          },
+          {
+            "family": "effects",
+            "index": 29,
+            "action": "undo",
+            "ms": 99.23379100000602
+          },
+          {
+            "family": "effects",
+            "index": 30,
+            "action": "mute",
+            "ms": 99.75837499999761
+          },
+          {
+            "family": "effects",
+            "index": 31,
+            "action": "undo",
+            "ms": 99.51525000000402
+          },
+          {
+            "family": "cuts",
+            "index": 0,
+            "action": "restore",
+            "ms": 66.25475000000006
+          },
+          {
+            "family": "cuts",
+            "index": 1,
+            "action": "undo",
+            "ms": 65.54308300000412
+          },
+          {
+            "family": "cuts",
+            "index": 2,
+            "action": "restore",
+            "ms": 65.85545799999818
+          },
+          {
+            "family": "cuts",
+            "index": 3,
+            "action": "undo",
+            "ms": 66.1917919999978
+          },
+          {
+            "family": "cuts",
+            "index": 4,
+            "action": "restore",
+            "ms": 65.6773749999993
+          },
+          {
+            "family": "cuts",
+            "index": 5,
+            "action": "undo",
+            "ms": 65.9454160000023
+          },
+          {
+            "family": "cuts",
+            "index": 6,
+            "action": "restore",
+            "ms": 65.69054200000392
+          },
+          {
+            "family": "cuts",
+            "index": 7,
+            "action": "undo",
+            "ms": 66.27912500000093
+          },
+          {
+            "family": "cuts",
+            "index": 8,
+            "action": "restore",
+            "ms": 66.30254099999729
+          },
+          {
+            "family": "cuts",
+            "index": 9,
+            "action": "undo",
+            "ms": 65.61670899999444
+          },
+          {
+            "family": "cuts",
+            "index": 10,
+            "action": "restore",
+            "ms": 65.82891599999857
+          },
+          {
+            "family": "cuts",
+            "index": 11,
+            "action": "undo",
+            "ms": 66.22320800000307
+          },
+          {
+            "family": "cuts",
+            "index": 12,
+            "action": "restore",
+            "ms": 65.86420899999939
+          },
+          {
+            "family": "cuts",
+            "index": 13,
+            "action": "undo",
+            "ms": 65.64883399999962
+          },
+          {
+            "family": "cuts",
+            "index": 14,
+            "action": "restore",
+            "ms": 65.54324999999517
+          },
+          {
+            "family": "cuts",
+            "index": 15,
+            "action": "undo",
+            "ms": 65.62758300000132
+          },
+          {
+            "family": "cuts",
+            "index": 16,
+            "action": "restore",
+            "ms": 65.72262499999488
+          },
+          {
+            "family": "cuts",
+            "index": 17,
+            "action": "undo",
+            "ms": 65.78137499999866
+          },
+          {
+            "family": "cuts",
+            "index": 18,
+            "action": "restore",
+            "ms": 65.6581659999938
+          },
+          {
+            "family": "cuts",
+            "index": 19,
+            "action": "undo",
+            "ms": 65.51304199999868
+          },
+          {
+            "family": "cuts",
+            "index": 20,
+            "action": "restore",
+            "ms": 65.76895800000057
+          },
+          {
+            "family": "cuts",
+            "index": 21,
+            "action": "undo",
+            "ms": 65.72191600000224
+          },
+          {
+            "family": "cuts",
+            "index": 22,
+            "action": "restore",
+            "ms": 65.50254100000166
+          },
+          {
+            "family": "cuts",
+            "index": 23,
+            "action": "undo",
+            "ms": 65.45599999999831
+          },
+          {
+            "family": "cuts",
+            "index": 24,
+            "action": "restore",
+            "ms": 65.56454099999974
+          },
+          {
+            "family": "cuts",
+            "index": 25,
+            "action": "undo",
+            "ms": 65.43587499999558
+          },
+          {
+            "family": "cuts",
+            "index": 26,
+            "action": "restore",
+            "ms": 65.54641600000468
+          },
+          {
+            "family": "cuts",
+            "index": 27,
+            "action": "undo",
+            "ms": 65.97816700000112
+          },
+          {
+            "family": "cuts",
+            "index": 28,
+            "action": "restore",
+            "ms": 65.52649999999994
+          },
+          {
+            "family": "cuts",
+            "index": 29,
+            "action": "undo",
+            "ms": 65.3686250000028
+          },
+          {
+            "family": "cuts",
+            "index": 30,
+            "action": "restore",
+            "ms": 65.49266699999862
+          },
+          {
+            "family": "cuts",
+            "index": 31,
+            "action": "undo",
+            "ms": 65.88095799999428
+          }
+        ],
+        "byFamily": {
+          "captions": {
+            "count": 32,
+            "median": 65.78989600000023,
+            "max": 99.18037499999991,
+            "p95": 66.66337500000373
+          },
+          "effects": {
+            "count": 32,
+            "median": 99.55093699999998,
+            "max": 100.19441700000607,
+            "p95": 100.19320800000423
+          },
+          "cuts": {
+            "count": 32,
+            "median": 65.68395850000161,
+            "max": 66.30254099999729,
+            "p95": 66.27912500000093
+          }
+        }
+      },
+      "sourcePreserved": true,
+      "effectPreserved": true,
+      "projectPreserved": true,
+      "pageErrors": [],
+      "externalRequests": 0,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      }
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "iteration": 1,
+      "cache": "fresh app; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 908
+      },
+      "importSeconds": 0.2134664580000026,
+      "analyzeSeconds": 1.274012208,
+      "exportSeconds": 3.775936084000001,
+      "saveSeconds": 0.05844925000000512,
+      "independentVerificationSeconds": 3.0404721250000004,
+      "peakRSSBytes": 1111638016,
+      "resources": {
+        "analysis": {
+          "file": "desktop-60-1-analysis-resources.json",
+          "peakBytes": 636993536,
+          "samples": 7,
+          "maxSampleGapMs": 276.94087500000023
+        },
+        "project-and-audio": {
+          "file": "desktop-60-1-project-and-audio-resources.json",
+          "peakBytes": 671809536,
+          "samples": 3,
+          "maxSampleGapMs": 276.19087500000023
+        },
+        "srt": {
+          "file": "desktop-60-1-srt-resources.json",
+          "peakBytes": 696418304,
+          "samples": 2,
+          "maxSampleGapMs": 142.76279200000135
+        },
+        "export": {
+          "file": "desktop-60-1-export-resources.json",
+          "peakBytes": 1111638016,
+          "samples": 17,
+          "maxSampleGapMs": 276.26600000000326
+        },
+        "save": {
+          "file": "desktop-60-1-save-resources.json",
+          "peakBytes": 732430336,
+          "samples": 2,
+          "maxSampleGapMs": 81.46933300000092
+        },
+        "cancel": {
+          "file": "desktop-60-1-cancel-resources.json",
+          "peakBytes": 865714176,
+          "samples": 6,
+          "maxSampleGapMs": 275.3546669999996
+        },
+        "ui": {
+          "file": "desktop-60-1-ui-resources.json",
+          "peakBytes": 882098176,
+          "samples": 30,
+          "maxSampleGapMs": 275.3671669999967
+        }
+      },
+      "cuts": 16,
+      "captions": 16,
+      "effects": 16,
+      "excludedEffects": [
+        {
+          "id": "muted-control",
+          "reason": "muted"
+        },
+        {
+          "id": "removed-control",
+          "reason": "removed"
+        }
+      ],
+      "output": {
+        "id": "0d6f2091-48e3-45a6-b9c8-cfa1befc5ca0",
+        "name": "60s-hypercut.mp4",
+        "duration": 48.266667,
+        "expectedDuration": 48.26666666666668,
+        "size": 995458,
+        "audioSamples": 2316800,
+        "audioMix": {
+          "mixedClips": 16,
+          "peak": 0.19090260565280914,
+          "peakDb": -14.383762876556844,
+          "overloadedSamples": 0,
+          "encodedPeak": 0.1912490874528885,
+          "encodedPeakDb": -14.368012568205382,
+          "encodedOverloadedSamples": 0
+        },
+        "kept": [
+          {
+            "start": 0,
+            "end": 2.7666666666666666
+          },
+          {
+            "start": 3.5,
+            "end": 6.366666666666666
+          },
+          {
+            "start": 7.1,
+            "end": 9.966666666666667
+          },
+          {
+            "start": 10.7,
+            "end": 13.566666666666666
+          },
+          {
+            "start": 14.299999999999999,
+            "end": 17.166666666666668
+          },
+          {
+            "start": 17.9,
+            "end": 20.766666666666666
+          },
+          {
+            "start": 21.5,
+            "end": 24.366666666666667
+          },
+          {
+            "start": 25.1,
+            "end": 27.966666666666665
+          },
+          {
+            "start": 28.7,
+            "end": 31.566666666666666
+          },
+          {
+            "start": 32.3,
+            "end": 35.166666666666664
+          },
+          {
+            "start": 35.9,
+            "end": 38.766666666666666
+          },
+          {
+            "start": 39.5,
+            "end": 42.36666666666667
+          },
+          {
+            "start": 43.1,
+            "end": 45.96666666666667
+          },
+          {
+            "start": 46.7,
+            "end": 49.56666666666666
+          },
+          {
+            "start": 50.3,
+            "end": 53.166666666666664
+          },
+          {
+            "start": 53.9,
+            "end": 56.766666666666666
+          },
+          {
+            "start": 57.5,
+            "end": 60
+          }
+        ],
+        "captionStyle": {
+          "enabled": true,
+          "preset": "emphasis",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "burnedCaptions": 16,
+        "verified": true
+      },
+      "outputFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/desktop-60-1.mp4",
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/desktop-60-1.srt",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "verificationFile": "desktop-60-1-verification.json",
+      "ui": {
+        "samples": [
+          {
+            "family": "captions",
+            "index": 0,
+            "action": "select",
+            "ms": 38.645582999997714
+          },
+          {
+            "family": "captions",
+            "index": 1,
+            "action": "edit",
+            "ms": 58.468332999997074
+          },
+          {
+            "family": "captions",
+            "index": 2,
+            "action": "undo",
+            "ms": 39.70062499999767
+          },
+          {
+            "family": "captions",
+            "index": 3,
+            "action": "select",
+            "ms": 39.676791999998386
+          },
+          {
+            "family": "captions",
+            "index": 4,
+            "action": "select",
+            "ms": 40.908707999995386
+          },
+          {
+            "family": "captions",
+            "index": 5,
+            "action": "edit",
+            "ms": 40.39958399999887
+          },
+          {
+            "family": "captions",
+            "index": 6,
+            "action": "undo",
+            "ms": 38.13666599999851
+          },
+          {
+            "family": "captions",
+            "index": 7,
+            "action": "select",
+            "ms": 39.7989579999994
+          },
+          {
+            "family": "captions",
+            "index": 8,
+            "action": "select",
+            "ms": 39.362874999998894
+          },
+          {
+            "family": "captions",
+            "index": 9,
+            "action": "edit",
+            "ms": 40.26654199999757
+          },
+          {
+            "family": "captions",
+            "index": 10,
+            "action": "undo",
+            "ms": 40.0356660000034
+          },
+          {
+            "family": "captions",
+            "index": 11,
+            "action": "select",
+            "ms": 38.73766699999396
+          },
+          {
+            "family": "captions",
+            "index": 12,
+            "action": "select",
+            "ms": 39.736666000004334
+          },
+          {
+            "family": "captions",
+            "index": 13,
+            "action": "edit",
+            "ms": 39.50662499999453
+          },
+          {
+            "family": "captions",
+            "index": 14,
+            "action": "undo",
+            "ms": 39.12466699999641
+          },
+          {
+            "family": "captions",
+            "index": 15,
+            "action": "select",
+            "ms": 40.78391600000032
+          },
+          {
+            "family": "captions",
+            "index": 16,
+            "action": "select",
+            "ms": 38.66324999999779
+          },
+          {
+            "family": "captions",
+            "index": 17,
+            "action": "edit",
+            "ms": 39.56995800000004
+          },
+          {
+            "family": "captions",
+            "index": 18,
+            "action": "undo",
+            "ms": 38.89370799999597
+          },
+          {
+            "family": "captions",
+            "index": 19,
+            "action": "select",
+            "ms": 40.12212499999441
+          },
+          {
+            "family": "captions",
+            "index": 20,
+            "action": "select",
+            "ms": 40.55383299999812
+          },
+          {
+            "family": "captions",
+            "index": 21,
+            "action": "edit",
+            "ms": 39.728541999997105
+          },
+          {
+            "family": "captions",
+            "index": 22,
+            "action": "undo",
+            "ms": 39.33658400000422
+          },
+          {
+            "family": "captions",
+            "index": 23,
+            "action": "select",
+            "ms": 39.94562500000029
+          },
+          {
+            "family": "captions",
+            "index": 24,
+            "action": "select",
+            "ms": 39.87766699999338
+          },
+          {
+            "family": "captions",
+            "index": 25,
+            "action": "edit",
+            "ms": 40.38025000000198
+          },
+          {
+            "family": "captions",
+            "index": 26,
+            "action": "undo",
+            "ms": 38.200958000001265
+          },
+          {
+            "family": "captions",
+            "index": 27,
+            "action": "select",
+            "ms": 40.35737499999959
+          },
+          {
+            "family": "captions",
+            "index": 28,
+            "action": "select",
+            "ms": 39.85554199999751
+          },
+          {
+            "family": "captions",
+            "index": 29,
+            "action": "edit",
+            "ms": 39.77254199999879
+          },
+          {
+            "family": "captions",
+            "index": 30,
+            "action": "undo",
+            "ms": 40.12508399999933
+          },
+          {
+            "family": "captions",
+            "index": 31,
+            "action": "select",
+            "ms": 40.12383399999817
+          },
+          {
+            "family": "effects",
+            "index": 0,
+            "action": "gain",
+            "ms": 40.442290999999386
+          },
+          {
+            "family": "effects",
+            "index": 1,
+            "action": "undo",
+            "ms": 59.68974999999773
+          },
+          {
+            "family": "effects",
+            "index": 2,
+            "action": "mute",
+            "ms": 59.92820799999754
+          },
+          {
+            "family": "effects",
+            "index": 3,
+            "action": "undo",
+            "ms": 59.886916999996174
+          },
+          {
+            "family": "effects",
+            "index": 4,
+            "action": "gain",
+            "ms": 38.763458000001265
+          },
+          {
+            "family": "effects",
+            "index": 5,
+            "action": "undo",
+            "ms": 59.71441599999525
+          },
+          {
+            "family": "effects",
+            "index": 6,
+            "action": "mute",
+            "ms": 59.926250000004075
+          },
+          {
+            "family": "effects",
+            "index": 7,
+            "action": "undo",
+            "ms": 59.79766599999857
+          },
+          {
+            "family": "effects",
+            "index": 8,
+            "action": "gain",
+            "ms": 39.61800000000221
+          },
+          {
+            "family": "effects",
+            "index": 9,
+            "action": "undo",
+            "ms": 59.545790999996825
+          },
+          {
+            "family": "effects",
+            "index": 10,
+            "action": "mute",
+            "ms": 59.81608299999789
+          },
+          {
+            "family": "effects",
+            "index": 11,
+            "action": "undo",
+            "ms": 59.83916599999793
+          },
+          {
+            "family": "effects",
+            "index": 12,
+            "action": "gain",
+            "ms": 38.62279200000194
+          },
+          {
+            "family": "effects",
+            "index": 13,
+            "action": "undo",
+            "ms": 59.549582999999984
+          },
+          {
+            "family": "effects",
+            "index": 14,
+            "action": "mute",
+            "ms": 59.88183299999946
+          },
+          {
+            "family": "effects",
+            "index": 15,
+            "action": "undo",
+            "ms": 60.20716700000048
+          },
+          {
+            "family": "effects",
+            "index": 16,
+            "action": "gain",
+            "ms": 39.579916999995476
+          },
+          {
+            "family": "effects",
+            "index": 17,
+            "action": "undo",
+            "ms": 58.51629200000025
+          },
+          {
+            "family": "effects",
+            "index": 18,
+            "action": "mute",
+            "ms": 59.08587499999703
+          },
+          {
+            "family": "effects",
+            "index": 19,
+            "action": "undo",
+            "ms": 59.810333000001265
+          },
+          {
+            "family": "effects",
+            "index": 20,
+            "action": "gain",
+            "ms": 39.645000000004075
+          },
+          {
+            "family": "effects",
+            "index": 21,
+            "action": "undo",
+            "ms": 59.58070800000132
+          },
+          {
+            "family": "effects",
+            "index": 22,
+            "action": "mute",
+            "ms": 58.88012500000332
+          },
+          {
+            "family": "effects",
+            "index": 23,
+            "action": "undo",
+            "ms": 59.83854200000496
+          },
+          {
+            "family": "effects",
+            "index": 24,
+            "action": "gain",
+            "ms": 39.62720799999806
+          },
+          {
+            "family": "effects",
+            "index": 25,
+            "action": "undo",
+            "ms": 58.96629199999734
+          },
+          {
+            "family": "effects",
+            "index": 26,
+            "action": "mute",
+            "ms": 58.91712499999994
+          },
+          {
+            "family": "effects",
+            "index": 27,
+            "action": "undo",
+            "ms": 59.793166999996174
+          },
+          {
+            "family": "effects",
+            "index": 28,
+            "action": "gain",
+            "ms": 39.89691600000515
+          },
+          {
+            "family": "effects",
+            "index": 29,
+            "action": "undo",
+            "ms": 59.55316699999821
+          },
+          {
+            "family": "effects",
+            "index": 30,
+            "action": "mute",
+            "ms": 58.85450000000128
+          },
+          {
+            "family": "effects",
+            "index": 31,
+            "action": "undo",
+            "ms": 59.76487500000076
+          },
+          {
+            "family": "cuts",
+            "index": 0,
+            "action": "restore",
+            "ms": 39.74399999999878
+          },
+          {
+            "family": "cuts",
+            "index": 1,
+            "action": "undo",
+            "ms": 39.33820800000103
+          },
+          {
+            "family": "cuts",
+            "index": 2,
+            "action": "restore",
+            "ms": 39.61158299999806
+          },
+          {
+            "family": "cuts",
+            "index": 3,
+            "action": "undo",
+            "ms": 39.135167000000365
+          },
+          {
+            "family": "cuts",
+            "index": 4,
+            "action": "restore",
+            "ms": 39.657290999995894
+          },
+          {
+            "family": "cuts",
+            "index": 5,
+            "action": "undo",
+            "ms": 39.03499999999622
+          },
+          {
+            "family": "cuts",
+            "index": 6,
+            "action": "restore",
+            "ms": 39.40924999999697
+          },
+          {
+            "family": "cuts",
+            "index": 7,
+            "action": "undo",
+            "ms": 39.6663750000007
+          },
+          {
+            "family": "cuts",
+            "index": 8,
+            "action": "restore",
+            "ms": 39.21049999999377
+          },
+          {
+            "family": "cuts",
+            "index": 9,
+            "action": "undo",
+            "ms": 39.66058399999747
+          },
+          {
+            "family": "cuts",
+            "index": 10,
+            "action": "restore",
+            "ms": 39.413040999999794
+          },
+          {
+            "family": "cuts",
+            "index": 11,
+            "action": "undo",
+            "ms": 39.421792000001005
+          },
+          {
+            "family": "cuts",
+            "index": 12,
+            "action": "restore",
+            "ms": 39.58208300000115
+          },
+          {
+            "family": "cuts",
+            "index": 13,
+            "action": "undo",
+            "ms": 39.26570899999933
+          },
+          {
+            "family": "cuts",
+            "index": 14,
+            "action": "restore",
+            "ms": 39.57304099999601
+          },
+          {
+            "family": "cuts",
+            "index": 15,
+            "action": "undo",
+            "ms": 39.32604100000026
+          },
+          {
+            "family": "cuts",
+            "index": 16,
+            "action": "restore",
+            "ms": 38.441624999999476
+          },
+          {
+            "family": "cuts",
+            "index": 17,
+            "action": "undo",
+            "ms": 39.6943339999998
+          },
+          {
+            "family": "cuts",
+            "index": 18,
+            "action": "restore",
+            "ms": 39.19499999999971
+          },
+          {
+            "family": "cuts",
+            "index": 19,
+            "action": "undo",
+            "ms": 39.73129200000403
+          },
+          {
+            "family": "cuts",
+            "index": 20,
+            "action": "restore",
+            "ms": 39.20991700000013
+          },
+          {
+            "family": "cuts",
+            "index": 21,
+            "action": "undo",
+            "ms": 38.56512500000099
+          },
+          {
+            "family": "cuts",
+            "index": 22,
+            "action": "restore",
+            "ms": 39.58791599999677
+          },
+          {
+            "family": "cuts",
+            "index": 23,
+            "action": "undo",
+            "ms": 39.0201670000024
+          },
+          {
+            "family": "cuts",
+            "index": 24,
+            "action": "restore",
+            "ms": 39.707249999999476
+          },
+          {
+            "family": "cuts",
+            "index": 25,
+            "action": "undo",
+            "ms": 39.137291999999434
+          },
+          {
+            "family": "cuts",
+            "index": 26,
+            "action": "restore",
+            "ms": 38.317957999999635
+          },
+          {
+            "family": "cuts",
+            "index": 27,
+            "action": "undo",
+            "ms": 38.561625000002095
+          },
+          {
+            "family": "cuts",
+            "index": 28,
+            "action": "restore",
+            "ms": 39.2258340000044
+          },
+          {
+            "family": "cuts",
+            "index": 29,
+            "action": "undo",
+            "ms": 39.65587499999674
+          },
+          {
+            "family": "cuts",
+            "index": 30,
+            "action": "restore",
+            "ms": 39.24829200000386
+          },
+          {
+            "family": "cuts",
+            "index": 31,
+            "action": "undo",
+            "ms": 38.314750000005006
+          }
+        ],
+        "byFamily": {
+          "captions": {
+            "count": 32,
+            "median": 39.7857499999991,
+            "max": 58.468332999997074,
+            "p95": 40.908707999995386
+          },
+          "effects": {
+            "count": 32,
+            "median": 59.5513749999991,
+            "max": 60.20716700000048,
+            "p95": 59.92820799999754
+          },
+          "cuts": {
+            "count": 32,
+            "median": 39.332124500000646,
+            "max": 39.74399999999878,
+            "p95": 39.73129200000403
+          }
+        }
+      },
+      "sourcePreserved": true,
+      "effectPreserved": true,
+      "projectPreserved": true,
+      "pageErrors": [],
+      "externalRequests": 0,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      }
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "iteration": 2,
+      "cache": "same app; OS cache not purged",
+      "viewport": {
+        "width": 1440,
+        "height": 908
+      },
+      "importSeconds": 0.05428991700000188,
+      "analyzeSeconds": 1.1130083750000048,
+      "exportSeconds": 3.7779621249999984,
+      "saveSeconds": 0.06842983300000197,
+      "independentVerificationSeconds": 3.0802125830000007,
+      "peakRSSBytes": 1194934272,
+      "resources": {
+        "analysis": {
+          "file": "desktop-60-2-analysis-resources.json",
+          "peakBytes": 828817408,
+          "samples": 6,
+          "maxSampleGapMs": 277.89195800000016
+        },
+        "project-and-audio": {
+          "file": "desktop-60-2-project-and-audio-resources.json",
+          "peakBytes": 801964032,
+          "samples": 2,
+          "maxSampleGapMs": 184.70483299999614
+        },
+        "srt": {
+          "file": "desktop-60-2-srt-resources.json",
+          "peakBytes": 803192832,
+          "samples": 2,
+          "maxSampleGapMs": 124.07566699999734
+        },
+        "export": {
+          "file": "desktop-60-2-export-resources.json",
+          "peakBytes": 1194934272,
+          "samples": 17,
+          "maxSampleGapMs": 276.0086669999946
+        },
+        "save": {
+          "file": "desktop-60-2-save-resources.json",
+          "peakBytes": 808927232,
+          "samples": 2,
+          "maxSampleGapMs": 92.51958300000115
+        },
+        "ui": {
+          "file": "desktop-60-2-ui-resources.json",
+          "peakBytes": 938115072,
+          "samples": 30,
+          "maxSampleGapMs": 276.1931659999973
+        }
+      },
+      "cuts": 16,
+      "captions": 16,
+      "effects": 16,
+      "excludedEffects": [
+        {
+          "id": "muted-control",
+          "reason": "muted"
+        },
+        {
+          "id": "removed-control",
+          "reason": "removed"
+        }
+      ],
+      "output": {
+        "id": "80c7373b-8fb8-4a87-9396-8adb1777e8ff",
+        "name": "60s-hypercut.mp4",
+        "duration": 48.266667,
+        "expectedDuration": 48.26666666666668,
+        "size": 995458,
+        "audioSamples": 2316800,
+        "audioMix": {
+          "mixedClips": 16,
+          "peak": 0.19090260565280914,
+          "peakDb": -14.383762876556844,
+          "overloadedSamples": 0,
+          "encodedPeak": 0.1912490874528885,
+          "encodedPeakDb": -14.368012568205382,
+          "encodedOverloadedSamples": 0
+        },
+        "kept": [
+          {
+            "start": 0,
+            "end": 2.7666666666666666
+          },
+          {
+            "start": 3.5,
+            "end": 6.366666666666666
+          },
+          {
+            "start": 7.1,
+            "end": 9.966666666666667
+          },
+          {
+            "start": 10.7,
+            "end": 13.566666666666666
+          },
+          {
+            "start": 14.299999999999999,
+            "end": 17.166666666666668
+          },
+          {
+            "start": 17.9,
+            "end": 20.766666666666666
+          },
+          {
+            "start": 21.5,
+            "end": 24.366666666666667
+          },
+          {
+            "start": 25.1,
+            "end": 27.966666666666665
+          },
+          {
+            "start": 28.7,
+            "end": 31.566666666666666
+          },
+          {
+            "start": 32.3,
+            "end": 35.166666666666664
+          },
+          {
+            "start": 35.9,
+            "end": 38.766666666666666
+          },
+          {
+            "start": 39.5,
+            "end": 42.36666666666667
+          },
+          {
+            "start": 43.1,
+            "end": 45.96666666666667
+          },
+          {
+            "start": 46.7,
+            "end": 49.56666666666666
+          },
+          {
+            "start": 50.3,
+            "end": 53.166666666666664
+          },
+          {
+            "start": 53.9,
+            "end": 56.766666666666666
+          },
+          {
+            "start": 57.5,
+            "end": 60
+          }
+        ],
+        "captionStyle": {
+          "enabled": true,
+          "preset": "emphasis",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "burnedCaptions": 16,
+        "verified": true
+      },
+      "outputFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/desktop-60-2.mp4",
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "srtFile": "/Users/dante/Desktop/github/hyper_cut/test-output/composition-contained-smoke/desktop-60-2.srt",
+      "srtSHA256": "8b87f1315d7e111bb1e0af3545391d64c3086263bc83c0625bd2442b3f1587a1",
+      "verificationFile": "desktop-60-2-verification.json",
+      "ui": {
+        "samples": [
+          {
+            "family": "captions",
+            "index": 0,
+            "action": "select",
+            "ms": 38.37012500000128
+          },
+          {
+            "family": "captions",
+            "index": 1,
+            "action": "edit",
+            "ms": 59.22808299999451
+          },
+          {
+            "family": "captions",
+            "index": 2,
+            "action": "undo",
+            "ms": 39.50437499998952
+          },
+          {
+            "family": "captions",
+            "index": 3,
+            "action": "select",
+            "ms": 38.648207999998704
+          },
+          {
+            "family": "captions",
+            "index": 4,
+            "action": "select",
+            "ms": 39.74200000001292
+          },
+          {
+            "family": "captions",
+            "index": 5,
+            "action": "edit",
+            "ms": 39.23225000000093
+          },
+          {
+            "family": "captions",
+            "index": 6,
+            "action": "undo",
+            "ms": 39.88895800001046
+          },
+          {
+            "family": "captions",
+            "index": 7,
+            "action": "select",
+            "ms": 40.64762499999779
+          },
+          {
+            "family": "captions",
+            "index": 8,
+            "action": "select",
+            "ms": 38.47416700000758
+          },
+          {
+            "family": "captions",
+            "index": 9,
+            "action": "edit",
+            "ms": 39.58179100000416
+          },
+          {
+            "family": "captions",
+            "index": 10,
+            "action": "undo",
+            "ms": 38.80983300000662
+          },
+          {
+            "family": "captions",
+            "index": 11,
+            "action": "select",
+            "ms": 40.0734999999986
+          },
+          {
+            "family": "captions",
+            "index": 12,
+            "action": "select",
+            "ms": 40.33208399999421
+          },
+          {
+            "family": "captions",
+            "index": 13,
+            "action": "edit",
+            "ms": 39.41675000000396
+          },
+          {
+            "family": "captions",
+            "index": 14,
+            "action": "undo",
+            "ms": 39.340500000005704
+          },
+          {
+            "family": "captions",
+            "index": 15,
+            "action": "select",
+            "ms": 39.61220799999137
+          },
+          {
+            "family": "captions",
+            "index": 16,
+            "action": "select",
+            "ms": 39.45854200000758
+          },
+          {
+            "family": "captions",
+            "index": 17,
+            "action": "edit",
+            "ms": 40.38999999999942
+          },
+          {
+            "family": "captions",
+            "index": 18,
+            "action": "undo",
+            "ms": 38.307583000001614
+          },
+          {
+            "family": "captions",
+            "index": 19,
+            "action": "select",
+            "ms": 39.75845799999661
+          },
+          {
+            "family": "captions",
+            "index": 20,
+            "action": "select",
+            "ms": 39.339208999997936
+          },
+          {
+            "family": "captions",
+            "index": 21,
+            "action": "edit",
+            "ms": 39.43991700001061
+          },
+          {
+            "family": "captions",
+            "index": 22,
+            "action": "undo",
+            "ms": 40.121082999990904
+          },
+          {
+            "family": "captions",
+            "index": 23,
+            "action": "select",
+            "ms": 39.142416999995476
+          },
+          {
+            "family": "captions",
+            "index": 24,
+            "action": "select",
+            "ms": 38.61666700000933
+          },
+          {
+            "family": "captions",
+            "index": 25,
+            "action": "edit",
+            "ms": 39.53583399999479
+          },
+          {
+            "family": "captions",
+            "index": 26,
+            "action": "undo",
+            "ms": 39.12395799999649
+          },
+          {
+            "family": "captions",
+            "index": 27,
+            "action": "select",
+            "ms": 39.27608299998974
+          },
+          {
+            "family": "captions",
+            "index": 28,
+            "action": "select",
+            "ms": 40.41195800001151
+          },
+          {
+            "family": "captions",
+            "index": 29,
+            "action": "edit",
+            "ms": 38.74045800000022
+          },
+          {
+            "family": "captions",
+            "index": 30,
+            "action": "undo",
+            "ms": 39.12512500000594
+          },
+          {
+            "family": "captions",
+            "index": 31,
+            "action": "select",
+            "ms": 40.01137499998731
+          },
+          {
+            "family": "effects",
+            "index": 0,
+            "action": "gain",
+            "ms": 40.42750000000524
+          },
+          {
+            "family": "effects",
+            "index": 1,
+            "action": "undo",
+            "ms": 59.69862499998999
+          },
+          {
+            "family": "effects",
+            "index": 2,
+            "action": "mute",
+            "ms": 58.85441600000195
+          },
+          {
+            "family": "effects",
+            "index": 3,
+            "action": "undo",
+            "ms": 59.8137080000015
+          },
+          {
+            "family": "effects",
+            "index": 4,
+            "action": "gain",
+            "ms": 40.718250000005355
+          },
+          {
+            "family": "effects",
+            "index": 5,
+            "action": "undo",
+            "ms": 59.53179100000125
+          },
+          {
+            "family": "effects",
+            "index": 6,
+            "action": "mute",
+            "ms": 59.1469589999906
+          },
+          {
+            "family": "effects",
+            "index": 7,
+            "action": "undo",
+            "ms": 59.861541999998735
+          },
+          {
+            "family": "effects",
+            "index": 8,
+            "action": "gain",
+            "ms": 38.58420900000783
+          },
+          {
+            "family": "effects",
+            "index": 9,
+            "action": "undo",
+            "ms": 59.46183299999393
+          },
+          {
+            "family": "effects",
+            "index": 10,
+            "action": "mute",
+            "ms": 58.24916700000176
+          },
+          {
+            "family": "effects",
+            "index": 11,
+            "action": "undo",
+            "ms": 60.33574999999837
+          },
+          {
+            "family": "effects",
+            "index": 12,
+            "action": "gain",
+            "ms": 38.909583000000566
+          },
+          {
+            "family": "effects",
+            "index": 13,
+            "action": "undo",
+            "ms": 59.54391700000269
+          },
+          {
+            "family": "effects",
+            "index": 14,
+            "action": "mute",
+            "ms": 58.9986659999995
+          },
+          {
+            "family": "effects",
+            "index": 15,
+            "action": "undo",
+            "ms": 59.718166999999085
+          },
+          {
+            "family": "effects",
+            "index": 16,
+            "action": "gain",
+            "ms": 39.19937499999651
+          },
+          {
+            "family": "effects",
+            "index": 17,
+            "action": "undo",
+            "ms": 59.49179199998616
+          },
+          {
+            "family": "effects",
+            "index": 18,
+            "action": "mute",
+            "ms": 57.98441699999967
+          },
+          {
+            "family": "effects",
+            "index": 19,
+            "action": "undo",
+            "ms": 59.77666600000521
+          },
+          {
+            "family": "effects",
+            "index": 20,
+            "action": "gain",
+            "ms": 38.61433300000499
+          },
+          {
+            "family": "effects",
+            "index": 21,
+            "action": "undo",
+            "ms": 59.63766699998814
+          },
+          {
+            "family": "effects",
+            "index": 22,
+            "action": "mute",
+            "ms": 59.15545900000143
+          },
+          {
+            "family": "effects",
+            "index": 23,
+            "action": "undo",
+            "ms": 59.00670899999386
+          },
+          {
+            "family": "effects",
+            "index": 24,
+            "action": "gain",
+            "ms": 38.614958999998635
+          },
+          {
+            "family": "effects",
+            "index": 25,
+            "action": "undo",
+            "ms": 59.68645799999649
+          },
+          {
+            "family": "effects",
+            "index": 26,
+            "action": "mute",
+            "ms": 59.04658300000301
+          },
+          {
+            "family": "effects",
+            "index": 27,
+            "action": "undo",
+            "ms": 59.830624999987776
+          },
+          {
+            "family": "effects",
+            "index": 28,
+            "action": "gain",
+            "ms": 38.714666999992914
+          },
+          {
+            "family": "effects",
+            "index": 29,
+            "action": "undo",
+            "ms": 59.953624999994645
+          },
+          {
+            "family": "effects",
+            "index": 30,
+            "action": "mute",
+            "ms": 58.8837499999936
+          },
+          {
+            "family": "effects",
+            "index": 31,
+            "action": "undo",
+            "ms": 59.75495800000499
+          },
+          {
+            "family": "cuts",
+            "index": 0,
+            "action": "restore",
+            "ms": 39.85904199999641
+          },
+          {
+            "family": "cuts",
+            "index": 1,
+            "action": "undo",
+            "ms": 38.28824999999779
+          },
+          {
+            "family": "cuts",
+            "index": 2,
+            "action": "restore",
+            "ms": 38.568874999997206
+          },
+          {
+            "family": "cuts",
+            "index": 3,
+            "action": "undo",
+            "ms": 39.202250000002095
+          },
+          {
+            "family": "cuts",
+            "index": 4,
+            "action": "restore",
+            "ms": 38.82808300000033
+          },
+          {
+            "family": "cuts",
+            "index": 5,
+            "action": "undo",
+            "ms": 40.33987500000512
+          },
+          {
+            "family": "cuts",
+            "index": 6,
+            "action": "restore",
+            "ms": 38.45654100000684
+          },
+          {
+            "family": "cuts",
+            "index": 7,
+            "action": "undo",
+            "ms": 38.708792000004905
+          },
+          {
+            "family": "cuts",
+            "index": 8,
+            "action": "restore",
+            "ms": 39.359416000006604
+          },
+          {
+            "family": "cuts",
+            "index": 9,
+            "action": "undo",
+            "ms": 39.4340830000001
+          },
+          {
+            "family": "cuts",
+            "index": 10,
+            "action": "restore",
+            "ms": 39.688165999992634
+          },
+          {
+            "family": "cuts",
+            "index": 11,
+            "action": "undo",
+            "ms": 38.856041999999434
+          },
+          {
+            "family": "cuts",
+            "index": 12,
+            "action": "restore",
+            "ms": 38.721082999996725
+          },
+          {
+            "family": "cuts",
+            "index": 13,
+            "action": "undo",
+            "ms": 39.38966600000276
+          },
+          {
+            "family": "cuts",
+            "index": 14,
+            "action": "restore",
+            "ms": 39.61633299999812
+          },
+          {
+            "family": "cuts",
+            "index": 15,
+            "action": "undo",
+            "ms": 39.66695799998706
+          },
+          {
+            "family": "cuts",
+            "index": 16,
+            "action": "restore",
+            "ms": 39.38491700000304
+          },
+          {
+            "family": "cuts",
+            "index": 17,
+            "action": "undo",
+            "ms": 39.55862499999057
+          },
+          {
+            "family": "cuts",
+            "index": 18,
+            "action": "restore",
+            "ms": 39.48012500000186
+          },
+          {
+            "family": "cuts",
+            "index": 19,
+            "action": "undo",
+            "ms": 39.542709000001196
+          },
+          {
+            "family": "cuts",
+            "index": 20,
+            "action": "restore",
+            "ms": 40.13616700000421
+          },
+          {
+            "family": "cuts",
+            "index": 21,
+            "action": "undo",
+            "ms": 38.358875000005355
+          },
+          {
+            "family": "cuts",
+            "index": 22,
+            "action": "restore",
+            "ms": 38.50700000001234
+          },
+          {
+            "family": "cuts",
+            "index": 23,
+            "action": "undo",
+            "ms": 39.55000000000291
+          },
+          {
+            "family": "cuts",
+            "index": 24,
+            "action": "restore",
+            "ms": 39.676542000001064
+          },
+          {
+            "family": "cuts",
+            "index": 25,
+            "action": "undo",
+            "ms": 40.13062500000524
+          },
+          {
+            "family": "cuts",
+            "index": 26,
+            "action": "restore",
+            "ms": 39.31804199999897
+          },
+          {
+            "family": "cuts",
+            "index": 27,
+            "action": "undo",
+            "ms": 39.61245799998869
+          },
+          {
+            "family": "cuts",
+            "index": 28,
+            "action": "restore",
+            "ms": 39.140832999997656
+          },
+          {
+            "family": "cuts",
+            "index": 29,
+            "action": "undo",
+            "ms": 39.71899999999732
+          },
+          {
+            "family": "cuts",
+            "index": 30,
+            "action": "restore",
+            "ms": 40.14625000000524
+          },
+          {
+            "family": "cuts",
+            "index": 31,
+            "action": "undo",
+            "ms": 39.26437500001339
+          }
+        ],
+        "byFamily": {
+          "captions": {
+            "count": 32,
+            "median": 39.449229500009096,
+            "max": 59.22808299999451,
+            "p95": 40.64762499999779
+          },
+          "effects": {
+            "count": 32,
+            "median": 59.151208999996015,
+            "max": 60.33574999999837,
+            "p95": 59.953624999994645
+          },
+          "cuts": {
+            "count": 32,
+            "median": 39.41187450000143,
+            "max": 40.33987500000512,
+            "p95": 40.14625000000524
+          }
+        }
+      },
+      "sourcePreserved": true,
+      "effectPreserved": true,
+      "projectPreserved": true,
+      "pageErrors": [],
+      "externalRequests": 0,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.33749999999999997
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 207.11804099999972,
+      "displayMs": 0.7000000476837158,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.40312499999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 202.40254199999617,
+      "displayMs": 0.7999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "failures": [],
+  "summary": [
+    {
+      "surface": "browser",
+      "seconds": 60,
+      "analyzeSeconds": {
+        "count": 2,
+        "median": 0.9474767089999988,
+        "max": 1.043309834,
+        "p95": null
+      },
+      "exportSeconds": {
+        "count": 2,
+        "median": 3.806351479499999,
+        "max": 3.8168231669999986,
+        "p95": null
+      },
+      "independentVerificationSeconds": {
+        "count": 2,
+        "median": 3.0483742915,
+        "max": 3.067422208,
+        "p95": null
+      },
+      "peakRSSBytes": {
+        "count": 2,
+        "median": 1772748800,
+        "max": 1813331968,
+        "p95": null
+      }
+    },
+    {
+      "surface": "desktop",
+      "seconds": 60,
+      "analyzeSeconds": {
+        "count": 2,
+        "median": 1.1935102915000024,
+        "max": 1.274012208,
+        "p95": null
+      },
+      "exportSeconds": {
+        "count": 2,
+        "median": 3.7769491045,
+        "max": 3.7779621249999984,
+        "p95": null
+      },
+      "independentVerificationSeconds": {
+        "count": 2,
+        "median": 3.0603423540000003,
+        "max": 3.0802125830000007,
+        "p95": null
+      },
+      "peakRSSBytes": {
+        "count": 2,
+        "median": 1153286144,
+        "max": 1194934272,
+        "p95": null
+      }
+    }
+  ],
+  "measuredGoalsPass": true
+}

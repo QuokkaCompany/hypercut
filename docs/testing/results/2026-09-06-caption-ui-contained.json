@@ -1,0 +1,858 @@
+{
+  "date": "2026-09-06T07:47:48.472Z",
+  "status": "completed",
+  "sourcePreview": "normal",
+  "analyze": true,
+  "backdrop": "normal",
+  "nativeSample": false,
+  "rowRendering": "auto",
+  "scope": "Diagnostic only: same 60-minute source and saved 1000-cue project; optional real analysis; export and cancellation omitted. Native clicks and input, CDP performance/trace and input-to-two-animation-frames observations. Optional native sampling targets only renderers of the browser launched by this script. The optional none control replaces source VTT blobs with empty valid tracks; flat disables modal backdrop blur; auto uses content-visibility for offscreen caption rows. Not a formal performance pass.",
+  "sourceHashes": {
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionList.tsx": "5a7e68180ee65d7f906618b500a8decf2bdd649eb318ba041b402573d3cb6db0",
+    "src/CaptionStyle.tsx": "a6b246823d34df9d053ea862587870116ed3eb5d79ed1bb3e09ff8782fbcfedc",
+    "src/captions.css": "c655647d95b755ccdf704b22f11b58839a5ef37e1e2cf4695c173b3465346836",
+    "scripts/caption-ui-diagnostic.mjs": "ac11d6e6be6f91cb5669d85bca8ba7d6c47ca50e4e0df4e717265edead5fb095",
+    "dist/index.html": "c27f627281f313d35a9b2d87ba7b85554290bdca104b047b99ca51de393006f8",
+    "dist/assets/index-D1mkISY0.js": "a87592294c681e1c280cd50cb82493a9862541a8461859d893283926be7a5782",
+    "dist/assets/index-CFqYpERX.css": "af5e057f9080baf2e6bfd28d11b08c77dcf4f4c61a125f751bbae3e18131e8bd",
+    "/Users/dante/Desktop/github/hyper_cut/test-output/threshold-performance-fixtures/3600s.mp4": "5c16a6a3bac8633926ded013322578e268da323303d570dfc68bf5c17f16b786",
+    "/Users/dante/Desktop/github/hyper_cut/test-output/composition-long-candidate/browser-long/browser-3600-1-input-project.json": "df127c0eb7a52161dbd8aa4f29c3edc02343d37efb0118c93b6b648764a00a2b"
+  },
+  "samples": [
+    {
+      "index": 0,
+      "action": "select",
+      "performedMs": 41.028332999994745,
+      "checkedMs": 41.957040999994206,
+      "totalMs": 76.95645800000057,
+      "metricsDelta": {
+        "TaskDuration": 0.048918,
+        "ScriptDuration": 0.0025210000000000002,
+        "LayoutDuration": 0.0014609999999999998,
+        "RecalcStyleDuration": 0.0005830000000000001,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 8
+      }
+    },
+    {
+      "index": 1,
+      "action": "edit",
+      "filledMs": 5.993499999996857,
+      "performedMs": 46.04683300000033,
+      "checkedMs": 47.09337499999674,
+      "totalMs": 190.6237919999985,
+      "metricsDelta": {
+        "TaskDuration": 0.123882,
+        "ScriptDuration": 0.008462,
+        "LayoutDuration": 0.003399,
+        "RecalcStyleDuration": 0.0019290000000000002,
+        "LayoutCount": 9,
+        "RecalcStyleCount": 19
+      }
+    },
+    {
+      "index": 2,
+      "action": "undo",
+      "performedMs": 44.63737499999843,
+      "checkedMs": 45.550374999998894,
+      "totalMs": 78.13216700000339,
+      "metricsDelta": {
+        "TaskDuration": 0.052813,
+        "ScriptDuration": 0.004374000000000001,
+        "LayoutDuration": 0.0012779999999999996,
+        "RecalcStyleDuration": 0.0007150000000000004,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 10
+      }
+    },
+    {
+      "index": 3,
+      "action": "select",
+      "performedMs": 48.34733299999789,
+      "checkedMs": 49.067291999999725,
+      "totalMs": 85.06487499999639,
+      "metricsDelta": {
+        "TaskDuration": 0.054296999999999984,
+        "ScriptDuration": 0.002345,
+        "LayoutDuration": 0.001582,
+        "RecalcStyleDuration": 0.0007520000000000001,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 11
+      }
+    },
+    {
+      "index": 4,
+      "action": "select",
+      "performedMs": 37.112082999999984,
+      "checkedMs": 37.83012500000041,
+      "totalMs": 63.743750000001455,
+      "metricsDelta": {
+        "TaskDuration": 0.01886099999999996,
+        "ScriptDuration": 0.002314,
+        "LayoutDuration": 0.0019129999999999998,
+        "RecalcStyleDuration": 0.0009179999999999995,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 11
+      }
+    },
+    {
+      "index": 5,
+      "action": "edit",
+      "filledMs": 4.203666000001249,
+      "performedMs": 43.26466600000276,
+      "checkedMs": 44.1861659999995,
+      "totalMs": 132.38141599999653,
+      "metricsDelta": {
+        "TaskDuration": 0.11025999999999997,
+        "ScriptDuration": 0.0060160000000000005,
+        "LayoutDuration": 0.0022200000000000015,
+        "RecalcStyleDuration": 0.001276000000000001,
+        "LayoutCount": 6,
+        "RecalcStyleCount": 14
+      }
+    },
+    {
+      "index": 6,
+      "action": "undo",
+      "performedMs": 36.55741699999635,
+      "checkedMs": 37.35016699999687,
+      "totalMs": 73.71270899999945,
+      "metricsDelta": {
+        "TaskDuration": 0.05189900000000003,
+        "ScriptDuration": 0.0036919999999999974,
+        "LayoutDuration": 0.0011680000000000006,
+        "RecalcStyleDuration": 0.0005669999999999998,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 9
+      }
+    },
+    {
+      "index": 7,
+      "action": "select",
+      "performedMs": 144.23991699999897,
+      "checkedMs": 146.86824999999953,
+      "totalMs": 177.42558299999655,
+      "metricsDelta": {
+        "TaskDuration": 0.06104200000000004,
+        "ScriptDuration": 0.002249000000000001,
+        "LayoutDuration": 0.0022900000000000004,
+        "RecalcStyleDuration": 0.001340000000000001,
+        "LayoutCount": 5,
+        "RecalcStyleCount": 15
+      }
+    },
+    {
+      "index": 8,
+      "action": "select",
+      "performedMs": 40.60404099999869,
+      "checkedMs": 41.430374999996275,
+      "totalMs": 67.15208300000086,
+      "metricsDelta": {
+        "TaskDuration": 0.018696999999999964,
+        "ScriptDuration": 0.002810999999999994,
+        "LayoutDuration": 0.002042000000000002,
+        "RecalcStyleDuration": 0.0006069999999999999,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 9
+      }
+    },
+    {
+      "index": 9,
+      "action": "edit",
+      "filledMs": 4.378416999999899,
+      "performedMs": 45.03741699999955,
+      "checkedMs": 45.85212499999761,
+      "totalMs": 133.0534170000028,
+      "metricsDelta": {
+        "TaskDuration": 0.11116100000000007,
+        "ScriptDuration": 0.005944000000000005,
+        "LayoutDuration": 0.0022639999999999987,
+        "RecalcStyleDuration": 0.0011739999999999997,
+        "LayoutCount": 6,
+        "RecalcStyleCount": 16
+      }
+    },
+    {
+      "index": 10,
+      "action": "undo",
+      "performedMs": 37.44683300000179,
+      "checkedMs": 38.32862500000192,
+      "totalMs": 75.07066699999996,
+      "metricsDelta": {
+        "TaskDuration": 0.04688800000000004,
+        "ScriptDuration": 0.003826000000000003,
+        "LayoutDuration": 0.0012040000000000002,
+        "RecalcStyleDuration": 0.00033299999999999996,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 5
+      }
+    },
+    {
+      "index": 11,
+      "action": "select",
+      "performedMs": 38.22720900000422,
+      "checkedMs": 38.893458999998984,
+      "totalMs": 75.95837500000198,
+      "metricsDelta": {
+        "TaskDuration": 0.04458899999999999,
+        "ScriptDuration": 0.002123,
+        "LayoutDuration": 0.0013430000000000004,
+        "RecalcStyleDuration": 0.00032799999999999843,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 6
+      }
+    },
+    {
+      "index": 12,
+      "action": "select",
+      "performedMs": 37.62895799999387,
+      "checkedMs": 38.420249999995576,
+      "totalMs": 64.65874999999505,
+      "metricsDelta": {
+        "TaskDuration": 0.019303999999999988,
+        "ScriptDuration": 0.002233000000000006,
+        "LayoutDuration": 0.0018349999999999998,
+        "RecalcStyleDuration": 0.0007419999999999996,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 10
+      }
+    },
+    {
+      "index": 13,
+      "action": "edit",
+      "filledMs": 4.255041999997047,
+      "performedMs": 44.54529199999524,
+      "checkedMs": 45.442833999994036,
+      "totalMs": 134.80799999999726,
+      "metricsDelta": {
+        "TaskDuration": 0.11149000000000009,
+        "ScriptDuration": 0.006137999999999998,
+        "LayoutDuration": 0.002347000000000002,
+        "RecalcStyleDuration": 0.0011970000000000001,
+        "LayoutCount": 6,
+        "RecalcStyleCount": 14
+      }
+    },
+    {
+      "index": 14,
+      "action": "undo",
+      "performedMs": 43.64487499999814,
+      "checkedMs": 44.51129100000253,
+      "totalMs": 79.26800000000367,
+      "metricsDelta": {
+        "TaskDuration": 0.04434500000000008,
+        "ScriptDuration": 0.0038690000000000113,
+        "LayoutDuration": 0.0012089999999999948,
+        "RecalcStyleDuration": 0.00032199999999999937,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 5
+      }
+    },
+    {
+      "index": 15,
+      "action": "select",
+      "performedMs": 93.91916599999968,
+      "checkedMs": 94.66245799999888,
+      "totalMs": 134.5864999999976,
+      "metricsDelta": {
+        "TaskDuration": 0.05118100000000014,
+        "ScriptDuration": 0.0023859999999999992,
+        "LayoutDuration": 0.0015859999999999971,
+        "RecalcStyleDuration": 0.00042299999999999977,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 8
+      }
+    },
+    {
+      "index": 16,
+      "action": "select",
+      "performedMs": 37.5859580000033,
+      "checkedMs": 38.248124999998254,
+      "totalMs": 66.4260409999988,
+      "metricsDelta": {
+        "TaskDuration": 0.01794399999999996,
+        "ScriptDuration": 0.0024150000000000005,
+        "LayoutDuration": 0.0017720000000000027,
+        "RecalcStyleDuration": 0.000732,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 11
+      }
+    },
+    {
+      "index": 17,
+      "action": "edit",
+      "filledMs": 5.2679169999973965,
+      "performedMs": 42.42983300000196,
+      "checkedMs": 43.16500000000087,
+      "totalMs": 140.5277500000011,
+      "metricsDelta": {
+        "TaskDuration": 0.11906799999999995,
+        "ScriptDuration": 0.006996999999999989,
+        "LayoutDuration": 0.0026709999999999998,
+        "RecalcStyleDuration": 0.0012119999999999978,
+        "LayoutCount": 7,
+        "RecalcStyleCount": 14
+      }
+    },
+    {
+      "index": 18,
+      "action": "undo",
+      "performedMs": 45.56754199999705,
+      "checkedMs": 46.45537499999773,
+      "totalMs": 83.67016699999658,
+      "metricsDelta": {
+        "TaskDuration": 0.04891000000000001,
+        "ScriptDuration": 0.004152000000000003,
+        "LayoutDuration": 0.0013120000000000007,
+        "RecalcStyleDuration": 0.000338999999999999,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 5
+      }
+    },
+    {
+      "index": 19,
+      "action": "select",
+      "performedMs": 32.571584000004805,
+      "checkedMs": 33.22633399999904,
+      "totalMs": 73.48408400000335,
+      "metricsDelta": {
+        "TaskDuration": 0.047554000000000096,
+        "ScriptDuration": 0.002128000000000005,
+        "LayoutDuration": 0.001365000000000005,
+        "RecalcStyleDuration": 0.00036299999999999874,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 8
+      }
+    },
+    {
+      "index": 20,
+      "action": "select",
+      "performedMs": 39.06762500000332,
+      "checkedMs": 39.84925000000658,
+      "totalMs": 63.74091700000281,
+      "metricsDelta": {
+        "TaskDuration": 0.020073999999999925,
+        "ScriptDuration": 0.002574999999999994,
+        "LayoutDuration": 0.002029999999999997,
+        "RecalcStyleDuration": 0.0008359999999999999,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 11
+      }
+    },
+    {
+      "index": 21,
+      "action": "edit",
+      "filledMs": 5.151624999998603,
+      "performedMs": 43.88312500000029,
+      "checkedMs": 44.67424999999639,
+      "totalMs": 128.86641699999745,
+      "metricsDelta": {
+        "TaskDuration": 0.10797100000000004,
+        "ScriptDuration": 0.006444000000000005,
+        "LayoutDuration": 0.0024339999999999987,
+        "RecalcStyleDuration": 0.0012460000000000006,
+        "LayoutCount": 6,
+        "RecalcStyleCount": 16
+      }
+    },
+    {
+      "index": 22,
+      "action": "undo",
+      "performedMs": 37.47987500000454,
+      "checkedMs": 38.30487500000163,
+      "totalMs": 78.0750410000037,
+      "metricsDelta": {
+        "TaskDuration": 0.04854100000000017,
+        "ScriptDuration": 0.003938999999999998,
+        "LayoutDuration": 0.0012129999999999988,
+        "RecalcStyleDuration": 0.000338999999999999,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 5
+      }
+    },
+    {
+      "index": 23,
+      "action": "select",
+      "performedMs": 154.77008399999613,
+      "checkedMs": 155.55916699999943,
+      "totalMs": 185.04724999999598,
+      "metricsDelta": {
+        "TaskDuration": 0.061029,
+        "ScriptDuration": 0.0025220000000000103,
+        "LayoutDuration": 0.002563999999999997,
+        "RecalcStyleDuration": 0.0013920000000000009,
+        "LayoutCount": 5,
+        "RecalcStyleCount": 16
+      }
+    },
+    {
+      "index": 24,
+      "action": "select",
+      "performedMs": 36.97258299999521,
+      "checkedMs": 37.590916000001016,
+      "totalMs": 66.35074999999779,
+      "metricsDelta": {
+        "TaskDuration": 0.018243999999999705,
+        "ScriptDuration": 0.002476000000000006,
+        "LayoutDuration": 0.0017010000000000011,
+        "RecalcStyleDuration": 0.0006290000000000011,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 9
+      }
+    },
+    {
+      "index": 25,
+      "action": "edit",
+      "filledMs": 5.315583000003244,
+      "performedMs": 42.361125000003085,
+      "checkedMs": 43.03254200000083,
+      "totalMs": 131.1502079999991,
+      "metricsDelta": {
+        "TaskDuration": 0.10970900000000006,
+        "ScriptDuration": 0.00537399999999999,
+        "LayoutDuration": 0.002357000000000005,
+        "RecalcStyleDuration": 0.0012510000000000021,
+        "LayoutCount": 6,
+        "RecalcStyleCount": 16
+      }
+    },
+    {
+      "index": 26,
+      "action": "undo",
+      "performedMs": 40.701208999998926,
+      "checkedMs": 41.473125000004075,
+      "totalMs": 71.78012500000477,
+      "metricsDelta": {
+        "TaskDuration": 0.041981999999999964,
+        "ScriptDuration": 0.0038509999999999933,
+        "LayoutDuration": 0.0012569999999999942,
+        "RecalcStyleDuration": 0.0003320000000000059,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 5
+      }
+    },
+    {
+      "index": 27,
+      "action": "select",
+      "performedMs": 66.35416599999735,
+      "checkedMs": 67.0849159999998,
+      "totalMs": 101.2466659999991,
+      "metricsDelta": {
+        "TaskDuration": 0.04776500000000006,
+        "ScriptDuration": 0.002141000000000004,
+        "LayoutDuration": 0.0014210000000000056,
+        "RecalcStyleDuration": 0.0003999999999999976,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 8
+      }
+    },
+    {
+      "index": 28,
+      "action": "select",
+      "performedMs": 40.23187500000495,
+      "checkedMs": 41.067666000002646,
+      "totalMs": 65.2398749999993,
+      "metricsDelta": {
+        "TaskDuration": 0.019063999999999748,
+        "ScriptDuration": 0.0027500000000000024,
+        "LayoutDuration": 0.001908999999999994,
+        "RecalcStyleDuration": 0.0007199999999999984,
+        "LayoutCount": 3,
+        "RecalcStyleCount": 8
+      }
+    },
+    {
+      "index": 29,
+      "action": "edit",
+      "filledMs": 4.360459000003175,
+      "performedMs": 42.79537500000151,
+      "checkedMs": 43.6451670000024,
+      "totalMs": 131.94166699999914,
+      "metricsDelta": {
+        "TaskDuration": 0.10955100000000018,
+        "ScriptDuration": 0.006371999999999989,
+        "LayoutDuration": 0.0021089999999999998,
+        "RecalcStyleDuration": 0.0011670000000000014,
+        "LayoutCount": 6,
+        "RecalcStyleCount": 14
+      }
+    },
+    {
+      "index": 30,
+      "action": "undo",
+      "performedMs": 30.447041999999783,
+      "checkedMs": 31.309416999996756,
+      "totalMs": 67.73345799999515,
+      "metricsDelta": {
+        "TaskDuration": 0.049593999999999916,
+        "ScriptDuration": 0.003981000000000012,
+        "LayoutDuration": 0.0012650000000000022,
+        "RecalcStyleDuration": 0.0003270000000000009,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 5
+      }
+    },
+    {
+      "index": 31,
+      "action": "select",
+      "performedMs": 65.6186250000028,
+      "checkedMs": 66.32587500000227,
+      "totalMs": 100.29187500000262,
+      "metricsDelta": {
+        "TaskDuration": 0.04668499999999964,
+        "ScriptDuration": 0.0020749999999999935,
+        "LayoutDuration": 0.0012660000000000032,
+        "RecalcStyleDuration": 0.00035299999999999915,
+        "LayoutCount": 2,
+        "RecalcStyleCount": 8
+      }
+    }
+  ],
+  "pageErrors": [],
+  "events": [
+    {
+      "index": 0,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 39,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 1,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 24.600000023841858,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 1,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 94.30000007152557,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 1,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 93.79999995231628,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 2,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 39.199999928474426,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 3,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 39.700000047683716,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 4,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 29,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 5,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 25.59999990463257,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 5,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 97.40000009536743,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 5,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 97.09999990463257,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 6,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 42,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 7,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 34.5,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 8,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 29.40000009536743,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 9,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 27.199999928474426,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 9,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 96.20000004768372,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 9,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 95.80000007152557,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 10,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 42.5,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 11,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 40.199999928474426,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 12,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 29.600000023841858,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 13,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 26.90000009536743,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 13,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 98.70000004768372,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 13,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 98.29999995231628,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 14,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 40.700000047683716,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 15,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 43.799999952316284,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 16,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 31.299999952316284,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 17,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 25,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 17,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 105.20000004768372,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 17,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 104.80000007152557,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 18,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 43.60000002384186,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 19,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 43.299999952316284,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 20,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 27.59999990463257,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 21,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 24.899999976158142,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 21,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 93.39999997615814,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 21,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 93.10000002384186,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 22,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 45.699999928474426,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 23,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 35,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 24,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 31.700000047683716,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 25,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 24.799999952316284,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 25,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 95.89999997615814,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 25,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 95.39999997615814,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 26,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 36,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 27,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 37.699999928474426,
+      "text": "합성 검증 0001"
+    },
+    {
+      "index": 28,
+      "type": "click",
+      "label": "자막 2 선택",
+      "paintMs": 28.100000023841858,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 29,
+      "type": "input",
+      "label": "자막 문구",
+      "paintMs": 26.199999928474426,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 29,
+      "type": "click",
+      "label": "자막 수정 적용",
+      "paintMs": 97.10000002384186,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 29,
+      "type": "submit",
+      "label": "자막 문구합성 검증 0002 수정시작 (초)끝 (초)자막 수정 적용",
+      "paintMs": 96.60000002384186,
+      "text": "합성 검증 0002 수정"
+    },
+    {
+      "index": 30,
+      "type": "click",
+      "label": "자막 실행 취소",
+      "paintMs": 42.299999952316284,
+      "text": "합성 검증 0002"
+    },
+    {
+      "index": 31,
+      "type": "click",
+      "label": "자막 1 선택",
+      "paintMs": 37.10000002384186,
+      "text": "합성 검증 0001"
+    }
+  ],
+  "summary": {
+    "count": 32,
+    "median": 78.70008350000353,
+    "max": 190.6237919999985,
+    "p95": 185.04724999999598
+  },
+  "fullProjectPreserved": true
+}

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "scope": "Evidence audit only. Native sampling adds overhead and is not a performance gate. Chrome symbols resolve mostly to ChromeMain offsets; no specific native function root cause is established.",
+  "renderer": 74259,
+  "activePageMarkerMatched": true,
+  "fullProjectPreserved": true,
+  "trace": {
+    "file": "test-output/caption-ui-diagnostic-native-v2/trace.json",
+    "sha256": "e2de7377719775efa0c72bf6695da193efed232151d4fe87a1d0b09f8b343d99"
+  },
+  "sample": {
+    "file": "test-output/caption-ui-diagnostic-native-v2/renderer-sample.txt",
+    "sha256": "b176071b96bdd6e95516af11531007bdcc256b318d399cc9f88b64a307ea20f3",
+    "bytes": 1719864
+  },
+  "summary": {
+    "count": 32,
+    "median": 101.36177099999986,
+    "max": 255.75487499999872,
+    "p95": 241.55912499999977
+  }
+}

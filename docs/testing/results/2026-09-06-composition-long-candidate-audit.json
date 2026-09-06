@@ -1,0 +1,62 @@
+{
+  "date": "2026-09-06T07:32:59.060Z",
+  "status": "PASS",
+  "runStatus": "failed",
+  "scope": "Audit of source hashes, whole project round trips, output/SRT bytes, independent correctness records and summed raw RSS. The measured UI gate still fails.",
+  "code": "8aa2ef7cda4a204baad344de81e1baac6e2ba796",
+  "peakGiB": 1.9683837890625,
+  "headroomMiB": 32.375,
+  "maxSampleGapMs": 277.9312079999945,
+  "sourceHashesVerified": true,
+  "outputMatchesBefore": true,
+  "srtMatchesBefore": true,
+  "fullProjectsEqualExceptSavedAt": true,
+  "independentCorrectnessEqual": true,
+  "visualSampleHashesEqualPreviouslyReviewed": true,
+  "ui": {
+    "captions": {
+      "count": 32,
+      "median": 93.30058299997472,
+      "max": 233.47004200000083,
+      "p95": 224.97833299997728
+    },
+    "effects": {
+      "count": 32,
+      "median": 165.991312499973,
+      "max": 197.95316699997056,
+      "p95": 196.95841600000858
+    },
+    "cuts": {
+      "count": 32,
+      "median": 66.10168749999139,
+      "max": 89.21624999999767,
+      "p95": 67.30779099999927
+    }
+  },
+  "goals": {
+    "analysis": true,
+    "export": true,
+    "memory": true,
+    "ui": false
+  },
+  "cancellation": {
+    "surface": "browser",
+    "inputSeconds": 3600,
+    "beforeCancel": {
+      "status": "running",
+      "stage": "자막 디자인 합성 준비",
+      "progress": 0.3006
+    },
+    "deleteCancelled": true,
+    "jobStatus": "cancelled",
+    "readyMs": 224.53937499999302,
+    "displayMs": 1.0999999046325684,
+    "projectPreserved": true,
+    "savedOutputPreserved": true,
+    "displayedOutputPreserved": true,
+    "displayPass": true,
+    "readyPass": true,
+    "retryCompletedIteration": null
+  },
+  "longRetry": "NOT_RUN"
+}

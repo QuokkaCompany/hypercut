@@ -1,0 +1,179 @@
+{
+  "date": "2026-09-06T07:56:06.008Z",
+  "status": "PASS",
+  "scope": "Current source/package and every actual project, MP4/SRT byte hash, independent verification and raw RSS sample audited. Four short app runs only.",
+  "runs": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "analyzeSeconds": 1.043309834,
+      "exportSeconds": 3.795879792,
+      "peakGiB": 1.6132049560546875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 66.58785400000033,
+          "max": 98.76887499999975,
+          "p95": 67.74845800000003
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.46856249999928,
+          "max": 100.24287499999991,
+          "p95": 100.1060830000024
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.761625000001,
+          "max": 66.50400000000081,
+          "p95": 66.32158300000083
+        }
+      },
+      "maxSampleGapMs": 277.4580839999999,
+      "wholeProjectPreserved": true,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualHashesEqual": true
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "analyzeSeconds": 0.8516435839999976,
+      "exportSeconds": 3.8168231669999986,
+      "peakGiB": 1.6887969970703125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 65.78989600000023,
+          "max": 99.18037499999991,
+          "p95": 66.66337500000373
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.55093699999998,
+          "max": 100.19441700000607,
+          "p95": 100.19320800000423
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.68395850000161,
+          "max": 66.30254099999729,
+          "p95": 66.27912500000093
+        }
+      },
+      "maxSampleGapMs": 275.38058399999863,
+      "wholeProjectPreserved": true,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualHashesEqual": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "analyzeSeconds": 1.274012208,
+      "exportSeconds": 3.775936084000001,
+      "peakGiB": 1.0352935791015625,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.7857499999991,
+          "max": 58.468332999997074,
+          "p95": 40.908707999995386
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.5513749999991,
+          "max": 60.20716700000048,
+          "p95": 59.92820799999754
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.332124500000646,
+          "max": 39.74399999999878,
+          "p95": 39.73129200000403
+        }
+      },
+      "maxSampleGapMs": 276.94087500000023,
+      "wholeProjectPreserved": true,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualHashesEqual": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "analyzeSeconds": 1.1130083750000048,
+      "exportSeconds": 3.7779621249999984,
+      "peakGiB": 1.1128692626953125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.449229500009096,
+          "max": 59.22808299999451,
+          "p95": 40.64762499999779
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.151208999996015,
+          "max": 60.33574999999837,
+          "p95": 59.953624999994645
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.41187450000143,
+          "max": 40.33987500000512,
+          "p95": 40.14625000000524
+        }
+      },
+      "maxSampleGapMs": 277.89195800000016,
+      "wholeProjectPreserved": true,
+      "outputBytesEqual": true,
+      "srtBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualHashesEqual": true
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.33749999999999997
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 207.11804099999972,
+      "displayMs": 0.7000000476837158,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.40312499999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 202.40254199999617,
+      "displayMs": 0.7999999523162842,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}

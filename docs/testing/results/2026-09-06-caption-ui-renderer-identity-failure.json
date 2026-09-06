@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-06T07:44:14.835Z",
+  "status": "failed",
+  "sourcePreview": "normal",
+  "analyze": true,
+  "backdrop": "normal",
+  "nativeSample": true,
+  "scope": "Diagnostic only: same 60-minute source and saved 1000-cue project; optional real analysis; export and cancellation omitted. Native clicks and input, CDP performance/trace and input-to-two-animation-frames observations. Optional native sampling targets only renderers of the browser launched by this script. The optional none control replaces source VTT blobs with empty valid tracks; flat disables modal backdrop blur in this test page. Not a formal performance pass.",
+  "sourceHashes": {
+    "src/Captions.tsx": "f1b10279d987155bda7f97c75259ccb52df38434c5814cc89f0c59576882d950",
+    "src/CaptionList.tsx": "5a7e68180ee65d7f906618b500a8decf2bdd649eb318ba041b402573d3cb6db0",
+    "src/CaptionStyle.tsx": "a6b246823d34df9d053ea862587870116ed3eb5d79ed1bb3e09ff8782fbcfedc",
+    "src/captions.css": "c655647d95b755ccdf704b22f11b58839a5ef37e1e2cf4695c173b3465346836",
+    "scripts/caption-ui-diagnostic.mjs": "7a3cc0620d16a69af61c40db46eac85c982592015750594fc3267841629d2658",
+    "dist/index.html": "c27f627281f313d35a9b2d87ba7b85554290bdca104b047b99ca51de393006f8",
+    "dist/assets/index-D1mkISY0.js": "a87592294c681e1c280cd50cb82493a9862541a8461859d893283926be7a5782",
+    "dist/assets/index-CFqYpERX.css": "af5e057f9080baf2e6bfd28d11b08c77dcf4f4c61a125f751bbae3e18131e8bd",
+    "/Users/dante/Desktop/github/hyper_cut/test-output/threshold-performance-fixtures/3600s.mp4": "5c16a6a3bac8633926ded013322578e268da323303d570dfc68bf5c17f16b786",
+    "/Users/dante/Desktop/github/hyper_cut/test-output/composition-long-candidate/browser-long/browser-3600-1-input-project.json": "df127c0eb7a52161dbd8aa4f29c3edc02343d37efb0118c93b6b648764a00a2b"
+  },
+  "samples": [],
+  "pageErrors": [],
+  "error": "AssertionError [ERR_ASSERTION]: Only the owned single-page renderer may be sampled\n\n3 !== 1\n\n    at file:///Users/dante/Desktop/github/hyper_cut/scripts/caption-ui-diagnostic.mjs:78:12"
+}
