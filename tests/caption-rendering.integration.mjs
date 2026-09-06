@@ -77,6 +77,33 @@ test('C06: long Korean, Latin and explicit newlines fit up to three lines with v
   reports.push({sample:sample.name,...rendered.layout,status:'PASS'});
  }
 });
+test('C05/C06: cropped sequences reconstruct every original RGBA pixel across styles, positions and line heights',async()=>{
+ const {createCanvas,loadImage}=await import('@napi-rs/canvas');
+ const texts=['짧은 자막 gjpq','한글 ÅÉá\n둘째 줄 English\n마지막 줄 123'];
+ for(const [width,height] of [[640,360],[360,640]])for(const preset of ['clean','box','emphasis'])for(const position of ['top','bottom']){
+  const style={...DEFAULT_CAPTION_STYLE,preset,position,sizePercent:8,marginPercent:5},work=await mkdtemp(path.join(directory,'pixel-sequence-'));
+  const sequence=await renderCaptionImages({mode:'sequence',directory:work,width,height,style,duration:6,cues:texts.map((text,i)=>({text,start:1+i*2,end:2+i*2}))});
+  assert.equal(sequence.offsetY%2,0);assert.equal(sequence.imageHeight%2,0);assert.ok(sequence.offsetY>=0&&sequence.offsetY+sequence.imageHeight<=height);assert.ok(sequence.imageHeight<height);
+  for(let i=0;i<texts.length;i++){
+   const full=await renderCaptionImages({mode:'sample',width,height,style,text:texts[i]});
+   const original=await loadImage(Buffer.from(full.image.split(',')[1],'base64')),cropped=await loadImage(await readFile(path.join(work,`caption-${i}.png`)));
+   assert.equal(cropped.width,width);assert.equal(cropped.height,sequence.imageHeight);assert.deepEqual(sequence.layouts[i],full.layout);
+   const expected=createCanvas(width,height),actual=createCanvas(width,height);expected.getContext('2d').drawImage(original,0,0);actual.getContext('2d').drawImage(cropped,0,sequence.offsetY);
+   const expectedPixels=Buffer.from(expected.getContext('2d').getImageData(0,0,width,height).data),actualPixels=Buffer.from(actual.getContext('2d').getImageData(0,0,width,height).data);
+   assert.ok(actualPixels.equals(expectedPixels),`${width}x${height} ${preset} ${position} cue ${i}: crop must preserve all pixels, including transparent area`);
+  }
+  const blank=await loadImage(await readFile(path.join(work,'caption-blank.png'))),image=createCanvas(blank.width,blank.height);image.getContext('2d').drawImage(blank,0,0);assert.ok(image.getContext('2d').getImageData(0,0,blank.width,blank.height).data.every(value=>value===0));
+  reports.push({croppedPixels:true,width,height,preset,position,offsetY:sequence.offsetY,imageHeight:sequence.imageHeight,comparedCues:texts.length,status:'PASS'});
+ }
+});
+test('M06/C05: a range with no visible captions stays pixel-identical to the same caption-free preview',async()=>{
+ const style={...DEFAULT_CAPTION_STYLE,enabled:true,preset:'emphasis'},options={preview:true,range:{start:0,end:.8},transcript};
+ const captioned=await exportMedia(media,cuts,1,directory,{...options,captionStyle:style}),plain=await exportMedia(media,cuts,1,directory,{...options,captionStyle:{...style,enabled:false}});
+ assert.equal(captioned.burnedCaptions,0);assert.equal(captioned.duration,plain.duration);
+ const frames=async file=>capture('ffmpeg',['-v','error','-i',file,'-map','0:v:0','-f','framemd5','-']);
+ assert.equal(await frames(captioned.path),await frames(plain.path));
+ reports.push({emptyCaptionRange:true,duration:captioned.duration,pixelIdentical:true,status:'PASS'});
+});
 test('C09: missing font, unsupported glyphs, excess text and cancellation fail without a false final file',async()=>{
  await assert.rejects(renderCaptionImages({mode:'sample',width:640,height:360,style:DEFAULT_CAPTION_STYLE,text:'한글'},{fontDirectory:path.join(directory,'missing-fonts')}),/글꼴 파일/);
  await assert.rejects(renderCaptionImages({mode:'sample',width:640,height:360,style:DEFAULT_CAPTION_STYLE,text:'😀'}),/지원하지 않는/);

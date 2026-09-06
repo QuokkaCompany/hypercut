@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-06T08:52:35.409Z",
+  "status": "AUDITED_DIAGNOSTIC_NO_MEMORY_IMPROVEMENT",
+  "scope": "Six close/seek/reopen cycles per fresh test browser. Optional explicit video reset before native close. One pair only; no export, forced GC, leak determination or formal performance claim.",
+  "runs": [
+    {
+      "mode": "normal",
+      "sourceAndScriptHashesVerified": true,
+      "wholeProjectPreserved": true,
+      "seekAndReopenChecks": 6,
+      "peakGiB": 1.7367401123046875,
+      "rendererSumMiB": {
+        "before": 648.1875,
+        "after": 816.46875
+      },
+      "embedderHeapMiB": {
+        "before": 38.71202850341797,
+        "after": 71.94552612304688,
+        "peak": 107.75413513183594
+      },
+      "backendRSSMiB": {
+        "before": 206.8125,
+        "after": 207.078125
+      },
+      "domCounters": {
+        "before": {
+          "documents": 7,
+          "nodes": 27741,
+          "jsEventListeners": 1290
+        },
+        "after": {
+          "documents": 7,
+          "nodes": 90201,
+          "jsEventListeners": 1706
+        }
+      },
+      "samples": 24,
+      "maxSampleGapMs": 277.6678329999995,
+      "spanMs": 5801.158000000003
+    },
+    {
+      "mode": "release",
+      "sourceAndScriptHashesVerified": true,
+      "wholeProjectPreserved": true,
+      "seekAndReopenChecks": 6,
+      "peakGiB": 1.745635986328125,
+      "rendererSumMiB": {
+        "before": 648.921875,
+        "after": 772.328125
+      },
+      "embedderHeapMiB": {
+        "before": 38.15033721923828,
+        "after": 52.874610900878906,
+        "peak": 108.24491119384766
+      },
+      "backendRSSMiB": {
+        "before": 211.890625,
+        "after": 212.109375
+      },
+      "domCounters": {
+        "before": {
+          "documents": 7,
+          "nodes": 27741,
+          "jsEventListeners": 1290
+        },
+        "after": {
+          "documents": 7,
+          "nodes": 90124,
+          "jsEventListeners": 1581
+        }
+      },
+      "samples": 25,
+      "maxSampleGapMs": 277.1555410000001,
+      "spanMs": 5931.612457999996
+    }
+  ]
+}

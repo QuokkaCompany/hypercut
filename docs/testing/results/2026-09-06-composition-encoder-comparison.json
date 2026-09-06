@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-06T08:58:49.094Z",
+  "scope": "Three single 60-second backend diagnostics. Same CRF, preset, source, captions and effects; caption-enabled encoder thread count differs. No browser or long-run performance claim.",
+  "runs": [
+    {
+      "threads": 4,
+      "seconds": 3.5243499170000003,
+      "peakMiB": 451.359375,
+      "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211",
+      "mediaSourceHash": "1d447221fff611165125d6c24dbae5bb4a61c8732b2d59bee068162ba59da074",
+      "independentCorrectnessEqual": true,
+      "samplePixelHashesEqual": true,
+      "bitstreamEqualsBaseline": true
+    },
+    {
+      "threads": 2,
+      "seconds": 3.9954884579999996,
+      "peakMiB": 413.875,
+      "outputSHA256": "c189a8273528f4ec8c8587ad414a8fbc4718207a970980f6a477434e7fec9402",
+      "mediaSourceHash": "d53f17d1de2298a4bcd37ca77cbb6ca840d6b3e128a75faf79b9fe4a3c3421b7",
+      "independentCorrectnessEqual": true,
+      "samplePixelHashesEqual": true,
+      "bitstreamEqualsBaseline": false
+    },
+    {
+      "threads": 1,
+      "seconds": 6.795595833999999,
+      "peakMiB": 372.40625,
+      "outputSHA256": "aa201743f33339d6853bceabc99334e1840499321f473b47966e7031af04d2b1",
+      "mediaSourceHash": "42ca481dd853c9d40cf142fded50bd3c76718d403e858f211fb1f27c7883173a",
+      "independentCorrectnessEqual": true,
+      "samplePixelHashesEqual": true,
+      "bitstreamEqualsBaseline": false
+    }
+  ]
+}

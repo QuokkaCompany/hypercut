@@ -232,7 +232,7 @@ export async function exportMedia(media, cuts, trackIndex, directory, { signal, 
     const base = `[0:${media.videoIndex}]setpts=PTS-round((${media.origin})/TB)${trim},select='${select}',setpts='PTS-round((${offset})/TB)'`;
     // Draw on the original pixel canvas, then scale the composed image for
     // preview. Layout and line breaks are identical in preview and export.
-    const graph = captionStyle.enabled ? `${base},scale=${media.width}:${media.height},setsar=1,pad=ceil(iw/2)*2:ceil(ih/2)*2[base];[base][2:v]overlay=eof_action=repeat:repeatlast=1:alpha=straight${scale}[v]` : `${base}${scale}[v]`;
+    const graph = captionStyle.enabled ? `${base},scale=${media.width}:${media.height},setsar=1,pad=ceil(iw/2)*2:ceil(ih/2)*2[base];[base][2:v]overlay=x=0:y=${captionRender.offsetY}:eof_action=repeat:repeatlast=1:alpha=straight${scale}[v]` : `${base}${scale}[v]`;
     const filterPath = path.join(work, 'filter.txt');
     await writeFile(filterPath, graph);
     // Avoid parallel full-size decoded image buffers when combining video and

@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-06T09:06:15.648Z",
+  "status": "AUDITED_BACKEND_CANDIDATE",
+  "scope": "One 60-second backend comparison; not full-app or long performance. Input, entire independent correctness, sample pixels and actual MP4 bytes equal.",
+  "baseline": {
+    "MiB": 451.359375,
+    "seconds": 3.5243499170000003
+  },
+  "candidate": {
+    "MiB": 392.203125,
+    "seconds": 2.888666875,
+    "outputSHA256": "94136dfb5862ae6a8ae65832ef4f089850c1a0928a9bccb3f93cdcf72a151211"
+  },
+  "sources": {
+    "server/media.mjs": "051d3d034b0c13eeb3e29bf0a64ffea5685fc7363652a19a960fc2fa8f15951d",
+    "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+    "server/caption-rendering.mjs": "286acd85a1a0ba7df4c723372823a4563980782d35caa806754cb3c02f622bf2",
+    "server/caption-render-worker.mjs": "6e559cc7af5d4353113aba40c4c698d8bcffd11e44b5759a7cea843257a70eaa",
+    "scripts/composition-render-diagnostic.mjs": "624514faa458188ec8ef8e7bfcead53f2a144a25418e1a74aceb828cd851c981"
+  },
+  "correctnessEqual": true,
+  "outputBytesEqual": true,
+  "samplePixelHashesEqual": true
+}

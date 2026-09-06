@@ -1,0 +1,105 @@
+{
+  "date": "2026-09-06T08:48:18.149Z",
+  "status": "AUDITED_MEMORY_FAILURE",
+  "code": "5bb88a85ad0bdd0070142fc96a8ded8b630cd6af",
+  "scope": "Same product and input, scoped control lookups. Two full 60-minute browser runs verified. Second memory gate fails. No third run or other long conditions.",
+  "runs": [
+    {
+      "iteration": 1,
+      "analyzeSeconds": 36.791946874999994,
+      "exportSeconds": 194.06382158399998,
+      "independentVerificationSeconds": 124.31811820800003,
+      "peakGiB": 1.97625732421875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 78.34129149999353,
+          "max": 215.1259999999893,
+          "p95": 149.45712499995716
+        },
+        "effects": {
+          "count": 32,
+          "median": 165.10637500000303,
+          "max": 207.26820900000166,
+          "p95": 196.63691699999617
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.57510399998864,
+          "max": 94.82149999996182,
+          "p95": 66.4381670000148
+        }
+      },
+      "maxSampleGapMs": 279.5115839999635,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "iteration": 2,
+      "analyzeSeconds": 37.08869987499999,
+      "exportSeconds": 194.59333170899998,
+      "independentVerificationSeconds": 125.32793216600001,
+      "peakGiB": 2.145782470703125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 77.51895799994236,
+          "max": 199.23870800004806,
+          "p95": 187.95650000008754
+        },
+        "effects": {
+          "count": 32,
+          "median": 175.95512450003298,
+          "max": 197.21954099996947,
+          "p95": 193.54470899992157
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.61214599997038,
+          "max": 92.08041700010654,
+          "p95": 66.44537500001024
+        }
+      },
+      "maxSampleGapMs": 279.3330830000341,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": false,
+        "ui": true
+      },
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.30015
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 312.7919169999659,
+      "displayMs": 0.8999999761581421,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}
