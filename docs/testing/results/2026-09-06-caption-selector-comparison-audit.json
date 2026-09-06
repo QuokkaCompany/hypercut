@@ -1,0 +1,95 @@
+{
+  "date": "2026-09-06T08:25:51.348Z",
+  "status": "AUDITED_DIAGNOSTIC_ONLY",
+  "scope": "One separate fresh browser per selector, identical runtime/input/project/script. 96 read-only queries each. No formal performance pass, no export, no user-action latency claim. Unequal duration and process RSS baseline prevent attribution of long-run memory failure from peak difference.",
+  "runs": [
+    {
+      "selector": "role",
+      "hashesVerified": true,
+      "projectPreserved": true,
+      "queries": [
+        {
+          "count": 32,
+          "median": 37.85306249999849,
+          "max": 146.14120799999364,
+          "p95": 134.7917910000033
+        },
+        {
+          "count": 32,
+          "median": 35.79052099999899,
+          "max": 47.61291699999856,
+          "p95": 40.82679199999984
+        },
+        {
+          "count": 32,
+          "median": 34.98302049999984,
+          "max": 41.850500000000466,
+          "p95": 41.103125000001455
+        }
+      ],
+      "taskSeconds": 3.57977,
+      "devToolsSeconds": 3.434843,
+      "embedderHeapMiB": {
+        "before": 38.37098693847656,
+        "after": 177.7200469970703
+      },
+      "backendRSSMiB": {
+        "before": 162.015625,
+        "after": 162.015625
+      },
+      "peakGiB": 1.6689605712890625,
+      "sampleCount": 16,
+      "sampledSpanMs": 3732.7686669999966,
+      "maxSampleGapMs": 279.70212499999616,
+      "liveDOMUnchanged": true,
+      "archives": {
+        "docs/testing/results/2026-09-06-caption-selector-role.json": "0cfc8aa744e1ebdfcd557f2ca1873440d323f6c4b9fe0c516c357a10305a4f79",
+        "docs/testing/results/2026-09-06-caption-selector-role-resources.json": "a4a44490143785cf5d929d1472852fb06e1155354f917ff914e59a94881beaa7"
+      }
+    },
+    {
+      "selector": "css",
+      "hashesVerified": true,
+      "projectPreserved": true,
+      "queries": [
+        {
+          "count": 32,
+          "median": 4.71045850000155,
+          "max": 6.968666999993729,
+          "p95": 6.9174999999959255
+        },
+        {
+          "count": 32,
+          "median": 4.481707999999344,
+          "max": 8.658250000000407,
+          "p95": 7.405291999995825
+        },
+        {
+          "count": 32,
+          "median": 4.27637550000145,
+          "max": 10.137291000006371,
+          "p95": 6.68916700000409
+        }
+      ],
+      "taskSeconds": 0.344877,
+      "devToolsSeconds": 0.290519,
+      "embedderHeapMiB": {
+        "before": 38.070152282714844,
+        "after": 38.589447021484375
+      },
+      "backendRSSMiB": {
+        "before": 203.359375,
+        "after": 203.359375
+      },
+      "peakGiB": 1.6134796142578125,
+      "sampleCount": 3,
+      "sampledSpanMs": 488.1267500000031,
+      "maxSampleGapMs": 278.23766700000124,
+      "liveDOMUnchanged": true,
+      "archives": {
+        "docs/testing/results/2026-09-06-caption-selector-css.json": "b1a5821f7d62e4bf87f06a8fc29757be1e99100ecb9ce4968f64c2cff7f9a881",
+        "docs/testing/results/2026-09-06-caption-selector-css-resources.json": "0749d84cf68ad2a574a2c148c16caa99d68aeddd883cb936145c7fc847f0ea2d"
+      }
+    }
+  ]
+}
