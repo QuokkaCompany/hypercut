@@ -1,0 +1,106 @@
+{
+  "date": "2026-09-06T05:31:17.187Z",
+  "status": "completed",
+  "code": "b6a161ea595f930f36ae6275824bf4c0fb95fe3d",
+  "platform": "darwin 25.5.0 arm64",
+  "scope": "Real UI/media with delayed File.text return or injected late read error and native fsync-to-rename barrier. Generated files only; no external AI requests.",
+  "harnessSHA256": "2ba7c3a071c51027493be8cb781a99ed236511c48e26e19a1512449fb8d1f707",
+  "appSourceSHA256": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+  "packageSHA256": "8ddb5c56cb28aa3e031fea42e500da6e75d8d883cb03d2cba56f6901f2b961d2",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "READ_LATEST",
+      "status": "PASS",
+      "observedThreshold": "-50",
+      "observedDirty": 0,
+      "projectFieldsPreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_LATEST_ERROR",
+      "status": "PASS",
+      "observedThreshold": "-50",
+      "observedDirty": 0,
+      "projectFieldsPreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_EDIT",
+      "status": "PASS",
+      "observedThreshold": "-42",
+      "observedDirty": 1,
+      "projectFieldsPreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_LATEST",
+      "status": "PASS",
+      "observedThreshold": "-50",
+      "observedDirty": 0,
+      "projectFieldsPreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_LATEST_ERROR",
+      "status": "PASS",
+      "observedThreshold": "-50",
+      "observedDirty": 0,
+      "projectFieldsPreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_EDIT",
+      "status": "PASS",
+      "observedThreshold": "-42",
+      "observedDirty": 1,
+      "projectFieldsPreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "SAVE_EDIT",
+      "status": "PASS",
+      "duplicateSaveBlocked": true,
+      "observedThreshold": "-42",
+      "observedDirty": 1,
+      "requestSnapshotSaved": true,
+      "latestSavePreserved": true,
+      "failedSavePreservesDirtyAndRetries": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "SAVE_PROJECT",
+      "status": "PASS",
+      "duplicateSaveBlocked": true,
+      "observedThreshold": "-42",
+      "observedDirty": 1,
+      "requestSnapshotSaved": true,
+      "latestSavePreserved": true,
+      "sourceUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df"
+}

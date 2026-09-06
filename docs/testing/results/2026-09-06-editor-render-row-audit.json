@@ -1,0 +1,951 @@
+{
+  "date": "2026-09-06T06:00:14.836Z",
+  "scope": "Candidate comparison to exact baseline cases: source hashes, complete analysis/project, stored MP4 hashes, raw RSS and UI statistics. No broad human-quality claim.",
+  "sourceManifest": {
+    "date": "2026-09-06T05:50:14.386Z",
+    "code": "b6a161e plus uncommitted row memoization and separate timeline background",
+    "sourceHashes": {
+      "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+      "src/Timeline.tsx": "0692555beb41d71e0803afcd4bd38fd20b6e5ed9db8c204f31c3f1e751104743",
+      "src/CutList.tsx": "82a0973b561055425e258fc6cc6db0a1c020efc83568c179a555a7068c686668",
+      "server/media.mjs": "663dc2a9a59fea22fefe88b42738a11a9d897261e4ee3d3d57f1a009ee300c22",
+      "scripts/threshold-benchmark.mjs": "1aa5d461cda24fdac91d4f4560d10c7a84265bfedaf49733e866ae7e0d1d02a4",
+      "scripts/editor-render-e2e.mjs": "f3c10f585a0a0d599b73cac73e17dbfe54f9421435965cd03a4686c2cf647c31",
+      "dist/index.html": "31b697496e464ca4cda30ed204c195c09db2f507ab08c53b983369c5bdea1bdb",
+      "dist/assets/index-4MyEqYPb.js": "c7f77d2af01c1eb521857fd729910d803157d1f9ced3d5cde3eaf56df5342f36",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "985e4f2f2adf0a24be5349beda62cd28a6008045331553e4209797a3feada093"
+    }
+  },
+  "runs": [
+    {
+      "key": "browser-3600-1",
+      "fullAnalysisEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "outputSHA256": "dacdc29b931d3cad991bc173f0a5f2feb513df735b855e87724161acf3324586",
+      "outputBytesEqual": true,
+      "beforeGiB": 1.94183349609375,
+      "afterGiB": 1.8602142333984375,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "resources": {
+        "analysis": {
+          "file": "browser-long/browser-3600-1-analysis-resources.json",
+          "sha256": "9127de757b9f6844b472449a86b7d04a62c62cae38b1a30be6894d8ad8acd476",
+          "samples": 150,
+          "peakBytes": 1544306688,
+          "maxSampleGapMs": 277.472583,
+          "peak": {
+            "milliseconds": 37411.691833,
+            "bytes": 1544306688,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 217972736,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 269795328,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 161431552,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 105938944,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 82821120,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181010432,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100892672,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 326008832,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98435072,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        },
+        "export": {
+          "file": "browser-long/browser-3600-1-export-resources.json",
+          "sha256": "a1271a6d114bf6a1d2e40976b3680f70f9d5f5793698e4282139a34923d81a55",
+          "samples": 566,
+          "peakBytes": 1997389824,
+          "maxSampleGapMs": 295.4647079999995,
+          "peak": {
+            "milliseconds": 107733.30345800001,
+            "bytes": 1997389824,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 219283456,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 272449536,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 161398784,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 106561536,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181075968,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 349257728,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98549760,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48432,
+                "parent": 48214,
+                "bytes": 424787968,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "save": {
+          "file": "browser-long/browser-3600-1-save-resources.json",
+          "sha256": "68a19254419d835c157705ab5d103b273fa2c521d5d05058926954d8f95f243a",
+          "samples": 7,
+          "peakBytes": 1565753344,
+          "maxSampleGapMs": 277.6176250000135,
+          "peak": {
+            "milliseconds": 1333.0752910000156,
+            "bytes": 1565753344,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 194772992,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 275398656,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 161710080,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 106659840,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181075968,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 363560960,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98549760,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "file": "browser-long/browser-3600-1-ui-resources.json",
+          "sha256": "cdf0ff349322dc16b70ee21cb79329ae4738eed8e143158115f89d3edd9cce23",
+          "samples": 65,
+          "peakBytes": 1780727808,
+          "maxSampleGapMs": 274.23641599999974,
+          "peak": {
+            "milliseconds": 15334.85583299998,
+            "bytes": 1780727808,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 194805760,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 281509888,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 164200448,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 108822528,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181501952,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 567181312,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98680832,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "browser-3600-2",
+      "fullAnalysisEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "outputSHA256": "dacdc29b931d3cad991bc173f0a5f2feb513df735b855e87724161acf3324586",
+      "outputBytesEqual": true,
+      "beforeGiB": 1.9971160888671875,
+      "afterGiB": 1.92364501953125,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": true,
+        "ui": true
+      },
+      "resources": {
+        "analysis": {
+          "file": "browser-long/browser-3600-2-analysis-resources.json",
+          "sha256": "2fd3b312f91224297fe4e99df3b47dabfe96395927812d61d154c8fb88c1b7df",
+          "samples": 151,
+          "peakBytes": 1857929216,
+          "maxSampleGapMs": 276.5795419999922,
+          "peak": {
+            "milliseconds": 2304.4802080000227,
+            "bytes": 1857929216,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 217251840,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 281755648,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 167641088,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 108855296,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181501952,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 572588032,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98877440,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 49289,
+                "parent": 48214,
+                "bytes": 45432832,
+                "name": "ffprobe"
+              }
+            ]
+          }
+        },
+        "export": {
+          "file": "browser-long/browser-3600-2-export-resources.json",
+          "sha256": "44ef2ca7ff25191cfaa8644d9b864fae4379d0d5c0c88ca07024cb781f17f4d3",
+          "samples": 566,
+          "peakBytes": 2065498112,
+          "maxSampleGapMs": 278.135042000009,
+          "peak": {
+            "milliseconds": 132249.73570799996,
+            "bytes": 2065498112,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 220971008,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 283492352,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 167264256,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 106840064,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181600256,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 378454016,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98746368,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 49473,
+                "parent": 48214,
+                "bytes": 444104704,
+                "name": "(ffmpeg)"
+              }
+            ]
+          }
+        },
+        "save": {
+          "file": "browser-long/browser-3600-2-save-resources.json",
+          "sha256": "3e70c79a0797c71bf8fb6753e1832f997892cca1ca9706e31d68a0b57104975f",
+          "samples": 6,
+          "peakBytes": 1635778560,
+          "maxSampleGapMs": 275.3122909999802,
+          "peak": {
+            "milliseconds": 1256.045999999973,
+            "bytes": 1635778560,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 223248384,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 283738112,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 167510016,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 106856448,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181600256,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 390053888,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98746368,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "file": "browser-long/browser-3600-2-ui-resources.json",
+          "sha256": "b02ec5be489c2812a058ed789eb54466360c4a1f1a230bdf88e191c40650222f",
+          "samples": 64,
+          "peakBytes": 1818017792,
+          "maxSampleGapMs": 274.96166699996684,
+          "peak": {
+            "milliseconds": 15789.112334000005,
+            "bytes": 1818017792,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 223248384,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 284999680,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 168099840,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 108953600,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181633024,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 568131584,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98926592,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "browser-3600-3",
+      "fullAnalysisEqual": true,
+      "fullProjectEqualExceptSavedAt": true,
+      "outputSHA256": "dacdc29b931d3cad991bc173f0a5f2feb513df735b855e87724161acf3324586",
+      "outputBytesEqual": true,
+      "beforeGiB": 2.0497589111328125,
+      "afterGiB": 2.144622802734375,
+      "goals": {
+        "analysis": true,
+        "export": true,
+        "memory": false,
+        "ui": true
+      },
+      "resources": {
+        "analysis": {
+          "file": "browser-long/browser-3600-3-analysis-resources.json",
+          "sha256": "0866702b07300d8b0786793787ffa786f9af1d372a55c97b505282a646c04846",
+          "samples": 151,
+          "peakBytes": 1887731712,
+          "maxSampleGapMs": 275.30033299996285,
+          "peak": {
+            "milliseconds": 37152.86516600003,
+            "bytes": 1887731712,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 240615424,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 282705920,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 167657472,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 106889216,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181698560,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 579600384,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98861056,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 50545,
+                "parent": 48214,
+                "bytes": 45678592,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "export": {
+          "file": "browser-long/browser-3600-3-export-resources.json",
+          "sha256": "30efa7610ff1e87e3abe70650b5914b13f30c6822a69ad879f2c48710b96bed5",
+          "samples": 565,
+          "peakBytes": 2302771200,
+          "maxSampleGapMs": 277.9321249999921,
+          "peak": {
+            "milliseconds": 14593.305041000014,
+            "bytes": 2302771200,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 254083072,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 283803648,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 167657472,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 106905600,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181698560,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 616497152,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98861056,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 50574,
+                "parent": 48214,
+                "bytes": 409239552,
+                "name": "ffmpeg"
+              }
+            ]
+          }
+        },
+        "save": {
+          "file": "browser-long/browser-3600-3-save-resources.json",
+          "sha256": "96667986df1b2ec54b4fe1d01480ef48dae6260d17dd503a73957acbb6fd14fb",
+          "samples": 6,
+          "peakBytes": 1712832512,
+          "maxSampleGapMs": 275.5978340000147,
+          "peak": {
+            "milliseconds": 1290.142332999967,
+            "bytes": 1712832512,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 256753664,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 284049408,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 167968768,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 107036672,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181698560,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 432439296,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 98861056,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        },
+        "ui": {
+          "file": "browser-long/browser-3600-3-ui-resources.json",
+          "sha256": "91433f77ccd955811044749d94c85530db089314a76d7a9bbb65731bc06ae44d",
+          "samples": 63,
+          "peakBytes": 1890009088,
+          "maxSampleGapMs": 276.02504199999385,
+          "peak": {
+            "milliseconds": 15553.541167000076,
+            "bytes": 1890009088,
+            "processes": [
+              {
+                "pid": 48214,
+                "parent": 48206,
+                "bytes": 256753664,
+                "name": "node"
+              },
+              {
+                "pid": 48215,
+                "parent": 48206,
+                "bytes": 285163520,
+                "name": "Google Chrome"
+              },
+              {
+                "pid": 48219,
+                "parent": 48215,
+                "bytes": 168083456,
+                "name": "Google Chrome Helper (GPU)"
+              },
+              {
+                "pid": 48220,
+                "parent": 48215,
+                "bytes": 109133824,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48221,
+                "parent": 48215,
+                "bytes": 83099648,
+                "name": "Google Chrome Helper"
+              },
+              {
+                "pid": 48224,
+                "parent": 48215,
+                "bytes": 181862400,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48225,
+                "parent": 48215,
+                "bytes": 100925440,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48226,
+                "parent": 48215,
+                "bytes": 605945856,
+                "name": "Google Chrome Helper (Renderer)"
+              },
+              {
+                "pid": 48238,
+                "parent": 48215,
+                "bytes": 99041280,
+                "name": "Google Chrome Helper"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 3600,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "음량과 무음 구간 분석",
+        "progress": 0.15000948148148147
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 314.6756250000035,
+      "displayMs": 1,
+      "projectPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ],
+  "summaries": [
+    {
+      "surface": "browser",
+      "seconds": 3600,
+      "analyzeSeconds": {
+        "count": 3,
+        "median": 37.381075958000004,
+        "max": 37.42090383299999,
+        "p95": null
+      },
+      "exportSeconds": {
+        "count": 3,
+        "median": 141.68209075,
+        "max": 142.122510417,
+        "p95": null
+      },
+      "peakGiB": {
+        "count": 3,
+        "median": 1.92364501953125,
+        "max": 2.144622802734375,
+        "p95": null
+      },
+      "maxUIP95": 115.44887500000186
+    }
+  ],
+  "measuredGoalsPass": false
+}

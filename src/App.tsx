@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpFromLine, AudioLines, Captions, Check, ChevronDown, CircleHelp, Clapperboard, Clock3, Download, FileVideo2, FolderOpen, HardDrive, LoaderCircle, Maximize2, Monitor, Music2, Pause, Play, Plus, Redo2, RotateCcw, Save, Scissors, Settings2, ShieldCheck, SkipBack, Sparkles, Undo2, X } from 'lucide-react';
 import { DEFAULT_SETTINGS, editedToSource, intervalDuration, keptIntervals, makeProject, sourceToEdited, validateProject } from '../shared/timeline.mjs';
 import { DEFAULT_SPEECH_PROTECTION } from '../shared/speech-settings.mjs';
@@ -6,6 +6,7 @@ import { bootstrap, fileURL, outputURL, request, upload, waitJob } from './api';
 import type { Analysis, Cut, Job, Media, Output, Settings, SpeechProtectionSettings, Transcript, TranscriptionSettings, CaptionStyle, Effects } from './types';
 import { formatSize, formatTime } from './format';
 import { Timeline } from './Timeline';
+import { CutList } from './CutList';
 import { AIAssistant } from './AIAssistant';
 import { PreviewRangeDialog, RangePreviewPlayer } from './RangePreview';
 import { SpeechProtection } from './SpeechProtection';
@@ -38,7 +39,7 @@ export default function App() {
   const [dialog, setDialog] = useState<'help' | 'engine' | null>(null), [dragging, setDragging] = useState(false), [unsaved, setUnsavedState] = useState(false);
   const [saving, setSaving] = useState(false);
   const projectEpoch = useRef(0), editRevision = useRef(0), saveActive = useRef(false);
-  function setUnsaved(value: boolean) { if (value) editRevision.current++; setUnsavedState(value); }
+  const setUnsaved = useCallback((value: boolean) => { if (value) editRevision.current++; setUnsavedState(value); }, []);
   const [pendingName, setPendingName] = useState('');
   const [aiOpen, setAIOpen] = useState(false);
   const [captionsOpen, setCaptionsOpen] = useState(false);
@@ -90,11 +91,11 @@ export default function App() {
   }, [playing, mode, kept]);
   useEffect(() => { setRendered(null); setOutput(null); setRangePreview(null); setMode(old => old === 'rendered' ? 'edited' : old); }, [cuts, trackIndex, transcript, captionStyle, effects]);
 
-  function seekSource(value: number) {
+  const seekSource = useCallback((value: number) => {
     if (!video.current || !media) return;
     const source = Math.max(0, Math.min(media.duration, value));
     video.current.currentTime = mode === 'rendered' ? sourceToEdited(source, kept) : source; setTime(source);
-  }
+  }, [media, mode, kept]);
   function togglePlay() {
     const player = video.current; if (!player || !media) return;
     if (player.paused) {
@@ -204,8 +205,8 @@ export default function App() {
     }
   }
   function changeSettings(next: Settings | ((previous: Settings) => Settings)) { setSettings(next); if (media) setUnsaved(true); }
-  function edit(next: Cut[]) { dispatch({ type: 'edit', cuts: next }); setUnsaved(true); }
-  function toggleCut(id: string) { edit(cuts.map(x => x.id === id ? { ...x, enabled: !x.enabled } : x)); }
+  const edit = useCallback((next: Cut[]) => { dispatch({ type: 'edit', cuts: next }); setUnsaved(true); }, [setUnsaved]);
+  const toggleCut = useCallback((id: string) => { edit(cuts.map(x => x.id === id ? { ...x, enabled: !x.enabled } : x)); }, [cuts, edit]);
   async function saveProject() {
     if (!media || saveActive.current) return;
     let data;
@@ -266,7 +267,7 @@ export default function App() {
         <div className="section-label">미디어 <span>{media ? '01' : '00'}</span></div>
         {media ? <div className="media-card"><div className="media-thumbnail"><FileVideo2 size={30} /><span>{formatTime(media.duration)}</span></div><strong title={media.name}>{media.name}</strong><p>{media.width} × {media.height}<span>·</span>{formatSize(media.size)}</p><div className="media-tag"><i />원본 보존됨</div></div> : <div className="media-empty"><FileVideo2 size={25} /><p>영상을 불러오면<br />이곳에 표시됩니다.</p></div>}
         <div className="cuts-heading"><div className="section-label">발견한 무음 <span>{String(cuts.length).padStart(2, '0')}</span></div>{cuts.length > 0 && <button className="text-button" disabled={!!busy} onClick={() => edit(cuts.map(x => ({ ...x, enabled: !activeCuts })))}>{activeCuts ? '전체 복원' : '전체 제거'}</button>}</div>
-        <div className="cut-list">{cuts.length ? cuts.map((cut, index) => <div key={cut.id} className={`cut-row ${selected === cut.id ? 'selected' : ''} ${!cut.enabled ? 'restored-row' : ''}`}><button className="cut-select" onClick={() => { setSelected(cut.id); seekSource(Math.max(0, cut.start - 0.5)); }}><span className="cut-number">{String(index + 1).padStart(2, '0')}</span><span><strong>{formatTime(cut.start, true)}</strong><small>{(cut.end - cut.start).toFixed(2)}초 · {cut.enabled ? '제거' : '복원됨'}</small></span></button><button className="icon-button" onClick={() => toggleCut(cut.id)} disabled={!!busy} aria-label={`무음 ${index + 1} ${cut.enabled ? '복원' : '제거'}`} title={cut.enabled ? '구간 복원' : '다시 제거'}>{cut.enabled ? <RotateCcw size={14} /> : <Scissors size={14} />}</button></div>) : <div className="cuts-empty"><AudioLines size={22} /><p>무음 분석 후<br />편집할 구간을 확인하세요.</p></div>}</div>
+        <CutList cuts={cuts} selected={selected} disabled={!!busy} onSelect={setSelected} onSeek={seekSource} onToggle={toggleCut} />
         <div className="privacy-note"><ShieldCheck size={15} /><span>영상은 이 컴퓨터에 머뭅니다.</span></div>
       </aside>
       <main className="main-editor">

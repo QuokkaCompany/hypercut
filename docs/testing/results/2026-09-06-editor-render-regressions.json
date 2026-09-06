@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-06T05:31:03.317Z",
+  "status": "completed",
+  "sourceHashes": {
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/Timeline.tsx": "b6e8383b61c22a1f078f200bfa3afcb28517447342cc795852bd5efb7a1c1d0f",
+    "src/CutList.tsx": "229420b67daeafb8d5739327bc49f2cd591410627938cca03cef88f7b0dcf2e7",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "8ddb5c56cb28aa3e031fea42e500da6e75d8d883cb03d2cba56f6901f2b961d2"
+  },
+  "runs": [
+    {
+      "name": "general",
+      "args": [
+        "scripts/e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "elapsedSeconds": 13.63,
+      "stdout": "general.stdout.log",
+      "stderr": "general.stderr.log"
+    },
+    {
+      "name": "project-io",
+      "args": [
+        "scripts/project-io-race-e2e.mjs",
+        "--output=test-output/editor-render-project-io"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "elapsedSeconds": 10.053,
+      "stdout": "project-io.stdout.log",
+      "stderr": "project-io.stderr.log"
+    },
+    {
+      "name": "job-races",
+      "args": [
+        "scripts/job-cancellation-race-e2e.mjs",
+        "--output=test-output/editor-render-job-races"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "elapsedSeconds": 105.185,
+      "stdout": "job-races.stdout.log",
+      "stderr": "job-races.stderr.log"
+    },
+    {
+      "name": "effect-import",
+      "args": [
+        "scripts/effect-import-project-race-e2e.mjs",
+        "--output=test-output/editor-render-effect-import"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "elapsedSeconds": 15.409,
+      "stdout": "effect-import.stdout.log",
+      "stderr": "effect-import.stderr.log"
+    }
+  ]
+}

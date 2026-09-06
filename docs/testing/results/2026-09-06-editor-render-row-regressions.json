@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-06T05:49:50.639Z",
+  "status": "completed",
+  "sourceHashes": {
+    "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+    "src/Timeline.tsx": "0692555beb41d71e0803afcd4bd38fd20b6e5ed9db8c204f31c3f1e751104743",
+    "src/CutList.tsx": "82a0973b561055425e258fc6cc6db0a1c020efc83568c179a555a7068c686668",
+    "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "985e4f2f2adf0a24be5349beda62cd28a6008045331553e4209797a3feada093"
+  },
+  "runs": [
+    {
+      "name": "general",
+      "args": [
+        "scripts/e2e.mjs",
+        "--desktop"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "elapsedSeconds": 13.711
+    },
+    {
+      "name": "project-io",
+      "args": [
+        "scripts/project-io-race-e2e.mjs",
+        "--output=test-output/editor-render-row-project-io"
+      ],
+      "status": "PASS",
+      "exitCode": 0,
+      "elapsedSeconds": 10.003
+    }
+  ]
+}

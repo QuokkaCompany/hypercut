@@ -1,0 +1,885 @@
+{
+  "date": "2026-09-06T05:33:12.440Z",
+  "status": "completed",
+  "code": "b6a161ea595f930f36ae6275824bf4c0fb95fe3d",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "79694bcd883592779ff401132f13cdcb6eb6912bd5f6c03a15ef326c98978ce6",
+  "appSourceSHA256": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+  "effectsSourceSHA256": "f3754c85b1f6dc7b8ae667988073d446d054fae9e13bbffd358a14e6611f6187",
+  "packageSHA256": "8ddb5c56cb28aa3e031fea42e500da6e75d8d883cb03d2cba56f6901f2b961d2",
+  "scope": "Actual project reads, audio inspection/import and media preview. File.text return delayed. Browser request held, same generated audio bytes relayed via multipart to actual server, actual response returned. Native picker response delayed. Generated files only.",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "READ_DURING_IMPORT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "actualImportedAsset": {
+        "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+        "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+        "name": "c.wav",
+        "duration": 3
+      },
+      "importDelivery": "fulfill-resolved",
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "dirtyBeforeSave": 1,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            },
+            {
+              "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "name": "c.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            },
+            {
+              "id": "aa686f78-24a6-49be-850e-61fdc3343e54",
+              "assetId": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "start": 0,
+              "offset": 0,
+              "duration": 3,
+              "gainDb": -12,
+              "muted": false
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:13.969Z"
+      },
+      "mixedProjectObserved": false,
+      "projectPreserved": true,
+      "undoRedoPreserved": true,
+      "actualMixedPreview": {
+        "mixedClips": 1,
+        "peak": 0.050233129411935806,
+        "peakDb": -25.980195308399527,
+        "overloadedSamples": 0,
+        "encodedPeak": 0.05237211659550667,
+        "encodedPeakDb": -25.61799747855853,
+        "encodedOverloadedSamples": 0
+      },
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_AFTER_IMPORT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "actualImportedAsset": {
+        "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+        "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+        "name": "c.wav",
+        "duration": 3
+      },
+      "importDelivery": "fulfill-resolved",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "dirtyBeforeSave": 1,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            },
+            {
+              "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "name": "c.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            },
+            {
+              "id": "e8355fbb-3a9a-4ea7-900f-4b09a9727160",
+              "assetId": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "start": 0,
+              "offset": 0,
+              "duration": 3,
+              "gainDb": -12,
+              "muted": false
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:16.555Z"
+      },
+      "mixedProjectObserved": false,
+      "projectPreserved": true,
+      "undoRedoPreserved": true,
+      "actualMixedPreview": {
+        "mixedClips": 1,
+        "peak": 0.050233129411935806,
+        "peakDb": -25.980195308399527,
+        "overloadedSamples": 0,
+        "encodedPeak": 0.05237211659550667,
+        "encodedPeakDb": -25.61799747855853,
+        "encodedOverloadedSamples": 0
+      },
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_DURING_RECONNECT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "actualImportedAsset": {
+        "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+        "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+        "name": "a.wav",
+        "duration": 3
+      },
+      "importDelivery": "fulfill-resolved",
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "dirtyBeforeSave": 0,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:19.090Z"
+      },
+      "projectPreserved": true,
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_THEN_OPEN",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "actualImportedAsset": {
+        "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+        "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+        "name": "c.wav",
+        "duration": 3
+      },
+      "importDelivery": "fulfill-resolved",
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -55,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-B",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 B 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "fingerprint": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "name": "b.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-B",
+              "assetId": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 B",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-B",
+            "start": 4,
+            "end": 5,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:20.588Z"
+      },
+      "projectPreserved": true,
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_DURING_IMPORT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "dirtyBeforeSave": 1,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            },
+            {
+              "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "name": "c.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            },
+            {
+              "id": "517b16a6-acee-4ca4-8bea-5420151f54e2",
+              "assetId": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "start": 0,
+              "offset": 0,
+              "duration": 3,
+              "gainDb": -12,
+              "muted": false
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:21.828Z"
+      },
+      "mixedProjectObserved": false,
+      "projectPreserved": true,
+      "undoRedoPreserved": true,
+      "actualMixedPreview": {
+        "mixedClips": 1,
+        "peak": 0.050233129411935806,
+        "peakDb": -25.980195308399527,
+        "overloadedSamples": 0,
+        "encodedPeak": 0.05237211659550667,
+        "encodedPeakDb": -25.61799747855853,
+        "encodedOverloadedSamples": 0
+      },
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_AFTER_IMPORT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "dirtyBeforeSave": 1,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            },
+            {
+              "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "name": "c.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            },
+            {
+              "id": "11513484-e499-49a2-bf3c-39025ad3c4fe",
+              "assetId": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "start": 0,
+              "offset": 0,
+              "duration": 3,
+              "gainDb": -12,
+              "muted": false
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:24.058Z"
+      },
+      "mixedProjectObserved": false,
+      "projectPreserved": true,
+      "undoRedoPreserved": true,
+      "actualMixedPreview": {
+        "mixedClips": 1,
+        "peak": 0.050233129411935806,
+        "peakDb": -25.980195308399527,
+        "overloadedSamples": 0,
+        "encodedPeak": 0.05237211659550667,
+        "encodedPeakDb": -25.61799747855853,
+        "encodedOverloadedSamples": 0
+      },
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_DURING_RECONNECT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "dirtyBeforeSave": 0,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:26.318Z"
+      },
+      "projectPreserved": true,
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_THEN_OPEN",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -55,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-B",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 B 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "fingerprint": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "name": "b.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-B",
+              "assetId": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 B",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-B",
+            "start": 4,
+            "end": 5,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T05:33:27.428Z"
+      },
+      "projectPreserved": true,
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "sourceHashes": [
+    "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+    "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+    "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09"
+  ]
+}

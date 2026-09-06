@@ -1,0 +1,126 @@
+{
+  "scope": "Checks completed diagnostic source hashes, 288 actions, observed post-action live DOM counts and raw RSS sample totals. Does not establish a memory leak or formal performance pass.",
+  "actions": 288,
+  "sourceHashesMatch": true,
+  "rawResourcesSHA256": "0bc934bdbdc7f5bd23218349e6914b156fa3e16972368687fc13927b8e54ae11",
+  "rawResourcesPath": "test-output/editor-memory-diagnostic-row-v1/resources.json",
+  "samples": 352,
+  "peakRSSBytes": 1796358144,
+  "peakGiB": 1.6729888916015625,
+  "maxRSSSampleGapMs": 276.74625000000003,
+  "lastSample": {
+    "milliseconds": 88042.717458,
+    "bytes": 1785987072,
+    "processes": [
+      {
+        "pid": 51595,
+        "parent": 51592,
+        "bytes": 208338944,
+        "name": "node"
+      },
+      {
+        "pid": 51596,
+        "parent": 51592,
+        "bytes": 276463616,
+        "name": "Google Chrome"
+      },
+      {
+        "pid": 51602,
+        "parent": 51596,
+        "bytes": 157990912,
+        "name": "Google Chrome Helper (GPU)"
+      },
+      {
+        "pid": 51603,
+        "parent": 51596,
+        "bytes": 108511232,
+        "name": "Google Chrome Helper"
+      },
+      {
+        "pid": 51604,
+        "parent": 51596,
+        "bytes": 83017728,
+        "name": "Google Chrome Helper"
+      },
+      {
+        "pid": 51607,
+        "parent": 51596,
+        "bytes": 182108160,
+        "name": "Google Chrome Helper (Renderer)"
+      },
+      {
+        "pid": 51608,
+        "parent": 51596,
+        "bytes": 100843520,
+        "name": "Google Chrome Helper (Renderer)"
+      },
+      {
+        "pid": 51609,
+        "parent": 51596,
+        "bytes": 569868288,
+        "name": "Google Chrome Helper (Renderer)"
+      },
+      {
+        "pid": 51622,
+        "parent": 51596,
+        "bytes": 98844672,
+        "name": "Google Chrome Helper"
+      }
+    ]
+  },
+  "lastSnapshot": {
+    "phase": "idle",
+    "cycle": 0,
+    "milliseconds": 87983.025792,
+    "dom": {
+      "documents": 1,
+      "nodes": 17361,
+      "jsEventListeners": 1562
+    },
+    "live": {
+      "nodes": 11962,
+      "cuts": 1000,
+      "restored": 0,
+      "videoPaused": true
+    },
+    "metrics": {
+      "Timestamp": 909196.336474,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 1,
+      "Frames": 1,
+      "JSEventListeners": 1562,
+      "LayoutObjects": 17189,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 17361,
+      "Resources": 3,
+      "ContextLifecycleStateObservers": 10,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 1,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 0,
+      "LayoutCount": 778,
+      "RecalcStyleCount": 3758,
+      "LayoutDuration": 0.150585,
+      "RecalcStyleDuration": 0.280353,
+      "DevToolsCommandDuration": 24.946845,
+      "ScriptDuration": 0.8169,
+      "V8CompileDuration": 0,
+      "TaskDuration": 29.075121,
+      "TaskOtherDuration": 2.880438,
+      "ThreadTime": 29.157835,
+      "ProcessTime": 31.489892,
+      "JSHeapUsedSize": 30755284,
+      "JSHeapTotalSize": 79953920,
+      "FirstMeaningfulPaint": 909108.416734,
+      "DomContentLoaded": 909108.346766,
+      "NavigationStart": 909108.325522
+    }
+  },
+  "postActionLiveNodes": 11962
+}
