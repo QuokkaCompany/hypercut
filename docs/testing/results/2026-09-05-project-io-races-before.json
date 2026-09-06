@@ -1,0 +1,63 @@
+{
+  "date": "2026-09-06T02:15:55.654Z",
+  "status": "failed",
+  "code": "8af48fc5821300abed35f0eddf5ad33b13c4808c",
+  "platform": "darwin 25.5.0 arm64",
+  "scope": "Real UI/media with delayed File.text return and native fsync-to-rename barrier. Generated files only; no external AI requests.",
+  "harnessSHA256": "661b34eb44bb22466409ad7b15747ca5133eaf192701487e8025f4dc75d4b588",
+  "appSourceSHA256": "1134b9d0c02dc60e5540074f08b2f03677db16f937b8ee781f086fe35729eaf3",
+  "packageSHA256": "cb74f56c5a1dc47ac7daf1faa0f6980c6c1358650de410181047333d758cf737",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "READ_LATEST",
+      "status": "FAIL",
+      "observedThreshold": "-60",
+      "observedDirty": 0,
+      "error": "Expected values to be strictly equal:\n\n'-60' !== '-50'\n"
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_EDIT",
+      "status": "FAIL",
+      "observedThreshold": "-60",
+      "observedDirty": 0,
+      "error": "Expected values to be strictly equal:\n\n'-60' !== '-42'\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_LATEST",
+      "status": "FAIL",
+      "observedThreshold": "-60",
+      "observedDirty": 0,
+      "error": "Expected values to be strictly equal:\n\n'-60' !== '-50'\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_EDIT",
+      "status": "FAIL",
+      "observedThreshold": "-60",
+      "observedDirty": 0,
+      "error": "Expected values to be strictly equal:\n\n'-60' !== '-42'\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "SAVE_EDIT",
+      "status": "FAIL",
+      "observedThreshold": "-42",
+      "observedDirty": 0,
+      "requestSnapshotSaved": true,
+      "error": "Expected values to be strictly equal:\n\n0 !== 1\n"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "SAVE_PROJECT",
+      "status": "FAIL",
+      "observedThreshold": "-42",
+      "observedDirty": 0,
+      "requestSnapshotSaved": true,
+      "error": "Expected values to be strictly equal:\n\n0 !== 1\n"
+    }
+  ],
+  "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df"
+}

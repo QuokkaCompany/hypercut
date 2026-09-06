@@ -35,7 +35,10 @@ export default function App() {
   const [importProgress, setImportProgress] = useState(0), [error, setError] = useState(''), [notice, setNotice] = useState('');
   const [time, setTime] = useState(0), [playing, setPlaying] = useState(false), [mode, setMode] = useState<'original' | 'edited' | 'rendered'>('edited');
   const [selected, setSelected] = useState<string | null>(null), [rendered, setRendered] = useState<Output | null>(null), [output, setOutput] = useState<Output | null>(null);
-  const [dialog, setDialog] = useState<'help' | 'engine' | null>(null), [dragging, setDragging] = useState(false), [unsaved, setUnsaved] = useState(false);
+  const [dialog, setDialog] = useState<'help' | 'engine' | null>(null), [dragging, setDragging] = useState(false), [unsaved, setUnsavedState] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const projectEpoch = useRef(0), editRevision = useRef(0), saveActive = useRef(false);
+  function setUnsaved(value: boolean) { if (value) editRevision.current++; setUnsavedState(value); }
   const [pendingName, setPendingName] = useState('');
   const [aiOpen, setAIOpen] = useState(false);
   const [captionsOpen, setCaptionsOpen] = useState(false);
@@ -65,7 +68,7 @@ export default function App() {
 
   useEffect(() => { let live = true; bootstrap().then(config => { if (live) { setReady(true); setEngineError(config.tools.filter(x => !x.available).map(x => x.error).join('\n')); } }).catch(e => { if (live) setEngineError(e.message); }); return () => { live = false; }; }, []);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 5000); return () => clearTimeout(timer); }, [notice]);
-  useEffect(() => { const beforeUnload = (e: BeforeUnloadEvent) => { if (unsaved || busy) { e.preventDefault(); e.returnValue = ''; } }; window.addEventListener('beforeunload', beforeUnload); return () => window.removeEventListener('beforeunload', beforeUnload); }, [unsaved, busy]);
+  useEffect(() => { const beforeUnload = (e: BeforeUnloadEvent) => { if (unsaved || busy || saving) { e.preventDefault(); e.returnValue = ''; } }; window.addEventListener('beforeunload', beforeUnload); return () => window.removeEventListener('beforeunload', beforeUnload); }, [unsaved, busy, saving]);
   useEffect(() => {
     if (!playing || mode !== 'edited' || !video.current) return;
     let frame = 0;
@@ -117,6 +120,7 @@ export default function App() {
     if (project && (Math.abs(project.media.duration - next.duration) > 0.001 || project.cuts.some((cut: Cut) => cut.end > next.duration))) throw new Error('프로젝트의 영상 길이 정보가 원본과 일치하지 않습니다.');
     if (project && !next.audioTracks.some(x => x.index === project.trackIndex)) throw new Error('프로젝트의 오디오 트랙을 찾을 수 없습니다.');
     if (project?.transcript && !next.audioTracks.some(x => x.index === project.transcript!.trackIndex && x.channels > project.transcript!.channel)) throw new Error('자막의 전사 트랙 또는 채널을 찾을 수 없습니다.');
+    projectEpoch.current++;
     captionHistory.load({ transcript: project?.transcript as Transcript | null ?? null, style: (project?.captionStyle || { ...DEFAULT_CAPTION_STYLE }) as CaptionStyle, glossary: project?.glossary ?? '' });
     effectsHistory.load((project?.effects || { assets: [], clips: [] }) as Effects);
     setAnalysis(previous => media?.fingerprint === next.fingerprint ? previous : null);
@@ -141,13 +145,15 @@ export default function App() {
     if (busy || !ready) return;
     if (window.hypercut) {
       if (unsaved && !window.confirm('저장하지 않은 편집을 닫고 다른 영상을 열까요?')) return;
+      const id = ++operation.current;
       setBusy('import'); setError('');
-      try { const next = await window.hypercut.pickVideo(); if (next) installMedia(next); } catch (e) { setError((e as Error).message); } finally { setBusy(null); }
+      try { const next = await window.hypercut.pickVideo(); if (next && id === operation.current) installMedia(next); } catch (e) { if (id === operation.current) setError((e as Error).message); } finally { if (id === operation.current) setBusy(null); }
     } else fileInput.current?.click();
   }
   async function loadDemo() {
     if (busy || (unsaved && !window.confirm('저장하지 않은 편집을 닫고 샘플을 열까요?'))) return; setBusy('import'); setError(''); setImportProgress(0);
-    try { installMedia(await request<Media>('/demo', {})); setNotice('실제 음성이 아닌 합성 신호로 만든 16초 검증 샘플입니다.'); } catch (e) { setError((e as Error).message); } finally { setBusy(null); }
+    const id = ++operation.current;
+    try { const next = await request<Media>('/demo', {}); if (id === operation.current) { installMedia(next); setNotice('실제 음성이 아닌 합성 신호로 만든 16초 검증 샘플입니다.'); } } catch (e) { if (id === operation.current) setError((e as Error).message); } finally { if (id === operation.current) setBusy(null); }
   }
   async function run(type: 'analyze' | 'preview' | 'export' | 'restore' | 'transcribe' | 'captions', range?: { start: number; end: number }, transcription?: TranscriptionSettings) {
     if (!media || busy) return;
@@ -191,11 +197,22 @@ export default function App() {
   function edit(next: Cut[]) { dispatch({ type: 'edit', cuts: next }); setUnsaved(true); }
   function toggleCut(id: string) { edit(cuts.map(x => x.id === id ? { ...x, enabled: !x.enabled } : x)); }
   async function saveProject() {
-    if (!media) return;
-    const data = makeProject(media, settings, trackIndex, cuts, speechProtection, transcript, captionStyle, effects, glossary);
+    if (!media || saveActive.current) return;
+    let data;
+    try { data = makeProject(media, settings, trackIndex, cuts, speechProtection, transcript, captionStyle, effects, glossary); }
+    catch (e) { setError((e as Error).message); return; }
     if (window.hypercut) {
-      try { if (await window.hypercut.saveProject(data)) { setUnsaved(false); setNotice('프로젝트를 저장했습니다. 영상 원본도 함께 보관해 주세요.'); } }
-      catch (e) { setError((e as Error).message); }
+      const epoch = projectEpoch.current, revision = editRevision.current;
+      saveActive.current = true; setSaving(true);
+      try {
+        if (await window.hypercut.saveProject(data)) {
+          if (projectEpoch.current !== epoch) setNotice('이전 프로젝트를 저장했습니다.');
+          else if (editRevision.current !== revision) setNotice('요청한 시점의 프로젝트를 저장했습니다. 이후 수정은 아직 저장되지 않았습니다.');
+          else { setUnsaved(false); setNotice('프로젝트를 저장했습니다. 영상 원본도 함께 보관해 주세요.'); }
+        }
+      }
+      catch (e) { setError(`${projectEpoch.current !== epoch ? '이전 프로젝트 저장 실패: ' : ''}${(e as Error).message}`); }
+      finally { saveActive.current = false; setSaving(false); }
       return;
     }
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
@@ -203,12 +220,16 @@ export default function App() {
   }
   async function openProject(file: File) {
     if (busy || (unsaved && !window.confirm('저장하지 않은 편집을 닫고 저장한 프로젝트를 열까요?'))) return;
+    const id = ++operation.current, epoch = projectEpoch.current, revision = editRevision.current;
     try {
       if (file.size > 10 * 1024 ** 2) throw new Error('프로젝트 파일이 너무 큽니다.');
-      const project = validateProject(JSON.parse(await file.text())); pendingProject.current = project;
+      const text = await file.text();
+      if (id !== operation.current) return;
+      if (projectEpoch.current !== epoch || editRevision.current !== revision) { setNotice('파일을 읽는 동안 편집이 바뀌었습니다. 프로젝트를 다시 선택해 주세요.'); return; }
+      const project = validateProject(JSON.parse(text)); pendingProject.current = project;
       if (media && media.fingerprint === project.media.fingerprint) installMedia(media);
       else { setPendingName(project.media.name); setNotice(`프로젝트를 읽었습니다. 원본 '${project.media.name}'을 선택해 주세요.`); }
-    } catch (e) { setError((e as Error).message); }
+    } catch (e) { if (id === operation.current) setError((e as Error).message); }
   }
   async function downloadOutput() {
     if (!output) return;
@@ -224,7 +245,7 @@ export default function App() {
     <header className="app-header">
       <a className="brand" href="#" onClick={e => e.preventDefault()} aria-label="HyperCut"><span className="brand-mark">H</span><strong>hypercut<span>.</span></strong><span className="beta">PREVIEW</span></a>
       <div className="project-title"><span className="divider" /><span>{media?.name.replace(/\.[^.]+$/, '') || '새 프로젝트'}</span>{unsaved && <i title="저장하지 않은 편집" className="unsaved-dot" />}<ChevronDown size={13} /></div>
-      <div className="header-actions"><span className={`local-status ${engineError ? 'error-status' : ''}`}><i />{engineError ? '엔진 확인 필요' : '내 컴퓨터에서 처리'}</span><button className="button ghost compact" onClick={saveProject} disabled={!media || !!busy}><Save size={15} />프로젝트 저장</button><button className="button primary" onClick={() => run('export')} disabled={!media || !kept.length || !!busy || !media.audioTracks.length}><ArrowUpFromLine size={16} />내보내기</button></div>
+      <div className="header-actions"><span className={`local-status ${engineError ? 'error-status' : ''}`}><i />{engineError ? '엔진 확인 필요' : '내 컴퓨터에서 처리'}</span><button className="button ghost compact" aria-label="프로젝트 저장" onClick={saveProject} disabled={!media || !!busy || saving}><Save size={15} />{saving ? '저장 중…' : '프로젝트 저장'}</button><button className="button primary" onClick={() => run('export')} disabled={!media || !kept.length || !!busy || !media.audioTracks.length}><ArrowUpFromLine size={16} />내보내기</button></div>
     </header>
     <div className="editor-shell">
       <nav className="tool-rail" aria-label="앱 메뉴"><button className="rail-button active" title="영상 편집" aria-label="영상 편집"><Scissors size={21} /><span>편집</span></button><button className="rail-button" title="AI 편집 도우미" aria-label="AI 편집 도우미" onClick={() => setAIOpen(true)} disabled={!ready || !!busy}><Sparkles size={20} /><span>AI</span></button><button className="rail-button" aria-label="전사와 자막" title="전사와 자막" disabled={!media || !!busy || !media.audioTracks.length} onClick={openCaptions}><Captions size={20} /><span>자막</span></button><button className="rail-button" aria-label="효과음 편집" title="효과음 편집" disabled={!media || !!busy || !media.audioTracks.length} onClick={openEffects}><Music2 size={20} /><span>효과음</span></button><div className="rail-bottom"><button className="rail-button" onClick={() => setDialog('engine')} title="로컬 엔진" aria-label="로컬 엔진"><Settings2 size={19} /></button><button className="rail-button" onClick={() => setDialog('help')} title="사용 방법" aria-label="사용 방법"><CircleHelp size={19} /></button><span className="avatar">H</span></div></nav>
@@ -239,7 +260,7 @@ export default function App() {
         <div className="privacy-note"><ShieldCheck size={15} /><span>영상은 이 컴퓨터에 머뭅니다.</span></div>
       </aside>
       <main className="main-editor">
-        <div className="compact-project-actions"><button className="text-button" onClick={chooseVideo} disabled={!!busy || !ready}><FolderOpen size={14} />영상 열기</button><button className="text-button" onClick={saveProject} disabled={!media || !!busy}><Save size={14} />프로젝트 저장</button><button className="text-button" onClick={() => projectInput.current?.click()} disabled={!!busy}><FolderOpen size={14} />프로젝트 열기</button><button className="text-button" onClick={() => setAIOpen(true)} disabled={!ready || !!busy}><Sparkles size={14} />AI 도움</button><button className="text-button" disabled={!media || !!busy || !media.audioTracks.length} onClick={openCaptions}><Captions size={14} />자막</button><button className="text-button" disabled={!media || !!busy || !media.audioTracks.length} onClick={openEffects}><Music2 size={14} />효과음</button></div>
+        <div className="compact-project-actions"><button className="text-button" onClick={chooseVideo} disabled={!!busy || !ready}><FolderOpen size={14} />영상 열기</button><button className="text-button" aria-label="프로젝트 저장" onClick={saveProject} disabled={!media || !!busy || saving}><Save size={14} />{saving ? '저장 중…' : '프로젝트 저장'}</button><button className="text-button" onClick={() => projectInput.current?.click()} disabled={!!busy}><FolderOpen size={14} />프로젝트 열기</button><button className="text-button" onClick={() => setAIOpen(true)} disabled={!ready || !!busy}><Sparkles size={14} />AI 도움</button><button className="text-button" disabled={!media || !!busy || !media.audioTracks.length} onClick={openCaptions}><Captions size={14} />자막</button><button className="text-button" disabled={!media || !!busy || !media.audioTracks.length} onClick={openEffects}><Music2 size={14} />효과음</button></div>
         <div className="preview-toolbar"><div className="view-title"><Monitor size={15} /><span>미리보기</span></div><div className="mode-switch"><button className={mode === 'original' ? 'selected' : ''} onClick={() => { setMode('original'); video.current?.pause(); }} disabled={!media}>원본</button><button className={mode !== 'original' ? 'selected' : ''} onClick={() => { setMode(rendered ? 'rendered' : 'edited'); video.current?.pause(); }} disabled={!media}>편집본</button></div><button className="icon-button" aria-label="전체 화면" disabled={!media} onClick={() => video.current?.requestFullscreen()}><Maximize2 size={15} /></button></div>
         <div className={`preview-stage ${dragging ? 'dragging' : ''}`} onDragOver={e => { e.preventDefault(); if (!busy) setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={e => { e.preventDefault(); setDragging(false); const file = e.dataTransfer.files[0]; if (file) void importFile(file); }}>
           {media ? <><video ref={video} src={videoSrc} playsInline preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)} onTimeUpdate={() => { const t = video.current?.currentTime ?? 0; setTime(mode === 'rendered' ? editedToSource(t, kept) : t); }} onError={() => setError('미리보기 재생에 실패했습니다. 다른 H.264 영상을 선택하거나 엔진 상태를 확인해 주세요.')} /><div className="preview-badge"><i />{mode === 'original' ? '원본 영상' : mode === 'rendered' ? '렌더링된 편집본' : '컷 미리보기'}</div>{media.name === 'HyperCut 검증 샘플.mp4' && <span className="synthetic-badge">합성 검증 샘플 · 실제 음성 아님</span>}</> : <div className="empty-stage"><div className="empty-art"><span /><AudioLines size={48} strokeWidth={1.2} /><div className="art-cut"><Scissors size={16} /></div></div><span className="eyebrow">LESS EDITING. MORE CREATING.</span><h1>말은 그대로,<br /><em>쉼만 가볍게.</em></h1><p>영상을 넣고 무음 구간을 한 번에 정리하세요.<br />반복되는 컷편집은 HyperCut에 맡겨두세요.</p><button className="button primary large" onClick={chooseVideo} disabled={!!busy || !ready || !!engineError}><Plus size={18} />영상 불러오기</button><span className="drop-hint">또는 이곳에 끌어놓기 · MP4, MOV / H.264</span><button className="text-button demo-button" onClick={loadDemo} disabled={!!busy || !ready || !!engineError}><Play size={12} />16초 샘플로 먼저 체험하기<ArrowRight size={13} /></button></div>}

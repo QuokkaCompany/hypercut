@@ -42,7 +42,8 @@
     "test:ai-effects": "node --test tests/effect-proposal.test.mjs tests/effect-proposal-api.integration.mjs",
     "test:ai-effects:e2e": "node scripts/ai-effects-e2e.mjs",
     "test:save:crash": "node scripts/desktop-save-crash-e2e.mjs",
-    "test:benchmark:selection": "node --test tests/benchmark-selection.integration.mjs"
+    "test:benchmark:selection": "node --test tests/benchmark-selection.integration.mjs",
+    "test:project:io": "node scripts/project-io-race-e2e.mjs"
   },
   "dependencies": {
     "@napi-rs/canvas": "1.0.8",

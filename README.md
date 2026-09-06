@@ -43,7 +43,7 @@ npm run package:desktop
 5. **정확한 미리보기**는 실제 인코딩한 편집본을 만듭니다. 빠른 컷 미리보기의 탐색 지연과 구분합니다.
    컷 경계만 확인하려면 타임라인에서 컷을 선택한 뒤 **선택 컷 미리보기**를 누릅니다. 앞뒤 2초가 기본값이며 범위를 바꿀 수 있습니다. 짧은 미리보기는 별도 창에서 재생합니다.
 6. MP4 내보내기 후 **편집한 MP4 저장**을 누릅니다. 결과물은 길이·트랙·전체 디코딩 검증 후 제공됩니다.
-7. 프로젝트 JSON에는 원본의 SHA-256과 편집 정보를 저장합니다. 다음에 열 때 같은 원본 파일을 다시 선택합니다.
+7. 프로젝트 JSON에는 원본의 SHA-256과 편집 정보를 저장합니다. 다음에 열 때 같은 원본 파일을 다시 선택합니다. Mac 저장 중 추가 편집은 미저장 상태로 유지하며, 이전 프로젝트의 저장 완료는 따로 안내합니다. 늦게 읽힌 파일이 새 선택이나 이후 편집을 덮어쓰지 않습니다.
 
 ## 동작과 현재 범위
 
@@ -119,6 +119,7 @@ npm run test:api
 npm run test:claude
 npm run test:failures
 npm run test:save:crash
+npm run test:project:io
 npm run test:benchmark:selection
 npm run build
 npm run test:e2e -- --desktop --packaged
