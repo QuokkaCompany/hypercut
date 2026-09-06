@@ -1,0 +1,175 @@
+{
+  "date": "2026-09-06T08:31:13.186Z",
+  "status": "PASS_SHORT_APP_RUNS",
+  "scope": "Four 60-second runs only. Same product runtime/package/input as prior candidate; control locators and scoped assertions changed. Actual outputs, entire projects, independent correctness and raw RSS audited.",
+  "runs": [
+    {
+      "surface": "browser",
+      "iteration": 1,
+      "analyzeSeconds": 1.0820634169999999,
+      "exportSeconds": 3.714485917,
+      "peakGiB": 1.6112060546875,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 66.49752049999915,
+          "max": 98.94358300000022,
+          "p95": 68.02258400000028
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.36725000000115,
+          "max": 100.70716700000048,
+          "p95": 100.43483299999934
+        },
+        "cuts": {
+          "count": 32,
+          "median": 64.36031249999905,
+          "max": 65.92029099999854,
+          "p95": 65.4361659999995
+        }
+      },
+      "maxSampleGapMs": 278.0214170000004,
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "surface": "browser",
+      "iteration": 2,
+      "analyzeSeconds": 1.0509776669999993,
+      "exportSeconds": 3.7281152089999994,
+      "peakGiB": 1.6891021728515625,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 67.23622950000026,
+          "max": 99.22095799999806,
+          "p95": 67.73637499999677
+        },
+        "effects": {
+          "count": 32,
+          "median": 99.45222899999499,
+          "max": 101.3851250000007,
+          "p95": 100.99379200000112
+        },
+        "cuts": {
+          "count": 32,
+          "median": 65.72270850000132,
+          "max": 67.81604199999856,
+          "p95": 67.32045800000196
+        }
+      },
+      "maxSampleGapMs": 277.95991600000343,
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 1,
+      "analyzeSeconds": 1.1961093330000003,
+      "exportSeconds": 3.7837363750000006,
+      "peakGiB": 1.0386810302734375,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.757604499998706,
+          "max": 69.04266700000153,
+          "p95": 42.053790999998455
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.51872899999944,
+          "max": 61.6104589999959,
+          "p95": 60.13166700000147
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.39664549999725,
+          "max": 41.3917500000025,
+          "p95": 41.18012499999895
+        }
+      },
+      "maxSampleGapMs": 279.83795900000405,
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    },
+    {
+      "surface": "desktop",
+      "iteration": 2,
+      "analyzeSeconds": 1.0137435830000032,
+      "exportSeconds": 3.705009582999999,
+      "peakGiB": 1.127471923828125,
+      "ui": {
+        "captions": {
+          "count": 32,
+          "median": 39.324249999997846,
+          "max": 58.9524170000077,
+          "p95": 41.28920900000958
+        },
+        "effects": {
+          "count": 32,
+          "median": 59.48229149999679,
+          "max": 61.94716699999117,
+          "p95": 59.827332999993814
+        },
+        "cuts": {
+          "count": 32,
+          "median": 39.374083500006236,
+          "max": 41.13345900000422,
+          "p95": 40.9429589999927
+        }
+      },
+      "maxSampleGapMs": 279.3245420000021,
+      "wholeProjectPreserved": true,
+      "outputAndSRTBytesEqual": true,
+      "independentCorrectnessEqual": true,
+      "visualSampleHashesEqual": true
+    }
+  ],
+  "cancellations": [
+    {
+      "surface": "browser",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.33749999999999997
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 205.53833399999894,
+      "displayMs": 0.8999999761581421,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    },
+    {
+      "surface": "desktop",
+      "inputSeconds": 60,
+      "beforeCancel": {
+        "status": "running",
+        "stage": "자막 디자인 합성 준비",
+        "progress": 0.40312499999999996
+      },
+      "deleteCancelled": true,
+      "jobStatus": "cancelled",
+      "readyMs": 206.67116700000042,
+      "displayMs": 0.6999999284744263,
+      "projectPreserved": true,
+      "savedOutputPreserved": true,
+      "displayedOutputPreserved": true,
+      "displayPass": true,
+      "readyPass": true,
+      "retryCompletedIteration": 2
+    }
+  ]
+}

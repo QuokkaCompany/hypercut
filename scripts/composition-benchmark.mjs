@@ -2,7 +2,7 @@ import { chromium, _electron as electron } from 'playwright';
 import { fork, execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { once } from 'node:events';
-import { mkdtemp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, copyFile, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
@@ -31,13 +31,13 @@ const report = {
   date: new Date().toISOString(), code: (await exec('git', ['rev-parse', 'HEAD'])).stdout.trim(), status: 'running',
   platform: `${os.platform()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0].model, cpuCount: os.cpus().length,
   memoryBytes: os.totalmem(), node: process.version, power: (await exec('/usr/bin/pmset', ['-g', 'batt'])).stdout.trim(),
-  ffmpeg: (await capture('ffmpeg', ['-version'])).split('\n')[0], requested: { durations, iterations, surfaces, uiLocator: 'css' },
+  ffmpeg: (await capture('ffmpeg', ['-version'])).split('\n')[0], requested: { durations, iterations, surfaces, uiLocator: 'css', controlLocator: 'css with scoped native button name/state checks' },
   scope: 'Synthetic 30fps tone/flash video with manual Korean captions and 880Hz effects. Actual app import, analysis, project loading, audio reconnection, SRT/MP4/project saving, UI and render cancellation/retry. App trees sampled every 250ms including their render/verification workers. Driver and independent media verifiers excluded from RSS. Export elapsed includes application output verification; independent verification elapsed reported separately. Native file paths controlled by test. No OS cache purge, authenticated AI, speech accuracy or human audio-quality claim.',
   sourceHashes: {}, packageSourceHashes: {}, fixtures: [], runs: [], cancellations: [], failures: []
 };
 const bundles = [...(await readFile('dist/index.html', 'utf8')).matchAll(/"(\/assets\/[^\"]+)"/g)].map(match => `dist${match[1]}`);
 assert.ok(bundles.some(file => file.endsWith('.js')));
-for (const file of ['src/App.tsx', 'src/Captions.tsx', 'src/CaptionList.tsx', 'src/captions.css', 'src/Effects.tsx', 'server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'scripts/composition-benchmark.mjs', 'scripts/helpers/composition-oracle.mjs', 'scripts/helpers/composition-performance-fixture.mjs', 'scripts/helpers/threshold-performance-fixture.mjs', 'scripts/helpers/performance.mjs', 'assets/fonts/manifest.json', 'package-lock.json', 'dist/index.html', ...bundles, packagePath]) report.sourceHashes[file] = await sha256(file);
+for (const file of ['src/App.tsx', 'src/Captions.tsx', 'src/CaptionList.tsx', 'src/captions.css', 'src/Effects.tsx', 'server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'scripts/composition-benchmark.mjs', 'scripts/benchmark-server.mjs', 'scripts/helpers/composition-oracle.mjs', 'scripts/helpers/composition-performance-fixture.mjs', 'scripts/helpers/threshold-performance-fixture.mjs', 'scripts/helpers/performance.mjs', 'assets/fonts/manifest.json', 'package-lock.json', 'dist/index.html', ...bundles, packagePath]) report.sourceHashes[file] = await sha256(file);
 const packagedFiles = ['server/media.mjs', 'shared/timeline.mjs', 'server/effects.mjs', 'server/caption-rendering.mjs', 'server/caption-render-worker.mjs', 'dist/index.html', ...bundles];
 const packageHashes = JSON.parse((await exec(process.execPath, ['--input-type=module', '-e', `import {extractFile} from '@electron/asar'; import {createHash} from 'node:crypto'; const [archive, ...files] = process.argv.slice(1); console.log(JSON.stringify(Object.fromEntries(files.map(file => [file, createHash('sha256').update(extractFile(archive, file)).digest('hex')]))));`, packagePath, ...packagedFiles])).stdout);
 for (const file of packagedFiles) {
@@ -45,10 +45,30 @@ for (const file of packagedFiles) {
   assert.equal(hash, report.sourceHashes[file], `Stale Mac package: ${file}`); report.packageSourceHashes[file] = hash;
 }
 const flush = () => writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
-const button = (page, name) => page.getByRole('button', { name, exact: true });
+// Resolve one native control without walking every caption/cut for its role.
+// Validate the selected node before using the same Playwright click/save flow.
+async function button(page, name) {
+  const selectors = {
+    '내보내기': '.header-actions > button.primary',
+    '편집한 SRT 저장': '.caption-footer > button',
+    '편집한 MP4 저장': '.export-ready > button',
+    '작업 취소': '.job-overlay .job-foot > button'
+  };
+  assert.ok(Object.hasOwn(selectors, name), `Unknown control: ${name}`);
+  const target = page.locator(selectors[name]);
+  await target.waitFor();
+  assert.deepEqual(await target.evaluate(element => ({
+    tag: element.tagName, role: element.getAttribute('role') || 'button',
+    name: element.getAttribute('aria-label') || element.textContent,
+    labelledBy: element.getAttribute('aria-labelledby'), enabled: !element.disabled
+  })), { tag: 'BUTTON', role: 'button', name, labelledBy: null, enabled: true });
+  return target;
+}
 const cssButton = (page, name) => page.locator(`button[aria-label="${name}"]`);
 const paints = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const content = ({ savedAt, ...rest }) => rest;
+await copyFile('scripts/composition-benchmark.mjs', path.join(output, 'executed-benchmark.mjs'));
+await copyFile('scripts/benchmark-server.mjs', path.join(output, 'executed-server.mjs'));
 await flush();
 
 async function launch(surface, directory) {
@@ -146,11 +166,11 @@ async function exercise(surface, input) {
     page.on('request', request => { if (!/^(http:\/\/127\.0\.0\.1:|blob:|data:)/.test(request.url())) external.push(request.url()); });
     page.on('response', async response => { if (/\/api\/jobs\/[0-9a-f-]+$/.test(response.url()) && response.request().method() === 'GET') { const job = await response.json().catch(() => null); if (job) jobs.set(job.id, job); } });
     await page.waitForFunction(() => !document.querySelector('.import-button')?.disabled);
-    assert.equal(await page.getByRole('switch', { name: '말소리 보호', exact: true }).isChecked(), false);
+    assert.equal(await page.locator('input[role=switch][aria-label="말소리 보호"]').isChecked(), false);
     const config = await (await page.request.get(new URL('/api/config', page.url()).href)).json(), headers = { 'X-Hypercut-Token': config.token };
     async function start(type) {
       const post = page.waitForResponse(response => response.url().endsWith('/api/jobs') && response.request().method() === 'POST');
-      const started = performance.now(); await (type === 'analyze' ? page.locator('.analyze-button') : button(page, '내보내기')).click();
+      const started = performance.now(); await (type === 'analyze' ? page.locator('.analyze-button') : await button(page, '내보내기')).click();
       const response = await post, job = await response.json(); assert.equal(response.status(), 202, JSON.stringify(job)); currentId = job.id; return started;
     }
     async function waitForState(predicate) {
@@ -194,16 +214,16 @@ async function exercise(surface, input) {
       await begin('srt'); await cssButton(page, '전사와 자막').click();
       assert.equal(await page.locator('.caption-row').count(), expected.captions.length);
       const srtFile = path.join(output, `${prefix}.srt`);
-      await save(active, button(page, '편집한 SRT 저장'), srtFile, '편집한 자막을 저장했습니다.');
+      await save(active, await button(page, '편집한 SRT 저장'), srtFile, '편집한 자막을 저장했습니다.');
       await page.waitForFunction(() => !document.querySelector('.caption-progress'));
       const srt = verifyCompositionSRT(await readFile(srtFile, 'utf8'), expected.captions);
       await cssButton(page, '자막 창 닫기').click(); await end();
       await begin('export'); const exportStart = await start('export'), exportJob = await waitForState(job => job.status === 'completed');
-      await page.waitForFunction(() => !document.querySelector('.job-overlay')); await button(page, '편집한 MP4 저장').waitFor(); await paints(page);
+      await page.waitForFunction(() => !document.querySelector('.job-overlay')); await (await button(page, '편집한 MP4 저장')).waitFor(); await paints(page);
       const exportSeconds = (performance.now() - exportStart) / 1000; await end();
       assert.equal(exportJob.result.verified, true); assert.equal(exportJob.result.burnedCaptions, expected.captions.length); assert.equal(exportJob.result.audioMix.mixedClips, expected.effects.length);
       await begin('save'); const exported = path.join(output, `${prefix}.mp4`), saveStart = performance.now();
-      await save(active, button(page, '편집한 MP4 저장'), exported, '편집한 영상을 저장했습니다.'); const saveSeconds = (performance.now() - saveStart) / 1000; await end();
+      await save(active, await button(page, '편집한 MP4 저장'), exported, '편집한 영상을 저장했습니다.'); const saveSeconds = (performance.now() - saveStart) / 1000; await end();
       phase = 'independent-verification'; const verificationStart = performance.now();
       const video = await verifyCompositionVideo(exported, expected, path.join(output, `${prefix}-frames`));
       const audio = await verifyCompositionAudio(exported, expected), frames = await verifyThresholdFrames(input, exported, analysis.cuts);
@@ -224,11 +244,11 @@ async function exercise(surface, input) {
         const beforeCancel = await (await page.request.get(new URL(`/api/jobs/${currentId}`, page.url()).href, { headers })).json();
         assert.equal(beforeCancel.status, 'running'); assert.ok(['자막 디자인 합성 준비', '영상 렌더링'].includes(beforeCancel.stage));
         const deletion = page.waitForResponse(response => response.url().endsWith(`/api/jobs/${currentId}`) && response.request().method() === 'DELETE');
-        const cancelStart = performance.now(); await button(page, '작업 취소').click(); await page.waitForFunction(() => !document.querySelector('.job-overlay'));
+        const cancelStart = performance.now(); await (await button(page, '작업 취소')).click(); await page.waitForFunction(() => !document.querySelector('.job-overlay'));
         const readyMs = performance.now() - cancelStart, displayMs = await page.evaluate(() => window.__compositionCancelFeedback);
         const response = await deletion; assert.equal(response.status(), 200); const body = await response.json(); assert.equal(body.cancelled, true);
         const job = await (await page.request.get(new URL(`/api/jobs/${currentId}`, page.url()).href, { headers })).json(); assert.equal(job.status, 'cancelled');
-        assert.equal(await button(page, '내보내기').isEnabled(), true); assert.equal(await page.locator('.export-ready').count(), 1);
+        assert.equal(await (await button(page, '내보내기')).isEnabled(), true); assert.equal(await page.locator('.export-ready').count(), 1);
         assert.deepEqual(content(await saveProject(active, path.join(output, `${prefix}-cancel-project.json`))), content(project));
         assert.equal(await sha256(exported), outputSHA256); assert.ok(displayMs !== null);
         cancelled = { surface, inputSeconds: input.media.duration, beforeCancel: { status: beforeCancel.status, stage: beforeCancel.stage, progress: beforeCancel.progress }, deleteCancelled: body.cancelled, jobStatus: job.status, readyMs, displayMs, projectPreserved: true, savedOutputPreserved: true, displayedOutputPreserved: true, displayPass: displayMs <= 300, readyPass: readyMs <= 5000, retryCompletedIteration: null };
