@@ -99,7 +99,8 @@ AI 메뉴에서 자연어로 무음 설정을 제안받고 현재 값과 비교�
 - **Ollama**: 이 컴퓨터의 HTTP 서버와 설치한 모델 이름을 지정합니다. 원격 주소는 허용하지 않습니다.
 - **Claude Code — 기존 구독 로그인**: 설치된 Claude Code의 구독 로그인을 확인하고 선택한 모델에 설정 제안을 요청합니다. 설치·로그인 확인에는 모델 요청을 보내지 않습니다. 로그인은 터미널의 `claude auth login`을 사용하며, HyperCut은 로그인 정보를 프로젝트에 저장하지 않습니다. 제안 요청 시 해당 계정의 사용량이 적용됩니다. 실제 인증된 모델 응답은 아직 미검증인 실험 연결입니다.
 - **OpenAI API / Claude API**: 사용 가능한 모델 ID와 별도 API 키를 직접 지정합니다. 키는 서버 메모리에만 보관하고 앱 종료·연결 해제 시 버립니다. 연결 설정 저장은 네트워크 호출이 아니며, 제안 요청 버튼을 눌렀을 때만 해당 공급자를 호출합니다. 다른 공급자로 자동 전환하지 않습니다.
-- **기존 ChatGPT·Claude 채팅에서 수동 사용**: 요청 복사→사용하는 채팅에 붙여넣기→JSON 응답 가져오기 방식입니다. 채팅에서 HyperCut을 호출하는 MCP 연결은 아직 구현하지 않았습니다.
+- **외부 AI — MCP 연결 (실험)**: 공유할 작업을 준비한 뒤 **MCP로 이 요청 공유**를 누릅니다. **MCP 연결 설정 보기**의 실행 설정을 로컬 MCP 클라이언트에 추가하면 선택한 요청을 읽고 제안을 앱으로 전달할 수 있습니다. 앱에서 비교하고 선택 적용합니다. 공유는 최대 15분이며 요청 변경 시 해제를 요청합니다. 명시적 공유 해제는 서버 응답 후 완료로 표시하고 실패하면 재시도할 수 있습니다. 연결이 끊기면 마지막 앱 상태 확인에서 90초 후 만료됩니다. 공유마다 새 설정이 필요합니다. ChatGPT에서는 별도 Secure MCP Tunnel 설정과 계정 권한이 필요하며 실제 계정·터널 연결은 아직 미검증입니다. [MCP 검증 기록](docs/testing/2026-09-06-mcp-results.md)을 참고하세요.
+- **기존 ChatGPT·Claude 채팅에서 수동 사용**: 요청 복사→사용하는 채팅에 붙여넣기→JSON 응답 가져오기 방식입니다.
 
 세 API는 모의 공급자로, Claude Code는 모의 실행 파일을 통한 실제 프로세스·API·브라우저·Mac 앱 흐름으로 검증했습니다. 설치된 실제 CLI의 로그인 상태도 확인했으나 인증된 모델 요청과 응답 품질은 아직 검증하지 않았습니다. 채팅 구독이 API 사용료까지 포함한다고 가정하지 않습니다. 응답은 허용된 설정·수치 범위로 재검증합니다. CLI는 모델의 파일·셸·MCP 도구를 끄고 요청문을 표준 입력으로 전달합니다. CLI의 관리자 정책은 계속 적용됩니다.
 
@@ -144,6 +145,9 @@ npm run test:effects
 npm run test:effects:e2e -- --desktop
 npm run test:ai-effects
 npm run test:ai-effects:e2e -- --desktop
+npm run test:mcp
+node --test tests/mcp-transport.integration.mjs
+node scripts/mcp-e2e.mjs --desktop
 ```
 
 E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니다. `npm run benchmark`는 긴 합성 영상을 만들고 10분·60분 조건을 각 3회 처리합니다. 단위 검증과 실제 FFmpeg 입출력 검증을 구분합니다. 자세한 요구와 실행 계획은 [검증 계획](docs/plans/2026-09-05-validation-plan.md), [테스트 계획](docs/plans/2026-09-05-test-plan.md), [구현 계획](docs/plans/2026-09-05-implementation-plan.md)에 있습니다.

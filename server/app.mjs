@@ -15,6 +15,7 @@ import { validateCaptionStyle } from '../shared/caption-style.mjs';
 import { renderCaptionImages } from './caption-rendering.mjs';
 import { inspectEffect, publicEffect } from './effects.mjs';
 import { validateEffects, EFFECT_LIMITS } from '../shared/effects.mjs';
+import { installShareRoutes, isShareExchange } from './mcp-routes.mjs';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 
@@ -41,11 +42,13 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
       if (origin && origin !== ownOrigin && !(development && origin === 'http://127.0.0.1:5173')) return res.status(403).json({ error: '이 연결에서는 요청할 수 없습니다.' });
       if (req.headers['sec-fetch-site'] === 'cross-site') return res.status(403).json({ error: '외부 사이트 요청은 허용하지 않습니다.' });
       res.setHeader('Cache-Control', 'no-store');
-      if (req.path !== '/api/config' && (req.headers['x-hypercut-token'] || req.query.token) !== token) return res.status(401).json({ error: '앱 연결이 만료되었습니다. 새로고침해 주세요.' });
+      if (req.path !== '/api/config' && !isShareExchange(req) && (req.headers['x-hypercut-token'] || req.query.token) !== token) return res.status(401).json({ error: '앱 연결이 만료되었습니다. 새로고침해 주세요.' });
     }
     next();
   });
+  app.use(['/api/ai/shares', '/api/mcp-exchange'], express.json({ limit: '128kb' }));
   app.use(express.json({ limit: '10mb' }));
+  const shares = installShareRoutes(app);
   const upload = multer({ dest: directory, limits: { fileSize: 20 * 1024 ** 3, files: 1, fields: 2 } });
   const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next);
   const ai = installAIRoutes(app, asyncRoute, { fetchImpl: aiFetch, claudeCLI });
@@ -176,7 +179,7 @@ export async function createApp({ dataDir = path.join(projectRoot, '.hypercut'),
   app.use((error, req, res, _next) => res.status(400).json({ error: error.code === 'LIMIT_FILE_SIZE' ? (req.path === '/api/effects' ? '1 GB 이하의 효과음을 선택해 주세요.' : '20 GB 이하의 영상을 선택해 주세요.') : error.message || '작업 중 오류가 발생했습니다.' }));
   return {
     app, registerFile, registerEffect, directory, exports, media, effectAssets,
-    async close() { const aiClosing = ai.close(); playbackController.abort(); for (const job of jobs.values()) job.controller?.abort(); await Promise.allSettled([aiClosing, ...effectImports, ...captionPreviews, ...[...jobs.values()].map(job => job.task), ...[...media.values()].flatMap(item => [...(item.playbacks?.values() || [])])]); /* Keep session files until the next explicit cleanup. */ },
+    async close() { shares.close(); const aiClosing = ai.close(); playbackController.abort(); for (const job of jobs.values()) job.controller?.abort(); await Promise.allSettled([aiClosing, ...effectImports, ...captionPreviews, ...[...jobs.values()].map(job => job.task), ...[...media.values()].flatMap(item => [...(item.playbacks?.values() || [])])]); /* Keep session files until the next explicit cleanup. */ },
   };
 }
 

@@ -46,9 +46,11 @@
     "test:save:native": "node scripts/native-save-dialog-session.mjs",
     "test:benchmark:selection": "node --test tests/benchmark-selection.integration.mjs",
     "test:project:io": "node scripts/project-io-race-e2e.mjs",
-    "test:jobs:races": "node scripts/job-cancellation-race-e2e.mjs"
+    "test:jobs:races": "node scripts/job-cancellation-race-e2e.mjs",
+    "test:mcp": "node --test tests/mcp-shares.test.mjs tests/mcp.integration.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
     "@napi-rs/canvas": "1.0.8",
     "@tanstack/react-virtual": "3.14.10",
     "express": "^5.2.1",
@@ -61,6 +63,7 @@
   },
   "devDependencies": {
     "@electron/packager": "^20.3.0",
+    "@modelcontextprotocol/client": "2.0.0",
     "@types/node": "^26.4.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

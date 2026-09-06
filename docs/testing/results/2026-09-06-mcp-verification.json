@@ -1,0 +1,347 @@
+{
+  "date": "2026-09-06T13:33:54.189398+00:00",
+  "status": "PASS_FOR_RECORDED_SCOPE",
+  "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+  "mcpTests": {
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "skipped": 0,
+    "command": "node --test tests/mcp-shares.test.mjs tests/mcp.integration.mjs tests/mcp-transport.integration.mjs",
+    "log": "✔ shared snapshot is immutable and strips unselected metadata (1.475958ms)\n✔ separate capabilities cannot read or submit to another share (0.378916ms)\n✔ settings proposal queues once; only app acknowledgement records actual application (0.425333ms)\n✔ invalid or stale proposals do not occupy the review slot (0.180334ms)\n✔ caption scope rejects different source text, unshared cues and changed numbers (0.40975ms)\n✔ effect sharing retains aliases only and validates selected assets (1.219ms)\n✔ model polling cannot renew a lease; app polling cannot extend absolute expiry (0.178917ms)\n✔ revoke, application close, payload size and share count are bounded (0.733125ms)\n✔ legacy MCP initialization and stdin EOF terminate without orphaning the adapter (76.372166ms)\n✔ SIGTERM after initialization closes the stdio adapter (75.224167ms)\n✔ oversized stdio message closes before unbounded JSON parsing and never echoes data (71.863209ms)\n✔ actual stalled loopback HTTP request times out, aborts the socket and leaves the MCP client usable (5090.485875ms)\n✔ MCP HTTP boundary keeps editor authority separate from the share capability (61.481667ms)\n✔ oversized and malformed share bodies are rejected without echoing the body (24.565792ms)\n✔ real MCP stdio child: settings context, proposal, retry and application receipt (150.721542ms)\n✔ real MCP stdio child: correction context, proposal, retry and application receipt (138.117958ms)\n✔ real MCP stdio child: effects context, proposal, retry and application receipt (135.319125ms)\n✔ adapter configuration refuses remote URLs, alternate hosts, credentials and path injection (0.566ms)\n✔ restarting the MCP child reuses a live share without duplicating or losing a pending proposal (223.097333ms)\nℹ tests 19\nℹ suites 0\nℹ pass 19\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 5405.299916\n",
+    "logSHA256": "825ee3899cf0ada1aba6e4e24639af802446304012585b0abab0d694a646d8f2",
+    "sources": {
+      "tests/mcp-shares.test.mjs": "ea531050ef53fb23b3df5769a534b15afdf528c50b183345ccd94b7f84efe837",
+      "tests/mcp.integration.mjs": "7237c48eb9ad9b3e88cd20b8ae31907e869d552e782ac0dfb6f5420eb9fc3575",
+      "tests/mcp-transport.integration.mjs": "f1bcc7196576f6939e964208f3f1a0a42b15dd405e71d6d3ce14f10fea2f4603"
+    }
+  },
+  "ui": {
+    "status": "completed",
+    "date": "2026-09-06T13:32:05.742Z",
+    "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+    "sourceHashes": {
+      "src/MCPShare.tsx": "09646a001c990bcbdd953e9afea960081af06c684564b7ad13aabdbcfccbf78d",
+      "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+      "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+      "server/mcp-bridge.mjs": "45b5d1ab8c3a9649cea839931939a298b2f456c0ce887ea04ee04adadf538611",
+      "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+      "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+      "scripts/mcp-e2e.mjs": "ad605291739661d637ff7e2ee0e6cc135cce8a9a19769be6c6977dd7f1cfe141",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "34410a60f9369b46a24e74f1ed692da37ccb568a6acd3c053c3943639eca096d"
+    },
+    "runs": [
+      {
+        "surface": "browser",
+        "status": "PASS",
+        "tasks": [
+          "settings",
+          "correction",
+          "effects"
+        ],
+        "actualMCPChild": true,
+        "staleShareRevoked": true,
+        "revocationFailureAndRetry": true,
+        "duplicateProposalIdempotent": true,
+        "queuedDoesNotApply": true,
+        "receiptFailureDoesNotReapply": true,
+        "onlySelectedChangesApplied": true,
+        "negationNeedsReview": true,
+        "captionAndEffectUndoRedo": true,
+        "fullProjectRoundTrip": true,
+        "actualMP4Decoded": true,
+        "updatedEffectRMS": 0.07080272124317472,
+        "unselectedEffectRMS": 0,
+        "errors": [],
+        "externalPageRequests": [],
+        "aiProviderRequests": []
+      },
+      {
+        "surface": "desktop",
+        "status": "PASS",
+        "tasks": [
+          "settings",
+          "correction",
+          "effects"
+        ],
+        "actualMCPChild": true,
+        "staleShareRevoked": true,
+        "revocationFailureAndRetry": true,
+        "duplicateProposalIdempotent": true,
+        "queuedDoesNotApply": true,
+        "receiptFailureDoesNotReapply": true,
+        "onlySelectedChangesApplied": true,
+        "negationNeedsReview": true,
+        "captionAndEffectUndoRedo": true,
+        "fullProjectRoundTrip": true,
+        "actualMP4Decoded": true,
+        "updatedEffectRMS": 0.07080272124317472,
+        "unselectedEffectRMS": 0,
+        "errors": [],
+        "externalPageRequests": [],
+        "aiProviderRequests": []
+      }
+    ]
+  },
+  "uiRaw": "test-output/mcp-ui-1788701525741",
+  "uiArtifacts": {
+    "test-output/mcp-ui-1788701525741/browser-correction.png": "a458affaa2b9bac3649ca8d56ba76be319b2a321c725cac824fe51a7f8439795",
+    "test-output/mcp-ui-1788701525741/browser-effects.png": "1893c67f863152c313ed3d8848af1673182a8fa39389b914599e954570bf4728",
+    "test-output/mcp-ui-1788701525741/desktop-project.json": "2ad51d4fc4d4a744eaaf50472854ee1b2314694364cbaaa1a00f3c9dde2836b2",
+    "test-output/mcp-ui-1788701525741/results.json": "a955a047cbf218392fdc2f8592b8c1bfe5c692bd4a2cae36ff5c4661cf1e6830",
+    "test-output/mcp-ui-1788701525741/browser-output.mp4": "3058c3dd820040ae9b44a1295a340cd17a793871b1c2950ca5d12efc917dda03",
+    "test-output/mcp-ui-1788701525741/fixture.mp4": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "test-output/mcp-ui-1788701525741/desktop-output.mp4": "3058c3dd820040ae9b44a1295a340cd17a793871b1c2950ca5d12efc917dda03",
+    "test-output/mcp-ui-1788701525741/mobile-correction.png": "a0d770fd55085eb9a890521405e05d224e3342153001ad1b3addba21c6d70312",
+    "test-output/mcp-ui-1788701525741/desktop-correction.png": "eb5c99f7b616dbe234c9427c43af08a83526043b779519c786cbc56f373a34bf",
+    "test-output/mcp-ui-1788701525741/browser-project.json": "1ba43f366eda198a73dacd7ff185752512c779ddacbe8028647eeb6bc03162a4",
+    "test-output/mcp-ui-1788701525741/initial.json": "f98e19ece3ad3196a88b9a66225bb9df115cbf6fffd739004c657fec2147a2a7",
+    "test-output/mcp-ui-1788701525741/desktop-effects.png": "8d6efa28a5eb16a6ff9504c1c98476f09f0667a22d8902e813c5316c26ff84d9"
+  },
+  "failedUIAttempts": [
+    {
+      "raw": "test-output/mcp-ui-1788700397105/results.json",
+      "report": {
+        "status": "failed",
+        "date": "2026-09-06T13:13:17.111Z",
+        "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+        "sourceHashes": {
+          "src/MCPShare.tsx": "ac0e1875d4ea903780c93bba29dfa0f6b017be22c2a7dd6cf0e6fbb29842c22c",
+          "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+          "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+          "server/mcp-bridge.mjs": "45b5d1ab8c3a9649cea839931939a298b2f456c0ce887ea04ee04adadf538611",
+          "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+          "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+          "scripts/mcp-e2e.mjs": "e166388e9c96fa5473c9d611c6267459b192e8afd102ab25b5cf3fbe1672663b",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "a67a6c49a740c8f6d03c64396077a9a848e3b9b334901def81875fcde2cff898"
+        },
+        "runs": [],
+        "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'AI 편집 도우미', exact: true }).getByLabel('어떻게 편집할까요?', { exact: true })\u001b[22m\n\n    at exercise (/Users/dante/Desktop/github/hyper_cut/scripts/mcp-e2e.mjs:68:59)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-e2e.mjs:148:351"
+      }
+    },
+    {
+      "raw": "test-output/mcp-ui-1788700475252/results.json",
+      "report": {
+        "status": "failed",
+        "date": "2026-09-06T13:14:35.252Z",
+        "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+        "sourceHashes": {
+          "src/MCPShare.tsx": "ac0e1875d4ea903780c93bba29dfa0f6b017be22c2a7dd6cf0e6fbb29842c22c",
+          "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+          "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+          "server/mcp-bridge.mjs": "45b5d1ab8c3a9649cea839931939a298b2f456c0ce887ea04ee04adadf538611",
+          "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+          "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+          "scripts/mcp-e2e.mjs": "7ea708eb30ff9afd96849c8c28bf07329bf9ce2703c0b2177ee80fea3c67a521",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "a67a6c49a740c8f6d03c64396077a9a848e3b9b334901def81875fcde2cff898"
+        },
+        "runs": [],
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'5' !== '4'\n\n    at exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-e2e.mjs:123:55)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-e2e.mjs:148:351"
+      }
+    },
+    {
+      "raw": "test-output/mcp-ui-1788700547080/results.json",
+      "report": {
+        "status": "failed",
+        "date": "2026-09-06T13:15:47.080Z",
+        "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+        "sourceHashes": {
+          "src/MCPShare.tsx": "ac0e1875d4ea903780c93bba29dfa0f6b017be22c2a7dd6cf0e6fbb29842c22c",
+          "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+          "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+          "server/mcp-bridge.mjs": "45b5d1ab8c3a9649cea839931939a298b2f456c0ce887ea04ee04adadf538611",
+          "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+          "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+          "scripts/mcp-e2e.mjs": "5f93a0a91ac39c51b812c2dc90485a21157da7c63bfdaa815c29a27161c7386b",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "a67a6c49a740c8f6d03c64396077a9a848e3b9b334901def81875fcde2cff898"
+        },
+        "runs": [],
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    captionStyle: {\n      enabled: false,\n      marginPercent: 8,\n      position: 'bottom',\n...\n        id: 'cut',\n+       reason: 'silence',\n        start: 2\n      }\n    ],\n    effects: {\n      assets: [\n\n    at exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-e2e.mjs:137:12)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-e2e.mjs:152:351"
+      }
+    }
+  ],
+  "existingUIRegressions": {
+    "caption-correction-e2e.json": {
+      "raw": "test-output/mcp-existing-ui-regressions-1/test-output/caption-correction-e2e.json",
+      "sha256": "901b10d4940208dce78dcdf597da40fecf964172c376386320d116737d905f21",
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+          "numericChangeRejected": true,
+          "negationReview": true,
+          "onlySelectedApplied": true,
+          "timingPreserved": true,
+          "undoRedo": true,
+          "oldRequestRejected": true,
+          "cancelAndRetry": true,
+          "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+          "projectSaved": true,
+          "styledMP4SavedAndDecoded": true,
+          "pageErrors": [],
+          "externalRequests": 0
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "models": "NOT_RUN: manual JSON and intercepted local UI response only",
+          "numericChangeRejected": true,
+          "negationReview": true,
+          "onlySelectedApplied": true,
+          "timingPreserved": true,
+          "undoRedo": true,
+          "oldRequestRejected": true,
+          "cancelAndRetry": true,
+          "srt": "1\n00:00:01,000 --> 00:00:02,500\n캡컷에서 10분을 편집했어요.\n\n2\n00:00:05,000 --> 00:00:06,500\n소리를 없애지 않습니다.\n\n3\n00:00:08,000 --> 00:00:09,000\n이 자막은 보존합니다.\n",
+          "projectSaved": true,
+          "styledMP4SavedAndDecoded": true,
+          "pageErrors": [],
+          "externalRequests": 0
+        }
+      ]
+    },
+    "ai-effects-e2e.json": {
+      "raw": "test-output/mcp-existing-ui-regressions-1/test-output/ai-effects-e2e.json",
+      "sha256": "84897d21e790bf3ffb322ad093d65dcc7ff5f3abbd554433566282743115de83",
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "authenticatedModels": "NOT_RUN: manual JSON plus intercepted local UI response",
+          "explicitInputSelection": true,
+          "filenamesHashesUnselectedCuesNotSent": true,
+          "invalidTimeAndUnknownAssetRejected": true,
+          "onlySelectedChangesApplied": true,
+          "unselectedRemovalAndOutsideClipPreserved": true,
+          "oldRequestRejected": true,
+          "cancelRetry": true,
+          "pendingContextChangeDiscarded": true,
+          "selectionResetAfterChange": true,
+          "undoRedo": true,
+          "projectRoundTrip": true,
+          "captionsPreserved": true,
+          "actualMP4Decoded": true,
+          "expectedEditedTimes": {
+            "updated": [
+              3,
+              3.4
+            ],
+            "notRemoved": [
+              4,
+              4.5
+            ],
+            "added": [
+              4.5,
+              4.75
+            ],
+            "outsideSelection": [
+              5,
+              5.5
+            ]
+          },
+          "levels": {
+            "updated": 0.07080272124317472,
+            "notRemoved": 0.035504466537815076,
+            "added": 0.03549968277721971,
+            "outsideSelection": 0.035494882345063025,
+            "quiet": 0
+          },
+          "externalRequests": 0,
+          "pageErrors": []
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "authenticatedModels": "NOT_RUN: manual JSON plus intercepted local UI response",
+          "explicitInputSelection": true,
+          "filenamesHashesUnselectedCuesNotSent": true,
+          "invalidTimeAndUnknownAssetRejected": true,
+          "onlySelectedChangesApplied": true,
+          "unselectedRemovalAndOutsideClipPreserved": true,
+          "oldRequestRejected": true,
+          "cancelRetry": true,
+          "pendingContextChangeDiscarded": true,
+          "selectionResetAfterChange": true,
+          "undoRedo": true,
+          "projectRoundTrip": true,
+          "captionsPreserved": true,
+          "actualMP4Decoded": true,
+          "expectedEditedTimes": {
+            "updated": [
+              3,
+              3.4
+            ],
+            "notRemoved": [
+              4,
+              4.5
+            ],
+            "added": [
+              4.5,
+              4.75
+            ],
+            "outsideSelection": [
+              5,
+              5.5
+            ]
+          },
+          "levels": {
+            "updated": 0.07080272124317472,
+            "notRemoved": 0.035504466537815076,
+            "added": 0.03549968277721971,
+            "outsideSelection": 0.035494882345063025,
+            "quiet": 0
+          },
+          "externalRequests": 0,
+          "pageErrors": []
+        }
+      ]
+    }
+  },
+  "otherPassedCommands": [
+    {
+      "command": "npm test",
+      "tests": 88
+    },
+    {
+      "command": "npm run test:api",
+      "tests": 12
+    },
+    {
+      "command": "npm run test:correction",
+      "tests": 11
+    },
+    {
+      "command": "npm run test:ai-effects",
+      "tests": 12
+    }
+  ],
+  "note": "Final UI includes explicit revocation failure/retry in both apps. All final UI source hashes match current files. Backend and AIAssistant sources match the initial contract and existing UI regression runs. MCPShare and its targeted UI runner changed after those runs; initial records remain preserved. No authenticated model or tunnel was used.",
+  "initialVerification": {
+    "file": "docs/testing/results/2026-09-06-mcp-initial-verification.json",
+    "sha256": "4790332b1274090b8672e58fdc56323099e6632f7f00df250d9ec3fabededaee"
+  },
+  "previousVerifiedUI": {
+    "raw": "test-output/mcp-ui-1788701364854",
+    "sourceHashes": {
+      "src/MCPShare.tsx": "4e9315840dc32d6e67201862dce2aa6f78a49146c45638870923649508adfb15",
+      "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+      "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+      "server/mcp-bridge.mjs": "45b5d1ab8c3a9649cea839931939a298b2f456c0ce887ea04ee04adadf538611",
+      "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+      "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+      "scripts/mcp-e2e.mjs": "ad605291739661d637ff7e2ee0e6cc135cce8a9a19769be6c6977dd7f1cfe141",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "b0e3433b03c99d1f46545e18744826680053f9e596572fb273e8564514d19cb7"
+    }
+  }
+}
