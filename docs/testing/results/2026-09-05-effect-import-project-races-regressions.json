@@ -1,0 +1,242 @@
+{
+  "date": "2026-09-06T03:41:25.632Z",
+  "status": "completed",
+  "appSourceSHA256": "789fcd59dd5ca61b2ceabd95ce25d1f23c855b48df4e4363a73778a6a0a98686",
+  "packageSHA256": "4d9b51d12eb9688f43b533ff459f69fd4d98e8a8343bb64fc5c6f1c37a5a5077",
+  "runs": [
+    {
+      "name": "effects",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/effects-e2e.mjs",
+        "--desktop"
+      ],
+      "harnessSHA256": "9a3f54e0c94b7b73128172796a02097c7ea901a43ecb59ba6a570f1530f3674e",
+      "status": "PASS",
+      "results": [
+        {
+          "surface": "browser",
+          "status": "PASS",
+          "missingAssetBlocked": true,
+          "wrongReconnectRejected": true,
+          "sameHashReconnected": true,
+          "manualEditUndoRedo": true,
+          "muteDeleteUndo": true,
+          "dirtyDraftGuard": true,
+          "stalePreviewInvalidated": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndEffectMP4Decoded": true,
+          "expectedBeepSeconds": [
+            3,
+            3.7
+          ],
+          "rms": 0.06314186692551059,
+          "peak": 0.09251511096954346,
+          "quietPeak": 0,
+          "sourcePreserved": true,
+          "nativeEffectOverwriteBlocked": "N/A",
+          "externalRequests": 0,
+          "pageErrors": []
+        },
+        {
+          "surface": "desktop",
+          "status": "PASS",
+          "missingAssetBlocked": true,
+          "wrongReconnectRejected": true,
+          "sameHashReconnected": true,
+          "manualEditUndoRedo": true,
+          "muteDeleteUndo": true,
+          "dirtyDraftGuard": true,
+          "stalePreviewInvalidated": true,
+          "projectVersion": 7,
+          "projectRoundTrip": true,
+          "captionAndEffectMP4Decoded": true,
+          "expectedBeepSeconds": [
+            3,
+            3.7
+          ],
+          "rms": 0.06314186692551059,
+          "peak": 0.09251511096954346,
+          "quietPeak": 0,
+          "sourcePreserved": true,
+          "nativeEffectOverwriteBlocked": true,
+          "externalRequests": 0,
+          "pageErrors": []
+        }
+      ]
+    },
+    {
+      "name": "project-io",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/project-io-race-e2e.mjs",
+        "--output=test-output/effect-import-project-regressions/project-io"
+      ],
+      "harnessSHA256": "2ba7c3a071c51027493be8cb781a99ed236511c48e26e19a1512449fb8d1f707",
+      "status": "PASS",
+      "results": {
+        "date": "2026-09-06T03:41:34.970Z",
+        "status": "completed",
+        "code": "6787a35690c085e4414303a475d04983411b715c",
+        "platform": "darwin 25.5.0 arm64",
+        "scope": "Real UI/media with delayed File.text return or injected late read error and native fsync-to-rename barrier. Generated files only; no external AI requests.",
+        "harnessSHA256": "2ba7c3a071c51027493be8cb781a99ed236511c48e26e19a1512449fb8d1f707",
+        "appSourceSHA256": "789fcd59dd5ca61b2ceabd95ce25d1f23c855b48df4e4363a73778a6a0a98686",
+        "packageSHA256": "4d9b51d12eb9688f43b533ff459f69fd4d98e8a8343bb64fc5c6f1c37a5a5077",
+        "runs": [
+          {
+            "surface": "browser",
+            "scenario": "READ_LATEST",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "browser",
+            "scenario": "READ_LATEST_ERROR",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "browser",
+            "scenario": "READ_EDIT",
+            "status": "PASS",
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "READ_LATEST",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "READ_LATEST_ERROR",
+            "status": "PASS",
+            "observedThreshold": "-50",
+            "observedDirty": 0,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "READ_EDIT",
+            "status": "PASS",
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "projectFieldsPreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "SAVE_EDIT",
+            "status": "PASS",
+            "duplicateSaveBlocked": true,
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "requestSnapshotSaved": true,
+            "latestSavePreserved": true,
+            "failedSavePreservesDirtyAndRetries": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          },
+          {
+            "surface": "desktop",
+            "scenario": "SAVE_PROJECT",
+            "status": "PASS",
+            "duplicateSaveBlocked": true,
+            "observedThreshold": "-42",
+            "observedDirty": 1,
+            "requestSnapshotSaved": true,
+            "latestSavePreserved": true,
+            "sourceUnchanged": true,
+            "pageErrors": [],
+            "externalRequests": 0
+          }
+        ],
+        "sourceSHA256": "3bc4f5d13c7fadff9d0f6b09989d1279d79d899e1e04dce5a1a52895a270b3df"
+      }
+    },
+    {
+      "name": "core",
+      "command": [
+        "/Users/dante/.nvm/versions/node/v24.14.1/bin/node",
+        "scripts/e2e.mjs",
+        "--desktop"
+      ],
+      "harnessSHA256": "3ecb448ca12ba00f0cc898d689ddf1b1a6f337245e8bce74097025932b383d4a",
+      "status": "PASS",
+      "results": [
+        {
+          "browser": "PASS",
+          "upload": true,
+          "videoPlayback": true,
+          "analyzeCuts": 5,
+          "undoRestore": true,
+          "timelineZoomSelection": true,
+          "zoomedRuler": {
+            "visible": 5,
+            "times": [
+              "00:12.80",
+              "00:12.90",
+              "00:13.00",
+              "00:13.09",
+              "00:13.19"
+            ],
+            "scrollLeft": 19124
+          },
+          "projectRoundTrip": true,
+          "wrongSourceRejected": true,
+          "renderedPreviewSeconds": 9.066667,
+          "exportedFile": "/Users/dante/Desktop/github/hyper_cut/test-output/browser-output.mp4",
+          "aiManualProposal": true,
+          "aiInvalidPayloadRejected": true,
+          "unsavedReplacementCancelled": true,
+          "mobileOverflow": false,
+          "externalRequests": 0,
+          "pageErrors": 0
+        },
+        {
+          "desktop": "PASS",
+          "security": {
+            "sandbox": true,
+            "contextIsolation": true,
+            "nodeIntegration": false
+          },
+          "nativeFileIpc": true,
+          "dialogResponse": "test-controlled",
+          "analyzeCuts": 5,
+          "export": "/Users/dante/Desktop/github/hyper_cut/test-output/desktop-output.mp4",
+          "sourceOverwriteBlocked": true,
+          "projectSaveCancelPreservesDirty": true,
+          "nativeProjectSave": true
+        }
+      ]
+    }
+  ]
+}

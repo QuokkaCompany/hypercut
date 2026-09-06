@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-06T03:26:23.174Z",
+  "status": "interrupted-after-test-failure",
+  "code": "6787a35690c085e4414303a475d04983411b715c",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "0797de3b162085a0fbcb60ef500e6f7ed05d35cb5eccd9f4d53bae343a528790",
+  "appSourceSHA256": "47ba58faec73521527b1928cbf986c8e69a4e4b902556af8dc4798d143e8fef2",
+  "effectsSourceSHA256": "f3754c85b1f6dc7b8ae667988073d446d054fae9e13bbffd358a14e6611f6187",
+  "packageSHA256": "08c405e83e34766630d884c49710c0254088cf42bce99b1c4e8285a72a7e809a",
+  "scope": "Actual project reads, audio files/import and media preview. File.text return and browser upload/native file-selection response delayed. Generated files only.",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "READ_DURING_IMPORT",
+      "status": "running",
+      "routeErrors": []
+    }
+  ],
+  "sourceHashes": [
+    "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+    "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+    "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09"
+  ],
+  "operatorNote": "Failure screenshot was written in the first case. Driver was still alive in cleanup and had not flushed its assertion error. Only owned driver PID 11556 and headless Chrome PID 11568 were terminated after this failure evidence. No product PASS/FAIL verdict is taken from this incomplete run."
+}

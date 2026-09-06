@@ -1,0 +1,556 @@
+{
+  "date": "2026-09-06T03:32:59.353Z",
+  "status": "failed",
+  "code": "6787a35690c085e4414303a475d04983411b715c",
+  "platform": "darwin 25.5.0 arm64",
+  "harnessSHA256": "c5f786b0ddba1851383cd2e1bb7eb5da7790b2be779759526d2b5cc3a3bab3ef",
+  "appSourceSHA256": "47ba58faec73521527b1928cbf986c8e69a4e4b902556af8dc4798d143e8fef2",
+  "effectsSourceSHA256": "f3754c85b1f6dc7b8ae667988073d446d054fae9e13bbffd358a14e6611f6187",
+  "packageSHA256": "08c405e83e34766630d884c49710c0254088cf42bce99b1c4e8285a72a7e809a",
+  "scope": "Actual project reads, audio files/import and media preview. File.text return and browser upload/native file-selection response delayed. Generated files only.",
+  "runs": [
+    {
+      "surface": "browser",
+      "scenario": "READ_DURING_IMPORT",
+      "status": "FAIL",
+      "routeErrors": [
+        "Expected values to be strictly equal:\n\n400 !== 200\n"
+      ],
+      "phase": "old-read-released",
+      "thresholdAfterOldRead": "-55",
+      "effectsAfterOldRead": [
+        "b.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "actualImportedAsset": {
+        "error": "ffprobe 작업 실패: /var/folders/_q/lczf4hkn1bs9q5f_l0tbkly00000gn/T/hypercut-effect-project-races-fDqU37/browser-1/sessions/68a4bf05-c113-4626-8a77-514e1347fdaa/04d437a6cfdaf0fd2e02dcade319507f: Invalid data found when processing input\n"
+      },
+      "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at releaseEffect (/Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:91:230)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:102:47"
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_AFTER_IMPORT",
+      "status": "FAIL",
+      "routeErrors": [
+        "Expected values to be strictly equal:\n\n400 !== 200\n"
+      ],
+      "phase": "effect-pending",
+      "actualImportedAsset": {
+        "error": "ffprobe 작업 실패: /var/folders/_q/lczf4hkn1bs9q5f_l0tbkly00000gn/T/hypercut-effect-project-races-fDqU37/browser-2/sessions/7593de60-3e49-43d8-9864-d15dc8bbf319/467fcd75d66e3396564aefde3ffd5cd0: Invalid data found when processing input\n"
+      },
+      "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at releaseEffect (/Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:91:230)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:98:47"
+    },
+    {
+      "surface": "browser",
+      "scenario": "READ_DURING_RECONNECT",
+      "status": "FAIL",
+      "routeErrors": [
+        "Expected values to be strictly equal:\n\n400 !== 200\n"
+      ],
+      "phase": "old-read-released",
+      "thresholdAfterOldRead": "-55",
+      "effectsAfterOldRead": [
+        "b.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "actualImportedAsset": {
+        "error": "ffprobe 작업 실패: /var/folders/_q/lczf4hkn1bs9q5f_l0tbkly00000gn/T/hypercut-effect-project-races-fDqU37/browser-3/sessions/daae3279-3255-4a84-8c75-bc98323601a0/f5e79206273caa416ad02d0e91e38e3e: Invalid data found when processing input\n"
+      },
+      "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at releaseEffect (/Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:91:230)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:102:47"
+    },
+    {
+      "surface": "browser",
+      "scenario": "CANCEL_THEN_OPEN",
+      "status": "FAIL",
+      "routeErrors": [
+        "Expected values to be strictly equal:\n\n400 !== 200\n"
+      ],
+      "phase": "saving-result",
+      "actualImportedAsset": {
+        "error": "ffprobe 작업 실패: /var/folders/_q/lczf4hkn1bs9q5f_l0tbkly00000gn/T/hypercut-effect-project-races-fDqU37/browser-4/sessions/5fc8e8b0-0b7b-4e5f-ba82-d4e7e17e9fad/5559ee2278f39c671d1da2449f72d1ad: Invalid data found when processing input\n"
+      },
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -55,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-B",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 B 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "fingerprint": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "name": "b.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-B",
+              "assetId": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 B",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-B",
+            "start": 4,
+            "end": 5,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T03:36:04.203Z"
+      },
+      "projectPreserved": true,
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'Expected values to be strictly equal:\\n\\n400 !== 200\\n'\n+ ]\n- []\n\n    at file:///Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:127:14"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_DURING_IMPORT",
+      "status": "FAIL",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-55",
+      "effectsAfterOldRead": [
+        "b.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "dirtyBeforeSave": 1,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -55,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-B",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 B 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            },
+            {
+              "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "name": "c.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            },
+            {
+              "id": "ae4e5ef5-3aa4-4b43-88b2-e2755552118e",
+              "assetId": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "start": 0,
+              "offset": 0,
+              "duration": 3,
+              "gainDb": -12,
+              "muted": false
+            }
+          ]
+        },
+        "glossary": "용어 B",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-B",
+            "start": 4,
+            "end": 5,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T03:36:35.346Z"
+      },
+      "mixedProjectObserved": true,
+      "error": "AssertionError [ERR_ASSERTION]: Earlier project read replaced the current effect import target\n+ actual - expected\n... Skipped lines\n\n  {\n    captionStyle: {\n      enabled: false,\n      marginPercent: 8,\n      position: 'bottom',\n...\n        enabled: true,\n+       end: 5,\n+       id: 'cut-B',\n-       end: 3,\n-       id: 'cut-A',\n        reason: 'manual',\n+       start: 4\n-       start: 2\n      }\n    ],\n    effects: {\n      assets: [\n        {\n...\n    format: 'hypercut-project',\n+   glossary: '용어 B',\n-   glossary: '용어 A',\n    media: {\n      duration: 8,\n      fingerprint: '621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9',\n      name: 'source.mp4'\n    },\n...\n      preRollMs: 100,\n+     thresholdDb: -55\n-     thresholdDb: -41\n    },\n    speechProtection: {\n      enabled: false,\n      threshold: 0.5\n    },\n...\n          end: 6.5,\n+         id: 'caption-B',\n-         id: 'caption-A',\n          start: 6,\n+         text: '프로젝트 B 자막'\n-         text: '프로젝트 A 자막'\n        }\n      ],\n      language: 'ko',\n      model: 'manual fixture',\n      trackIndex: 1\n\n    at file:///Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:115:14"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_AFTER_IMPORT",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-41",
+      "effectsAfterOldRead": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "effectsAfterImport": [
+        "a.wav원본 00:01.00 · -20 dB음소거",
+        "c.wav원본 00:00.00 · -12 dB편집본 00:00.00"
+      ],
+      "dirtyBeforeSave": 1,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -41,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-A",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 A 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "fingerprint": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "name": "a.wav",
+              "duration": 3
+            },
+            {
+              "id": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "fingerprint": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "name": "c.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-A",
+              "assetId": "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            },
+            {
+              "id": "b842fe62-3852-40fc-aa42-2555af29a6f0",
+              "assetId": "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09",
+              "start": 0,
+              "offset": 0,
+              "duration": 3,
+              "gainDb": -12,
+              "muted": false
+            }
+          ]
+        },
+        "glossary": "용어 A",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-A",
+            "start": 2,
+            "end": 3,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T03:36:36.477Z"
+      },
+      "mixedProjectObserved": false,
+      "projectPreserved": true,
+      "undoRedoPreserved": true,
+      "actualMixedPreview": {
+        "mixedClips": 1,
+        "peak": 0.050233129411935806,
+        "peakDb": -25.980195308399527,
+        "overloadedSamples": 0,
+        "encodedPeak": 0.05237211659550667,
+        "encodedPeakDb": -25.61799747855853,
+        "encodedOverloadedSamples": 0
+      },
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    },
+    {
+      "surface": "desktop",
+      "scenario": "READ_DURING_RECONNECT",
+      "status": "FAIL",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "thresholdAfterOldRead": "-55",
+      "effectsAfterOldRead": [
+        "b.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "effectsAfterImport": [
+        "b.wav원본 00:01.00 · -20 dB음소거"
+      ],
+      "dirtyBeforeSave": 0,
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -55,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-B",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 B 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "fingerprint": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "name": "b.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-B",
+              "assetId": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 B",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-B",
+            "start": 4,
+            "end": 5,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T03:36:38.697Z"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: Earlier project read replaced the current effect import target\n+ actual - expected\n... Skipped lines\n\n  {\n    captionStyle: {\n      enabled: false,\n      marginPercent: 8,\n      position: 'bottom',\n...\n        enabled: true,\n+       end: 5,\n+       id: 'cut-B',\n-       end: 3,\n-       id: 'cut-A',\n        reason: 'manual',\n+       start: 4\n-       start: 2\n      }\n    ],\n    effects: {\n      assets: [\n        {\n          duration: 3,\n+         fingerprint: '5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332',\n+         id: '5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332',\n+         name: 'b.wav'\n-         fingerprint: '26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b',\n-         id: '26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b',\n-         name: 'a.wav'\n        }\n      ],\n      clips: [\n        {\n+         assetId: '5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332',\n-         assetId: '26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b',\n          duration: 0.5,\n          gainDb: -20,\n+         id: 'clip-B',\n-         id: 'clip-A',\n          muted: true,\n          offset: 0,\n          start: 1\n        }\n      ]\n    },\n    format: 'hypercut-project',\n+   glossary: '용어 B',\n-   glossary: '용어 A',\n    media: {\n      duration: 8,\n      fingerprint: '621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9',\n      name: 'source.mp4'\n    },\n...\n      preRollMs: 100,\n+     thresholdDb: -55\n-     thresholdDb: -41\n    },\n    speechProtection: {\n      enabled: false,\n      threshold: 0.5\n    },\n...\n          end: 6.5,\n+         id: 'caption-B',\n-         id: 'caption-A',\n          start: 6,\n+         text: '프로젝트 B 자막'\n-         text: '프로젝트 A 자막'\n        }\n      ],\n      language: 'ko',\n      model: 'manual fixture',\n      trackIndex: 1\n\n    at file:///Users/dante/Desktop/github/hyper_cut/scripts/effect-import-project-race-e2e.mjs:115:14"
+    },
+    {
+      "surface": "desktop",
+      "scenario": "CANCEL_THEN_OPEN",
+      "status": "PASS",
+      "routeErrors": [],
+      "phase": "saving-result",
+      "savedProject": {
+        "format": "hypercut-project",
+        "version": 7,
+        "media": {
+          "name": "source.mp4",
+          "fingerprint": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+          "duration": 8
+        },
+        "settings": {
+          "thresholdDb": -55,
+          "minSilenceMs": 500,
+          "preRollMs": 100,
+          "postRollMs": 150
+        },
+        "speechProtection": {
+          "enabled": false,
+          "threshold": 0.5
+        },
+        "transcript": {
+          "trackIndex": 1,
+          "channel": 0,
+          "language": "ko",
+          "model": "manual fixture",
+          "cues": [
+            {
+              "id": "caption-B",
+              "start": 6,
+              "end": 6.5,
+              "text": "프로젝트 B 자막"
+            }
+          ]
+        },
+        "captionStyle": {
+          "enabled": false,
+          "preset": "clean",
+          "sizePercent": 4.5,
+          "position": "bottom",
+          "marginPercent": 8
+        },
+        "effects": {
+          "assets": [
+            {
+              "id": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "fingerprint": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "name": "b.wav",
+              "duration": 3
+            }
+          ],
+          "clips": [
+            {
+              "id": "clip-B",
+              "assetId": "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+              "start": 1,
+              "offset": 0,
+              "duration": 0.5,
+              "gainDb": -20,
+              "muted": true
+            }
+          ]
+        },
+        "glossary": "용어 B",
+        "trackIndex": 1,
+        "cuts": [
+          {
+            "id": "cut-B",
+            "start": 4,
+            "end": 5,
+            "enabled": true,
+            "reason": "manual"
+          }
+        ],
+        "savedAt": "2026-09-06T03:36:39.927Z"
+      },
+      "projectPreserved": true,
+      "laterExplicitProjectOpenWorks": true,
+      "sourcesUnchanged": true,
+      "pageErrors": [],
+      "externalRequests": 0
+    }
+  ],
+  "sourceHashes": [
+    "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "26e0030400728d1fc4c84753603da38d5071319ba01aac142f19ca4be4eb372b",
+    "5a9d600e06f8201804031d015dfe14d450f1b36d8346c4460171dd672723c332",
+    "410b945db59fea8912d9f8cc866c67fb5dc07a87b53c13006c4716de2b4cdd09"
+  ]
+}

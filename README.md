@@ -151,3 +151,5 @@ E2E에는 설치한 Chrome과 먼저 생성한 Mac 앱 패키지가 필요합니
 전사 성능 측정은 기존 결과를 덮어쓰지 않습니다. 같은 조건을 다시 실행할 때는 `--output=test-output/새-측정-이름`으로 새 폴더를 지정하세요.
 
 `npm run test:jobs:races`는 두 앱에서 34개 경합 조건을 검사합니다. 실제 전사와 효과음 합성을 포함하므로 로컬 Whisper 모델, Mac 패키지, 한국어 Eddy TTS와 FFmpeg가 필요합니다. `--scenarios=CURRENT_CANCEL_ERROR_TRANSCRIBE,CURRENT_CANCEL_ERROR_CAPTIONS`로 자막 창 취소 재시도 조건만 선택할 수 있습니다. [편집창별 실행 기록](docs/testing/2026-09-05-editor-job-race-results.md)에 범위와 재현 방법을 정리했습니다.
+
+`node scripts/effect-import-project-race-e2e.mjs --output=test-output/새-시험-이름`은 효과음 추가·재연결·취소와 이전 프로젝트 파일 읽기가 겹치는 8조건을 두 앱에서 검사합니다. 브라우저 빌드·Mac 패키지·Chrome·FFmpeg가 필요하며, 생성 파일의 실제 저장 내용과 합성을 확인합니다. [경합 실행 기록](docs/testing/2026-09-05-effect-import-project-race-results.md)에 수정 전·후 결과와 시험 중계의 범위를 정리했습니다.
