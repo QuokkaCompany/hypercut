@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { Music2, Plus, Redo2, Undo2, X } from 'lucide-react';
-import type { Effects, EffectAsset, EffectClip } from './types';
+import { Music2, Plus, Redo2, Sparkles, Undo2, X } from 'lucide-react';
+import type { Effects, EffectAsset, EffectClip, CaptionCue } from './types';
+import { EffectAI } from './EffectAI';
 import { mapEffects, validateEffects, EFFECT_LIMITS } from '../shared/effects.mjs';
 import { uploadEffect } from './api';
 import { formatTime } from './format';
 import './effects.css';
 
 interface Props {
-  value: Effects; duration: number; time: number; kept: { start: number; end: number }[]; connected: Set<string>;
+  value: Effects; duration: number; time: number; kept: { start: number; end: number }[]; connected: Set<string>; contextId: string; cues: CaptionCue[];
   canUndo: boolean; canRedo: boolean; onUndo: () => void; onRedo: () => void;
   onChange: (value: Effects) => void; onConnect: (asset: EffectAsset) => void;
   onClose: () => void; onPreview: () => void; onImportBusy: (value: boolean) => void;
 }
 export function EffectsEditor(props: Props) {
   const { value, duration, kept, connected } = props;
+  const [aiOpen, setAIOpen] = useState(false);
   const [selected, setSelected] = useState(value.clips[0]?.id || '');
   const clip = value.clips.find(c => c.id === selected);
   const [draft, setDraft] = useState<EffectClip | null>(clip || null), [error, setError] = useState(''), [loading, setLoading] = useState(false);
@@ -50,11 +52,13 @@ export function EffectsEditor(props: Props) {
     catch (e) { if (mounted.current) setError(active.signal.aborted ? '효과음 불러오기를 취소했습니다.' : (e as Error).message); }
     finally { if (mounted.current) { setLoading(false); props.onImportBusy(false); } controller.current = null; }
   }
+  if (aiOpen) return <EffectAI state={{ contextId: props.contextId, effects: value, duration, kept, cues: props.cues }} contextId={props.contextId} connected={connected} onApply={change} onClose={() => setAIOpen(false)} />;
   return <div className="modal-backdrop"><section className="modal effects-modal" role="dialog" aria-modal="true" aria-labelledby="effects-title">
     <header><div><h2 id="effects-title"><Music2 size={21} />효과음 편집</h2><p>원본 시각에 배치하고 편집본에서 확인하세요.</p></div><button className="icon-button" aria-label="효과음 창 닫기" disabled={dirty || loading} onClick={props.onClose}><X size={20} /></button></header>
     <input ref={input} type="file" accept=".wav,.mp3,.m4a,.aac,.flac,.ogg,audio/*" hidden onChange={event => { const file = event.target.files?.[0]; if (file) void upload(file); event.target.value = ''; }} />
     <p className="effects-help">시작점이 삭제된 클립은 출력에서 제외됩니다. 컷을 복원하면 다시 들립니다. 효과음은 파일·설정 길이·영상 끝 중 먼저 끝나는 지점까지 재생합니다.</p>
     <div className="effects-toolbar"><button className="button primary" disabled={loading || dirty || value.clips.length >= EFFECT_LIMITS.clips} onClick={() => void choose(null)}><Plus size={16} />효과음 추가</button><button className="icon-button" aria-label="효과음 실행 취소" disabled={!props.canUndo || dirty || loading} onClick={props.onUndo}><Undo2 size={18} /></button><button className="icon-button" aria-label="효과음 다시 실행" disabled={!props.canRedo || dirty || loading} onClick={props.onRedo}><Redo2 size={18} /></button><span>{value.clips.length}개 배치 · {mapped.length}개 출력</span></div>
+    <button className="button secondary" disabled={loading || dirty || !value.assets.some(a => connected.has(a.id))} onClick={() => setAIOpen(true)}><Sparkles size={16} />AI 효과음 제안</button>
     {loading && <p role="status">효과음을 불러오고 있습니다.{controller.current && <button className="text-button" onClick={() => controller.current?.abort()}>불러오기 취소</button>}</p>}
     {error && <p role="alert" className="ai-error">{error}</p>}
     {value.assets.map(asset => <div className={`effects-missing ${connected.has(asset.id) ? 'connected' : ''}`} key={asset.id}><span><strong>{connected.has(asset.id) ? '연결됨' : '재연결 필요'}</strong> · {asset.name}</span><button className="text-button" disabled={dirty || loading} onClick={() => void choose(asset)} aria-label={`${asset.name} 재연결`}>음원 다시 연결</button><button className="text-button" disabled={dirty || loading} onClick={() => { change({ assets: value.assets.filter(a => a.id !== asset.id), clips: value.clips.filter(c => c.assetId !== asset.id) }); setSelected(''); }} aria-label={`${asset.name} 제외`}>음원과 클립 제외</button></div>)}

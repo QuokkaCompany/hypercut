@@ -18,3 +18,6 @@ declare global {
 }
 export interface CorrectionRequest { requestId: string; instruction: string; glossary: string; cues: { id: string; text: string }[] }
 export interface CorrectionProposal { requestId: string; changes: { id: string; before: string; after: string; reason: string }[] }
+export interface EffectAIContext { duration: number; kept: { start: number; end: number }[]; assets: { id: string; duration: number; description: string }[]; clips: EffectClip[]; cues: { id: string; text: string; start: number; end: number }[] }
+export interface EffectAIRequest extends EffectAIContext { requestId: string; instruction: string }
+export interface EffectAIProposal { requestId: string; changes: { id: string; action: 'add' | 'update' | 'remove'; before: EffectClip | null; after: EffectClip | null; reason: string }[] }

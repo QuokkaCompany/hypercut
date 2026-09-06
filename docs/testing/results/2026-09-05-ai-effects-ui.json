@@ -1,0 +1,92 @@
+[
+  {
+    "surface": "browser",
+    "status": "PASS",
+    "authenticatedModels": "NOT_RUN: manual JSON plus intercepted local UI response",
+    "explicitInputSelection": true,
+    "filenamesHashesUnselectedCuesNotSent": true,
+    "invalidTimeAndUnknownAssetRejected": true,
+    "onlySelectedChangesApplied": true,
+    "unselectedRemovalAndOutsideClipPreserved": true,
+    "oldRequestRejected": true,
+    "cancelRetry": true,
+    "pendingContextChangeDiscarded": true,
+    "selectionResetAfterChange": true,
+    "undoRedo": true,
+    "projectRoundTrip": true,
+    "captionsPreserved": true,
+    "actualMP4Decoded": true,
+    "expectedEditedTimes": {
+      "updated": [
+        3,
+        3.4
+      ],
+      "notRemoved": [
+        4,
+        4.5
+      ],
+      "added": [
+        4.5,
+        4.75
+      ],
+      "outsideSelection": [
+        5,
+        5.5
+      ]
+    },
+    "levels": {
+      "updated": 0.07080272124317472,
+      "notRemoved": 0.035504466537815076,
+      "added": 0.03549968277721971,
+      "outsideSelection": 0.035494882345063025,
+      "quiet": 0
+    },
+    "externalRequests": 0,
+    "pageErrors": []
+  },
+  {
+    "surface": "desktop",
+    "status": "PASS",
+    "authenticatedModels": "NOT_RUN: manual JSON plus intercepted local UI response",
+    "explicitInputSelection": true,
+    "filenamesHashesUnselectedCuesNotSent": true,
+    "invalidTimeAndUnknownAssetRejected": true,
+    "onlySelectedChangesApplied": true,
+    "unselectedRemovalAndOutsideClipPreserved": true,
+    "oldRequestRejected": true,
+    "cancelRetry": true,
+    "pendingContextChangeDiscarded": true,
+    "selectionResetAfterChange": true,
+    "undoRedo": true,
+    "projectRoundTrip": true,
+    "captionsPreserved": true,
+    "actualMP4Decoded": true,
+    "expectedEditedTimes": {
+      "updated": [
+        3,
+        3.4
+      ],
+      "notRemoved": [
+        4,
+        4.5
+      ],
+      "added": [
+        4.5,
+        4.75
+      ],
+      "outsideSelection": [
+        5,
+        5.5
+      ]
+    },
+    "levels": {
+      "updated": 0.07080272124317472,
+      "notRemoved": 0.035504466537815076,
+      "added": 0.03549968277721971,
+      "outsideSelection": 0.035494882345063025,
+      "quiet": 0
+    },
+    "externalRequests": 0,
+    "pageErrors": []
+  }
+]

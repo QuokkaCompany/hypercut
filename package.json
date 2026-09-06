@@ -35,7 +35,9 @@
     "test:correction": "node --test tests/caption-correction.test.mjs tests/caption-correction-api.integration.mjs",
     "test:correction:e2e": "node scripts/caption-correction-e2e.mjs",
     "test:effects": "node --test tests/effects.test.mjs tests/effects.integration.mjs",
-    "test:effects:e2e": "node scripts/effects-e2e.mjs"
+    "test:effects:e2e": "node scripts/effects-e2e.mjs",
+    "test:ai-effects": "node --test tests/effect-proposal.test.mjs tests/effect-proposal-api.integration.mjs",
+    "test:ai-effects:e2e": "node scripts/ai-effects-e2e.mjs"
   },
   "dependencies": {
     "@napi-rs/canvas": "1.0.8",
