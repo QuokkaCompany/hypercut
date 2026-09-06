@@ -1,0 +1,532 @@
+{
+  "date": "2026-09-06T13:53:50.798675+00:00",
+  "status": "PASS_FOR_RECORDED_SCOPE",
+  "baseCommit": "e3c5ab5",
+  "scope": "One MCPShare catch guard fix. Actual Chrome and packaged Mac, synthetic media, 12 lifecycle conditions and 6 settings/correction/effects workflows. No authenticated external model or tunnel. Native dialog paths controlled by test.",
+  "commands": [
+    "npm run package:desktop",
+    "node scripts/mcp-lifecycle-e2e.mjs --desktop",
+    "node scripts/mcp-e2e.mjs --desktop"
+  ],
+  "history": [
+    {
+      "raw": "test-output/mcp-lifecycle-1788702073912",
+      "classification": "Harness read project before import completed; old visible threshold was not evidence of a product failure.",
+      "report": {
+        "status": "failed",
+        "date": "2026-09-06T13:41:13.913Z",
+        "scope": "Actual Chrome and packaged Mac UI with real app HTTP state and controlled response delivery. Synthetic media; not a new stdio/account/model/tunnel test. Native dialog selections controlled by test.",
+        "sourceHashes": {
+          "src/MCPShare.tsx": "09646a001c990bcbdd953e9afea960081af06c684564b7ad13aabdbcfccbf78d",
+          "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+          "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+          "scripts/mcp-lifecycle-e2e.mjs": "0e5fa0183b9142d9d4c66ce16ac8a5ab29c9ddaa805e28f32c131015d0ddf068",
+          "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "34410a60f9369b46a24e74f1ed692da37ccb568a6acd3c053c3943639eca096d"
+        },
+        "cases": [
+          {
+            "surface": "browser",
+            "name": "L01-late-creation",
+            "status": "PASS"
+          }
+        ],
+        "barriers": [
+          {
+            "surface": "browser",
+            "name": "L01-create",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 6.7661249999998745,
+                "heldMs": 142.4395840000002,
+                "delivered": true
+              }
+            ],
+            "released": true
+          },
+          {
+            "surface": "browser",
+            "name": "L02-create",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 1.3789999999999054,
+                "heldMs": 40.958665999999994,
+                "delivered": true
+              }
+            ],
+            "released": true
+          }
+        ],
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'-40' !== '-52'\n\n    at openSource (file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-lifecycle-e2e.mjs:43:14)\n    at async exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-lifecycle-e2e.mjs:80:45)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-lifecycle-e2e.mjs:110:198"
+      },
+      "reportSHA256": "c518646a567ad6b10eefb57d1a0db702cb0527124e86e074b02b3dd4b2d6e9cd",
+      "executedRunnerSHA256": "0e5fa0183b9142d9d4c66ce16ac8a5ab29c9ddaa805e28f32c131015d0ddf068"
+    },
+    {
+      "raw": "test-output/mcp-lifecycle-1788702572676",
+      "classification": "Product failure reproduced: obsolete apply preflight put an error on the new pending share.",
+      "report": {
+        "status": "failed",
+        "date": "2026-09-06T13:49:32.678Z",
+        "scope": "Actual Chrome and packaged Mac UI with real app HTTP state and controlled response delivery. Synthetic media; not a new stdio/account/model/tunnel test. Native dialog selections controlled by test.",
+        "sourceHashes": {
+          "src/MCPShare.tsx": "09646a001c990bcbdd953e9afea960081af06c684564b7ad13aabdbcfccbf78d",
+          "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+          "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+          "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+          "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+          "scripts/mcp-lifecycle-e2e.mjs": "756daab085ecb375433f6e7f6b23247c602095074c5e559e40e8e59f7c0f6adc",
+          "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+          "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "34410a60f9369b46a24e74f1ed692da37ccb568a6acd3c053c3943639eca096d"
+        },
+        "cases": [
+          {
+            "surface": "browser",
+            "name": "L01-late-creation",
+            "status": "PASS"
+          },
+          {
+            "surface": "browser",
+            "name": "L02-new-project",
+            "status": "PASS"
+          },
+          {
+            "surface": "browser",
+            "name": "L03-late-proposal",
+            "status": "PASS"
+          }
+        ],
+        "barriers": [
+          {
+            "surface": "browser",
+            "name": "L01-create",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 10.331957999999986,
+                "heldMs": 113.39258399999994,
+                "delivered": true
+              }
+            ],
+            "released": true
+          },
+          {
+            "surface": "browser",
+            "name": "L02-create",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 1.1990000000000691,
+                "heldMs": 233.99120900000003,
+                "delivered": true
+              }
+            ],
+            "released": true
+          },
+          {
+            "surface": "browser",
+            "name": "L03-poll",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 1.2655420000000959,
+                "heldMs": 113.05512499999986,
+                "delivered": true
+              }
+            ],
+            "released": true
+          },
+          {
+            "surface": "browser",
+            "name": "L04-apply-check",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 1.0340420000002268,
+                "heldMs": 49.952791000000616,
+                "delivered": true
+              }
+            ],
+            "released": true
+          },
+          {
+            "surface": "browser",
+            "name": "L04-new-create",
+            "responses": [
+              {
+                "status": 200,
+                "bodyReceivedMs": 1.3128749999996217,
+                "heldMs": 35.641083000000435,
+                "delivered": true
+              }
+            ],
+            "released": true
+          }
+        ],
+        "error": "AssertionError [ERR_ASSERTION]: Old apply validation must not put an error on the new share\n\n1 !== 0\n\n    at exercise (file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-lifecycle-e2e.mjs:95:12)\n    at async file:///Users/dante/Desktop/github/hyper_cut/scripts/mcp-lifecycle-e2e.mjs:112:198"
+      },
+      "reportSHA256": "7dbef501ea0623451a1539e11fd37fbeaef4e8ef5d4f2259a6002b2d08e6a817",
+      "executedRunnerSHA256": "756daab085ecb375433f6e7f6b23247c602095074c5e559e40e8e59f7c0f6adc"
+    }
+  ],
+  "lifecycleRaw": "test-output/mcp-lifecycle-1788702685183",
+  "lifecycle": {
+    "status": "completed",
+    "date": "2026-09-06T13:51:25.184Z",
+    "scope": "Actual Chrome and packaged Mac UI with real app HTTP state and controlled response delivery. Synthetic media; not a new stdio/account/model/tunnel test. Native dialog selections controlled by test.",
+    "sourceHashes": {
+      "src/MCPShare.tsx": "7d2064aad74009916d6ef88793e38ecba5b5428e2941b33dcd6f01179ccafb58",
+      "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+      "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+      "scripts/mcp-lifecycle-e2e.mjs": "fd99c1c2730a5e0cc49eba342b0c0d561dfc753b3b81ab57f6c5af703d34a9a8",
+      "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "5c5c2caa3e918a0ba83345cef8814d6a6822a0a5f062b3885d66f69d2778b25f",
+      "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+      "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+      "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+      "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+      "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+      "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+    },
+    "cases": [
+      {
+        "surface": "browser",
+        "name": "L01-late-creation",
+        "status": "PASS"
+      },
+      {
+        "surface": "browser",
+        "name": "L02-new-project",
+        "status": "PASS"
+      },
+      {
+        "surface": "browser",
+        "name": "L03-late-proposal",
+        "status": "PASS"
+      },
+      {
+        "surface": "browser",
+        "name": "L04-late-apply-check",
+        "status": "PASS"
+      },
+      {
+        "surface": "browser",
+        "name": "L06-current-failure-retry",
+        "status": "PASS"
+      },
+      {
+        "surface": "browser",
+        "name": "L05-provider-change",
+        "status": "PASS"
+      },
+      {
+        "surface": "desktop",
+        "name": "L01-late-creation",
+        "status": "PASS"
+      },
+      {
+        "surface": "desktop",
+        "name": "L02-new-project",
+        "status": "PASS"
+      },
+      {
+        "surface": "desktop",
+        "name": "L03-late-proposal",
+        "status": "PASS"
+      },
+      {
+        "surface": "desktop",
+        "name": "L04-late-apply-check",
+        "status": "PASS"
+      },
+      {
+        "surface": "desktop",
+        "name": "L06-current-failure-retry",
+        "status": "PASS"
+      },
+      {
+        "surface": "desktop",
+        "name": "L05-provider-change",
+        "status": "PASS"
+      }
+    ],
+    "barriers": [
+      {
+        "surface": "browser",
+        "name": "L01-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 9.016000000000076,
+            "heldMs": 125.02974999999992,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "browser",
+        "name": "L02-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.4327089999999316,
+            "heldMs": 232.4648749999999,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "browser",
+        "name": "L03-poll",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.0058749999998327,
+            "heldMs": 113.34220800000003,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "browser",
+        "name": "L04-apply-check",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.2516249999998763,
+            "heldMs": 48.87575000000015,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "browser",
+        "name": "L04-new-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.2241659999999683,
+            "heldMs": 34.49499999999989,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "browser",
+        "name": "L05-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.060457999999926,
+            "heldMs": 1.9540000000015425,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "desktop",
+        "name": "L01-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 4.983041999999841,
+            "heldMs": 95.81745899999987,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "desktop",
+        "name": "L02-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.4466249999986758,
+            "heldMs": 228.5660829999997,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "desktop",
+        "name": "L03-poll",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.3276669999995647,
+            "heldMs": 88.59041699999943,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "desktop",
+        "name": "L04-apply-check",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.0915839999979653,
+            "heldMs": 40.08687500000087,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "desktop",
+        "name": "L04-new-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.341208000001643,
+            "heldMs": 18.962290999999823,
+            "delivered": true
+          }
+        ],
+        "released": true
+      },
+      {
+        "surface": "desktop",
+        "name": "L05-create",
+        "responses": [
+          {
+            "status": 200,
+            "bodyReceivedMs": 1.104750000002241,
+            "heldMs": 2.5477499999979045,
+            "delivered": true
+          }
+        ],
+        "released": true
+      }
+    ],
+    "packageSourceHashes": {
+      "src/MCPShare.tsx": "7d2064aad74009916d6ef88793e38ecba5b5428e2941b33dcd6f01179ccafb58",
+      "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+      "src/App.tsx": "7087953ea5704ee68a0ebaf69c07f0f2726675c67fd8bc6b7b3056681f954893",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+      "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+      "server/media.mjs": "bd87d138f27d42defd7abd341bb315f7f837d7ed67cb73705711bbdf3ef85a87",
+      "shared/timeline.mjs": "6b43eafda9cc2dbfe368677d385a528e93ee73950f5ca50b3165e84c8427b25c",
+      "dist/index.html": "d8371dcb269a5a5ac056f1e0da95c372fc938d9a788d1b74a5bf0a0ecf19baf0",
+      "dist/assets/index-DNRAvftO.js": "a2ddb95fe737a16f34dfc1b0e3576fe68dab11ae565268b20afac77ef889746c",
+      "dist/assets/index-BgkDvWNa.css": "814a9ee098c44012ca1ea4701709e151c2014feaaabff62abf6342db68816e90"
+    }
+  },
+  "uiRaw": "test-output/mcp-ui-1788702729245",
+  "ui": {
+    "status": "completed",
+    "date": "2026-09-06T13:52:09.246Z",
+    "scope": "Actual local MCP stdio children and Chrome/packaged Mac UI. Synthetic media, no external model/account/tunnel. Native dialog results selected by test.",
+    "sourceHashes": {
+      "src/MCPShare.tsx": "7d2064aad74009916d6ef88793e38ecba5b5428e2941b33dcd6f01179ccafb58",
+      "src/AIAssistant.tsx": "41a40a77ebebee17261a2a88349053647563a4331022aa031455b76eeb84afb0",
+      "server/app.mjs": "1297a8c94d2930c1c38d4cf0ecf5b90d5c5f817328527bec796632ae0659307a",
+      "server/mcp-shares.mjs": "453cd787518c3d680730618a169e0575dd2ad9fe1ec5f0971771dd0f8fecc8c5",
+      "server/mcp-routes.mjs": "4a1f76a687789ed17ae076ca09393c2b629728f2805546f16f9d54bc02d2929e",
+      "server/mcp-bridge.mjs": "45b5d1ab8c3a9649cea839931939a298b2f456c0ce887ea04ee04adadf538611",
+      "server/mcp-stdio.mjs": "0695a3f7a505c60bab94a3427ed8f3177bb18f980e002e9b5273ae7a7ca2dc62",
+      "package-lock.json": "2174407e31dbce93228e2ed10d0d39c2cb61c3919128c365cdefd02a5e3c91c7",
+      "scripts/mcp-e2e.mjs": "ad605291739661d637ff7e2ee0e6cc135cce8a9a19769be6c6977dd7f1cfe141",
+      "release/HyperCut-darwin-arm64/HyperCut.app/Contents/Resources/app.asar": "5c5c2caa3e918a0ba83345cef8814d6a6822a0a5f062b3885d66f69d2778b25f"
+    },
+    "runs": [
+      {
+        "surface": "browser",
+        "status": "PASS",
+        "tasks": [
+          "settings",
+          "correction",
+          "effects"
+        ],
+        "actualMCPChild": true,
+        "staleShareRevoked": true,
+        "revocationFailureAndRetry": true,
+        "duplicateProposalIdempotent": true,
+        "queuedDoesNotApply": true,
+        "receiptFailureDoesNotReapply": true,
+        "onlySelectedChangesApplied": true,
+        "negationNeedsReview": true,
+        "captionAndEffectUndoRedo": true,
+        "fullProjectRoundTrip": true,
+        "actualMP4Decoded": true,
+        "updatedEffectRMS": 0.07080272124317472,
+        "unselectedEffectRMS": 0,
+        "errors": [],
+        "externalPageRequests": [],
+        "aiProviderRequests": []
+      },
+      {
+        "surface": "desktop",
+        "status": "PASS",
+        "tasks": [
+          "settings",
+          "correction",
+          "effects"
+        ],
+        "actualMCPChild": true,
+        "staleShareRevoked": true,
+        "revocationFailureAndRetry": true,
+        "duplicateProposalIdempotent": true,
+        "queuedDoesNotApply": true,
+        "receiptFailureDoesNotReapply": true,
+        "onlySelectedChangesApplied": true,
+        "negationNeedsReview": true,
+        "captionAndEffectUndoRedo": true,
+        "fullProjectRoundTrip": true,
+        "actualMP4Decoded": true,
+        "updatedEffectRMS": 0.07080272124317472,
+        "unselectedEffectRMS": 0,
+        "errors": [],
+        "externalPageRequests": [],
+        "aiProviderRequests": []
+      }
+    ]
+  },
+  "artifacts": {
+    "test-output/mcp-lifecycle-1788702685183/browser-saved.json": "6b092be6a617e81726257ce597eafb631c3a0aecbff138dc5df7bd7a83370c64",
+    "test-output/mcp-lifecycle-1788702685183/desktop-saved.json": "2df819352be2d9251d477de02c845a68b2125cb2d877fd78d4a9ea5c4927d50f",
+    "test-output/mcp-lifecycle-1788702685183/executed-runner.mjs": "fd99c1c2730a5e0cc49eba342b0c0d561dfc753b3b81ab57f6c5af703d34a9a8",
+    "test-output/mcp-lifecycle-1788702685183/first.json": "7b988af1959bd4973da88da175c93577f8914deb1d1c157e5603f434991cb2be",
+    "test-output/mcp-lifecycle-1788702685183/first.mp4": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "test-output/mcp-lifecycle-1788702685183/results.json": "84d52e05c24f1f5863b07fb9d5a9b17e9c8cc5ebd812beb3ed8d39f5de034a14",
+    "test-output/mcp-lifecycle-1788702685183/second.json": "65fe792ca1d249933ca4971f7ce169a4ddb4b5f7ac7eb9e0c0f487f2f783ec94",
+    "test-output/mcp-lifecycle-1788702685183/second.mp4": "e76779688fddf6fdad5b392036c074ab55ca9d76e1b51cc404f59838dc952cc3",
+    "test-output/mcp-ui-1788702729245/beep.wav": "49e02a11e7796b4e499e1d8232b9510bdd39ab03611730f5686fae4df73fd4ad",
+    "test-output/mcp-ui-1788702729245/browser-correction.png": "a458affaa2b9bac3649ca8d56ba76be319b2a321c725cac824fe51a7f8439795",
+    "test-output/mcp-ui-1788702729245/browser-effects.png": "1893c67f863152c313ed3d8848af1673182a8fa39389b914599e954570bf4728",
+    "test-output/mcp-ui-1788702729245/browser-output.mp4": "3058c3dd820040ae9b44a1295a340cd17a793871b1c2950ca5d12efc917dda03",
+    "test-output/mcp-ui-1788702729245/browser-project.json": "562c55ac1739ced47209f1d00852a80346209257ec55eb1f2402deb7412f71cd",
+    "test-output/mcp-ui-1788702729245/browser.f32": "12e1ac095cfc429af1b3c1a33beb51980dcef343a6732051fb45e0ffd1502f46",
+    "test-output/mcp-ui-1788702729245/desktop-correction.png": "eb5c99f7b616dbe234c9427c43af08a83526043b779519c786cbc56f373a34bf",
+    "test-output/mcp-ui-1788702729245/desktop-effects.png": "8d6efa28a5eb16a6ff9504c1c98476f09f0667a22d8902e813c5316c26ff84d9",
+    "test-output/mcp-ui-1788702729245/desktop-output.mp4": "3058c3dd820040ae9b44a1295a340cd17a793871b1c2950ca5d12efc917dda03",
+    "test-output/mcp-ui-1788702729245/desktop-project.json": "51fc153854eb60b0d9f91311644d4751521be0a485bb3cffc6f21625e503fb56",
+    "test-output/mcp-ui-1788702729245/desktop.f32": "12e1ac095cfc429af1b3c1a33beb51980dcef343a6732051fb45e0ffd1502f46",
+    "test-output/mcp-ui-1788702729245/fixture.mp4": "621184a31daa630e3b6f78ca47d2e11885b22cc358a0c2d478e1e7af9d44a0e9",
+    "test-output/mcp-ui-1788702729245/initial.json": "a5f75dc55ff118ced30ec01511ce24f7d6858a6ee2263a58f41df2a6e017eddb",
+    "test-output/mcp-ui-1788702729245/mobile-correction.png": "a0d770fd55085eb9a890521405e05d224e3342153001ad1b3addba21c6d70312",
+    "test-output/mcp-ui-1788702729245/results.json": "0b1717c7fd7768620a4af442bdef3fb2e62ebb960dbe411a5206b7759cb54691"
+  },
+  "notRun": [
+    "Human Korean speech quality and editing-time evaluation",
+    "Authenticated ChatGPT/Claude/local LLM inference and ChatGPT tunnel",
+    "Long-media performance of this candidate",
+    "New-machine installation/signing/notarization"
+  ]
+}

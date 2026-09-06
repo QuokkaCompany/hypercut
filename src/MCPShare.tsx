@@ -117,7 +117,7 @@ export function MCPShare(props: Props) {
       // in the same event before it can display an obsolete-target warning.
       if (outcome === 'applied' && props.effectsTask) props.onClose();
       await sendReceipt(resolution);
-    } catch (e) { if (mounted.current) { setError((e as Error).message); setWorking(false); } }
+    } catch (e) { if (mounted.current && active.current === item && latest.current.key === item.key) { setError((e as Error).message); setWorking(false); } }
   }
   const config = share ? JSON.stringify({ mcpServers: { hypercut: share.connection } }, null, 2) : '';
   return <div className="mcp-share">
