@@ -4,8 +4,8 @@ import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
-import { capture } from '../../server/process.mjs';
-import { inspectMedia, publicMedia } from '../../server/media.mjs';
+import { capture } from '../../tests/reference/server/process.mjs';
+import { inspectMedia, publicMedia } from '../../tests/reference/server/media.mjs';
 const exec = promisify(execFile);
 export async function sha256(file) { const hash = createHash('sha256'); for await (const chunk of createReadStream(file)) hash.update(chunk); return hash.digest('hex'); }
 export async function transcriptionFixture(directory, seconds) {

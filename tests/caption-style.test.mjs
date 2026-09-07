@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_CAPTION_STYLE, validateCaptionStyle, captionImageEvents } from '../shared/caption-style.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { captionCues } from '../server/caption-rendering.mjs';
-import { fontHasCodePoint } from '../server/font-coverage.mjs';
+import { captionCues } from './reference/server/caption-rendering.mjs';
+import { fontHasCodePoint } from './reference/server/font-coverage.mjs';
 import { readFile } from 'node:fs/promises';
 const transcript={trackIndex:1,channel:0,language:'ko',model:'manual',cues:[{id:'a',start:1,end:2.3,text:'한글'},{id:'b',start:4.001,end:5,text:'두 번째'}]};
 

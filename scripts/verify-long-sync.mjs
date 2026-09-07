@@ -1,7 +1,7 @@
 import { readFile, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 
 const directory = path.resolve('test-output/benchmark');
 const report = JSON.parse(await readFile(path.join(directory, 'results.json'), 'utf8'));

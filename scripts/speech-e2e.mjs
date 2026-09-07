@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
 import { speechFixture } from '../tests/helpers/speech-fixture.mjs';
 
 const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-speech-ui-'));

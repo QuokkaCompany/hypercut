@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, writeFile, copyFile } from 'node:fs/promises';
 import path from 'node:path';
-import { inspectMedia, exportMedia } from '../server/media.mjs';
-import { capture } from '../server/process.mjs';
+import { inspectMedia, exportMedia } from './reference/server/media.mjs';
+import { capture } from './reference/server/process.mjs';
 import { sha256 } from '../scripts/helpers/transcription-performance-fixture.mjs';
 
 await mkdir('test-output', { recursive: true });

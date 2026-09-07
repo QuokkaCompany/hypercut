@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { startServer } from '../server/app.mjs';
+import { startServer } from './reference/server/app.mjs';
 import { generateDemo } from '../scripts/fixtures.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { request as httpRequest } from 'node:http';

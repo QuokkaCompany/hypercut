@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { createShareStore, SHARE_LIMITS } from '../server/mcp-shares.mjs';
+import { createShareStore, SHARE_LIMITS } from './reference/server/mcp-shares.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { effectProposalFixture } from './helpers/effect-proposal-fixture.mjs';
 

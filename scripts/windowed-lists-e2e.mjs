@@ -3,8 +3,8 @@ import { mkdtemp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises'
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
-import { inspectMedia } from '../server/media.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
 import { generateDemo } from './fixtures.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { DEFAULT_CAPTION_STYLE } from '../shared/caption-style.mjs';

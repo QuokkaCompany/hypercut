@@ -4,7 +4,7 @@ HyperCut is an early-stage, local-first video editor maintained under the Quokka
 
 ## Development setup
 
-Development currently targets macOS on Apple Silicon. Install Node.js 22.12 or newer and FFmpeg/ffprobe, then clone your fork:
+Development currently targets macOS on Apple Silicon. Install Go 1.26+, a C toolchain, Node.js 22.12 or newer and FFmpeg/ffprobe, then clone your fork:
 
 ```sh
 git clone https://github.com/YOUR_USERNAME/hypercut.git
@@ -36,9 +36,10 @@ Useful source directories:
 | --- | --- |
 | `src/` | React editor and browser UI |
 | `shared/` | Timeline, project, caption, and proposal rules |
-| `server/` | Shared job engine, local API, media processing, transcription, and AI adapters |
+| `internal/media/`, `internal/local/`, `internal/ai/` | Shared Go media engine, local API, AI adapters and MCP |
 | `cmd/hypercut-cloud/`, `internal/cloud/` | Go cloud HTTP API, account/session handling, uploads, metadata and job submission |
-| `server/cloud/` | Node media worker/private helper and original API for compatibility/rollback |
+| `internal/cloud/worker.go` | Durable Go media worker |
+| `tests/reference/server/` | Frozen JavaScript reference for parity tests; never distributed |
 | `desktop/` | Electron lifecycle and native file integration |
 | `scripts/` | Development, packaging, fixtures, and validation runners |
 | `tests/` | Unit and integration tests |
@@ -71,6 +72,6 @@ The `private` field in `package.json` prevents accidental npm publication; it do
 
 Read the [cloud architecture](docs/cloud/architecture.md) and [API contract](docs/cloud/api.md). Cloud transport changes must preserve offline local editing and portable project compatibility. Keep accounts and provider credentials outside project JSON. Use ownership-scoped queries for every file, job and project. Test stale revisions, interrupted requests and cross-account IDs, not only the successful path.
 
-On Go 1.26+ and Node 24+ with FFmpeg, run `npm run test:server`, `npm run test:cloud:go` and, after building the frontend, `npm run test:cloud:go:e2e` (Chrome locally or Playwright Chromium in CI). These use disposable synthetic media and accounts, a real separate worker and downloaded-output decoding. The migration case also switches Node → Go → Node → Go while preserving sessions, partial uploads, projects and jobs. `npm run test:cloud` and `npm run test:cloud:e2e` retain the original Node transport checks. No paid inference is requested. Use the same storage directory and limits for API, worker and account CLI.
+On Go 1.26+ and Node 24+ with FFmpeg, run `npm run test:server`, `npm run test:cloud:go` and, after building the frontend, `npm run test:cloud:go:e2e` (Chrome locally or Playwright Chromium in CI). These use disposable synthetic media and accounts, a real separate worker and downloaded-output decoding. The migration case also switches Node → Go → Node → Go while preserving sessions, partial uploads, projects and jobs. `npm run test:reference:cloud` retains the original Node transport checks; reference results do not establish Go correctness. `npm run test:local:go` exercises the Go local API and real MCP child; `npm run test:local:go:e2e` covers browser editing. No paid inference is requested. Use the same storage directory and limits for API, worker and account CLI.
 
-Format Go changes with `gofmt` and run `go vet ./...`. Keep media/project validation in the shared engine rather than copying timeline rules into Go. Regenerate bundled module notices with `node scripts/go-notices.mjs` when Go dependencies change. The Go transport currently targets macOS and Linux; local/Electron development does not require Go.
+Format Go changes with `gofmt` and run `go vet ./...`. Keep media/project validation in the shared Go engine, and verify browser-side timeline parity with reference fixtures. Regenerate bundled module notices with `node scripts/go-notices.mjs` when Go dependencies change. The backend currently targets macOS and Linux. Local and Electron builds also require Go and a C toolchain for native ONNX Runtime integration.

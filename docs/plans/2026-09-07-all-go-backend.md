@@ -8,4 +8,6 @@
 6. Remove production Node server launch dependencies, update container/build/notices and English operations docs.
 7. Run behavioral, failure, browser, media and Node-free container acceptance before publishing the migration.
 
-Existing JavaScript tests serve as external contract clients/reference oracles. Tests must distinguish mocks from real inference. The writing-plans skill is not installed; this plan follows the explicit autonomous implementation authorization.
+Existing JavaScript tests serve as external contract clients/reference oracles. Tests must distinguish mocks from real inference.
+
+Implementation and local acceptance are complete; see [validation results](../testing/2026-09-07-all-go-backend-results.md). Remote CI remains a separate gate.

@@ -6,9 +6,9 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import os from 'node:os';
-import { startServer } from '../server/app.mjs';
-import { inspectMedia } from '../server/media.mjs';
-import { inspectEffect, publicEffect } from '../server/effects.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
+import { inspectEffect, publicEffect } from '../tests/reference/server/effects.mjs';
 import { writeTone, writeFlashVideo } from '../tests/helpers/effects-fixture.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 

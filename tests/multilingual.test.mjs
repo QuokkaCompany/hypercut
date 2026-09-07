@@ -4,10 +4,10 @@ import { randomUUID } from 'node:crypto';
 import { CAPTION_LANGUAGES } from '../shared/languages.mjs';
 import { validateTranscript, mapCaptions, toSRT, toTranscriptText, editCaptionContent } from '../shared/captions.mjs';
 import { validateTranslationRequest, validateTranslationProposal, applyCaptionTranslation } from '../shared/caption-translation.mjs';
-import { validateTranscriptionSettings, parseTranscription } from '../server/transcription.mjs';
+import { validateTranscriptionSettings, parseTranscription } from './reference/server/transcription.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { askCaptionTranslation } from '../server/ai.mjs';
-import { createShareStore } from '../server/mcp-shares.mjs';
+import { askCaptionTranslation } from './reference/server/ai.mjs';
+import { createShareStore } from './reference/server/mcp-shares.mjs';
 
 const media = { name: 'source.mp4', duration: 10, fingerprint: 'a'.repeat(64), audioTracks: [{ index: 1, channels: 1 }] };
 const original = { trackIndex: 1, channel: 0, language: 'ko', model: 'manual', cues: [{ id: 'a', start: 1, end: 2, text: '영상 2개입니다.' }, { id: 'b', start: 4, end: 5, text: '지우지 마세요.' }] };

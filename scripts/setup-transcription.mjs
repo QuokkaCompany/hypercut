@@ -3,7 +3,7 @@ import { mkdir, stat, rename, rm, copyFile, chmod, writeFile } from 'node:fs/pro
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TRANSCRIPTION_MODEL as model } from '../server/transcription.mjs';
+import { TRANSCRIPTION_MODEL as model } from './helpers/transcription-model.mjs';
 import { DownloadCancelledError, downloadVerifiedFile, fileSHA256 as sha, withDownloadSignals } from './helpers/verified-download.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));

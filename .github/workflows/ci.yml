@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   checks:
-    name: Node ${{ matrix.node }} / unit, build, media
+    name: Node ${{ matrix.node }} / frontend, Go backend, reference parity
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -30,6 +30,10 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
       - name: Install FFmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: npm ci
@@ -40,20 +44,9 @@ jobs:
       - name: Local API regressions
         if: matrix.node == 24
         run: npm run test:api
-      - name: Cloud isolation, recovery and media
-        if: matrix.node == 24
-        run: npm run test:cloud
       - name: Install browser for cloud acceptance
         if: matrix.node == 24
         run: npx playwright install --with-deps chromium
-      - name: Cloud browser acceptance
-        if: matrix.node == 24
-        run: npm run test:cloud:e2e
-      - name: Set up Go
-        if: matrix.node == 24
-        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
-        with:
-          go-version-file: go.mod
       - name: Go server race tests
         if: matrix.node == 24
         run: npm run test:server
@@ -63,3 +56,13 @@ jobs:
       - name: Cloud browser against Go API
         if: matrix.node == 24
         run: npm run test:cloud:go:e2e
+      - name: Local browser against Go backend
+        if: matrix.node == 24
+        run: npm run test:local:go:e2e
+        env:
+          HYPERCUT_BROWSER: chromium
+      - name: Legacy media reference
+        run: npm run test:reference:media
+      - name: Go static checks
+        if: matrix.node == 24
+        run: go vet ./...

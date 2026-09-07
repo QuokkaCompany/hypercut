@@ -4,9 +4,9 @@ import { mkdtemp, rm, stat, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { generateDemo } from '../scripts/fixtures.mjs';
-import { inspectMedia, analyzeMedia, exportMedia, playbackFile } from '../server/media.mjs';
+import { inspectMedia, analyzeMedia, exportMedia, playbackFile } from './reference/server/media.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from './reference/server/process.mjs';
 
 test('G1: actual decode, sample analysis, frame-aligned cut and verified MP4 export', { timeout: 120000 }, async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-media-'));

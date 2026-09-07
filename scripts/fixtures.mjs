@@ -1,7 +1,7 @@
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 
 export async function generateDemo(output) {
   try { await access(output); return output; } catch {}

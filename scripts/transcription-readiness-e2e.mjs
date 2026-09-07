@@ -4,9 +4,9 @@ import { createHash } from 'node:crypto';
 import { extractFile } from '@electron/asar';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
-import { inspectMedia } from '../server/media.mjs';
-import { transcriptionRuntime, TRANSCRIPTION_MODEL } from '../server/transcription.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
+import { transcriptionRuntime, TRANSCRIPTION_MODEL } from '../tests/reference/server/transcription.mjs';
 import { makeProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { speechFixture } from '../tests/helpers/speech-fixture.mjs';
 

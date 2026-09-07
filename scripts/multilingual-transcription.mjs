@@ -3,9 +3,9 @@ import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { capture } from '../server/process.mjs';
-import { inspectMedia } from '../server/media.mjs';
-import { transcribeMedia, TRANSCRIPTION_MODEL } from '../server/transcription.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
+import { transcribeMedia, TRANSCRIPTION_MODEL } from '../tests/reference/server/transcription.mjs';
 const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-multilingual-stt-'));
 const report = { scope: 'Actual installed Whisper small on generated TTS, not human recording accuracy', model: TRANSCRIPTION_MODEL, runs: [] };
 const samples = [

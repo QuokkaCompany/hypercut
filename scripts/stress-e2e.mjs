@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
 
 const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-stress-'));
 let server, browser;

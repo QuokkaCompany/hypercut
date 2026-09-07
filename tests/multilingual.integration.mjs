@@ -4,13 +4,13 @@ import { mkdtemp, rm, mkdir, readFile, writeFile, copyFile } from 'node:fs/promi
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
-import { startServer } from '../server/app.mjs';
-import { renderCaptionImages } from '../server/caption-rendering.mjs';
-import { exportMedia, inspectMedia } from '../server/media.mjs';
+import { startServer } from './reference/server/app.mjs';
+import { renderCaptionImages } from './reference/server/caption-rendering.mjs';
+import { exportMedia, inspectMedia } from './reference/server/media.mjs';
 import { DEFAULT_CAPTION_STYLE } from '../shared/caption-style.mjs';
-import { createClaudeCLI } from '../server/claude-cli.mjs';
+import { createClaudeCLI } from './reference/server/claude-cli.mjs';
 import { fakeClaude } from './helpers/fake-claude.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from './reference/server/process.mjs';
 import { generateDemo } from '../scripts/fixtures.mjs';
 
 const request = () => ({ requestId: randomUUID(), instruction: '중국어로 번역', glossary: '', targetLanguage: 'zh', cues: [{ id: 'a', text: '자동 자막입니다.' }] });

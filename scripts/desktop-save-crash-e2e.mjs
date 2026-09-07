@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import os from 'node:os';
 import { generateDemo } from './fixtures.mjs';
-import { inspectMedia } from '../server/media.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { DEFAULT_CAPTION_STYLE } from '../shared/caption-style.mjs';
 import { processTreeRSS } from './helpers/performance.mjs';

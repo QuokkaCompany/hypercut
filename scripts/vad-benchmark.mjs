@@ -8,10 +8,10 @@ import os from 'node:os';
 import assert from 'node:assert/strict';
 import { rssSampler, summarize } from './helpers/performance.mjs';
 import { transcriptionFixture, sha256 } from './helpers/transcription-performance-fixture.mjs';
-import { inspectMedia, publicMedia } from '../server/media.mjs';
-import { capture } from '../server/process.mjs';
+import { inspectMedia, publicMedia } from '../tests/reference/server/media.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 import { DEFAULT_SETTINGS, validateProject } from '../shared/timeline.mjs';
-import { VAD_MODEL } from '../server/vad.mjs';
+import { VAD_MODEL } from '../tests/reference/server/vad.mjs';
 
 const exec = promisify(execFile);
 const option = (name, fallback) => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;

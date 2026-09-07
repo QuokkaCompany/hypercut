@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { inspectMedia, analyzeMedia, exportMedia, exportCaptions } from '../server/media.mjs';
-import { inspectEffect } from '../server/effects.mjs';
+import { inspectMedia, analyzeMedia, exportMedia, exportCaptions } from '../tests/reference/server/media.mjs';
+import { inspectEffect } from '../tests/reference/server/effects.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { compositionFixture, verifyCompositionAudio, verifyCompositionVideo } from './helpers/composition-performance-fixture.mjs';
 import { expectedComposition, verifyCompositionSRT } from './helpers/composition-oracle.mjs';

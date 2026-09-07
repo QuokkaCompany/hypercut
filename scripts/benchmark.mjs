@@ -3,8 +3,8 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { capture } from '../server/process.mjs';
-import { inspectMedia, analyzeMedia, exportMedia } from '../server/media.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
+import { inspectMedia, analyzeMedia, exportMedia } from '../tests/reference/server/media.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 
 const exec = promisify(execFile);

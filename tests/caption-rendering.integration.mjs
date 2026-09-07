@@ -4,9 +4,9 @@ import { mkdir,mkdtemp,rm,readFile,writeFile,readdir,copyFile } from 'node:fs/pr
 import { createHash } from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
-import { capture,startProcess } from '../server/process.mjs';
-import { inspectMedia,exportMedia } from '../server/media.mjs';
-import { renderCaptionImages } from '../server/caption-rendering.mjs';
+import { capture,startProcess } from './reference/server/process.mjs';
+import { inspectMedia,exportMedia } from './reference/server/media.mjs';
+import { renderCaptionImages } from './reference/server/caption-rendering.mjs';
 import { DEFAULT_CAPTION_STYLE } from '../shared/caption-style.mjs';
 const directory=await mkdtemp(path.join(os.tmpdir(),'hypercut-caption-render-'));
 const fixture=path.join(directory,'source.mp4'),cuts=[{id:'cut',start:2.5,end:3.5,enabled:true}];

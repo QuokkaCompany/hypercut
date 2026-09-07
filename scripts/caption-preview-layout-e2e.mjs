@@ -1,5 +1,5 @@
 import {chromium,_electron as electron} from 'playwright';
-import {startServer} from '../server/app.mjs';
+import {startServer} from '../tests/reference/server/app.mjs';
 import {mkdtemp,mkdir,readFile,writeFile,rm,stat} from 'node:fs/promises';
 import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';
 import {createCanvas,loadImage} from '@napi-rs/canvas';

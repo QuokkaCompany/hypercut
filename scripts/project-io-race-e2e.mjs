@@ -6,8 +6,8 @@ import { promisify } from 'node:util';
 import assert from 'node:assert/strict';
 import os from 'node:os';
 import path from 'node:path';
-import { startServer } from '../server/app.mjs';
-import { inspectMedia } from '../server/media.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
 import { generateDemo } from './fixtures.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 

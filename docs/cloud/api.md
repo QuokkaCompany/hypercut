@@ -43,10 +43,10 @@ Each chunk is exactly `min(chunkBytes, size-offset)` bytes. Offsets must match t
 
 ## Job input and lifecycle
 
-A job has `requestId` (UUID), `type`, `mediaId`, `trackIndex` and type-specific input. Analyze requires silence `settings` and optional `speechProtection`. Export/preview/restore use `cuts`; export/preview optionally use source `range`, captions and effects. Transcribe uses `{channel,language}`. Captions/transcript use a validated transcript, with `textMode` equal to `source` or `edited` for TXT. See `server/engine.mjs` and shared validators for exact bounds.
+A job has `requestId` (UUID), `type`, `mediaId`, `trackIndex` and type-specific input. Analyze requires silence `settings` and optional `speechProtection`. Export/preview/restore use `cuts`; export/preview optionally use source `range`, captions and effects. Transcribe uses `{channel,language}`. Captions/transcript use a validated transcript, with `textMode` equal to `source` or `edited` for TXT. See `internal/media/validation.go` and `internal/media/export.go` and shared validators for exact bounds.
 
 Use one requestId for retries of the same submission. Reusing an ID with different input returns 409. After a failed/cancelled job, an explicit retry uses a new ID. Cancellation that arrives before creation is retained for the same account so a late submission does not start. Queued work is durable; active work is fenced by a worker attempt and lease. API restart does not cancel worker jobs.
 
 An editable result is applied only when the project still has `baseVersion`. A successful apply advances the revision and is idempotent. A mismatched version returns 409 and preserves newer edits. Export results are immutable files and do not replace project editing state.
 
-Errors include 400 invalid input, 401 missing/expired login, 403 host/origin/CSRF rejection, 404 missing or inaccessible record, 409 conflict, 413 upload/storage limit, 429 concurrency/record/sign-in limits and 503 when the Go API's private helper is unavailable. Native worker failures appear in terminal job state. Public URLs, stable v1 API versioning and generated OpenAPI clients are future work.
+Errors include 400 invalid input, 401 missing/expired login, 403 host/origin/CSRF rejection, 404 missing or inaccessible record, 409 conflict, 413 upload/storage limit, 429 concurrency/record/sign-in limits and 503 when the API media dispatcher is closed. Native worker failures appear in terminal job state. Public URLs, stable v1 API versioning and generated OpenAPI clients are future work.

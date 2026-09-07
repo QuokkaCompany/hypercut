@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises';
-import { capture } from '../../server/process.mjs';
+import { capture } from '../reference/server/process.mjs';
 // The independent oracle is generated directly in samples, without the mixer
 // or timeline mapping code. Stereo channels have different known amplitudes.
 export async function writeTone(file, { seconds = 3, amplitude = .2, rate = 48000, channels = 1, frequency = 1000 } = {}) {

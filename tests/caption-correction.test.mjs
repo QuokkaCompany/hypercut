@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { applyCaptionCorrection, correctionPrompt, correctionWarnings, validateCorrectionProposal, validateCorrectionRequest } from '../shared/caption-correction.mjs';
-import { askCaptionCorrection } from '../server/ai.mjs';
+import { askCaptionCorrection } from './reference/server/ai.mjs';
 const input = { requestId: randomUUID(), instruction: '오타와 띄어쓰기만 교정', glossary: '캡컶 → 캡컷', cues: [{ id: 'a', text: '캡컶에서 10분을 편집햇어요.' }, { id: 'b', text: '소리를 없애지 않습니다.' }] };
 const proposal = { requestId: input.requestId, changes: [{ id: 'a', before: input.cues[0].text, after: '캡컷에서 10분을 편집했어요.', reason: '앱 이름과 맞춤법 수정' }, { id: 'b', before: input.cues[1].text, after: '소리를 없앱니다.', reason: '의미가 달라지는 모의 응답' }] };
 test('C07/C08: prompts contain only selected text, request ID and explicit instruction/glossary', () => {

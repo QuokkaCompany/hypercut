@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { openStore, createUser } from '../server/cloud/store.mjs';
+import { openStore, createUser } from '../tests/reference/server/cloud/store.mjs';
 const email = process.argv[2];
 if (!email || process.stdin.isTTY) { console.error('Usage: read a password securely, then pipe it to npm run cloud:user -- email@example.com. Passwords must not be command arguments.'); process.exit(1); }
 let password = '';

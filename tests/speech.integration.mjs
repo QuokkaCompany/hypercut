@@ -4,11 +4,11 @@ import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { speechFixture } from './helpers/speech-fixture.mjs';
-import { inspectMedia, analyzeMedia, exportMedia } from '../server/media.mjs';
+import { inspectMedia, analyzeMedia, exportMedia } from './reference/server/media.mjs';
 import { DEFAULT_SETTINGS, intervalDuration, keptIntervals } from '../shared/timeline.mjs';
-import { createSpeechDetector } from '../server/vad.mjs';
-import { capture } from '../server/process.mjs';
-import { startServer } from '../server/app.mjs';
+import { createSpeechDetector } from './reference/server/vad.mjs';
+import { capture } from './reference/server/process.mjs';
+import { startServer } from './reference/server/app.mjs';
 import { generateDemo } from '../scripts/fixtures.mjs';
 
 for (const variant of [{ channels: 'mono', sampleRate: 48000 }, { channels: 'right', sampleRate: 48000 }, { channels: 'opposite', sampleRate: 44100, offset: 3 }]) test(`S03/S04: actual Silero preserves quiet Korean TTS and cuts long silence (${variant.channels})`, { timeout: 60000, skip: process.platform !== 'darwin' }, async () => {

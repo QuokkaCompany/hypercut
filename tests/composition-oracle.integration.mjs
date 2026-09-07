@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { capture } from '../server/process.mjs';
+import { capture } from './reference/server/process.mjs';
 import { sha256 } from '../scripts/helpers/transcription-performance-fixture.mjs';
 import { verifyCompositionAudio, verifyCompositionVideo } from '../scripts/helpers/composition-performance-fixture.mjs';
 

@@ -4,7 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { thresholdFixture, verifyThresholdSync, verifyThresholdFrames } from '../scripts/helpers/threshold-performance-fixture.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from './reference/server/process.mjs';
 let input, directory;
 before(async()=>{directory=await mkdtemp(path.join(os.tmpdir(),'hypercut-sync-oracle-'));input=await thresholdFixture(60);});
 after(async()=>{await rm(directory,{recursive:true,force:true});});

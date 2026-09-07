@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mapCaptions, toSRT, validateTranscript } from '../shared/captions.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { parseTranscription, validateTranscriptionSettings } from '../server/transcription.mjs';
+import { parseTranscription, validateTranscriptionSettings } from './reference/server/transcription.mjs';
 const source = { trackIndex: 1, channel: 0, language: 'ko', model: 'fixture', cues: [{ id: 'a', start: 5, end: 6.2, text: '한글 자막' }] };
 const kept = [{ start: 0, end: 2 }, { start: 4, end: 8 }, { start: 9, end: 12 }];
 test('C01: source captions map to independently specified edited timestamps and restore reversibly', () => {

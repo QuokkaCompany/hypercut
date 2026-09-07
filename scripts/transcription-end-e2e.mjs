@@ -3,10 +3,10 @@ import { mkdtemp, mkdir, rm, readFile, writeFile, copyFile } from 'node:fs/promi
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
-import { inspectMedia } from '../server/media.mjs';
-import { parseTranscription } from '../server/transcription.mjs';
-import { capture } from '../server/process.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
+import { parseTranscription } from '../tests/reference/server/transcription.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 import { generateDemo } from './fixtures.mjs';
 import { makeProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { DEFAULT_CAPTION_STYLE } from '../shared/caption-style.mjs';

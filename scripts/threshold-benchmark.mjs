@@ -8,7 +8,7 @@ import os from 'node:os';
 import assert from 'node:assert/strict';
 import { rssSampler, summarize } from './helpers/performance.mjs';
 import { sha256 } from './helpers/transcription-performance-fixture.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 import { DEFAULT_SETTINGS, validateProject } from '../shared/timeline.mjs';
 import { thresholdFixture, verifyThresholdSync, verifyThresholdFrames } from './helpers/threshold-performance-fixture.mjs';
 import { createFileCacheController } from './helpers/file-cache.mjs';
