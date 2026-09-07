@@ -49,3 +49,17 @@ jobs:
       - name: Cloud browser acceptance
         if: matrix.node == 24
         run: npm run test:cloud:e2e
+      - name: Set up Go
+        if: matrix.node == 24
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - name: Go server race tests
+        if: matrix.node == 24
+        run: npm run test:server
+      - name: Cloud contract against Go API
+        if: matrix.node == 24
+        run: npm run test:cloud:go
+      - name: Cloud browser against Go API
+        if: matrix.node == 24
+        run: npm run test:cloud:go:e2e

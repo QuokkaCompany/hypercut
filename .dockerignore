@@ -20,3 +20,11 @@
 !scripts/helpers/
 !scripts/helpers/verified-download.mjs
 !scripts/cloud-user.mjs
+!go.mod
+!go.sum
+!cmd/
+!cmd/**
+!internal/
+!internal/**
+!public/
+!public/**

@@ -4,7 +4,7 @@ All routes are same-origin under `/api`. Except runtime, health and sign-in, eve
 
 | Method and route | Request / response |
 | --- | --- |
-| `GET /runtime` | `{mode:"cloud"}`; local transport returns `local` |
+| `GET /runtime` | `{mode:"cloud",apiRuntime:"go"}` for the Go API; the original Node transport omits `apiRuntime`; local transport returns `local` |
 | `GET /health` | API/database liveness; no account data |
 | `POST /auth/login` | `{email,password}` → user, CSRF token; sets HttpOnly cookie |
 | `GET /auth/me` | Current user and CSRF token |
@@ -49,4 +49,4 @@ Use one requestId for retries of the same submission. Reusing an ID with differe
 
 An editable result is applied only when the project still has `baseVersion`. A successful apply advances the revision and is idempotent. A mismatched version returns 409 and preserves newer edits. Export results are immutable files and do not replace project editing state.
 
-Errors include 400 invalid input, 401 missing/expired login, 403 host/origin/CSRF rejection, 404 missing or inaccessible record, 409 conflict, 413 upload/storage limit and 429 concurrency/record/sign-in limits. Native worker failures appear in terminal job state. Public URLs, stable v1 API versioning and generated OpenAPI clients are future work.
+Errors include 400 invalid input, 401 missing/expired login, 403 host/origin/CSRF rejection, 404 missing or inaccessible record, 409 conflict, 413 upload/storage limit, 429 concurrency/record/sign-in limits and 503 when the Go API's private helper is unavailable. Native worker failures appear in terminal job state. Public URLs, stable v1 API versioning and generated OpenAPI clients are future work.
