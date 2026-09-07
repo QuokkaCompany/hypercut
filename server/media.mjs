@@ -21,8 +21,8 @@ const rational = value => { const [n, d = 1] = String(value).split('/').map(Numb
 // Limit concurrent encoder frames so repeated exports leave room for the editor.
 const encoderThreads = Math.min(2, availableParallelism());
 
-export async function inspectMedia(filePath, name, signal) {
-  const info = JSON.parse(await capture('ffprobe', ['-v', 'error', '-show_format', '-show_streams', '-of', 'json', filePath], { signal }));
+export async function inspectMedia(filePath, name, signal, { inputFormat } = {}) {
+  const info = JSON.parse(await capture('ffprobe', ['-v', 'error', ...(inputFormat ? ['-f', inputFormat] : []), '-show_format', '-show_streams', '-of', 'json', filePath], { signal }));
   const video = info.streams.find(x => x.codec_type === 'video' && !x.disposition?.attached_pic);
   if (!video) throw new Error('영상 트랙이 없는 파일입니다. MP4 또는 MOV 영상을 선택해 주세요.');
   if (video.codec_name !== 'h264') throw new Error(`현재는 H.264 영상을 지원합니다. 이 파일의 코덱: ${video.codec_name}`);

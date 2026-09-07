@@ -50,7 +50,12 @@
     "test:mcp": "node --test tests/mcp-shares.test.mjs tests/mcp.integration.mjs",
     "test:multilingual": "node --test tests/multilingual.test.mjs tests/multilingual.integration.mjs",
     "test:multilingual:e2e": "node scripts/multilingual-e2e.mjs --desktop",
-    "test:multilingual:transcription": "node scripts/multilingual-transcription.mjs"
+    "test:multilingual:transcription": "node scripts/multilingual-transcription.mjs",
+    "cloud:api": "node server/cloud/index.mjs",
+    "cloud:worker": "node server/cloud/worker.mjs",
+    "cloud:user": "node scripts/cloud-user.mjs",
+    "test:cloud": "node --test tests/cloud.integration.mjs",
+    "test:cloud:e2e": "node scripts/cloud-e2e.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.0.0",

@@ -43,3 +43,10 @@ __pycache__/
 ._*
 Thumbs.db
 Desktop.ini
+
+# Self-hosted cloud databases and operator backups
+cloud-data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite.backup

@@ -36,3 +36,16 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:media
+
+      - name: Local API regressions
+        if: matrix.node == 24
+        run: npm run test:api
+      - name: Cloud isolation, recovery and media
+        if: matrix.node == 24
+        run: npm run test:cloud
+      - name: Install browser for cloud acceptance
+        if: matrix.node == 24
+        run: npx playwright install --with-deps chromium
+      - name: Cloud browser acceptance
+        if: matrix.node == 24
+        run: npm run test:cloud:e2e

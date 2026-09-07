@@ -4,7 +4,7 @@ A local-first video editor that removes pauses, creates clips, and turns speech 
 
 HyperCut finds intervals that stay below your chosen audio threshold, then cuts video and audio together. Original media stays intact. Optional speech protection, local transcription, and AI suggestions help you review the edit.
 
-**Status: early development.** Development and testing currently target macOS on Apple Silicon. The interface is currently in Korean; project documentation is in English. Human-recording quality, editing-time savings, authenticated AI integrations, and installation on a clean Mac still need validation. This is not a fully validated replacement for a professional editor.
+**Status: early development.** Desktop development and testing currently target macOS on Apple Silicon; the cloud CPU container also has a Linux arm64 validation path. The interface is currently in Korean; project documentation is in English. Human-recording quality, editing-time savings, authenticated AI integrations, and installation on a clean Mac still need validation. This is not a fully validated replacement for a professional editor.
 
 ## What you can do
 
@@ -18,6 +18,12 @@ HyperCut finds intervals that stay below your chosen audio threshold, then cuts 
 - Transcribe Korean, English, Japanese, Chinese, Spanish, French, German, Portuguese, Italian, and Russian, or request automatic language detection.
 - Review AI proposals for silence settings, caption corrections, translations, and sound-effect placement.
 - Save editing state in a project file and reconnect the original media using its SHA-256 identity.
+
+## Local and self-hosted cloud
+
+The independent local edition remains available without an account. The new **single-host cloud beta** adds sign-in, resumable uploads, server-saved projects and a durable worker queue using the same editor and media engine. Users can upload, edit and download outputs from a browser. API restart and browser disconnection preserve submitted jobs and saved projects.
+
+Start with the [cloud setup guide](docs/cloud/README.md), [architecture](docs/cloud/architecture.md), [API contract](docs/cloud/api.md) and [operator limits](docs/cloud/operations.md). Docker includes FFmpeg and optional CPU Whisper. Cloud requires Node 24+; public hosting, billing and multi-host/GPU operation are not provisioned. The workspace uses English; the editing interface remains Korean.
 
 ## Run locally
 

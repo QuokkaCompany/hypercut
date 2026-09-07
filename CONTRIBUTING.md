@@ -36,7 +36,8 @@ Useful source directories:
 | --- | --- |
 | `src/` | React editor and browser UI |
 | `shared/` | Timeline, project, caption, and proposal rules |
-| `server/` | Local API, media processing, transcription, and AI adapters |
+| `server/` | Shared job engine, local API, media processing, transcription, and AI adapters |
+| `server/cloud/` | Authenticated API, resumable uploads, SQLite persistence, durable jobs and worker |
 | `desktop/` | Electron lifecycle and native file integration |
 | `scripts/` | Development, packaging, fixtures, and validation runners |
 | `tests/` | Unit and integration tests |
@@ -64,3 +65,9 @@ Describe what changed, why, how it was validated, and anything not tested. Link 
 By contributing, you agree that your original contribution may be distributed under this repository's [GPL-3.0-only license](LICENSE). Preserve applicable third-party notices and identify the source and license of any new assets or dependencies. Follow the [community guidelines](CODE_OF_CONDUCT.md) and use the [security policy](SECURITY.md) for vulnerability reports.
 
 The `private` field in `package.json` prevents accidental npm publication; it does not make the GitHub repository private.
+
+## Cloud contributions
+
+Read the [cloud architecture](docs/cloud/architecture.md) and [API contract](docs/cloud/api.md). Cloud transport changes must preserve offline local editing and portable project compatibility. Keep accounts and provider credentials outside project JSON. Use ownership-scoped queries for every file, job and project. Test stale revisions, interrupted requests and cross-account IDs, not only the successful path.
+
+On Node 24+ with FFmpeg, run `npm run test:cloud`; after building, run `npm run test:cloud:e2e` (Chrome locally or Playwright Chromium in CI). These use disposable synthetic media and accounts, a real separate worker and downloaded-output decoding. No paid inference is requested. Use the same storage directory and limits for API, worker and account CLI.

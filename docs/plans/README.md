@@ -1,6 +1,6 @@
 # Validation and test plan guide
 
-Updated 2026-09-06. This index connects product requirements to testable evidence. Plans are acceptance criteria, not execution results or release approval. See [current/historical results](../testing/README.md).
+Updated 2026-09-07. This index connects product requirements to testable evidence. Plans are acceptance criteria, not execution results or release approval. See [current/historical results](../testing/README.md).
 
 Start with the [validation plan](2026-09-05-validation-plan.md) for speech preservation, usefulness, time savings, performance, and gates, and the [test plan](2026-09-05-test-plan.md) for fixtures, case IDs, actions, expectations, priorities, and evidence. Its [first execution batches](2026-09-05-test-plan.md#9-first-execution-batches) organize preparation and outputs into seven runnable groups.
 
@@ -48,3 +48,7 @@ Zero clipped words/syllables, source changes, lost saves, or false success. Remo
 5. G4 and feature gates: Mock contracts/failures first, actual selected AI separately; complete T/C/FX requirements independently.
 
 Use the [result template](../testing/test-run-template.md), [human Korean evaluation procedure](../testing/manual-korean-evaluation.md), and [implementation plan](2026-09-05-implementation-plan.md). No documentation update alone changes an execution status.
+
+## Independent local and cloud editions
+
+The [cloud beta plan](2026-09-07-cloud-beta.md) and [approved design](../superpowers/specs/2026-09-07-local-and-cloud.md) cover a shared editing engine, independent local operation, account-scoped storage, durable jobs and a self-hosted SaaS path. Consult [cloud setup and limitations](../cloud/README.md) before deployment.

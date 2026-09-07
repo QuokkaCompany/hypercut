@@ -1,10 +1,11 @@
+import { cloudMode } from './api';
 import { ShieldCheck } from 'lucide-react';
 import type { Analysis, SpeechProtectionSettings } from './types';
 import { formatTime } from './format';
 
 export function SpeechProtection({ value, disabled, result, onChange, onSeek }: { value: SpeechProtectionSettings; disabled: boolean; result?: Analysis['protection']; onChange: (value: SpeechProtectionSettings) => void; onSeek: (time: number) => void }) {
-  return <section className="speech-protection" aria-label="로컬 말소리 보호">
-    <label className="speech-toggle"><span><ShieldCheck size={16} />말소리 보호 <small>로컬</small></span><input type="checkbox" role="switch" aria-label="말소리 보호" checked={value.enabled} disabled={disabled} onChange={e => onChange({ ...value, enabled: e.target.checked })} /></label>
+  return <section className="speech-protection" aria-label={cloudMode ? '서버 말소리 보호' : '로컬 말소리 보호'}>
+    <label className="speech-toggle"><span><ShieldCheck size={16} />말소리 보호 <small>{cloudMode ? '서버' : '로컬'}</small></span><input type="checkbox" role="switch" aria-label="말소리 보호" checked={value.enabled} disabled={disabled} onChange={e => onChange({ ...value, enabled: e.target.checked })} /></label>
     <p className="field-hint">켜면 말소리로 감지한 구간을 남깁니다. 작은 목소리를 지키는 데 도움이 되지만 놓치는 발음이 있을 수 있어요.</p>
     {value.enabled && <>
       <div className="speech-threshold"><label htmlFor="speech-threshold">음성 감지 기준</label><output>{value.threshold.toFixed(2)}</output></div>

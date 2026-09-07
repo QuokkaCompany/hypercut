@@ -1,0 +1,22 @@
+# Allow only application source. Never send recordings, credentials or git history to a builder.
+**
+!package.json
+!package-lock.json
+!tsconfig.json
+!vite.config.ts
+!index.html
+!LICENSE
+!THIRD_PARTY_NOTICES.md
+!src/
+!src/**
+!server/
+!server/**
+!shared/
+!shared/**
+!assets/
+!assets/**
+!scripts/
+!scripts/setup-transcription.mjs
+!scripts/helpers/
+!scripts/helpers/verified-download.mjs
+!scripts/cloud-user.mjs
