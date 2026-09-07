@@ -6,15 +6,15 @@ import os from 'node:os';
 import path from 'node:path';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
-import { startServer } from '../server/app.mjs';
-import { bridgeConfiguration } from '../server/mcp-bridge.mjs';
+import { startServer } from './reference/server/app.mjs';
+import { bridgeConfiguration } from './reference/server/mcp-bridge.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { effectProposalFixture } from './helpers/effect-proposal-fixture.mjs';
 
 async function fixture(t) {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-mcp-'));
   let modelCalls = 0;
-  const server = await startServer({ port: 0, dataDir: directory, aiFetch: async () => { modelCalls++; throw new Error('Unexpected model call'); } });
+  const server = await startServer({ port: 0, dataDir: directory, ...(process.env.HYPERCUT_LOCAL_SERVER === 'go' ? {} : { aiFetch: async () => { modelCalls++; throw new Error('Unexpected model call'); } }) });
   t.after(async () => { await server.close(); await rm(directory, { recursive: true, force: true }); assert.equal(modelCalls, 0); });
   const { token } = await (await fetch(`${server.url}/api/config`)).json();
   const call = (route, body, method = body ? 'POST' : 'GET', headers = { 'X-Hypercut-Token': token }) => fetch(`${server.url}/api${route}`, { method, headers: { 'Content-Type': 'application/json', ...headers }, ...(body ? { body: JSON.stringify(body) } : {}) });

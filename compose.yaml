@@ -36,7 +36,7 @@ services:
       start_period: 20s
   worker:
     <<: *runtime
-    command: [node, server/cloud/worker.mjs]
+    command: [hypercut-cloud, worker]
     mem_limit: 4g
     cpus: 4
     depends_on:

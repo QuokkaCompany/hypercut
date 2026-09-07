@@ -12,7 +12,7 @@ import { compositionFixture, verifyCompositionAudio, verifyCompositionVideo } fr
 import { expectedComposition, verifyCompositionSRT } from './helpers/composition-oracle.mjs';
 import { verifyThresholdFrames, verifyThresholdSync } from './helpers/threshold-performance-fixture.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 import { createFileCacheController } from './helpers/file-cache.mjs';
 
 const exec = promisify(execFile);

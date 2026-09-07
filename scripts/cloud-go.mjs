@@ -17,6 +17,6 @@ async function run(command, args, stdin) {
   });
 }
 try {
-  const code = await run('go', ['build', '-o', binary, './cmd/hypercut-cloud'], 'ignore');
+  const code = await run(process.execPath, ['scripts/build-backend.mjs'], 'ignore');
   process.exitCode = code || await run(binary, process.argv.slice(2), 'inherit');
 } catch (error) { console.error(`Unable to start Go cloud API: ${error.message}. Install Go 1.26+ or use Docker Compose.`); process.exitCode = 1; }

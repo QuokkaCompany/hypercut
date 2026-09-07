@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { validateGlossary } from '../shared/glossary.mjs';
 import { correctionPrompt, validateCorrectionRequest } from '../shared/caption-correction.mjs';
-import { askCaptionCorrection } from '../server/ai.mjs';
+import { askCaptionCorrection } from './reference/server/ai.mjs';
 
 const glossary = '캡컶 → 캡컷\n기술 용어: 무음 구간, Whisper\n\t띄어쓰기 참고';
 const media = { name: 'fixture.mp4', fingerprint: 'a'.repeat(64), duration: 10 };

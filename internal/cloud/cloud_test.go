@@ -218,11 +218,9 @@ func TestHTTPBoundariesAndStaticFiles(t *testing.T) {
 		t.Fatalf("oversized JSON: %d", response.StatusCode)
 	}
 }
-func TestHelperCrashFailsClosed(t *testing.T) {
+func TestMediaEngineClosureFailsClosed(t *testing.T) {
 	a, server, cookie, token := testAPI(t)
-	if err := a.bridge.cmd.Process.Kill(); err != nil {
-		t.Fatal(err)
-	}
+	a.bridge.Close()
 	<-a.bridge.done
 	start := time.Now()
 	for _, route := range []string{"/api/health", "/api/config"} {

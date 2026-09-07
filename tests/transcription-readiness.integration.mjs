@@ -4,8 +4,8 @@ import { access, chmod, mkdir, mkdtemp, open, readFile, rm, stat, writeFile } fr
 import { constants } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { transcriptionStatus, transcribeMedia, TRANSCRIPTION_MODEL } from '../server/transcription.mjs';
-import { startServer } from '../server/app.mjs';
+import { transcriptionStatus, transcribeMedia, TRANSCRIPTION_MODEL } from './reference/server/transcription.mjs';
+import { startServer } from './reference/server/app.mjs';
 
 const quote = value => `'${value.replaceAll("'", "'\\''")}'`;
 const absent = file => access(file).then(() => false, error => { if (error.code === 'ENOENT') return true; throw error; });

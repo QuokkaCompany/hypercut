@@ -5,9 +5,9 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import os from 'node:os';
 import path from 'node:path';
-import { atomicReplace } from '../server/atomic-file.mjs';
+import { atomicReplace } from './reference/server/atomic-file.mjs';
 import { generateDemo } from '../scripts/fixtures.mjs';
-import { inspectMedia, exportMedia } from '../server/media.mjs';
+import { inspectMedia, exportMedia } from './reference/server/media.mjs';
 
 const exec = promisify(execFile);
 test('E02: real ENOSPC in a disposable 32MiB volume preserves project, source and retry', { skip: process.platform !== 'darwin', timeout: 60000 }, async () => {

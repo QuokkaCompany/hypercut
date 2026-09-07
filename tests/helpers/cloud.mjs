@@ -2,9 +2,9 @@ import { createServer } from 'node:net';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import path from 'node:path';
-import { startCloudServer } from '../../server/cloud/app.mjs';
-import { digest, openStore } from '../../server/cloud/store.mjs';
-import { CHUNK_BYTES } from '../../server/cloud/uploads.mjs';
+import { startCloudServer } from '../reference/server/cloud/app.mjs';
+import { digest, openStore } from '../reference/server/cloud/store.mjs';
+import { CHUNK_BYTES } from '../reference/server/cloud/uploads.mjs';
 export async function freePort() {
   const server = createServer(); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const port = server.address().port; await new Promise(resolve => server.close(resolve)); return port;
@@ -53,7 +53,7 @@ export async function until(fn, timeout = 60000) {
   throw new Error('Timed out waiting for cloud state.');
 }
 export function launchWorker(dataDir) {
-  const child = spawn(process.execPath, ['--input-type=module', '-e', `import { startWorker } from './server/cloud/worker.mjs'; const worker = await startWorker({dataDir:process.env.HYPERCUT_TEST_DATA,pollMs:30,leaseMs:900}); process.on('SIGTERM',()=>worker.close().then(()=>process.exit()));`], { cwd: path.resolve('.'), env: { ...process.env, HYPERCUT_TEST_DATA: dataDir }, stdio: ['ignore', 'pipe', 'pipe'] });
+  const child = process.env.HYPERCUT_CLOUD_WORKER === 'go' ? spawn(path.resolve('.cache/bin/hypercut-cloud'), ['worker'], { cwd: path.resolve('.'), env: { ...process.env, HYPERCUT_CLOUD_DATA: dataDir, HYPERCUT_WORKER_POLL_MS: '30', HYPERCUT_WORKER_LEASE_MS: '900' }, stdio: ['ignore','pipe','pipe'] }) : spawn(process.execPath, ['--input-type=module', '-e', `import { startWorker } from './tests/reference/server/cloud/worker.mjs'; const worker = await startWorker({dataDir:process.env.HYPERCUT_TEST_DATA,pollMs:30,leaseMs:900}); process.on('SIGTERM',()=>worker.close().then(()=>process.exit()));`], { cwd: path.resolve('.'), env: { ...process.env, HYPERCUT_TEST_DATA: dataDir }, stdio: ['ignore', 'pipe', 'pipe'] });
   let errors = ''; child.stderr.on('data', x => errors += x); child.stdout.resume();
   return { child, errors: () => errors, async close(signal = 'SIGTERM') { if (child.exitCode !== null || child.signalCode) return; const exited = once(child, 'exit'); child.kill(signal); await exited; } };
 }

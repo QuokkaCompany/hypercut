@@ -6,14 +6,14 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import os from 'node:os';
-import { startServer } from '../server/app.mjs';
-import { capture } from '../server/process.mjs';
-import { inspectMedia } from '../server/media.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
 import { generateDemo } from './fixtures.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { speechFixture } from '../tests/helpers/speech-fixture.mjs';
 import { writeTone } from '../tests/helpers/effects-fixture.mjs';
-import { inspectEffect, publicEffect } from '../server/effects.mjs';
+import { inspectEffect, publicEffect } from '../tests/reference/server/effects.mjs';
 
 const option = (name, fallback) => process.argv.find(arg => arg.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const output = path.resolve(option('output', 'test-output/job-cancellation-races'));

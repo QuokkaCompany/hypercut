@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { startServer } from '../server/app.mjs';
+import { startServer } from './reference/server/app.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { createClaudeCLI } from '../server/claude-cli.mjs';
+import { createClaudeCLI } from './reference/server/claude-cli.mjs';
 import { fakeClaude } from './helpers/fake-claude.mjs';
 
 test('A05/A06/A08: disconnect aborts stale proposals, duplicates are refused and keys never echo', async () => {

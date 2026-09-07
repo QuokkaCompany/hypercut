@@ -9,9 +9,9 @@ import path from 'node:path';
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { chromium } from 'playwright';
 import { startAPI, launchWorker } from '../tests/helpers/cloud.mjs';
-import { createUser } from '../server/cloud/store.mjs';
-import { transcriptionStatus } from '../server/transcription.mjs';
-import { capture } from '../server/process.mjs';
+import { createUser } from '../tests/reference/server/cloud/store.mjs';
+import { transcriptionStatus } from '../tests/reference/server/transcription.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 
 const work = await mkdtemp(path.join(os.tmpdir(), 'hypercut-showcase-'));
 const evidence = path.resolve('test-output/readme-showcase');

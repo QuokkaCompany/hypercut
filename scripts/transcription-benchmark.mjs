@@ -11,7 +11,7 @@ import { installSelectionProbe, measureSelections, selectionSnapshot } from './h
 import { transcriptionFixture, sha256 } from './helpers/transcription-performance-fixture.mjs';
 import { makeProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { validateTranscript } from '../shared/captions.mjs';
-import { TRANSCRIPTION_MODEL } from '../server/transcription.mjs';
+import { TRANSCRIPTION_MODEL } from '../tests/reference/server/transcription.mjs';
 const exec = promisify(execFile);
 const option = (name, fallback) => process.argv.find(value => value.startsWith(`--${name}=`))?.split('=').slice(1).join('=') || fallback;
 const durations = option('durations', '600,3600').split(',').map(Number), iterations = Number(option('iterations', '3')), surfaces = option('surfaces', 'browser,desktop').split(',');

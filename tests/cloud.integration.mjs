@@ -5,10 +5,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { request as httpRequest } from 'node:http';
 import { randomUUID } from 'node:crypto';
-import { createUser, digest } from '../server/cloud/store.mjs';
-import { CHUNK_BYTES } from '../server/cloud/uploads.mjs';
+import { createUser, digest } from './reference/server/cloud/store.mjs';
+import { CHUNK_BYTES } from './reference/server/cloud/uploads.mjs';
 import { generateDemo, pcmWav } from '../scripts/fixtures.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from './reference/server/process.mjs';
 import { DEFAULT_SETTINGS, makeProject } from '../shared/timeline.mjs';
 import { startAPI, client, until, launchWorker } from './helpers/cloud.mjs';
 

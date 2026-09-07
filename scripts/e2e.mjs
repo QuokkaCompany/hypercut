@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, rm, writeFile, copyFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { startServer } from '../server/app.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
 import { generateDemo } from './fixtures.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 
 const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-e2e-'));
 const evidence = path.resolve('test-output');
@@ -14,7 +14,7 @@ const sample = await generateDemo(path.join(directory, '테스트 영상.mp4'));
 let server, browser, desktop;
 try {
   server = await startServer({ port: 0, dataDir: directory });
-  browser = await chromium.launch({ channel: 'chrome', headless: true });
+  browser = await chromium.launch({ ...(process.env.CI || process.env.HYPERCUT_BROWSER === 'chromium' ? {} : { channel: 'chrome' }), headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 960 }, acceptDownloads: true });
   const errors = [], externalRequests = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -159,6 +159,7 @@ try {
     await desktop.close(); desktop = null;
   }
 } finally {
+  if (desktop) await desktop.evaluate(({ dialog }) => { dialog.showMessageBoxSync = () => 1; }).catch(() => {});
   await desktop?.close(); await browser?.close(); await server?.close();
   await rm(directory, { recursive: true, force: true });
 }

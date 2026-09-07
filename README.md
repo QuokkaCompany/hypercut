@@ -77,14 +77,14 @@ The timing above describes this generated sample; it is not a human-recording ac
 
 The independent local edition remains available without an account. The new **single-host cloud beta** adds sign-in, resumable uploads, server-saved projects and a durable worker queue using the same editor and media engine. Users can upload, edit and download outputs from a browser. API restart and browser disconnection preserve submitted jobs and saved projects.
 
-Start with the [cloud setup guide](docs/cloud/README.md), [architecture](docs/cloud/architecture.md), [API contract](docs/cloud/api.md) and [operator limits](docs/cloud/operations.md). The cloud HTTP API is implemented in **Go**, with a private Node media helper and a separate Node worker for FFmpeg, Whisper, VAD and rendering. Direct cloud development requires Go 1.26+ and Node 24+; Docker includes the compiled API, FFmpeg and optional CPU Whisper. The independent local edition does not require Go. Public hosting, billing and multi-host/GPU operation are not provisioned. The workspace uses English; the editing interface remains Korean.
+Start with the [cloud setup guide](docs/cloud/README.md), [architecture](docs/cloud/architecture.md), [API contract](docs/cloud/api.md) and [operator limits](docs/cloud/operations.md). The local API, cloud API, durable worker, media orchestration, caption renderer, AI providers and MCP server are implemented in **Go**. The Linux runtime image contains no Node server or JavaScript backend. Node is used for frontend builds and development/test tooling; Electron remains the desktop presentation layer. Both editions use the same Go engine with FFmpeg, native ONNX Runtime/Silero and optional whisper.cpp. See the [backend migration and validation guide](docs/go-backend.md). Public hosting, billing and multi-host/GPU operation are not provisioned. The workspace uses English; the editing interface remains Korean.
 
 ## Run locally
 
-Install Node.js **22.12 or newer** and FFmpeg/ffprobe. On macOS:
+Install Go **1.26 or newer**, a C compiler, Node.js **22.12 or newer** (24+ for reference compatibility tests), and FFmpeg/ffprobe. Node builds the UI and launches development commands; a prepared Go backend runs directly without Node. On macOS:
 
 ```sh
-brew install ffmpeg
+brew install go ffmpeg
 git clone https://github.com/QuokkaCompany/hypercut.git
 cd hypercut
 npm ci
@@ -109,7 +109,7 @@ npm run package:desktop
 
 Setup uses Python 3 and Xcode Command Line Tools on Apple Silicon macOS. It builds a pinned whisper.cpp revision and downloads the multilingual Whisper small model (about 488 MB). Completed downloads are hash-checked and reused; interrupted partial downloads restart on the next run. [Download recovery tests](docs/testing/2026-09-06-model-download-recovery-results.md) use local fixtures rather than downloading the real model.
 
-Once installed, transcription requires no account, network connection, or API call. Missing transcription components do not prevent silence editing or editing existing captions. Setup files live under `.hypercut/transcription/`; packaged resources live under `Resources/transcription/`. Tests can override the location with `HYPERCUT_TRANSCRIPTION_DIR`.
+Once installed, transcription requires no account, network connection, or API call. Missing transcription components do not prevent silence editing or editing existing captions. Setup files live under `.hypercut/transcription/`; packaged resources live under `Resources/backend/transcription/`. Tests can override the location with `HYPERCUT_TRANSCRIPTION_DIR`.
 
 Packages are written to `release/` and include the transcription runtime, model, caption fonts, renderer, and license notices. FFmpeg and ffprobe are **external prerequisites**, including on another computer. Override discovery with `FFMPEG_PATH` and `FFPROBE_PATH`. Packages are development builds; signing, notarization, and clean-machine installation are not validated here.
 

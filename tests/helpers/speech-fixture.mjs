@@ -3,7 +3,7 @@ import { promisify } from 'node:util';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { capture } from '../../server/process.mjs';
+import { capture } from '../reference/server/process.mjs';
 
 const exec = promisify(execFile);
 export async function speechFixture(directory, { channels = 'mono', sampleRate = 48000, offset = 0 } = {}) {

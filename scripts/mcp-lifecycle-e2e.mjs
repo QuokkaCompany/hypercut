@@ -4,8 +4,8 @@ import { createHash, randomUUID } from 'node:crypto';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { extractFile } from '@electron/asar';
-import { startServer } from '../server/app.mjs';
-import { inspectMedia } from '../server/media.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
 import { makeProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 import { writeFlashVideo } from '../tests/helpers/effects-fixture.mjs';
 

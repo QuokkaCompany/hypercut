@@ -9,8 +9,6 @@
 !THIRD_PARTY_NOTICES.md
 !src/
 !src/**
-!server/
-!server/**
 !shared/
 !shared/**
 !assets/
@@ -19,7 +17,7 @@
 !scripts/setup-transcription.mjs
 !scripts/helpers/
 !scripts/helpers/verified-download.mjs
-!scripts/cloud-user.mjs
+!scripts/helpers/transcription-model.mjs
 !go.mod
 !go.sum
 !cmd/

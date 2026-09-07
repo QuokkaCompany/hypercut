@@ -1,4 +1,4 @@
-import { startServer } from '../server/app.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
 const server = await startServer({ port: 0, dataDir: process.env.HYPERCUT_BENCHMARK_DATA_DIR });
 process.send?.({ url: server.url });
 // Private parent IPC for diagnostics; no HTTP endpoint or forced collection.

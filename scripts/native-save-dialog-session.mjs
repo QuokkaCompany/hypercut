@@ -7,8 +7,8 @@ import { promisify } from 'node:util';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { generateDemo } from './fixtures.mjs';
-import { inspectMedia } from '../server/media.mjs';
-import { capture } from '../server/process.mjs';
+import { inspectMedia } from '../tests/reference/server/media.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 import { makeProject, validateProject, DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 
 const output = path.resolve(process.argv.find(arg => arg.startsWith('--output='))?.slice(9) || 'test-output/native-save-dialog');

@@ -4,9 +4,9 @@ import { mkdtemp, rm, writeFile, readdir, readFile, chmod } from 'node:fs/promis
 import os from 'node:os';
 import path from 'node:path';
 import { generateDemo } from '../scripts/fixtures.mjs';
-import { inspectMedia, analyzeMedia, exportMedia } from '../server/media.mjs';
+import { inspectMedia, analyzeMedia, exportMedia } from './reference/server/media.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
-import { capture, executable } from '../server/process.mjs';
+import { capture, executable } from './reference/server/process.mjs';
 
 let directory, source, media;
 before(async () => { directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-errors-')); source = await generateDemo(path.join(directory, 'source.mp4')); media = await inspectMedia(source); });

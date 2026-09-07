@@ -3,8 +3,8 @@ import { mkdtemp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
-import { createClaudeCLI } from '../server/claude-cli.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { createClaudeCLI } from '../tests/reference/server/claude-cli.mjs';
 import { generateDemo } from './fixtures.mjs';
 import { fakeClaude } from '../tests/helpers/fake-claude.mjs';
 

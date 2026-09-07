@@ -6,8 +6,8 @@ import path from 'node:path';
 import os from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { startAPI, client, launchWorker, until } from './helpers/cloud.mjs';
-import { createUser, digest } from '../server/cloud/store.mjs';
-import { CHUNK_BYTES } from '../server/cloud/uploads.mjs';
+import { createUser, digest } from './reference/server/cloud/store.mjs';
+import { CHUNK_BYTES } from './reference/server/cloud/uploads.mjs';
 import { DEFAULT_SETTINGS, makeProject } from '../shared/timeline.mjs';
 import { generateDemo } from '../scripts/fixtures.mjs';
 

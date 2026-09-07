@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Readable } from 'node:stream';
-import { SilenceDetector, consumePCM } from '../server/pcm.mjs';
+import { SilenceDetector, consumePCM } from './reference/server/pcm.mjs';
 const detect = (samples, extra = {}) => { const detector = new SilenceDetector({ sampleRate: 1000, channels: 1, thresholdDb: 0, minSilenceMs: 50, duration: samples.length / 1000, ...extra }); detector.push(new Float32Array(samples)); return detector.finish(); };
 
 test('D01: threshold equality, both polarities, and above threshold', () => {

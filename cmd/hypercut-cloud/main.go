@@ -17,7 +17,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/QuokkaCompany/hypercut/internal/ai"
 	"github.com/QuokkaCompany/hypercut/internal/cloud"
+	"github.com/QuokkaCompany/hypercut/internal/local"
 )
 
 func env(key, fallback string) string {
@@ -43,6 +45,14 @@ func run() error {
 	root, err := filepath.Abs(env("HYPERCUT_ROOT", "."))
 	if err != nil {
 		return err
+	}
+	if command == "mcp" {
+		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		defer stop()
+		return ai.RunMCP(ctx)
+	}
+	if command == "local" {
+		return runLocal(root)
 	}
 	directory := env("HYPERCUT_CLOUD_DATA", filepath.Join(root, ".hypercut/cloud"))
 	if command == "user" {
@@ -97,8 +107,26 @@ func run() error {
 		}
 		return nil
 	}
+	if command == "worker" {
+		quota, err := integer("HYPERCUT_CLOUD_QUOTA_BYTES", 10*1024*1024*1024)
+		if err != nil {
+			return err
+		}
+		poll, err := integer("HYPERCUT_WORKER_POLL_MS", 500)
+		if err != nil {
+			return err
+		}
+		lease, err := integer("HYPERCUT_WORKER_LEASE_MS", 15000)
+		if err != nil {
+			return err
+		}
+		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		defer stop()
+		fmt.Println("HyperCut Go worker ready.")
+		return cloud.RunWorker(ctx, cloud.WorkerOptions{Root: root, DataDir: directory, Quota: quota, Poll: time.Duration(poll) * time.Millisecond, Lease: time.Duration(lease) * time.Millisecond})
+	}
 	if command != "serve" {
-		return errors.New("Commands: serve, user, healthcheck.")
+		return errors.New("Commands: serve, worker, user, healthcheck.")
 	}
 	quota, err := integer("HYPERCUT_CLOUD_QUOTA_BYTES", 10*1024*1024*1024)
 	if err != nil {
@@ -110,7 +138,7 @@ func run() error {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	api, err := cloud.New(context.Background(), cloud.Options{Root: root, DataDir: directory, DistDir: os.Getenv("HYPERCUT_DIST_DIR"), PublicURL: publicURL, Quota: quota, MaxUpload: maxUpload, Node: env("HYPERCUT_NODE", "node")})
+	api, err := cloud.New(context.Background(), cloud.Options{Root: root, DataDir: directory, DistDir: os.Getenv("HYPERCUT_DIST_DIR"), PublicURL: publicURL, Quota: quota, MaxUpload: maxUpload})
 	if err != nil {
 		return err
 	}
@@ -138,4 +166,50 @@ func run() error {
 		_ = server.Close()
 	}
 	return nil
+}
+
+func runLocal(root string) error {
+	parentPID := os.Getppid()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	if os.Getenv("HYPERCUT_DESKTOP_TOKEN") != "" {
+		go func() {
+			t := time.NewTicker(time.Second)
+			defer t.Stop()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-t.C:
+					if os.Getppid() != parentPID {
+						stop()
+						return
+					}
+				}
+			}
+		}()
+	}
+	app, err := local.New(context.Background(), local.Options{Root: root, DataDir: os.Getenv("HYPERCUT_DATA_DIR"), DistDir: os.Getenv("HYPERCUT_DIST_DIR"), DesktopToken: os.Getenv("HYPERCUT_DESKTOP_TOKEN"), Development: os.Getenv("HYPERCUT_DEVELOPMENT") == "1"})
+	if err != nil {
+		return err
+	}
+	defer app.Close()
+	listener, err := net.Listen("tcp", "127.0.0.1:"+env("PORT", "4327"))
+	if err != nil {
+		return err
+	}
+	server := &http.Server{Handler: app, ReadHeaderTimeout: 10 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 * 1024}
+	done := make(chan error, 1)
+	go func() { done <- server.Serve(listener) }()
+	fmt.Println("HYPERCUT_LOCAL_READY http://" + listener.Addr().String())
+	select {
+	case err = <-done:
+		if !errors.Is(err, http.ErrServerClosed) {
+			return err
+		}
+		return nil
+	case <-ctx.Done():
+	}
+	app.Close()
+	return server.Close()
 }

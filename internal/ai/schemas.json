@@ -1,0 +1,261 @@
+{
+  "proposal": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "settings",
+      "explanation"
+    ],
+    "properties": {
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "thresholdDb",
+          "minSilenceMs",
+          "preRollMs",
+          "postRollMs"
+        ],
+        "properties": {
+          "thresholdDb": {
+            "type": "number",
+            "description": "dBFS, -96 to 0 inclusive. Higher values remove louder sounds."
+          },
+          "minSilenceMs": {
+            "type": "number",
+            "description": "Continuous silence, 50 to 5000 milliseconds."
+          },
+          "preRollMs": {
+            "type": "number",
+            "description": "Keep 0 to 1000 ms before speech."
+          },
+          "postRollMs": {
+            "type": "number",
+            "description": "Keep 0 to 1000 ms after speech."
+          }
+        }
+      },
+      "explanation": {
+        "type": "string",
+        "description": "Brief Korean explanation, up to 800 characters. Do not claim to have listened to the video."
+      }
+    }
+  },
+  "correction": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "changes"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string",
+        "description": "Copy the request ID exactly."
+      },
+      "changes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "before",
+            "after",
+            "reason"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "before": {
+              "type": "string",
+              "description": "Exact original text."
+            },
+            "after": {
+              "type": "string",
+              "description": "Correct spelling and spacing only. Preserve numbers, units, names and meaning."
+            },
+            "reason": {
+              "type": "string",
+              "description": "Brief Korean explanation of the correction."
+            }
+          }
+        }
+      }
+    }
+  },
+  "translation": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "changes"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string",
+        "description": "Copy the request ID exactly."
+      },
+      "changes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "before",
+            "after",
+            "reason"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "before": {
+              "type": "string",
+              "description": "Exact original text."
+            },
+            "after": {
+              "type": "string",
+              "description": "Translate the complete caption into the requested target language. Preserve facts, names, numbers, units and negation."
+            },
+            "reason": {
+              "type": "string",
+              "description": "Brief Korean explanation of the correction."
+            }
+          }
+        }
+      }
+    }
+  },
+  "effects": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "requestId",
+      "changes"
+    ],
+    "properties": {
+      "requestId": {
+        "type": "string"
+      },
+      "changes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "action",
+            "before",
+            "after",
+            "reason"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "add",
+                "update",
+                "remove"
+              ]
+            },
+            "before": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "assetId",
+                    "start",
+                    "offset",
+                    "duration",
+                    "gainDb",
+                    "muted"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "assetId": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "number"
+                    },
+                    "offset": {
+                      "type": "number"
+                    },
+                    "duration": {
+                      "type": "number"
+                    },
+                    "gainDb": {
+                      "type": "number"
+                    },
+                    "muted": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "after": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "assetId",
+                    "start",
+                    "offset",
+                    "duration",
+                    "gainDb",
+                    "muted"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "assetId": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "number"
+                    },
+                    "offset": {
+                      "type": "number"
+                    },
+                    "duration": {
+                      "type": "number"
+                    },
+                    "gainDb": {
+                      "type": "number"
+                    },
+                    "muted": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

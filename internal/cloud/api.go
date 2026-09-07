@@ -21,8 +21,8 @@ import (
 const ChunkBytes = 8 * 1024 * 1024
 
 type Options struct {
-	DataDir, DistDir, PublicURL, Root, Node string
-	Quota, MaxUpload                        int64
+	DataDir, DistDir, PublicURL, Root string
+	Quota, MaxUpload                  int64
 }
 type loginLimit struct {
 	until            time.Time
@@ -58,9 +58,6 @@ func New(ctx context.Context, options Options) (*API, error) {
 	if options.Quota <= 0 || options.MaxUpload <= 0 || options.Quota > 1<<53-1 || options.MaxUpload > 1<<53-1 {
 		return nil, fail(400, "Storage limits must be positive safe integers.")
 	}
-	if options.Node == "" {
-		options.Node = "node"
-	}
 	options.Root, err = filepath.Abs(options.Root)
 	if err != nil {
 		return nil, err
@@ -78,7 +75,7 @@ func New(ctx context.Context, options Options) (*API, error) {
 	}
 	options.DataDir = store.Directory
 	life, cancel := context.WithCancel(ctx)
-	bridge, err := StartBridge(life, options.Root, options.Node)
+	bridge, err := StartBridge(life, options.Root)
 	if err != nil {
 		cancel()
 		store.Close()

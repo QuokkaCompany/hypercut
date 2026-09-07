@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { capture, startProcess } from '../../server/process.mjs';
+import { capture, startProcess } from '../../tests/reference/server/process.mjs';
 import { writeTone } from '../../tests/helpers/effects-fixture.mjs';
 import { thresholdFixture } from './threshold-performance-fixture.mjs';
 import { sha256 } from './transcription-performance-fixture.mjs';

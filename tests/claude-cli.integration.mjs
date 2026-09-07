@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { runCLI } from '../server/claude-cli.mjs';
+import { runCLI } from './reference/server/claude-cli.mjs';
 
 test('A06: real subprocess keeps shell syntax on stdin and reconstructs split Korean UTF-8', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-cli-bytes-'));

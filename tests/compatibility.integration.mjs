@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { capture } from '../server/process.mjs';
-import { inspectMedia, analyzeMedia, exportMedia } from '../server/media.mjs';
+import { capture } from './reference/server/process.mjs';
+import { inspectMedia, analyzeMedia, exportMedia } from './reference/server/media.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 
 for (const fps of ['24', '25', '30000/1001', '30', '60']) for (const container of ['mp4', 'mov']) test(`M04 representative: ${container} H264/AAC ${fps} fps, ${container === 'mp4' ? 'mono 48k' : 'stereo 44.1k'}`, { timeout: 30000 }, async () => {

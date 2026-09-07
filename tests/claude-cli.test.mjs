@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir } from 'node:fs/promises';
-import { createClaudeCLI, cliEnvironment } from '../server/claude-cli.mjs';
-import { validateConnection } from '../server/ai.mjs';
+import { createClaudeCLI, cliEnvironment } from './reference/server/claude-cli.mjs';
+import { validateConnection } from './reference/server/ai.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 
 const help = '--safe-mode --tools --strict-mcp-config --mcp-config --no-session-persistence --json-schema --output-format --setting-sources --system-prompt --permission-mode --permission-prompts';

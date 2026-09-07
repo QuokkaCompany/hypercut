@@ -5,7 +5,7 @@ import { fork } from 'node:child_process';
 import { once } from 'node:events';
 import os from 'node:os';
 import path from 'node:path';
-import { atomicReplace } from '../server/atomic-file.mjs';
+import { atomicReplace } from './reference/server/atomic-file.mjs';
 
 test('E03: killing the real writer before commit preserves the last complete project', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-atomic-'));
@@ -14,7 +14,7 @@ test('E03: killing the real writer before commit preserves the last complete pro
     const target = path.join(directory, 'project.json'); const original = '{"complete":"previous"}';
     await writeFile(target, original);
     const script = path.join(directory, 'writer.mjs');
-    await writeFile(script, `import { writeFile } from 'node:fs/promises';\nimport { atomicReplace } from ${JSON.stringify(new URL('../server/atomic-file.mjs', import.meta.url).href)};\nawait atomicReplace(process.argv[2], file => writeFile(file, '{"complete":"next"}', {flag:'wx'}), {beforeCommit:async()=>{process.send('ready');await new Promise(()=>{})}});`);
+    await writeFile(script, `import { writeFile } from 'node:fs/promises';\nimport { atomicReplace } from ${JSON.stringify(new URL('./reference/server/atomic-file.mjs', import.meta.url).href)};\nawait atomicReplace(process.argv[2], file => writeFile(file, '{"complete":"next"}', {flag:'wx'}), {beforeCommit:async()=>{process.send('ready');await new Promise(()=>{})}});`);
     child = fork(script, [target], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
     assert.deepEqual(await once(child, 'message'), ['ready', undefined]);
     const exited = once(child, 'exit'); child.kill('SIGKILL'); await exited;

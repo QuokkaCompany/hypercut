@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateProposal, proposalPrompt } from '../shared/ai.mjs';
-import { askAI, validateConnection } from '../server/ai.mjs';
+import { askAI, validateConnection } from './reference/server/ai.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 
 const proposal = { settings: { ...DEFAULT_SETTINGS, thresholdDb: -45 }, explanation: '작은 목소리를 더 보존하도록 기준을 낮춥니다.' };

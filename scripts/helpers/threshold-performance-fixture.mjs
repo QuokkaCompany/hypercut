@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile, stat, copyFile } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { capture } from '../../server/process.mjs';
-import { inspectMedia, publicMedia } from '../../server/media.mjs';
+import { capture } from '../../tests/reference/server/process.mjs';
+import { inspectMedia, publicMedia } from '../../tests/reference/server/media.mjs';
 import { sha256 } from './transcription-performance-fixture.mjs';
 
 export async function thresholdFixture(seconds) {

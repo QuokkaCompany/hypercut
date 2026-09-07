@@ -3,8 +3,8 @@ import { mkdtemp,rm,writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { startServer } from '../server/app.mjs';
-import { capture } from '../server/process.mjs';
+import { startServer } from '../tests/reference/server/app.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 
 const directory=await mkdtemp(path.join(os.tmpdir(),'hypercut-restore-ui-'));
 let server,browser;

@@ -7,7 +7,7 @@ import { randomBytes } from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
 import { client, until } from '../tests/helpers/cloud.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 import { DEFAULT_SETTINGS } from '../shared/timeline.mjs';
 
 if (process.platform !== 'darwin') throw new Error('This optional smoke fixture uses macOS say. Core cloud tests are cross-platform.');

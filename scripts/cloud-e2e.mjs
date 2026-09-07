@@ -4,9 +4,9 @@ import { mkdtemp, mkdir, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { startAPI, launchWorker } from '../tests/helpers/cloud.mjs';
-import { createUser } from '../server/cloud/store.mjs';
+import { createUser } from '../tests/reference/server/cloud/store.mjs';
 import { generateDemo } from './fixtures.mjs';
-import { capture } from '../server/process.mjs';
+import { capture } from '../tests/reference/server/process.mjs';
 
 const directory = await mkdtemp(path.join(os.tmpdir(), 'hypercut-cloud-ui-'));
 const evidence = path.resolve('test-output/cloud-e2e'); await mkdir(evidence, { recursive: true });

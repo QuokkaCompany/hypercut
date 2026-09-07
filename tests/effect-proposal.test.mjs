@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { effectProposalFixture } from './helpers/effect-proposal-fixture.mjs';
 import { effectPrompt, validateEffectRequest, validateEffectProposal, buildEffectScope, applyEffectProposal, effectOutput } from '../shared/effect-proposal.mjs';
-import { askEffectProposal } from '../server/ai.mjs';
+import { askEffectProposal } from './reference/server/ai.mjs';
 test('FX04: only selected aliases, descriptions, clip values and optional captions reach the prompt', () => {
   const { input } = effectProposalFixture();
   const prompt = effectPrompt({ ...input, mediaPath: '/private/video.mp4', apiKey: 'test-secret', assets: input.assets.map(a => ({ ...a, path: '/private/audio.wav', fingerprint: 'a'.repeat(64), name: 'private-filename-one.wav' })), cues: input.cues.map(c => ({ ...c, reviewedFor: 'private-review' })) });
