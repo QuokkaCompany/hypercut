@@ -32,7 +32,7 @@ docker compose logs --tail=100 api worker
 curl --fail http://127.0.0.1:4328/api/health
 ```
 
-Health checks verify the API/database, not worker readiness or transcription quality. Jobs remaining queued usually mean the worker is stopped or occupied. Missing Whisper files disable new transcription while silence editing and existing captions still work. Session expiry requires sign-in again; it does not discard jobs or projects. A 409 save/apply response means another revision exists: reopen the project and review it.
+The Go health check verifies the API/database and that its private media helper has not exited. It does not establish worker readiness or transcription quality. Restart the API if the helper has exited; existing jobs continue in the independent worker. Jobs remaining queued usually mean the worker is stopped or occupied. Missing Whisper files disable new transcription while silence editing and existing captions still work. Session expiry requires sign-in again; it does not discard jobs or projects. A 409 save/apply response means another revision exists: reopen the project and review it.
 
 Running jobs heartbeat every 500 ms by default, with a 15-second lease. A replacement worker marks expired work interrupted. The default job execution timeout is two hours. Existing FFmpeg cancellation sends termination and escalates if needed. Do not delete an active job directory by hand.
 

@@ -77,7 +77,7 @@ The timing above describes this generated sample; it is not a human-recording ac
 
 The independent local edition remains available without an account. The new **single-host cloud beta** adds sign-in, resumable uploads, server-saved projects and a durable worker queue using the same editor and media engine. Users can upload, edit and download outputs from a browser. API restart and browser disconnection preserve submitted jobs and saved projects.
 
-Start with the [cloud setup guide](docs/cloud/README.md), [architecture](docs/cloud/architecture.md), [API contract](docs/cloud/api.md) and [operator limits](docs/cloud/operations.md). Docker includes FFmpeg and optional CPU Whisper. Cloud requires Node 24+; public hosting, billing and multi-host/GPU operation are not provisioned. The workspace uses English; the editing interface remains Korean.
+Start with the [cloud setup guide](docs/cloud/README.md), [architecture](docs/cloud/architecture.md), [API contract](docs/cloud/api.md) and [operator limits](docs/cloud/operations.md). The cloud HTTP API is implemented in **Go**, with a private Node media helper and a separate Node worker for FFmpeg, Whisper, VAD and rendering. Direct cloud development requires Go 1.26+ and Node 24+; Docker includes the compiled API, FFmpeg and optional CPU Whisper. The independent local edition does not require Go. Public hosting, billing and multi-host/GPU operation are not provisioned. The workspace uses English; the editing interface remains Korean.
 
 ## Run locally
 

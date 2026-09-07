@@ -1,8 +1,10 @@
 # HyperCut validation and testing
 
-Updated September 6, 2026. Plans, automated checks, and human acceptance are distinct. **Full MVP acceptance is not complete.** Historical results apply to the exact candidate, package, input, and runner named in each record.
+Updated September 7, 2026. Plans, automated checks, and human acceptance are distinct. **Full MVP acceptance is not complete.** Historical results apply to the exact candidate, package, input, and runner named in each record.
 
 ## Current evidence
+
+The [Go cloud API record](2026-09-07-go-api-results.md) covers existing cloud contract/browser tests against Go, Node/Go data compatibility, Go race checks, and actual Linux CPU speech/caption export. It does not claim a performance improvement or a Node-free runtime.
 
 The [multilingual feature record](2026-09-06-multilingual-results.md) covers ten language choices, translated captions, TXT transcripts, range/sentence clips, v8 projects, and save round trips in both apps. Actual local transcription was checked with English, Japanese, and Chinese TTS plus Japanese automatic detection. AI behavior was checked with mock responses and actual local MCP transport, without authenticated model requests.
 

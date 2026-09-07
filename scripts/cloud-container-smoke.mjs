@@ -17,10 +17,11 @@ const password = randomBytes(24).toString('hex'), email = `smoke-${Date.now()}@e
 const api = client(() => ({ url: 'http://127.0.0.1:4328' }));
 try {
   await new Promise((resolve, reject) => {
-    const child = spawn('docker', ['compose', '-p', 'hypercut-beta-validation', 'exec', '-T', 'api', 'node', 'scripts/cloud-user.mjs', email], { stdio: ['pipe', 'ignore', 'pipe'] });
+    const child = spawn('docker', ['compose', '-p', 'hypercut-beta-validation', 'exec', '-T', 'api', 'hypercut-cloud', 'user', email], { stdio: ['pipe', 'ignore', 'pipe'] });
     let stderr = ''; child.stderr.on('data', chunk => stderr += chunk); child.on('error', reject); child.on('exit', code => code === 0 ? resolve() : reject(new Error(stderr))); child.stdin.end(password);
   });
   await api.login(email, password);
+  assert.equal((await api.call('/runtime')).apiRuntime, 'go');
   const status = await api.call('/transcription/status'); assert.equal(status.ready, true, status.error);
   const aiff = path.join(directory, 'voice.aiff'), video = path.join(directory, 'speech.mp4');
   await capture('say', ['-v', 'Samantha', '-r', '150', '-o', aiff, 'Welcome to this video editing test. We keep the original recording. Captions can help people understand the video.']);

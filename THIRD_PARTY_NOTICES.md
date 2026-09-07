@@ -10,6 +10,7 @@ HyperCut's original code is distributed under [GPL-3.0-only](LICENSE). Third-par
 | whisper.cpp | Built by setup; included in locally built transcription packages | MIT; pinned revision and archive hash in [setup script](scripts/setup-transcription.mjs); [upstream](https://github.com/ggml-org/whisper.cpp) |
 | ONNX Runtime | Native VAD inference | MIT; [upstream](https://github.com/microsoft/onnxruntime) and notices in the installed package |
 | Electron | Desktop runtime | MIT and included third-party notices; [upstream](https://github.com/electron/electron) |
+| Go runtime, modernc.org/sqlite and Go modules | Cloud HTTP API, compatible metadata store and account/session primitives | Original notices are bundled in [Go dependency licenses](assets/licenses/go-dependencies.txt); pinned versions in [go.mod](go.mod) and [go.sum](go.sum). Regenerate with `node scripts/go-notices.mjs` after changing dependencies. |
 | FFmpeg / ffprobe | External desktop prerequisites; Debian packages installed in the cloud container | Applicable LGPL/GPL terms depend on the selected build and configuration; the container preserves Debian package copyright files under `/usr/share/doc/`. See the [FFmpeg legal page](https://ffmpeg.org/legal.html). |
 
 JavaScript and native package versions are recorded in [package-lock.json](package-lock.json). Preserve the license and notice files supplied by those packages when redistributing builds. React, Express, the MCP SDK, canvas/rendering dependencies, and build tools are not relicensed by HyperCut's root license.

@@ -3,14 +3,23 @@ import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import path from 'node:path';
 import { startCloudServer } from '../../server/cloud/app.mjs';
-import { digest } from '../../server/cloud/store.mjs';
+import { digest, openStore } from '../../server/cloud/store.mjs';
 import { CHUNK_BYTES } from '../../server/cloud/uploads.mjs';
 export async function freePort() {
   const server = createServer(); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const port = server.address().port; await new Promise(resolve => server.close(resolve)); return port;
 }
 export async function startAPI(dataDir, extra = {}) {
-  const port = await freePort(); return startCloudServer({ port, dataDir, publicURL: `http://127.0.0.1:${port}`, ...extra });
+  const port = await freePort();
+  if ((extra.backend || process.env.HYPERCUT_CLOUD_API) !== 'go') return startCloudServer({ port, dataDir, publicURL: `http://127.0.0.1:${port}`, ...extra });
+  const url = `http://127.0.0.1:${port}`;
+  const child = spawn(path.resolve('.cache/bin/hypercut-cloud'), ['serve'], { env: { ...process.env, PORT: String(port), HYPERCUT_CLOUD_HOST: '127.0.0.1', HYPERCUT_PUBLIC_URL: url, HYPERCUT_CLOUD_DATA: dataDir, ...(extra.quota ? { HYPERCUT_CLOUD_QUOTA_BYTES: String(extra.quota) } : {}), ...(extra.maxUpload ? { HYPERCUT_CLOUD_MAX_UPLOAD_BYTES: String(extra.maxUpload) } : {}) }, stdio: ['ignore', 'pipe', 'pipe'] });
+  let errors = '', startupError; child.on('error', error => { startupError = error; }); child.stdout.resume(); child.stderr.on('data', bytes => { errors = (errors + bytes).slice(-4000); });
+  const stop = async () => { if (startupError || child.exitCode !== null || child.signalCode) return; const exited = once(child, 'exit'); child.kill('SIGTERM'); await exited; };
+  try { await until(async () => { if (startupError) throw startupError; if (child.exitCode !== null) throw new Error(`Go API exited: ${errors}`); try { return (await fetch(`${url}/api/health`)).ok; } catch { return false; } }, 30000); }
+  catch (error) { await stop(); throw error; }
+  const store = openStore(dataDir);
+  return { url, store, child, async close() { await stop(); store.close(); } };
 }
 export function client(getServer) {
   let cookie = '', token = '';
