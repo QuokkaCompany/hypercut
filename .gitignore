@@ -50,3 +50,6 @@ cloud-data/
 *.sqlite-shm
 *.sqlite-wal
 *.sqlite.backup
+
+# Standalone marketing-site build
+/site-dist/

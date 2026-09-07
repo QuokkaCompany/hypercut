@@ -47,6 +47,9 @@ jobs:
       - name: Install browser for cloud acceptance
         if: matrix.node == 24
         run: npx playwright install --with-deps chromium
+      - name: Interactive landing page
+        if: matrix.node == 24
+        run: npm run build:landing && npm run test:landing
       - name: Go server race tests
         if: matrix.node == 24
         run: npm run test:server

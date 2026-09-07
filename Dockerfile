@@ -26,7 +26,8 @@ RUN --mount=type=cache,id=hypercut-whisper-build-${TARGETARCH},target=/app/.hype
 COPY shared ./shared
 COPY src ./src
 COPY public ./public
-COPY tsconfig.json vite.config.ts index.html ./
+COPY docs/media/silence-editing.png docs/media/walkthrough.mp4 ./docs/media/
+COPY tsconfig.json vite.config.ts index.html landing.html ./
 RUN npm run build
 RUN mkdir -p /native && arch="$TARGETARCH" && if [ "$arch" = "amd64" ]; then arch=x64; fi && cp node_modules/onnxruntime-node/bin/napi-v6/linux/$arch/libonnxruntime.so.1 /native/
 

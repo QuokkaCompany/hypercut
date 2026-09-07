@@ -18,3 +18,7 @@ JavaScript and native package versions are recorded in [package-lock.json](packa
 The repository does not include the downloaded Whisper model, compiled whisper.cpp runtime, private recordings, or generated application packages. Local packaging adds the prepared transcription resources and their notices. Adding a dependency or redistributing a new binary requires checking that component's actual license and configuration.
 
 The cloud runtime image contains Debian runtime libraries and the standalone ONNX Runtime library; Node.js is used only in its build stage, with their supplied license/copyright files. Its default build includes the prepared Whisper runtime/model and their notices under `/opt/hypercut/transcription/`. Building or redistributing an image is distinct from cloning this source repository; preserve the actual installed components' notices and corresponding distribution requirements. No prebuilt image is published by this change.
+
+## Landing page typography
+
+Manrope (400, 600 and 800) is bundled under the SIL Open Font License 1.1. Copyright 2018 The Manrope Project Authors. See [the bundled license](public/landing/Manrope-OFL.txt). Font files were obtained from Google Fonts on September 7, 2026 and are served locally; the page makes no font-provider requests.

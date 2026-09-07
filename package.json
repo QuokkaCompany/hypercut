@@ -64,7 +64,10 @@
     "test:local:go:e2e": "npm run build && npm run build:server && HYPERCUT_LOCAL_SERVER=go node scripts/e2e.mjs",
     "test:reference:media": "node --test tests/media.integration.mjs",
     "test:reference:api": "node --test tests/api.integration.mjs tests/ai-api.integration.mjs",
-    "test:reference:cloud": "node --test tests/cloud.integration.mjs"
+    "test:reference:cloud": "node --test tests/cloud.integration.mjs",
+    "build:landing": "tsc --noEmit && vite build --mode landing && node scripts/finalize-landing.mjs",
+    "preview:landing": "vite preview --outDir site-dist --host 127.0.0.1 --port 4174",
+    "test:landing": "node scripts/landing-e2e.mjs"
   },
   "dependencies": {
     "@tanstack/react-virtual": "3.14.10",

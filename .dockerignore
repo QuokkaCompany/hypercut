@@ -26,3 +26,9 @@
 !internal/**
 !public/
 !public/**
+
+!landing.html
+!docs/
+!docs/media/
+!docs/media/silence-editing.png
+!docs/media/walkthrough.mp4
