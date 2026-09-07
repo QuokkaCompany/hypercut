@@ -1,6 +1,6 @@
 # HyperCut
 
-A local-first video editor that removes pauses, creates clips, and turns speech into editable captions. Built by [Quokka Labs](https://github.com/quokkalabs), licensed under [GPL-3.0](LICENSE).
+A local-first video editor that removes pauses, creates clips, and turns speech into editable captions. Built by [QuokkaCompany](https://github.com/QuokkaCompany), licensed under [GPL-3.0](LICENSE).
 
 HyperCut finds intervals that stay below your chosen audio threshold, then cuts video and audio together. Original media stays intact. Optional speech protection, local transcription, and AI suggestions help you review the edit.
 
@@ -25,7 +25,7 @@ Install Node.js **22.12 or newer** and FFmpeg/ffprobe. On macOS:
 
 ```sh
 brew install ffmpeg
-git clone https://github.com/quokkalabs/hypercut.git
+git clone https://github.com/QuokkaCompany/hypercut.git
 cd hypercut
 npm ci
 npm run build
@@ -135,6 +135,6 @@ npm run test:api
 
 Additional scripts cover VAD, transcription, captions, effects, MCP, cancellation, recovery, browser/desktop workflows, and long recordings. Their setup requirements and evidence are listed in the [testing guide](docs/testing/README.md). Use a fresh `--output=test-output/<run-name>` directory for repeated benchmarks. Long runs and native UI tests are not part of the quick contributor checks.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change. Report reproducible bugs through [GitHub Issues](https://github.com/quokkalabs/hypercut/issues), follow the [community guidelines](CODE_OF_CONDUCT.md), and use the [security policy](SECURITY.md) for vulnerabilities.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change. Report reproducible bugs through [GitHub Issues](https://github.com/QuokkaCompany/hypercut/issues), follow the [community guidelines](CODE_OF_CONDUCT.md), and use the [security policy](SECURITY.md) for vulnerabilities.
 
 HyperCut's original code is licensed under [GPL-3.0-only](LICENSE). Bundled fonts, models, and dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Local recordings, reports, downloaded runtimes, and generated outputs are excluded from the repository.

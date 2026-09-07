@@ -1,6 +1,6 @@
 # Contributing to HyperCut
 
-HyperCut is an early-stage, local-first video editor maintained under the Quokka Labs organization. Contributions to editing reliability, accessibility, documentation, localization, and reproducible validation are welcome.
+HyperCut is an early-stage, local-first video editor maintained under the QuokkaCompany organization. Contributions to editing reliability, accessibility, documentation, localization, and reproducible validation are welcome.
 
 ## Development setup
 

@@ -79,11 +79,11 @@
   "license": "GPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/quokkalabs/hypercut.git"
+    "url": "git+https://github.com/QuokkaCompany/hypercut.git"
   },
-  "homepage": "https://github.com/quokkalabs/hypercut#readme",
+  "homepage": "https://github.com/QuokkaCompany/hypercut#readme",
   "bugs": {
-    "url": "https://github.com/quokkalabs/hypercut/issues"
+    "url": "https://github.com/QuokkaCompany/hypercut/issues"
   },
   "engines": {
     "node": ">=22.12.0"

@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/quokkalabs/hypercut/security/advisories/new
+    url: https://github.com/QuokkaCompany/hypercut/security/advisories/new
     about: Share sensitive vulnerability details privately.
