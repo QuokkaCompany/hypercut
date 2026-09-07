@@ -1,0 +1,47 @@
+x-runtime: &runtime
+  image: hypercut-cloud:local
+  build:
+    context: .
+    args:
+      WITH_TRANSCRIPTION: ${WITH_TRANSCRIPTION:-1}
+  init: true
+  restart: unless-stopped
+  environment: &environment
+    HYPERCUT_PUBLIC_URL: ${HYPERCUT_PUBLIC_URL:-http://127.0.0.1:4328}
+    HYPERCUT_CLOUD_QUOTA_BYTES: ${HYPERCUT_CLOUD_QUOTA_BYTES:-10737418240}
+    HYPERCUT_CLOUD_MAX_UPLOAD_BYTES: ${HYPERCUT_CLOUD_MAX_UPLOAD_BYTES:-2147483648}
+  volumes:
+    - cloud-data:/data
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
+  read_only: true
+  tmpfs:
+    - /tmp:size=256m,mode=1777
+  stop_grace_period: 30s
+  pids_limit: 256
+
+services:
+  api:
+    <<: *runtime
+    ports:
+      - '127.0.0.1:4328:4328'
+    mem_limit: 2g
+    cpus: 2
+    healthcheck:
+      test: [CMD, node, --input-type=module, -e, "const u=new URL(process.env.HYPERCUT_PUBLIC_URL);const http=await import('node:http');http.get({host:'127.0.0.1',port:4328,path:'/api/health',headers:{Host:u.host}},r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1));"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+  worker:
+    <<: *runtime
+    command: [node, server/cloud/worker.mjs]
+    mem_limit: 4g
+    cpus: 4
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  cloud-data:

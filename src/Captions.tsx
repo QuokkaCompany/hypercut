@@ -4,7 +4,7 @@ import type { CaptionLanguage } from './types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Captions as CaptionsIcon, Download, LoaderCircle, Redo2, Undo2, X } from 'lucide-react';
 import { mapCaptions, toSourceVTT, validateTranscript, captionContent, editCaptionContent } from '../shared/captions.mjs';
-import { fileURL, request } from './api';
+import { cloudMode, fileURL, request } from './api';
 import type { CaptionCue, Job, Media, Transcript, TranscriptionSettings, CaptionStyle as Style } from './types';
 import './captions.css';
 import { CaptionStyle } from './CaptionStyle';
@@ -58,7 +58,7 @@ export function CaptionEditor({ glossary, onGlossaryChange, media, trackIndex, t
       <label>전사 채널<select aria-label="전사 채널" value={channel} disabled={busy || !track} onChange={e => setChannel(Number(e.target.value))}>{Array.from({ length: Math.min(8, track?.channels || 1) }, (_, i) => <option key={i} value={i}>{i + 1}번 채널{track?.channels === 1 ? ' · 모노' : ''}</option>)}</select></label>
       <button className="button primary" disabled={busy || !status?.ready || !track} onClick={() => leaveDraft(() => { player.current?.pause(); setError(''); onTranscribe({ channel, language }); })}>{busy && job?.type === 'transcribe' ? <LoaderCircle className="spin" size={16} /> : <CaptionsIcon size={16} />}{transcript ? '다시 전사' : '음성 전사 시작'}</button>
     </div>
-    <div className="caption-engine">{status?.ready ? `${status.model} · 인터넷 없이 전사` : status?.error || '로컬 전사 엔진 확인 중…'}{status && !status.ready && <button className="text-button" onClick={refresh} disabled={busy}>다시 확인</button>}</div>
+    <div className="caption-engine">{status?.ready ? `${status.model} · ${cloudMode ? '서버에서 전사' : '인터넷 없이 전사'}` : status?.error || (cloudMode ? '서버 전사 엔진 확인 중…' : '로컬 전사 엔진 확인 중…')}{status && !status.ready && <button className="text-button" onClick={refresh} disabled={busy}>다시 확인</button>}</div>
     {mismatch && <div className="ai-error">자막이 다른 오디오 트랙에서 만들어졌습니다. 해당 트랙으로 돌아가거나 현재 트랙을 다시 전사해 주세요.</div>}
     {busy && job && <div className="caption-progress" role="status"><span>{job.stage} · {Math.round(job.progress * 100)}%</span><button className="text-button" onClick={onCancel} disabled={job.stage === '취소 중'}>작업 취소</button></div>}
     {error && <div className="ai-error" role="alert">{error}</div>}

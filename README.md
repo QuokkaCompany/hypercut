@@ -1,10 +1,64 @@
-# HyperCut
+<p align="center">
+  <img src="public/favicon.svg" width="88" height="88" alt="HyperCut icon" />
+</p>
+
+<h1 align="center">HyperCut</h1>
+
+<p align="center"><strong>Less time cutting pauses. More time creating.</strong></p>
+
+<p align="center">
+  <a href="#run-locally">Run locally</a> ·
+  <a href="docs/cloud/README.md">Self-host the cloud beta</a> ·
+  <a href="CONTRIBUTING.md">Contribute</a> ·
+  <a href="LICENSE">GPL-3.0</a>
+</p>
 
 A local-first video editor that removes pauses, creates clips, and turns speech into editable captions. Built by [QuokkaCompany](https://github.com/QuokkaCompany), licensed under [GPL-3.0](LICENSE).
 
 HyperCut finds intervals that stay below your chosen audio threshold, then cuts video and audio together. Original media stays intact. Optional speech protection, local transcription, and AI suggestions help you review the edit.
 
-**Status: early development.** Development and testing currently target macOS on Apple Silicon. The interface is currently in Korean; project documentation is in English. Human-recording quality, editing-time savings, authenticated AI integrations, and installation on a clean Mac still need validation. This is not a fully validated replacement for a professional editor.
+## See HyperCut in action
+
+Import a tutorial, remove pauses, review automatically generated captions, and return to a saved cloud project with a completed MP4.
+
+![Actual HyperCut walkthrough: import a tutorial, review four silence cuts, style captions, and open the cloud workspace](docs/media/walkthrough.gif)
+
+[Download the full-resolution walkthrough (MP4)](docs/media/walkthrough.mp4?raw=true) · [Download the captioned result (MP4)](docs/media/edited-tutorial.mp4?raw=true) · [Capture details and reproduction](docs/media/README.md)
+
+This walkthrough uses an original sample with generated English speech, processed by the running application. Both public videos are **silent**; the walkthrough omits waiting time. The editor is shown in Korean and the cloud workspace in English.
+
+### A short tutorial, from recording to export
+
+| Step | What happened in this sample |
+| --- | --- |
+| **Trim pauses** | The threshold analyzer found four removable intervals. The video timeline went from **18.87 seconds to 13.00 seconds** after cuts. Each cut remains editable. |
+| **Review captions** | Local Whisper produced **five English caption cues**. Their wording and cut crossings were checked, then the background-box style was included in the MP4. |
+| **Save and return** | The cloud workspace held the saved project and completed analysis, transcription and export jobs, with a downloadable result. |
+
+<details>
+<summary><strong>Silence editing — inspect the waveform and restore cuts</strong></summary>
+
+![HyperCut silence editor with an original tutorial, waveform, four detected pauses, and threshold controls](docs/media/silence-editing.png)
+
+</details>
+
+<details>
+<summary><strong>Caption editing — review the transcript and choose a visual style</strong></summary>
+
+![Actual caption editor showing source playback, five transcribed cues, editable text and timing, and background-box caption design](docs/media/captions.png)
+
+</details>
+
+<details>
+<summary><strong>Cloud workspace — reopen a project and download the finished video</strong></summary>
+
+![HyperCut cloud workspace with a saved tutorial project, completed processing jobs, and a downloadable MP4](docs/media/cloud-workspace.png)
+
+</details>
+
+The timing above describes this generated sample; it is not a human-recording accuracy or editing-speed benchmark.
+
+**Status: early development.** Desktop development and testing currently target macOS on Apple Silicon; the cloud CPU container also has a Linux arm64 validation path. The interface is currently in Korean; project documentation is in English. Human-recording quality, editing-time savings, authenticated AI integrations, and installation on a clean Mac still need validation. This is not a fully validated replacement for a professional editor.
 
 ## What you can do
 
@@ -18,6 +72,12 @@ HyperCut finds intervals that stay below your chosen audio threshold, then cuts 
 - Transcribe Korean, English, Japanese, Chinese, Spanish, French, German, Portuguese, Italian, and Russian, or request automatic language detection.
 - Review AI proposals for silence settings, caption corrections, translations, and sound-effect placement.
 - Save editing state in a project file and reconnect the original media using its SHA-256 identity.
+
+## Local and self-hosted cloud
+
+The independent local edition remains available without an account. The new **single-host cloud beta** adds sign-in, resumable uploads, server-saved projects and a durable worker queue using the same editor and media engine. Users can upload, edit and download outputs from a browser. API restart and browser disconnection preserve submitted jobs and saved projects.
+
+Start with the [cloud setup guide](docs/cloud/README.md), [architecture](docs/cloud/architecture.md), [API contract](docs/cloud/api.md) and [operator limits](docs/cloud/operations.md). Docker includes FFmpeg and optional CPU Whisper. Cloud requires Node 24+; public hosting, billing and multi-host/GPU operation are not provisioned. The workspace uses English; the editing interface remains Korean.
 
 ## Run locally
 
@@ -137,4 +197,4 @@ Additional scripts cover VAD, transcription, captions, effects, MCP, cancellatio
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change. Report reproducible bugs through [GitHub Issues](https://github.com/QuokkaCompany/hypercut/issues), follow the [community guidelines](CODE_OF_CONDUCT.md), and use the [security policy](SECURITY.md) for vulnerabilities.
 
-HyperCut's original code is licensed under [GPL-3.0-only](LICENSE). Bundled fonts, models, and dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Local recordings, reports, downloaded runtimes, and generated outputs are excluded from the repository.
+HyperCut's original code is licensed under [GPL-3.0-only](LICENSE). Bundled fonts, models, and dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Private recordings, reports, downloaded runtimes, and generated test outputs are excluded from the repository. The explicitly published [README showcase assets](docs/media/README.md) are versioned under `docs/media/`.

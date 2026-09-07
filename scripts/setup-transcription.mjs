@@ -7,7 +7,7 @@ import { TRANSCRIPTION_MODEL as model } from '../server/transcription.mjs';
 import { DownloadCancelledError, downloadVerifiedFile, fileSHA256 as sha, withDownloadSignals } from './helpers/verified-download.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const build = path.join(root, '.hypercut/build'), runtime = path.join(root, '.hypercut/transcription');
+const build = path.join(root, '.hypercut/build'), runtime = process.env.HYPERCUT_TRANSCRIPTION_DIR || path.join(root, '.hypercut/transcription');
 const sourceHash = '89051d8fca516a3ad1f5c2f8f9d2fccb089afbaec338fca3f8731999babc6f81';
 async function download(url, file, hash, maxBytes) {
   let lastReport = 0;
@@ -23,18 +23,18 @@ function run(executable, args) {
   return new Promise((resolve, reject) => { const child = spawn(executable, args, { cwd: root, stdio: 'inherit' }); child.once('error', reject); child.once('exit', code => code === 0 ? resolve() : reject(new Error(`${path.basename(executable)} 실패: ${code}`))); });
 }
 try {
-  if (process.platform !== 'darwin' || process.arch !== 'arm64') throw new Error('현재 자동 준비는 Apple Silicon macOS를 지원합니다.');
+  if (!((process.platform === 'darwin' && process.arch === 'arm64') || (process.platform === 'linux' && ['arm64', 'x64'].includes(process.arch)))) throw new Error('Setup supports Apple Silicon macOS and Linux arm64/x64.');
   await mkdir(build, { recursive: true }); await mkdir(runtime, { recursive: true });
   console.log('공개 로컬 모델과 빌드 도구를 다운로드합니다. API 계정이나 유료 요청은 사용하지 않습니다.');
   await download(`https://codeload.github.com/ggml-org/whisper.cpp/tar.gz/${model.revision}`, path.join(build, 'whisper-source.tar.gz'), sourceHash, 20 * 1024 ** 2);
   await run('tar', ['-xzf', path.join(build, 'whisper-source.tar.gz'), '-C', build]);
-  const cmake = path.join(build, 'toolchain/bin/cmake');
-  if (!await stat(cmake).catch(() => null)) {
+  const cmake = process.platform === 'linux' ? 'cmake' : path.join(build, 'toolchain/bin/cmake');
+  if (process.platform !== 'linux' && !await stat(cmake).catch(() => null)) {
     await run('python3', ['-m', 'venv', path.join(build, 'toolchain')]);
     await run(path.join(build, 'toolchain/bin/pip'), ['install', 'cmake==4.1.3']);
   }
   const source = path.join(build, `whisper.cpp-${model.revision}`), compiled = path.join(build, 'whisper-compiled');
-  await run(cmake, ['-S', source, '-B', compiled, '-DBUILD_SHARED_LIBS=OFF', '-DGGML_METAL=OFF', '-DGGML_NATIVE=OFF', '-DWHISPER_BUILD_TESTS=OFF', '-DWHISPER_BUILD_SERVER=OFF', '-DCMAKE_BUILD_TYPE=Release']);
+  await run(cmake, ['-S', source, '-B', compiled, '-DBUILD_SHARED_LIBS=OFF', '-DGGML_METAL=OFF', '-DGGML_NATIVE=OFF', '-DGGML_OPENMP=OFF', '-DWHISPER_BUILD_TESTS=OFF', '-DWHISPER_BUILD_SERVER=OFF', '-DCMAKE_BUILD_TYPE=Release']);
   await run(cmake, ['--build', compiled, '--target', 'whisper-cli', '-j', '8']);
   const binary = path.join(compiled, 'bin/whisper-cli');
   await run(binary, ['--version']);

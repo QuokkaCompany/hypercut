@@ -127,3 +127,9 @@ Each record below identifies its own scope, failures, and source evidence. Older
 - [Transcription readiness and actual recovery](2026-09-06-transcription-readiness-results.md)
 - [VAD performance: initial memory failures](2026-09-06-vad-performance-results.md)
 - [Windowed cut and caption lists](2026-09-06-windowed-lists-results.md)
+
+## Cloud beta
+
+`npm run test:cloud` requires Node 24+, FFmpeg and local-port permission. It creates disposable accounts and files, starts a separate worker, checks ownership/CSRF, upload resume, revision conflicts, queued jobs, cancellation, worker crash recovery, export decoding, quotas and session-scoped AI settings. `npm run test:cloud:e2e` verifies the browser flow after `npm run build`; it writes synthetic evidence to ignored `test-output/cloud-e2e/`. Paid model requests are not used.
+
+See the [2026-09-07 cloud beta results](2026-09-07-cloud-beta-results.md) for executed checks and remaining limits.

@@ -13,7 +13,7 @@ export interface TranscriptionSettings { channel: number; language: CaptionLangu
 export interface CaptionStyle { enabled: boolean; preset: 'clean' | 'box' | 'emphasis'; sizePercent: number; position: 'top' | 'bottom'; marginPercent: number }
 export interface CaptionCue { id: string; start: number; end: number; text: string; translations?: Partial<Record<CaptionLanguage, { text: string; sourceText: string }>>; timingWarning?: { kind: 'source-end'; originalEnd: number }; reviewedFor?: string }
 export interface Transcript extends TranscriptionSettings { trackIndex: number; model: string; cues: CaptionCue[]; detectedLanguage?: CaptionLanguage; outputLanguage?: CaptionLanguage }
-export interface Job { id: string; type: string; status: 'running' | 'completed' | 'failed' | 'cancelled'; progress: number; stage: string; error?: string; result?: Analysis | Output | Transcript }
+export interface Job { id: string; type: string; status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'; progress: number; stage: string; error?: string; result?: Analysis | Output | Transcript }
 declare global {
   interface Window { hypercut?: { pickVideo: () => Promise<Media | null>; pickEffect: () => Promise<EffectAsset | null>; saveExport: (id: string) => Promise<boolean>; saveProject: (project: unknown) => Promise<boolean>; openBrowser: () => Promise<void>; platform: string } }
 }
