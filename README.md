@@ -23,7 +23,7 @@ Import a tutorial, remove pauses, review automatically generated captions, and r
 
 ![Actual HyperCut walkthrough: import a tutorial, review four silence cuts, style captions, and open the cloud workspace](docs/media/walkthrough.gif)
 
-[Download the full-resolution walkthrough (MP4)](docs/media/walkthrough.mp4?raw=true) · [Download the captioned result (MP4)](docs/media/edited-tutorial.mp4?raw=true) · [Capture details and reproduction](docs/media/README.md)
+[Download the full-resolution walkthrough (MP4)](https://raw.githubusercontent.com/QuokkaCompany/hypercut/main/docs/media/walkthrough.mp4) · [Download the captioned result (MP4)](https://raw.githubusercontent.com/QuokkaCompany/hypercut/main/docs/media/edited-tutorial.mp4) · [Capture details and reproduction](docs/media/README.md)
 
 This walkthrough uses an original sample with generated English speech, processed by the running application. Both public videos are **silent**; the walkthrough omits waiting time. The editor is shown in Korean and the cloud workspace in English.
 
