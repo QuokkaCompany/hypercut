@@ -30,6 +30,14 @@ try {
     if (new URL(req.url()).origin !== new URL(base).origin)
       external.push(req.url());
   });
+  await page.addInitScript(() => {
+    window.audioEvidence = [];
+    const start = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function(...args) {
+      window.audioEvidence.push({ duration: this.buffer.duration, audible: this.buffer.getChannelData(0).some(v => Math.abs(v) > 0.01) });
+      return start.apply(this, args);
+    };
+  });
   await page.goto(base);
   await page.evaluate(async () => {
     await document.fonts.ready;
@@ -43,21 +51,21 @@ try {
   await page.screenshot({ path: `${evidence}/desktop.png`, fullPage: true });
   await page.screenshot({ path: `${evidence}/hero.png` });
   assert.match(await page.locator("h1").innerText(), /Without the pauses/);
-  assert.equal(await page.locator(".savings strong").innerText(), "5.87s");
+  assert.equal(await page.locator(".savings strong").innerText(), "4.27s");
   await page.getByLabel("Silence threshold").fill("-55");
   assert.equal(await page.locator(".savings strong").innerText(), "0.00s");
   await page.getByLabel("Silence threshold").fill("-40");
   await page
     .getByRole("button", { name: "Restore pause 1, 1.05 seconds", exact: true })
     .click();
-  assert.equal(await page.locator(".savings strong").innerText(), "4.82s");
+  assert.equal(await page.locator(".savings strong").innerText(), "3.22s");
   await page.getByRole("button", { name: "Reset demo" }).click();
   await page.getByRole("button", { name: "Original", exact: true }).click();
-  assert.match(await page.locator(".timecode").innerText(), /18.87/);
+  assert.match(await page.locator(".timecode").innerText(), /7.90/);
   await page.getByRole("button", { name: "HyperCut", exact: true }).click();
-  assert.match(await page.locator(".timecode").innerText(), /13.00/);
+  assert.match(await page.locator(".timecode").innerText(), /3.63/);
   await page
-    .getByRole("button", { name: "Play silent timeline preview" })
+    .getByRole("button", { name: "Play audio preview" })
     .click();
   await page.waitForFunction(
     () =>
@@ -65,6 +73,17 @@ try {
       0.1,
   );
   await page.getByRole("button", { name: "Pause timeline preview" }).click();
+  const audio = await page.evaluate(() => window.audioEvidence);
+  assert.equal(audio.length, 1);
+  assert.equal(audio[0].audible, true);
+  assert.ok(Math.abs(audio[0].duration - 3.633) < .002);
+  const paused = await page.locator(".timecode").innerText();
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator(".timecode").innerText(), paused);
+  await page.getByRole("button", { name: "Original", exact: true }).click();
+  await page.getByRole("button", { name: "Play audio preview" }).click();
+  await page.waitForFunction(() => window.audioEvidence.length === 2);
+  assert.ok(Math.abs((await page.evaluate(() => window.audioEvidence[1].duration)) - 7.903) < .002);
   await page.getByRole("button", { name: "Reset demo" }).click();
   await page.getByRole("button", { name: "emphasis", exact: true }).click();
   assert.equal(await page.locator(".caption-emphasis").count(), 1);
@@ -84,17 +103,18 @@ try {
   await page.getByText("Is HyperCut free?", { exact: true }).click();
   assert.equal(await page.locator("details[open]").count(), 1);
   await page
-    .getByRole("button", { name: "See the real editor in action" })
+    .getByRole("button", { name: "Watch the 30-second story" })
     .click();
   await page.locator("dialog[open]").waitFor();
   await page.waitForFunction(
     () => document.querySelector("dialog video").readyState >= 2,
   );
+  assert.equal(await page.locator("dialog video").evaluate(el => el.muted), false);
   await page.keyboard.press("Escape");
   assert.equal(await page.locator("dialog[open]").count(), 0);
   assert.equal(
     await page
-      .getByRole("button", { name: "See the real editor in action" })
+      .getByRole("button", { name: "Watch the 30-second story" })
       .evaluate((el) => el === document.activeElement),
     true,
   );
@@ -127,6 +147,8 @@ try {
       .evaluate((el) => getComputedStyle(el).scrollBehavior),
     "auto",
   );
+  await page.waitForTimeout(50);
+  assert.equal(await page.locator(".workflow").evaluate(el => getComputedStyle(el).transform), "none");
   assert.deepEqual(errors, []);
   console.log(
     "PASS landing: threshold, restore/reset, original/edited playback, caption styles/languages, install tabs/copy, FAQ, real video modal/Escape/focus return, 320/390/768px layouts, reduced motion, zero external requests and page errors.",

@@ -25,8 +25,11 @@ import {
   X,
 } from "lucide-react";
 import editorImage from "../../docs/media/silence-editing.png?url";
-import walkthrough from "../../docs/media/walkthrough.mp4?url";
+import walkthrough from "../../docs/media/hypercut-intro.mp4?url";
 import "./landing.css";
+import spans from "./demo-spans.json";
+import { useDemoAudio } from "./use-demo-audio";
+import { useScrollDepth } from "./use-scroll-depth";
 
 function Github({ size = 24 }: { size?: number }) {
   return (
@@ -42,17 +45,7 @@ function Github({ size = 24 }: { size?: number }) {
   );
 }
 const REPO = "https://github.com/QuokkaCompany/hypercut";
-const SOURCE_DURATION = 18.87;
-const spans = [
-  { duration: 1.05, db: -52, quiet: true },
-  { duration: 2.5, db: -14, quiet: false },
-  { duration: 1.8, db: -46, quiet: true },
-  { duration: 3.1, db: -12, quiet: false },
-  { duration: 1.42, db: -42, quiet: true },
-  { duration: 2.6, db: -18, quiet: false },
-  { duration: 1.6, db: -48, quiet: true },
-  { duration: 4.8, db: -16, quiet: false },
-];
+const SOURCE_DURATION = spans.reduce((sum, span) => sum + span.duration, 0);
 const commands = {
   local:
     "git clone https://github.com/QuokkaCompany/hypercut.git\ncd hypercut\nnpm ci\nnpm run build\nnpm start",
@@ -83,12 +76,10 @@ function Wave({ quiet, index }: { quiet: boolean; index: number }) {
     </span>
   );
 }
-function TimelineDemo() {
+function TimelineDemo({ suspended }: { suspended: boolean }) {
   const [threshold, setThreshold] = useState(-40);
   const [restored, setRestored] = useState<number[]>([]);
   const [mode, setMode] = useState<"original" | "edited">("edited");
-  const [playing, setPlaying] = useState(false);
-  const [position, setPosition] = useState(0);
   const removed = spans.map(
     (span, i) => span.quiet && span.db <= threshold && !restored.includes(i),
   );
@@ -99,33 +90,14 @@ function TimelineDemo() {
   const duration =
     mode === "edited" ? SOURCE_DURATION - saved : SOURCE_DURATION;
   const count = removed.filter(Boolean).length;
-  useEffect(() => {
-    setPosition(0);
-    setPlaying(false);
-  }, [threshold, mode, restored]);
-  useEffect(() => {
-    if (!playing) return;
-    let last = performance.now();
-    const timer = window.setInterval(() => {
-      const now = performance.now(),
-        delta = (now - last) / 1000;
-      last = now;
-      setPosition((previous) => {
-        if (previous + delta >= duration) {
-          setPlaying(false);
-          return 0;
-        }
-        return previous + delta;
-      });
-    }, 50);
-    return () => clearInterval(timer);
-  }, [playing, duration]);
+  const { playing, position, error, toggle, resetAudio } = useDemoAudio(
+    removed.map(cut => mode === "edited" && cut ? "1" : "0").join(""), suspended,
+  );
   function reset() {
     setThreshold(-40);
     setRestored([]);
     setMode("edited");
-    setPosition(0);
-    setPlaying(false);
+    resetAudio();
   }
   return (
     <div className="demo-shell" id="playground">
@@ -143,8 +115,8 @@ function TimelineDemo() {
             <Layers3 size={20} />
           </span>
           <div>
-            <strong>My next big idea.mp4</strong>
-            <span>A talking-head sample · {SOURCE_DURATION}s</span>
+            <strong>Your story.wav</strong>
+            <span>Dante’s AI voice · {SOURCE_DURATION.toFixed(2)}s</span>
           </div>
         </div>
         <div className="view-switch" role="group" aria-label="Timeline view">
@@ -237,9 +209,9 @@ function TimelineDemo() {
         <button
           className="play-button"
           aria-label={
-            playing ? "Pause timeline preview" : "Play silent timeline preview"
+            playing ? "Pause timeline preview" : "Play audio preview"
           }
-          onClick={() => setPlaying(!playing)}
+          onClick={() => void toggle()}
         >
           {playing ? (
             <Pause size={17} fill="currentColor" />
@@ -280,10 +252,11 @@ function TimelineDemo() {
           <span>{count} pauses removed</span>
         </div>
       </div>
+      {error && <p role="alert" className="audio-error">{error}</p>}
       <div className="demo-footer">
         <ShieldCheck size={12} />
         <span>
-          Illustrative timeline. No uploads, audio playback, or AI calls.
+          Real voice playback · illustrative pause thresholds and waveform · no uploads or AI calls.
         </span>
         <span className="demo-footer-right">
           MAKE SOME ROOM FOR YOUR STORY <ArrowUpRight size={12} />
@@ -480,6 +453,7 @@ function Install() {
   );
 }
 function App() {
+  useScrollDepth();
   const [videoOpen, setVideoOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -558,7 +532,7 @@ function App() {
                   <span>
                     <Play size={11} fill="currentColor" />
                   </span>{" "}
-                  See the real editor in action <ArrowRight size={14} />
+                  Watch the 30-second story <ArrowRight size={14} />
                 </button>
               </div>
             </div>
@@ -568,7 +542,7 @@ function App() {
               </span>
               <span>Drag the threshold. Feel the difference.</span>
             </div>
-            <TimelineDemo />
+            <TimelineDemo suspended={videoOpen} />
             <div className="hero-benefits">
               <span>
                 <ShieldCheck size={16} /> Local editing, no account needed
@@ -742,17 +716,17 @@ function App() {
                 make your own.
               </p>
               <button className="text-link" onClick={() => setVideoOpen(true)}>
-                Watch the product walkthrough <ArrowRight size={16} />
+                Watch the HyperCut introduction <ArrowRight size={16} />
               </button>
               <p className="capture-note">
                 Actual application capture. The editor is currently in Korean.
-                The walkthrough is silent and uses a generated-speech sample.
+                The introduction pairs clay animation with Dante’s AI voice and original music.
               </p>
             </div>
             <button
               className="editor-shot"
               onClick={() => setVideoOpen(true)}
-              aria-label="Watch the actual HyperCut editor walkthrough"
+              aria-label="Watch the HyperCut introduction"
             >
               <img
                 src={editorImage}
@@ -863,13 +837,11 @@ function App() {
               playsInline
               preload="metadata"
               autoPlay
-              muted
-              aria-label="Silent recording of the actual HyperCut application"
+              aria-label="HyperCut introduction with Dante’s AI voice and music"
             />
           )}
           <p>
-            Actual app recording · silent · generated-speech sample · waiting
-            time omitted
+            30-second motion introduction · Dante’s authorized AI voice · original music
           </p>
         </div>
       </dialog>

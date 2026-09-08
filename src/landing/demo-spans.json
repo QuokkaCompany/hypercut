@@ -1,0 +1,32 @@
+[
+  {
+    "duration": 1.05,
+    "db": -52,
+    "quiet": true
+  },
+  {
+    "duration": 0.8369375,
+    "db": -14,
+    "quiet": false
+  },
+  {
+    "duration": 1.8,
+    "db": -46,
+    "quiet": true
+  },
+  {
+    "duration": 1.4452083333333334,
+    "db": -14,
+    "quiet": false
+  },
+  {
+    "duration": 1.42,
+    "db": -42,
+    "quiet": true
+  },
+  {
+    "duration": 1.3508958333333334,
+    "db": -14,
+    "quiet": false
+  }
+]

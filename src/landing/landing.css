@@ -2172,3 +2172,25 @@ svg {
     animation: none !important;
   }
 }
+
+/* Scroll is the animation clock: reversing direction reverses the depth. */
+.scroll-depth {
+  transform: perspective(1600px) translate3d(0, calc(var(--depth, 0) * 22px), 0) rotateX(calc(var(--depth, 0) * -2deg));
+  transform-origin: center center;
+}
+.hero { position: relative; isolation: isolate; }
+.hero::before, .hero::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  border-radius: 48% 52% 50% 46%;
+  box-shadow: inset -12px -14px 24px #0002, inset 5px 5px 18px #fff5, 0 22px 30px -20px #25291f55;
+}
+.hero::before { width: 76px; height: 76px; right: 3%; top: 12px; background: radial-gradient(circle at 30% 25%, #dcf2a1, #a4bf67); }
+.hero::after { width: 38px; height: 38px; right: 12%; top: -4px; background: radial-gradient(circle at 30% 25%, #aaa1ce, #726797); filter: blur(.3px); }
+.audio-error { color: #f3d798; padding: 0 24px; font-size: 13px; }
+@media (max-width: 767px) {
+  .scroll-depth { transform: perspective(1600px) translateY(calc(var(--depth, 0) * 10px)); }
+  .hero::before { width: 42px; height: 42px; top: -12px; }
+  .hero::after { width: 24px; height: 24px; top: -20px; right: 16%; }
+}
+@media (prefers-reduced-motion: reduce) { .scroll-depth { transform: none; } }
+.page { overflow-x: clip; }

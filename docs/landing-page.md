@@ -6,9 +6,9 @@ The English marketing page is independent of the editor. Run `npm run build:land
 
 ## Interactions and truthful presentation
 
-- The silence playground uses a deterministic illustrative 18.87-second timeline. Threshold, cut restoration and original/edited views change its duration; play animates the timeline silently. This is not live media analysis or an accuracy/performance benchmark.
+- The silence playground plays an authorized Dante AI voice sample (7.90 seconds including inserted pauses). Web Audio assembles the selected spans, preserving identical speech in original and edited modes. Playback follows the audio clock; pause, reset, changing cuts, opening the film, and hiding the tab stop the current source. Threshold levels and waveform bars are illustrative. This is not live media analysis or an accuracy/performance benchmark.
 - Caption styles and EN/KO/JA switch a visual sample with prewritten translations. There are no model calls.
-- The product dialog plays the existing actual, silent application recording from `docs/media/walkthrough.mp4`. Generated-speech provenance and omitted waiting time are disclosed. The real editor screenshot comes from `docs/media/silence-editing.png`.
+- The product dialog plays `docs/media/hypercut-intro.mp4`: a 30-second clay motion introduction with the owner-authorized Dante AI voice and original synthesized music. It starts with sound only after a user opens it. The real editor screenshot comes from `docs/media/silence-editing.png`.
 - Local and self-hosted tabs provide copyable commands and prerequisite notes. There is no fake app download, hosted SaaS, testimonial, star count, or email collection.
 - The page has no analytics, external fonts, or backend requests. External documentation/GitHub links open only when selected.
 
@@ -16,7 +16,7 @@ Manrope's license is included under `public/landing/`. The landing page uses the
 
 ## Checks
 
-Run `npm run build:landing && npm run test:landing`. The test starts and closes an isolated preview server, unless `HYPERCUT_LANDING_URL` points to an existing preview. It verifies threshold/restoration, silent timeline playback, caption style/language, edition/clipboard controls, FAQ, real video loading, Escape and dialog focus return, 320/390/768px layouts, reduced-motion styling, and absence of external requests/page errors. Screenshots go to ignored `test-output/landing/`.
+Run `npm run build:landing && npm run test:landing`. The test starts and closes an isolated preview server, unless `HYPERCUT_LANDING_URL` points to an existing preview. It verifies threshold/restoration, audible original/edited buffers and pause stability, caption style/language, edition/clipboard controls, FAQ, introduction video loading with sound, Escape and dialog focus return, 320/390/768px layouts, reduced-motion styling, and absence of external requests/page errors. Screenshots go to ignored `test-output/landing/`.
 
 Local validation on September 7, 2026 passed the production build, all listed browser behaviors, the Docker frontend build, and the existing Go-backed editor browser regression. CI also runs the standalone build and browser checks on Node 24.
 
@@ -40,3 +40,11 @@ merge commit `e2879c40b345ef5fab9eb9be2786332d6d209d8d`. Domain registration and
 Hostinger CNAME/TXT records were added. Public HTTPS, MP4 byte-range responses,
 and the existing tools pages were verified successfully. The complete landing
 browser suite also passed against https://hypercut.quokkalabs.net.
+
+## Depth motion
+
+Scroll-driven section transforms reverse with scroll direction; no scroll interception or hidden content. Reduced-motion preference disables transforms, including live preference changes. Small screens use translation only. Decorative lime and blueberry spheres stay behind content.
+
+## Media provenance
+
+The voice owner explicitly authorized publishing the introduction and interactive sample. Only the final film and three short approved phrases are bundled. Raw voice-generation sources remain excluded. Demo speech: “Your story. Without the pauses. Made with HyperCut.” No voice service credentials or calls are used by visitors.
