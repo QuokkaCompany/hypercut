@@ -37,5 +37,6 @@ to this repository alone does not update the live marketing page.
 Local Docker routing/media checks, all landing browser interactions and mobile
 layouts, and tools GitHub Actions passed on September 7, 2026. Railway deployed
 merge commit `e2879c40b345ef5fab9eb9be2786332d6d209d8d`. Domain registration and
-Hostinger CNAME/TXT records were added; HTTPS must be verified after Railway
-finishes DNS validation and certificate issuance.
+Hostinger CNAME/TXT records were added. Public HTTPS, MP4 byte-range responses,
+and the existing tools pages were verified successfully. The complete landing
+browser suite also passed against https://hypercut.quokkalabs.net.
