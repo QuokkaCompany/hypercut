@@ -72,18 +72,29 @@ try {
       Number(document.querySelector(".timecode").textContent.split("/")[0]) >
       0.1,
   );
+  const playheadX = () => page.locator(".playhead").evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41);
+  const firstX = await playheadX();
+  await page.waitForTimeout(250);
+  assert.ok(await playheadX() > firstX + 10, "Visible playhead advances with audio");
   await page.getByRole("button", { name: "Pause timeline preview" }).click();
   const audio = await page.evaluate(() => window.audioEvidence);
   assert.equal(audio.length, 1);
   assert.equal(audio[0].audible, true);
   assert.ok(Math.abs(audio[0].duration - 3.633) < .002);
   const paused = await page.locator(".timecode").innerText();
+  const pausedX = await playheadX();
   await page.waitForTimeout(200);
   assert.equal(await page.locator(".timecode").innerText(), paused);
+  assert.ok(Math.abs(await playheadX() - pausedX) < 1);
+  await page.getByRole("button", { name: "Play audio preview" }).click();
+  await page.waitForFunction(() => document.querySelector(".play-button").getAttribute("aria-label") === "Play audio preview");
+  assert.match(await page.locator(".timecode").innerText(), /^3.63/);
+  assert.ok(await playheadX() > pausedX, "Playhead ends at the final speech edge");
+
   await page.getByRole("button", { name: "Original", exact: true }).click();
   await page.getByRole("button", { name: "Play audio preview" }).click();
-  await page.waitForFunction(() => window.audioEvidence.length === 2);
-  assert.ok(Math.abs((await page.evaluate(() => window.audioEvidence[1].duration)) - 7.903) < .002);
+  await page.waitForFunction(() => window.audioEvidence.length === 3);
+  assert.ok(Math.abs((await page.evaluate(() => window.audioEvidence[2].duration)) - 7.903) < .002);
   await page.getByRole("button", { name: "Reset demo" }).click();
   await page.getByRole("button", { name: "emphasis", exact: true }).click();
   assert.equal(await page.locator(".caption-emphasis").count(), 1);
@@ -118,6 +129,19 @@ try {
       .evaluate((el) => el === document.activeElement),
     true,
   );
+  async function storyAt(progress) {
+    await page.locator(".motion-story").evaluate((el, p) => scrollTo({top: el.offsetTop + (el.offsetHeight - innerHeight) * p, behavior: "instant"}), progress);
+    await page.waitForTimeout(100);
+    return page.locator(".motion-story").getAttribute("data-phase");
+  }
+  assert.equal(await storyAt(.1), "0");
+  const initialCard = await page.locator(".story-card").evaluate(el => getComputedStyle(el).transform);
+  assert.equal(await storyAt(.5), "1");
+  assert.notEqual(await page.locator(".story-card").evaluate(el => getComputedStyle(el).transform), initialCard);
+  assert.equal(await storyAt(.9), "2");
+  assert.equal(await storyAt(.1), "0");
+  await storyAt(.7);
+  await page.screenshot({path: `${evidence}/scroll-story.png`});
   assert.deepEqual(errors, []);
   assert.deepEqual(external, []);
   for (const width of [390, 320, 768]) {
@@ -151,7 +175,7 @@ try {
   assert.equal(await page.locator(".workflow").evaluate(el => getComputedStyle(el).transform), "none");
   assert.deepEqual(errors, []);
   console.log(
-    "PASS landing: threshold, restore/reset, original/edited playback, caption styles/languages, install tabs/copy, FAQ, real video modal/Escape/focus return, 320/390/768px layouts, reduced motion, zero external requests and page errors.",
+    "PASS landing: threshold, restore/reset, original/edited playback, visible playhead progression/pause/end, reversible scroll scenes, caption styles/languages, install tabs/copy, FAQ, real video modal/Escape/focus return, 320/390/768px layouts, reduced motion, zero external requests and page errors.",
   );
 } finally {
   await browser.close();

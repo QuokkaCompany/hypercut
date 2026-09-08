@@ -29,6 +29,7 @@ import walkthrough from "../../docs/media/hypercut-intro.mp4?url";
 import "./landing.css";
 import spans from "./demo-spans.json";
 import { useDemoAudio } from "./use-demo-audio";
+import { MotionStory } from "./motion-story";
 import { useScrollDepth } from "./use-scroll-depth";
 
 function Github({ size = 24 }: { size?: number }) {
@@ -90,9 +91,38 @@ function TimelineDemo({ suspended }: { suspended: boolean }) {
   const duration =
     mode === "edited" ? SOURCE_DURATION - saved : SOURCE_DURATION;
   const count = removed.filter(Boolean).length;
-  const { playing, position, error, toggle, resetAudio } = useDemoAudio(
+  const track = useRef<HTMLDivElement>(null);
+  const playhead = useRef<HTMLDivElement>(null);
+  const { playing, position, clock, error, toggle, resetAudio } = useDemoAudio(
     removed.map(cut => mode === "edited" && cut ? "1" : "0").join(""), suspended,
   );
+  // Map the audio clock onto actual rendered spans, including zero-time cut markers.
+  useEffect(() => {
+    let frame = 0;
+    const draw = () => {
+      cancelAnimationFrame(frame);
+      const container = track.current;
+      if (!container || !playhead.current) return;
+      let elapsed = 0;
+      const buttons = container.querySelectorAll<HTMLElement>(".timeline-span");
+      let x = 0;
+      for (let i = 0; i < spans.length; i++) {
+        if (mode === "edited" && removed[i]) continue;
+        const span = spans[i];
+        const node = buttons[i];
+        const progress = Math.max(0, Math.min(1, (clock.current - elapsed) / span.duration));
+        x = node.offsetLeft + node.offsetWidth * progress;
+        if (clock.current < elapsed + span.duration) break;
+        elapsed += span.duration;
+      }
+      playhead.current.style.transform = `translate3d(${x}px, 0, 0)`;
+      if (playing) frame = requestAnimationFrame(draw);
+    };
+    draw();
+    const resize = new ResizeObserver(draw);
+    if (track.current) resize.observe(track.current);
+    return () => { cancelAnimationFrame(frame); resize.disconnect(); };
+  }, [playing, mode, threshold, restored, position === 0]);
   function reset() {
     setThreshold(-40);
     setRestored([]);
@@ -149,7 +179,7 @@ function TimelineDemo({ suspended }: { suspended: boolean }) {
           <span key={n}>{((duration * n) / 4).toFixed(1)}s</span>
         ))}
       </div>
-      <div className="timeline-track" aria-label="Interactive sample timeline">
+      <div ref={track} className="timeline-track" aria-label="Interactive sample timeline">
         {spans.map((span, index) => {
           const cut = removed[index];
           return (
@@ -187,7 +217,7 @@ function TimelineDemo({ suspended }: { suspended: boolean }) {
         })}
         <div
           className="playhead"
-          style={{ left: `${(position / duration) * 100}%` }}
+          ref={playhead}
           aria-hidden="true"
         >
           <span />
@@ -555,6 +585,7 @@ function App() {
               </span>
             </div>
           </section>
+          <MotionStory />
           <section className="workflow section-container" id="how-it-works">
             <div className="section-heading">
               <span className="eyebrow">

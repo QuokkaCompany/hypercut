@@ -52,3 +52,9 @@ The voice owner explicitly authorized publishing the introduction and interactiv
 ## Audio and motion deployment verification
 
 On September 7, 2026 (America/New_York), [tools PR #3](https://github.com/QuokkaCompany/tools/pull/3) deployed HyperCut source `4f0b92a` after shared-hosting CI passed. The complete updated browser suite passed against the public HTTPS hostname, including non-silent original/edited audio buffers, pause stability, unmuted film playback, mobile layouts and reduced motion. Additional local checks verified failed audio loading/retry, video stopping the demo, and reversible scroll depth.
+
+## Scroll story and playhead
+
+The playhead maps the audio clock to measured speech and retained-pause bounds, skipping zero-time cut markers. Its compositor transform updates each animation frame without a trailing CSS transition; pause holds its position and completion keeps it at the final edge. Browser coverage checks visible movement, pause and completion, not only the time label.
+
+A sticky scroll story follows the demo. Scroll progress assembles separated waveform clips, reveals captions, and moves lime and blueberry clay spheres at different depths. Scrolling upward reverses the sequence. It uses native scrolling, no animation library, and collapses to a static scene for reduced motion. Browser checks cover all three stages and reverse scrolling.

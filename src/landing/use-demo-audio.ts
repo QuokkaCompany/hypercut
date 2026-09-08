@@ -13,12 +13,14 @@ export function useDemoAudio(cutKey: string, suspended: boolean) {
   const offset = useRef(0);
   const started = useRef(0);
   const frame = useRef(0);
+  const clock = useRef(0);
   function stop(reset = false) {
     generation.current++;
     if (source.current && context.current) offset.current += context.current.currentTime - started.current;
     if (source.current) { source.current.onended = null; source.current.stop(); source.current = null; }
     cancelAnimationFrame(frame.current);
     if (reset) offset.current = 0;
+    clock.current = offset.current;
     setPosition(offset.current);
     setPlaying(false);
   }
@@ -62,10 +64,11 @@ export function useDemoAudio(cutKey: string, suspended: boolean) {
       node.connect(ctx.destination);
       source.current = node;
       started.current = ctx.currentTime;
-      node.onended = () => { source.current = null; offset.current = 0; setPosition(0); setPlaying(false); cancelAnimationFrame(frame.current); };
+      node.onended = () => { source.current = null; offset.current = edited.duration; clock.current = edited.duration; setPosition(edited.duration); setPlaying(false); cancelAnimationFrame(frame.current); };
       node.start(0, offset.current);
       const tick = () => {
-        setPosition(Math.min(edited.duration, offset.current + ctx.currentTime - started.current));
+        clock.current = Math.min(edited.duration, offset.current + ctx.currentTime - started.current);
+        setPosition(clock.current);
         frame.current = requestAnimationFrame(tick);
       };
       frame.current = requestAnimationFrame(tick);
@@ -75,5 +78,5 @@ export function useDemoAudio(cutKey: string, suspended: boolean) {
       setError("Audio could not load. Please press play to try again.");
     }
   }
-  return { playing, position, error, toggle, resetAudio: () => stop(true) };
+  return { playing, position, clock, error, toggle, resetAudio: () => stop(true) };
 }
