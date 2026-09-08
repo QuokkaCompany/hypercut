@@ -24,7 +24,7 @@ Local validation on September 7, 2026 passed the production build, all listed br
 
 The production hostname is `hypercut.quokkalabs.net`. The independently maintained
 [tools repository](https://github.com/QuokkaCompany/tools) builds the landing page
-from the immutable HyperCut commit `d6a9de3fdc9afe702cd44444eb1fc4fcd2d8e1cc`.
+from an immutable HyperCut commit pinned in its Dockerfile.
 Its separate Nginx virtual host serves the landing at the domain root while the
 existing tools host keeps its original document root. No HyperCut backend or
 video-processing worker is deployed by this integration.
@@ -48,3 +48,7 @@ Scroll-driven section transforms reverse with scroll direction; no scroll interc
 ## Media provenance
 
 The voice owner explicitly authorized publishing the introduction and interactive sample. Only the final film and three short approved phrases are bundled. Raw voice-generation sources remain excluded. Demo speech: “Your story. Without the pauses. Made with HyperCut.” No voice service credentials or calls are used by visitors.
+
+## Audio and motion deployment verification
+
+On September 7, 2026 (America/New_York), [tools PR #3](https://github.com/QuokkaCompany/tools/pull/3) deployed HyperCut source `4f0b92a` after shared-hosting CI passed. The complete updated browser suite passed against the public HTTPS hostname, including non-silent original/edited audio buffers, pause stability, unmuted film playback, mobile layouts and reduced motion. Additional local checks verified failed audio loading/retry, video stopping the demo, and reversible scroll depth.
