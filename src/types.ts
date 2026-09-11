@@ -22,3 +22,7 @@ export interface CorrectionProposal { requestId: string; changes: { id: string; 
 export interface EffectAIContext { duration: number; kept: { start: number; end: number }[]; assets: { id: string; duration: number; description: string }[]; clips: EffectClip[]; cues: { id: string; text: string; start: number; end: number }[] }
 export interface EffectAIRequest extends EffectAIContext { requestId: string; instruction: string }
 export interface EffectAIProposal { requestId: string; changes: { id: string; action: 'add' | 'update' | 'remove'; before: EffectClip | null; after: EffectClip | null; reason: string }[] }
+
+export interface VisualAccent { id: string; cueId: string; start: number; end: number; sourceText: string; text: string; language: string; captionEnabled: boolean; zoomEnabled: boolean; zoomScale: number; focusX: number; focusY: number }
+export interface AccentRequest { requestId: string; instruction: string; cues: { id: string; text: string; start: number; end: number }[] }
+export interface AccentProposal { requestId: string; changes: { id: string; reason: string; captionEnabled: boolean; zoomEnabled: boolean; zoomScale: number }[] }

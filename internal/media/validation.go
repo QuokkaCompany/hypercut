@@ -233,6 +233,10 @@ func ValidateJob(in, m Object) error {
 		if _, err = Effects(in["effects"], d); err != nil {
 			return err
 		}
+		_, err = VisualAccents(in["visualAccents"], d)
+		if err != nil {
+			return err
+		}
 		if one(typ, "captions", "transcript") || Bool(style["enabled"]) {
 			tr, err := Transcript(in["transcript"], d)
 			if err != nil {

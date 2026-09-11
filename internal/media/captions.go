@@ -124,7 +124,7 @@ func CaptionCues(t Object, full, kept []Span) ([]Object, error) {
 		if Bool(review[Str(c["id"])]["needsReview"]) {
 			return nil, fmt.Errorf("출력할 자막의 문구와 경계를 먼저 검토해 주세요.")
 		}
-		out = append(out, Object{"start": c["outputStart"], "end": c["outputEnd"], "text": c["text"]})
+		out = append(out, Object{"cueId": c["id"], "start": c["outputStart"], "end": c["outputEnd"], "text": c["text"]})
 	}
 	return out, nil
 }

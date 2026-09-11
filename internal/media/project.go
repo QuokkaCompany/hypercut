@@ -9,7 +9,7 @@ import (
 
 func Project(v, m Object, effects map[string]Object) (Object, error) {
 	version := Num(v["version"])
-	if Str(v["format"]) != "hypercut-project" || version < 1 || version > 8 || math.Trunc(version) != version {
+	if Str(v["format"]) != "hypercut-project" || version < 1 || version > 9 || math.Trunc(version) != version {
 		return nil, fmt.Errorf("지원하지 않는 HyperCut 프로젝트입니다.")
 	}
 	for key, since := range map[string]float64{"speechProtection": 2, "transcript": 3, "captionStyle": 4, "effects": 5} {
@@ -27,6 +27,13 @@ func Project(v, m Object, effects map[string]Object) (Object, error) {
 		if version < since {
 			delete(v, key)
 		}
+	}
+	if version >= 9 {
+		if _, ok := v["visualAccents"].([]any); !ok {
+			return nil, fmt.Errorf("강조 설정이 없습니다.")
+		}
+	} else {
+		delete(v, "visualAccents")
 	}
 	source := Obj(v["media"])
 	d := Num(source["duration"])
@@ -108,9 +115,13 @@ func Project(v, m Object, effects map[string]Object) (Object, error) {
 			return nil, fmt.Errorf("Invalid glossary")
 		}
 	}
+	accents, e := VisualAccents(v["visualAccents"], d)
+	if e != nil {
+		return nil, e
+	}
 	name := source["name"]
 	if m != nil {
 		name = m["name"]
 	}
-	return Object{"format": "hypercut-project", "version": 8, "media": Object{"name": name, "fingerprint": source["fingerprint"], "duration": d}, "settings": s, "speechProtection": speech, "transcript": transcript, "captionStyle": style, "effects": fx, "glossary": glossary, "trackIndex": v["trackIndex"], "cuts": out, "savedAt": time.Now().UTC().Format(time.RFC3339Nano)}, nil
+	return Object{"format": "hypercut-project", "version": 9, "media": Object{"name": name, "fingerprint": source["fingerprint"], "duration": d}, "settings": s, "speechProtection": speech, "transcript": transcript, "captionStyle": style, "effects": fx, "glossary": glossary, "visualAccents": objects(accents), "trackIndex": v["trackIndex"], "cuts": out, "savedAt": time.Now().UTC().Format(time.RFC3339Nano)}, nil
 }

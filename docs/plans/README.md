@@ -54,3 +54,7 @@ Use the [result template](../testing/test-run-template.md), [human Korean evalua
 The [Go API migration plan](2026-09-07-go-cloud-api.md) and [design](../superpowers/specs/2026-09-07-go-cloud-api-design.md) define the Go public API, private media helper and compatible Node worker. The independent local runtime remains available.
 
 The [cloud beta plan](2026-09-07-cloud-beta.md) and [approved design](../superpowers/specs/2026-09-07-local-and-cloud.md) cover a shared editing engine, independent local operation, account-scoped storage, durable jobs and a self-hosted SaaS path. Consult [cloud setup and limitations](../cloud/README.md) before deployment.
+
+## 문장 강조와 줌
+
+[구현 순서](2026-09-11-caption-zoom-plan.md), [승인 설계](../superpowers/specs/2026-09-11-caption-zoom-design.md), [실행 결과](../testing/2026-09-11-caption-zoom-results.md)를 참고한다. v9 프로젝트와 실제 프레임 기반 확대, 문장 강조 자막 및 선택적 AI 제안을 포함한다.

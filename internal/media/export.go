@@ -83,7 +83,21 @@ func Export(ctx context.Context, root string, m, in Object, dir string, registry
 	mapped := MapEffects(effects, full, window)
 	preview := Str(in["type"]) == "preview"
 	subtitles := []Object{}
-	var tr Object
+	tr, e := Transcript(in["transcript"], d)
+	if e != nil {
+		return nil, e
+	}
+	accents, e := VisualAccents(in["visualAccents"], d)
+	if e != nil {
+		return nil, e
+	}
+	visual, e := MapAccents(accents, tr, full, window, Bool(style["enabled"]))
+	if e != nil {
+		return nil, e
+	}
+	if len(visual) > 0 && Num(tr["trackIndex"]) != Num(in["trackIndex"]) {
+		return nil, fmt.Errorf("강조 문장과 오디오 트랙이 다릅니다.")
+	}
 	if Bool(style["enabled"]) {
 		tr, e = Transcript(in["transcript"], d)
 		if e != nil {
@@ -109,6 +123,14 @@ func Export(ctx context.Context, root string, m, in Object, dir string, registry
 		subtitles, e = CaptionCues(tr, full, kept)
 		if e != nil {
 			return nil, e
+		}
+	}
+	for _, c := range subtitles {
+		for _, a := range visual {
+			if Bool(a["captionEnabled"]) && c["cueId"] == a["cueId"] {
+				c["accent"] = true
+				break
+			}
 		}
 	}
 	id := ID()
@@ -148,6 +170,7 @@ func Export(ctx context.Context, root string, m, in Object, dir string, registry
 		trim = fmt.Sprintf(",trim=start=%s:end=%s", number(source.Start), number(source.End))
 	}
 	base := fmt.Sprintf("[0:%s]setpts=PTS-round((%s)/TB)%s,select='%s',setpts='PTS-round((%s)/TB)'", number(Num(m["videoIndex"])), number(Num(m["origin"])), trim, selectExpr, offset)
+	base += AccentZoomFilter(visual, frames, kept)
 	graph := base + scale + "[v]"
 	if render != nil {
 		graph = fmt.Sprintf("%s,scale=%s:%s,setsar=1,pad=ceil(iw/2)*2:ceil(ih/2)*2[base];[base][2:v]overlay=x=0:y=%s:eof_action=repeat:repeatlast=1:alpha=straight%s[v]", base, number(Num(m["width"])), number(Num(m["height"])), number(Num(render["offsetY"])), scale)
@@ -226,7 +249,7 @@ func Export(ctx context.Context, root string, m, in Object, dir string, registry
 	} else if source != nil {
 		suffix = "-clip"
 	}
-	r := Object{"id": id, "path": dest, "name": strings.TrimSuffix(Str(m["name"]), filepath.Ext(Str(m["name"]))) + suffix + ".mp4", "duration": duration, "expectedDuration": expected, "size": stat.Size(), "audioSamples": samples, "audioMix": mix, "kept": kept, "captionStyle": style, "burnedCaptions": 0, "verified": true}
+	r := Object{"id": id, "path": dest, "name": strings.TrimSuffix(Str(m["name"]), filepath.Ext(Str(m["name"]))) + suffix + ".mp4", "duration": duration, "expectedDuration": expected, "size": stat.Size(), "audioSamples": samples, "audioMix": mix, "kept": kept, "captionStyle": style, "burnedCaptions": 0, "visualAccentSegments": len(visual), "verified": true}
 	if render != nil {
 		r["burnedCaptions"] = render["cueCount"]
 	}

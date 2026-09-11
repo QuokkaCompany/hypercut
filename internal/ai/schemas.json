@@ -257,5 +257,51 @@
         }
       }
     }
+  },
+  "accents": {
+    "type": "object",
+    "properties": {
+      "requestId": {
+        "type": "string"
+      },
+      "changes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "captionEnabled": {
+              "type": "boolean"
+            },
+            "zoomEnabled": {
+              "type": "boolean"
+            },
+            "zoomScale": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 1.15
+            }
+          },
+          "required": [
+            "id",
+            "reason",
+            "captionEnabled",
+            "zoomEnabled",
+            "zoomScale"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "requestId",
+      "changes"
+    ],
+    "additionalProperties": false
   }
 }

@@ -67,7 +67,9 @@
     "test:reference:cloud": "node --test tests/cloud.integration.mjs",
     "build:landing": "tsc --noEmit && vite build --mode landing && node scripts/finalize-landing.mjs",
     "preview:landing": "vite preview --outDir site-dist --host 127.0.0.1 --port 4174",
-    "test:landing": "node scripts/landing-e2e.mjs"
+    "test:landing": "node scripts/landing-e2e.mjs",
+    "test:accents": "node --test tests/visual-accents.test.mjs && go test ./internal/media ./internal/ai ./internal/cloud -run Accent",
+    "test:accents:e2e": "npm run build && npm run build:server && node scripts/visual-accents-e2e.mjs --desktop"
   },
   "dependencies": {
     "@tanstack/react-virtual": "3.14.10",

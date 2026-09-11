@@ -1,3 +1,4 @@
+import { validateVisualAccents } from './visual-accents.mjs';
 import { validateSpeechProtection } from './speech-settings.mjs';
 import { validateTranscript } from './captions.mjs';
 import { validateCaptionStyle } from './caption-style.mjs';
@@ -139,12 +140,13 @@ export function videoExpressions(removals) {
 }
 
 /** @param {any} transcript */
-export function makeProject(media, settings, trackIndex, cuts, speechProtection, transcript = null, captionStyle, effects, glossary = '') {
-  return { format: 'hypercut-project', version: 8, media: { name: media.name, fingerprint: media.fingerprint, duration: media.duration }, settings: validateSettings(settings), speechProtection: validateSpeechProtection(speechProtection), transcript: validateTranscript(transcript, media.duration), captionStyle: validateCaptionStyle(captionStyle), effects: validateEffects(effects, media.duration), glossary: validateGlossary(glossary), trackIndex, cuts, savedAt: new Date().toISOString() };
+export function makeProject(media, settings, trackIndex, cuts, speechProtection, transcript = null, captionStyle, effects, glossary = '', visualAccents = []) {
+  return { format: 'hypercut-project', version: 9, media: { name: media.name, fingerprint: media.fingerprint, duration: media.duration }, settings: validateSettings(settings), speechProtection: validateSpeechProtection(speechProtection), transcript: validateTranscript(transcript, media.duration), captionStyle: validateCaptionStyle(captionStyle), effects: validateEffects(effects, media.duration), glossary: validateGlossary(glossary), visualAccents: validateVisualAccents(visualAccents, media.duration), trackIndex, cuts, savedAt: new Date().toISOString() };
 }
 
 export function validateProject(value) {
-  if (value?.format !== 'hypercut-project' || ![1, 2, 3, 4, 5, 6, 7, 8].includes(value.version)) throw new Error('지원하지 않는 HyperCut 프로젝트입니다.');
+  if (value?.format !== 'hypercut-project' || ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(value.version)) throw new Error('지원하지 않는 HyperCut 프로젝트입니다.');
+  if (value.version >= 9 && !Array.isArray(value.visualAccents)) throw new Error('강조 설정이 없습니다.');
   if (value.version >= 2 && value.speechProtection === undefined) throw new Error('프로젝트의 말소리 보호 설정이 없습니다.');
   if (value.version >= 3 && value.transcript === undefined) throw new Error('프로젝트의 자막 정보가 없습니다.');
   if (value.version >= 4 && value.captionStyle === undefined) throw new Error('프로젝트의 자막 스타일 정보가 없습니다.');
@@ -162,5 +164,5 @@ export function validateProject(value) {
     return { id: x.id, start: x.start, end: x.end, enabled: x.enabled, reason: x.reason === 'manual' ? 'manual' : 'silence' };
   });
   normalizeIntervals(cuts, value.media.duration);
-  return { ...value, version: 8, settings, cuts, speechProtection, transcript: validateTranscript(value.version < 3 ? null : value.transcript, value.media.duration), captionStyle: validateCaptionStyle(value.version < 4 ? undefined : value.captionStyle), effects: validateEffects(value.version < 5 ? undefined : value.effects, value.media.duration), glossary: validateGlossary(value.version < 6 ? '' : value.glossary) };
+  return { ...value, version: 9, settings, cuts, speechProtection, transcript: validateTranscript(value.version < 3 ? null : value.transcript, value.media.duration), captionStyle: validateCaptionStyle(value.version < 4 ? undefined : value.captionStyle), effects: validateEffects(value.version < 5 ? undefined : value.effects, value.media.duration), glossary: validateGlossary(value.version < 6 ? '' : value.glossary), visualAccents: validateVisualAccents(value.version < 9 ? [] : value.visualAccents, value.media.duration) };
 }

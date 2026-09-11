@@ -163,12 +163,12 @@ func measure(f *opentype.Font, raw string, w, h int, s Object) (*layout, error) 
 }
 func paint(l *layout, w, h, offset int, s Object) ([]byte, error) {
 	im := image.NewRGBA(image.Rect(0, 0, w, h))
-	if Str(s["preset"]) == "box" {
+	if Str(s["preset"]) == "box" || Bool(s["accent"]) {
 		r := image.Rect(int((float64(w)-l.boxWidth)/2), int(l.top)-offset, int((float64(w)+l.boxWidth)/2), int(l.top+l.boxHeight)-offset)
 		draw.Draw(im, r, image.NewUniform(color.NRGBA{17, 17, 17, 221}), image.Point{}, draw.Over)
 	}
 	fill := color.NRGBA{255, 255, 255, 255}
-	if Str(s["preset"]) == "emphasis" {
+	if Str(s["preset"]) == "emphasis" || Bool(s["accent"]) {
 		fill = color.NRGBA{255, 225, 107, 255}
 	}
 	for i, line := range l.lines {
@@ -215,35 +215,57 @@ func RenderCaptions(ctx context.Context, root string, in Object) (Object, error)
 		}
 	}
 	var fallback *opentype.Font
+	var accentFont, accentFallback *opentype.Font
+	styles := []Object{}
 	layouts := []*layout{}
 	defer func() {
 		for _, l := range layouts {
 			l.close()
 		}
 	}()
-	for _, text := range texts {
+	for i, text := range texts {
+		current := s
+		if !sample && Bool(Obj(cues[i])["accent"]) {
+			current = Copy(s)
+			current["preset"] = "box"
+			current["accent"] = true
+		}
+		styles = append(styles, current)
 		if e = ctx.Err(); e != nil {
 			return nil, e
 		}
 		selected := f
+		if Bool(current["accent"]) {
+			if accentFont == nil {
+				accentFont, e = loadFont(ctx, root, current, false)
+				if e != nil {
+					return nil, e
+				}
+			}
+			selected = accentFont
+		}
 		var buf sfnt.Buffer
 		for _, r := range norm.NFC.String(text) {
 			if unicode.IsSpace(r) {
 				continue
 			}
-			index, err := f.GlyphIndex(&buf, r)
+			index, err := selected.GlyphIndex(&buf, r)
 			if err != nil || index == 0 {
-				if fallback == nil {
-					fallback, e = loadFont(ctx, root, s, true)
+				fallbackSlot := &fallback
+				if Bool(current["accent"]) {
+					fallbackSlot = &accentFallback
+				}
+				if *fallbackSlot == nil {
+					*fallbackSlot, e = loadFont(ctx, root, current, true)
 					if e != nil {
 						return nil, e
 					}
 				}
-				selected = fallback
+				selected = *fallbackSlot
 				break
 			}
 		}
-		l, e := measure(selected, text, w, h, s)
+		l, e := measure(selected, text, w, h, current)
 		if e != nil {
 			return nil, e
 		}
@@ -284,7 +306,7 @@ func RenderCaptions(ctx context.Context, root string, in Object) (Object, error)
 		if e = ctx.Err(); e != nil {
 			return nil, e
 		}
-		data, e := paint(l, w, height, offset, s)
+		data, e := paint(l, w, height, offset, styles[i])
 		if e != nil {
 			return nil, e
 		}

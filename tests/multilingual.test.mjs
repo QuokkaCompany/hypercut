@@ -29,8 +29,8 @@ test('translation preserves source text and timing, round trips v8 and all v1-v7
   assert.equal(toTranscriptText(translated, full), '这是两个视频。\n\n请不要删除。\n');
   assert.equal(toSRT(translated, full), '1\n00:00:01,000 --> 00:00:02,000\n这是两个视频。\n\n2\n00:00:04,000 --> 00:00:05,000\n请不要删除。\n');
   const project = makeProject(media, DEFAULT_SETTINGS, 1, [], undefined, translated);
-  assert.equal(project.version, 8); assert.deepEqual(validateProject(JSON.parse(JSON.stringify(project))).transcript, validateTranscript(translated, 10));
-  for (const version of [1, 2, 3, 4, 5, 6, 7]) assert.equal(validateProject({ ...project, version }).version, 8);
+  assert.equal(project.version, 9); assert.deepEqual(validateProject(JSON.parse(JSON.stringify(project))).transcript, validateTranscript(translated, 10));
+  for (const version of [1, 2, 3, 4, 5, 6, 7]) assert.equal(validateProject({ ...project, version }).version, 9);
 });
 test('missing and stale translations cannot be acknowledged into exports; original remains recoverable', () => {
   const partial = applyCaptionTranslation(original, input, proposal, ['a']);

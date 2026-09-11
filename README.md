@@ -152,6 +152,16 @@ For translation, select a target language and process a batch, then move to the 
 
 Actual English, Japanese, and Chinese TTS transcription, plus Japanese automatic detection, has been exercised. Misrecognitions occurred, including Chinese TTS and an earlier Korean sample. These checks do not establish accuracy on human recordings. See [multilingual results](docs/testing/2026-09-06-multilingual-results.md) and [transcription results](docs/testing/2026-09-05-transcription-results.md).
 
+## Sentence emphasis and gentle zoom
+
+After transcription, select a sentence in **Captions → Emphasize this sentence**, or open **Sentence emphasis** from the tool rail. Add a high-contrast caption and a gentle zoom independently. Zoom defaults to 1.08× (1.00–1.15×); horizontal and vertical focus are adjustable. Caption emphasis requires MP4 caption inclusion to be enabled. SRT and TXT stay plain text.
+
+Effects follow source-time sentences through silence edits. Changed/deleted text, timings, or output translations require reconnection or removal before an affected render. Fully removed effects do not block export and return when their cuts are restored. Preview a selected range to see the actual encoded effect; the fast cut preview does not display emphasis or zoom. Save/reopen and emphasis undo/redo are supported.
+
+For AI suggestions, the current sentence and following cues form an explicit batch of at most 20 cues/4,000 characters. Copy the request into an existing chat and import its JSON reply, or use a provider already configured in **AI editing assistant**. Only supplied cue IDs and bounded effect settings are accepted. Review and select changes before applying; a whole batch is one undo step. No original media or filenames are attached, and batches do not automatically continue. MCP emphasis sharing is not implemented.
+
+[Implementation verification](docs/testing/2026-09-11-caption-zoom-results.md) distinguishes synthetic render/browser checks from real speech, actual provider inference, and competitor comparisons.
+
 ## Clips and sound effects
 
 Create a clip by entering its source start/end times or selecting a first and last transcript sentence. Existing cuts, captions, and sound effects are reflected in the original-resolution output. Inspect the actual frame-aligned range and edited duration. If the range splits a caption, expand it or disable caption inclusion.
@@ -180,7 +190,7 @@ Settings proposals send the request and four silence settings. Correction sends 
 
 ## Project compatibility
 
-New projects use **schema v8**, including captions, styles, effects, glossary terms, end-boundary review, and per-language translations. Versions v1–v7 remain readable. Missing newer fields receive defaults: early projects have no captions/effects/glossary, and v1–v3 do not enable caption burn-in automatically. Existing supported styles, terms, and captions are preserved. Older HyperCut versions may not open v8 projects.
+New projects use **schema v9**, including captions, styles, effects, glossary terms, end-boundary review, per-language translations, and sentence emphasis/zoom snapshots. Versions v1–v8 remain readable. Missing newer fields receive defaults: early projects have no captions/effects/glossary, and v1–v3 do not enable caption burn-in automatically. Existing supported styles, terms, and captions are preserved. Older HyperCut versions may not open v9 projects.
 
 ## Validation and contributing
 

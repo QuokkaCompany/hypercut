@@ -82,7 +82,7 @@ Back up the data directory with API and worker stopped, then start both Go proce
 ## Browser workflow and recovery
 
 - **Save project** stores the current edit on the server. Edits are not saved on every keystroke. Each processing job first saves its input snapshot.
-- **Download project** exports the portable v8 JSON for local use. Keep source and effect files as well. Existing v1–v7 imports still migrate through the shared validator.
+- **Download project** exports the portable v9 JSON for local use. Keep source and effect files as well. Existing v1–v8 imports still migrate through the shared validator.
 - After reconnecting, the workspace lists projects, processing jobs, outputs and source media. Select **Apply & open** for a completed analysis/transcription whose base revision still matches. Newer edits are preserved when versions differ.
 - If a worker stops, its lease expires and its active job becomes interrupted/failed. Open the project and submit a new job to retry. HyperCut does not silently repeat work.
 - Cancelling an upload pauses it. Select the same file again to resume; the browser verifies all retained chunks before appending. The workspace can discard incomplete uploads.

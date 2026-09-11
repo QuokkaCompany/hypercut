@@ -70,7 +70,7 @@ func Ask(ctx context.Context, client *http.Client, connection Object, kind strin
 	if kind == "proposal" {
 		maxTokens = 2048
 	}
-	name := map[string]string{"proposal": "silence_settings", "correction": "caption_correction", "translation": "caption_translation", "effects": "sound_effects"}[kind]
+	name := map[string]string{"proposal": "silence_settings", "correction": "caption_correction", "translation": "caption_translation", "effects": "sound_effects", "accents": "visual_accents"}[kind]
 	switch str(config["provider"]) {
 	case "ollama":
 		address = str(config["baseURL"]) + "/api/chat"
@@ -245,7 +245,7 @@ func (s *Session) Handle(ctx context.Context, method, kind string, in Object) (O
 		}
 		return nil, fmt.Errorf("Unsupported AI method")
 	}
-	if !one(kind, "proposal", "correction", "translation", "effects") {
+	if !one(kind, "proposal", "correction", "translation", "effects", "accents") {
 		s.mu.Unlock()
 		return nil, fmt.Errorf("Unknown AI route")
 	}

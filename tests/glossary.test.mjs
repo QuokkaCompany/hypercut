@@ -14,7 +14,7 @@ const input = { requestId: randomUUID(), instruction: '오타 교정', glossary,
 
 test('project glossary round trip preserves exact terms and existing editing data', () => {
   const restored = validateProject(JSON.parse(JSON.stringify(project)));
-  assert.equal(restored.version, 8); assert.equal(restored.glossary, glossary);
+  assert.equal(restored.version, 9); assert.equal(restored.glossary, glossary);
   for (const field of ['media', 'settings', 'speechProtection', 'transcript', 'captionStyle', 'effects']) assert.deepEqual(restored[field], project[field]);
   assert.equal(restored.cuts[0].enabled, false);
   assert.equal(makeProject(media, DEFAULT_SETTINGS, 1, []).glossary, '');
@@ -25,7 +25,7 @@ test('v1 through v5 migrate with an empty glossary even when unknown glossary da
   for (const version of [1, 2, 3, 4, 5]) {
     for (const value of [undefined, 'old unknown field', { injected: 'not a string' }]) {
       const migrated = validateProject({ ...project, version, glossary: value });
-      assert.equal(migrated.version, 8); assert.equal(migrated.glossary, ''); assert.equal(migrated.cuts[0].enabled, false);
+      assert.equal(migrated.version, 9); assert.equal(migrated.glossary, ''); assert.equal(migrated.cuts[0].enabled, false);
       assert.deepEqual(migrated.transcript, version >= 3 ? transcript : null);
     }
   }
